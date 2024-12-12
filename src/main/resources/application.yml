@@ -1,2 +1,8 @@
 greeting:
   message: "hello"
+quarkus:
+  banner:
+    enabled: true
+    path: banner.txt
+  http:
+    port: 8181
