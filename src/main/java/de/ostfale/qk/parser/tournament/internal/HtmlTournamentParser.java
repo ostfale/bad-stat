@@ -28,6 +28,7 @@ public class HtmlTournamentParser implements TournamentParser {
         HtmlElement tournamentDateElement = content.getFirstByXPath(TOURNAMENT_DATE);
         List<HtmlElement>tournamentIdElements = content.getByXPath(TOURNAMENT_ID);
 
+        //  <a href="/sport/tournament?id=DDAD417D-28AD-4C58-A5BD-38D34E647136" class="media__img">
         var tournamentIdArray = tournamentIdElements.getFirst().getAttribute("href").split("=");
         var orgaAndLocation = tournamentOrgElement.asNormalizedText().split("\\|");
 

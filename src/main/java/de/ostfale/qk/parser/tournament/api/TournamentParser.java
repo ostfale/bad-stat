@@ -6,4 +6,6 @@ import org.htmlunit.html.HtmlDivision;
 public interface TournamentParser {
 
     TournamentHeaderInfo parseHeader (HtmlDivision content);
+
+
 }
