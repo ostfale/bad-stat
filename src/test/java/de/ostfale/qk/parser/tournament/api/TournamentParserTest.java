@@ -1,30 +1,24 @@
 package de.ostfale.qk.parser.tournament.api;
 
-import de.ostfale.qk.parser.ConfiguredWebClient;
 import de.ostfale.qk.parser.tournament.internal.HtmlTournamentParser;
+import de.ostfale.qk.parser.tournament.internal.TournamentHeaderInfo;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlDivision;
 import org.htmlunit.html.HtmlPage;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Test reading the header information from a tournament")
 @QuarkusTest
-class TournamentParserTest extends BaseTest{
+class TournamentParserTest extends BaseTest {
 
     private static final Logger log = LoggerFactory.getLogger(TournamentParserTest.class);
 
@@ -35,24 +29,25 @@ class TournamentParserTest extends BaseTest{
     void parseHeader() {
         // given
         String testFileName = "SingleTournamentMatches.txt";
-        String testHtmlString = readFile(testFileName);
-        WebClient webClient = ConfiguredWebClient.getWebClient();
+        HtmlPage page = loadHtmlPage(testFileName);
+        var expectedID = "DDAD417D-28AD-4C58-A5BD-38D34E647136";
+        var expectedDate = "02.03.2024";
+        var expectedName = "2. C-RLT MVP U13_U17 Sassnitz 2024";
+        var expectedLocation = "Sassnitz";
+        var expectedOrganisation = "Badminton-Verband Mecklenburg-Vorpommern";
 
         // when
+        List<HtmlDivision> tournamentsList = getPlayersTournaments(page);
+        TournamentHeaderInfo headerInfo = parser.parseHeader(tournamentsList.getFirst());
 
-
-
-
-
-        try {
-            final HtmlPage page = webClient.loadHtmlCodeIntoCurrentWindow(testHtmlString);
-            List<HtmlDivision> tournamentsList = getPlayersTournaments(page);
-            var result = parser.parseHeader(tournamentsList.getFirst());
-            System.out.println(result);
-        } catch (IOException e) {
-            log.error("Failed to parse the header", e);
-            throw new RuntimeException(e);
-        }
+        // then
+        assertAll("Test tournament header information",
+                () -> assertEquals(expectedID, headerInfo.tournamentId(), "Players tournament id failed"),
+                () -> assertEquals(expectedName, headerInfo.tournamentName(), "Players tournament name failed"),
+                () -> assertEquals(expectedDate, headerInfo.tournamentDate(), "Players tournament date failed"),
+                () -> assertEquals(expectedLocation, headerInfo.tournamentLocation(), "Players tournament location failed"),
+                () -> assertEquals(expectedOrganisation, headerInfo.tournamentOrganisation(), "Players tournament organisation failed")
+        );
     }
 
     private List<HtmlDivision> getPlayersTournaments(HtmlPage page) {
@@ -61,6 +56,5 @@ class TournamentParserTest extends BaseTest{
         log.info("Found {} tournaments", moduleCards.size());
         return moduleCards;
     }
-
 }
 
