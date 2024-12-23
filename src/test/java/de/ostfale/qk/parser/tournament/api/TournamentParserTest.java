@@ -1,12 +1,14 @@
 package de.ostfale.qk.parser.tournament.api;
 
-import de.ostfale.qk.parser.tournament.internal.HtmlTournamentParser;
-import de.ostfale.qk.parser.tournament.internal.TournamentHeaderInfo;
+import de.ostfale.qk.parser.tournament.internal.TournamentDisciplineInfoDTO;
+import de.ostfale.qk.parser.tournament.internal.TournamentHeaderInfoDTO;
+import de.ostfale.qk.parser.tournament.internal.TournamentParserService;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlDivision;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +20,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Test reading the header information from a tournament")
 @QuarkusTest
+@Tag("unittest")
 class TournamentParserTest extends BaseTest {
 
     private static final Logger log = LoggerFactory.getLogger(TournamentParserTest.class);
 
     @Inject
-    HtmlTournamentParser parser;
+    TournamentParserService parser;
 
     @Test
+    @DisplayName("Parse tournament header information")
     void parseHeader() {
         // given
         String testFileName = "SingleTournamentMatches.txt";
@@ -38,7 +42,7 @@ class TournamentParserTest extends BaseTest {
 
         // when
         List<HtmlDivision> tournamentsList = getPlayersTournaments(page);
-        TournamentHeaderInfo headerInfo = parser.parseHeader(tournamentsList.getFirst());
+        TournamentHeaderInfoDTO headerInfo = parser.parseHeader(tournamentsList.getFirst());
 
         // then
         assertAll("Test tournament header information",
@@ -47,6 +51,24 @@ class TournamentParserTest extends BaseTest {
                 () -> assertEquals(expectedDate, headerInfo.tournamentDate(), "Players tournament date failed"),
                 () -> assertEquals(expectedLocation, headerInfo.tournamentLocation(), "Players tournament location failed"),
                 () -> assertEquals(expectedOrganisation, headerInfo.tournamentOrganisation(), "Players tournament organisation failed")
+        );
+    }
+
+    @Test
+    @DisplayName("Parse tournament discipline information")
+    void parseDiscipline() {
+        // given
+        String testFileName = "SingleTournamentMatches.txt";
+        HtmlPage page = loadHtmlPage(testFileName);
+        var expectedDisciplineName = "JE";
+        var expectedDisciplineAgeGroup = "U17";
+
+        // when
+        TournamentDisciplineInfoDTO result = parser.parseDisciplines(getPlayersTournaments(page).getFirst()).getFirst();
+        // then
+        assertAll("Test tournament discipline information",
+                () -> assertEquals(expectedDisciplineName, result.getDisciplineName()),
+                () -> assertEquals(expectedDisciplineAgeGroup, result.getDisciplineAgeGroup())
         );
     }
 

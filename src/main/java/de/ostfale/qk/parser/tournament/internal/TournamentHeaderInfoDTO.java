@@ -1,6 +1,6 @@
 package de.ostfale.qk.parser.tournament.internal;
 
-public record TournamentHeaderInfo(
+public record TournamentHeaderInfoDTO(
         String tournamentId,
         String tournamentName,
         String tournamentOrganisation,
