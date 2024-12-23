@@ -1,4 +1,4 @@
-package de.ostfale.qk.parser.tournament.internal;
+package de.ostfale.qk.parser.tournament.internal.model;
 
 
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ public class TournamentDisciplineInfoDTO {
 
     private String disciplineName;
     private String disciplineAgeGroup;
-    private List<TournamentMatchInfo> tournamentMatchInfos = new ArrayList<>();
+    private List<TournamentMatchInfoDTO> tournamentMatchInfoDTOS = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -35,20 +35,20 @@ public class TournamentDisciplineInfoDTO {
         return disciplineAgeGroup;
     }
 
-    public void addMatchInfo(TournamentMatchInfo tournamentMatchInfo) {
-        tournamentMatchInfos.add(tournamentMatchInfo);
+    public void addMatchInfo(TournamentMatchInfoDTO tournamentMatchInfoDTO) {
+        tournamentMatchInfoDTOS.add(tournamentMatchInfoDTO);
     }
 
     public void setDisciplineAgeGroup(String disciplineAgeGroup) {
         this.disciplineAgeGroup = disciplineAgeGroup;
     }
 
-    public List<TournamentMatchInfo> getTournamentMatchInfos() {
-        return tournamentMatchInfos;
+    public List<TournamentMatchInfoDTO> getTournamentMatchInfos() {
+        return tournamentMatchInfoDTOS;
     }
 
-    public void setTournamentMatchInfos(List<TournamentMatchInfo> tournamentMatchInfos) {
-        this.tournamentMatchInfos = tournamentMatchInfos;
+    public void setTournamentMatchInfos(List<TournamentMatchInfoDTO> tournamentMatchInfoDTOS) {
+        this.tournamentMatchInfoDTOS = tournamentMatchInfoDTOS;
     }
 }
 

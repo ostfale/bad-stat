@@ -1,13 +1,14 @@
-package de.ostfale.qk.parser.tournament.internal;
+package de.ostfale.qk.parser.tournament.internal.model;
 
-public class TournamentMatchInfo {
+public class TournamentMatchInfoDTO {
 
     private String roundName;
     private String roundDate;
     private String roundLocation;
     private String roundDuration;
+    private TournamentMatchDTO tournamentMatchDTO;
 
-    public TournamentMatchInfo(String roundName, String roundDate, String roundLocation, String roundDuration) {
+    public TournamentMatchInfoDTO(String roundName, String roundDate, String roundLocation, String roundDuration) {
         this.roundName = roundName;
         this.roundDate = roundDate;
         this.roundLocation = roundLocation;
@@ -22,6 +23,14 @@ public class TournamentMatchInfo {
                 ", roundLocation='" + roundLocation + '\'' +
                 ", roundDuration='" + roundDuration + '\'' +
                 '}';
+    }
+
+    public TournamentMatchDTO getTournamentMatchDTO() {
+        return tournamentMatchDTO;
+    }
+
+    public void setTournamentMatchDTO(TournamentMatchDTO tournamentMatchDTO) {
+        this.tournamentMatchDTO = tournamentMatchDTO;
     }
 
     public String getRoundName() {

@@ -1,7 +1,7 @@
 package de.ostfale.qk.parser.tournament.api;
 
-import de.ostfale.qk.parser.tournament.internal.TournamentDisciplineInfoDTO;
-import de.ostfale.qk.parser.tournament.internal.TournamentHeaderInfoDTO;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentDisciplineInfoDTO;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentHeaderInfoDTO;
 import de.ostfale.qk.parser.tournament.internal.TournamentParserService;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;

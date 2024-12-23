@@ -1,6 +1,9 @@
 package de.ostfale.qk.parser.tournament.internal;
 
 import de.ostfale.qk.parser.tournament.api.TournamentParser;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentDisciplineInfoDTO;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentHeaderInfoDTO;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentMatchInfoDTO;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlDivision;
 import org.htmlunit.html.HtmlElement;
@@ -68,7 +71,7 @@ public class TournamentParserService implements TournamentParser {
         return disciplineList;
     }
 
-    private TournamentMatchInfo getTournamentMatchInfo(HtmlElement matchGroup) {
+    private TournamentMatchInfoDTO getTournamentMatchInfo(HtmlElement matchGroup) {
         HtmlElement matchRoundNameDiv = matchGroup.getFirstByXPath(MATCH_ROUND_NAME);
         HtmlElement matchRoundDurationDiv = matchGroup.getFirstByXPath(MATCH_ROUND_DURATION);
         List<HtmlElement> matchRoundDateLocDiv = matchGroup.getByXPath(MATCH_ROUND_LOCATION_DATE);
@@ -77,7 +80,7 @@ public class TournamentParserService implements TournamentParser {
         var matchRoundDate = matchRoundDateLocDiv.getFirst() != null ? matchRoundDateLocDiv.getFirst().asNormalizedText() : "";
         var matchRoundCourt = matchRoundDateLocDiv.getLast() != null ? matchRoundDateLocDiv.getLast().asNormalizedText() : "";
         var matchRoundDuration = matchRoundDurationDiv != null ? matchRoundDurationDiv.asNormalizedText() : "";
-        var matchInfo = new TournamentMatchInfo(matchRoundName, matchRoundDate, matchRoundCourt, matchRoundDuration);
+        var matchInfo = new TournamentMatchInfoDTO(matchRoundName, matchRoundDate, matchRoundCourt, matchRoundDuration);
         log.debug("Tournament match info: {}", matchInfo);
         return matchInfo;
     }
