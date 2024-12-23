@@ -62,13 +62,21 @@ class TournamentParserTest extends BaseTest {
         HtmlPage page = loadHtmlPage(testFileName);
         var expectedDisciplineName = "JE";
         var expectedDisciplineAgeGroup = "U17";
+        var expectedTournamentMatchesSize = 4;
+        var expectedFirstRoundName = "Round of 16";
+        var expectedSecondRoundName = "Quarter final";
+        var expectedThirdRoundName = "Semi final";
 
         // when
         TournamentDisciplineInfoDTO result = parser.parseDisciplines(getPlayersTournaments(page).getFirst()).getFirst();
         // then
         assertAll("Test tournament discipline information",
                 () -> assertEquals(expectedDisciplineName, result.getDisciplineName()),
-                () -> assertEquals(expectedDisciplineAgeGroup, result.getDisciplineAgeGroup())
+                () -> assertEquals(expectedDisciplineAgeGroup, result.getDisciplineAgeGroup()),
+                () -> assertEquals(expectedTournamentMatchesSize, result.getTournamentMatchInfos().size()),
+                () -> assertEquals(expectedFirstRoundName, result.getTournamentMatchInfos().getFirst().getRoundName()),
+                () -> assertEquals(expectedSecondRoundName, result.getTournamentMatchInfos().get(1).getRoundName()),
+                () -> assertEquals(expectedThirdRoundName, result.getTournamentMatchInfos().get(2).getRoundName())
         );
     }
 

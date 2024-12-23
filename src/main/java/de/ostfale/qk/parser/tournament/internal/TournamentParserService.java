@@ -22,7 +22,11 @@ public class TournamentParserService implements TournamentParser {
 
     final String TOURNAMENT_DISCIPLINES = "//div[contains(@class, 'module module--card')]";
     final String TOURNAMENT_DISCIPLINE_INFO = "//h5[contains(@class, 'module-divider')]";
-    final String TOURNAMENT_DISCIPLINE_INFO_LINK = "//a[contains(@class, 'nav-link')]";
+    final String TOURNAMENT_MATCH_GROUP = ".//li[contains(@class, 'match-group__item')]";
+
+    final String MATCH_ROUND_NAME = ".//li[contains(@class, 'match__header-title-item')]";
+    final String MATCH_ROUND_LOCATION_DATE = ".//li[contains(@class, 'match__footer-list-item')]";
+    final String MATCH_ROUND_DURATION = ".//div[contains(@class, 'match__header-aside')]";
 
     @Override
     public TournamentHeaderInfoDTO parseHeader(HtmlDivision content) {
@@ -51,10 +55,31 @@ public class TournamentParserService implements TournamentParser {
         List<HtmlDivision> moduleCards = content.getByXPath(TOURNAMENT_DISCIPLINES);   // find all module--card for tournament
         List<TournamentDisciplineInfoDTO> disciplineList = new ArrayList<>();
         moduleCards.forEach(moduleCard -> {
+            // read header info of the discipline which contains a list of matches
             var tournamentDisciplineInfo = getTournamentDisciplineInfoDTO(moduleCard);
             disciplineList.add(tournamentDisciplineInfo);
+
+            // each match group has a round, a timestamp (when played) and a location (where played)
+            List<HtmlElement> matchGroupList = content.getByXPath(TOURNAMENT_MATCH_GROUP);
+            matchGroupList.forEach(matchGroup -> {
+                tournamentDisciplineInfo.addMatchInfo(getTournamentMatchInfo(matchGroup));
+            });
         });
         return disciplineList;
+    }
+
+    private TournamentMatchInfo getTournamentMatchInfo(HtmlElement matchGroup) {
+        HtmlElement matchRoundNameDiv = matchGroup.getFirstByXPath(MATCH_ROUND_NAME);
+        HtmlElement matchRoundDurationDiv = matchGroup.getFirstByXPath(MATCH_ROUND_DURATION);
+        List<HtmlElement> matchRoundDateLocDiv = matchGroup.getByXPath(MATCH_ROUND_LOCATION_DATE);
+
+        var matchRoundName = matchRoundNameDiv != null ? matchRoundNameDiv.asNormalizedText() :"";
+        var matchRoundDate = matchRoundDateLocDiv.getFirst() != null ? matchRoundDateLocDiv.getFirst().asNormalizedText() : "";
+        var matchRoundCourt = matchRoundDateLocDiv.getLast() != null ? matchRoundDateLocDiv.getLast().asNormalizedText() : "";
+        var matchRoundDuration = matchRoundDurationDiv != null ? matchRoundDurationDiv.asNormalizedText() : "";
+        var matchInfo = new TournamentMatchInfo(matchRoundName, matchRoundDate, matchRoundCourt, matchRoundDuration);
+        log.debug("Tournament match info: {}", matchInfo);
+        return matchInfo;
     }
 
     private TournamentDisciplineInfoDTO getTournamentDisciplineInfoDTO(HtmlDivision moduleCard) {
@@ -62,6 +87,8 @@ public class TournamentParserService implements TournamentParser {
         String[] disciplineAge = discipline.asNormalizedText().split(" ");
         var disciplineName = disciplineAge[0];
         var disciplineAgeGroup = disciplineAge[1];
-        return new TournamentDisciplineInfoDTO(disciplineName, disciplineAgeGroup);
+        var disciplineInfo = new TournamentDisciplineInfoDTO(disciplineName, disciplineAgeGroup);
+        log.debug("Tournament discipline info: {}", disciplineInfo);
+        return disciplineInfo;
     }
 }

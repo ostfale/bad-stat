@@ -1,10 +1,14 @@
 package de.ostfale.qk.parser.tournament.internal;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TournamentDisciplineInfoDTO {
 
     private String disciplineName;
     private String disciplineAgeGroup;
+    private List<TournamentMatchInfo> tournamentMatchInfos = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -31,8 +35,20 @@ public class TournamentDisciplineInfoDTO {
         return disciplineAgeGroup;
     }
 
+    public void addMatchInfo(TournamentMatchInfo tournamentMatchInfo) {
+        tournamentMatchInfos.add(tournamentMatchInfo);
+    }
+
     public void setDisciplineAgeGroup(String disciplineAgeGroup) {
         this.disciplineAgeGroup = disciplineAgeGroup;
+    }
+
+    public List<TournamentMatchInfo> getTournamentMatchInfos() {
+        return tournamentMatchInfos;
+    }
+
+    public void setTournamentMatchInfos(List<TournamentMatchInfo> tournamentMatchInfos) {
+        this.tournamentMatchInfos = tournamentMatchInfos;
     }
 }
 
