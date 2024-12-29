@@ -2,6 +2,7 @@ package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.parser.BaseTest;
 import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
+import de.ostfale.qk.parser.match.internal.model.MixedMatchDTO;
 import de.ostfale.qk.parser.match.internal.model.SingleMatchDTO;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -69,6 +70,31 @@ class MatchParserServiceTest extends BaseTest {
                 () -> assertEquals(22, result.getPlayersSets().get(1).getSecondValue()),
                 () -> assertEquals(21, result.getPlayersSets().get(2).getFirstValue()),
                 () -> assertEquals(18, result.getPlayersSets().get(2).getSecondValue())
+        );
+    }
+
+    @Test
+    @DisplayName("Parse mixed match information")
+    void parseMixedMatch() {
+        // given
+        String testFileName = "MixedMatch.txt";
+        HtmlPage page = loadHtmlPage(testFileName);
+        HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
+
+        // when
+        MixedMatchDTO result = parser.parseMixedMatch(content);
+
+        // then
+        assertAll("Test mixed match information",
+                () -> assertEquals("Louis Sauerbrei", result.getFirstDoublePlayerOne().name),
+                () -> assertEquals("Victoria Braun", result.getFirstDoublePlayerTwo().name),
+                () -> assertEquals("Malthe Heilesen", result.getSecondDoublePlayerOne().name),
+                () -> assertEquals("Madeleine Dam", result.getSecondDoublePlayerTwo().name),
+                () -> assertFalse(result.hasFirstPlayerWon()),
+                () -> assertEquals(19, result.getPlayersSets().getFirst().getFirstValue()),
+                () -> assertEquals(21, result.getPlayersSets().getFirst().getSecondValue()),
+                () -> assertEquals(17, result.getPlayersSets().get(1).getFirstValue()),
+                () -> assertEquals(21, result.getPlayersSets().get(1).getSecondValue())
         );
     }
 }

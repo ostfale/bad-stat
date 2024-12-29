@@ -8,4 +8,6 @@ public interface MatchParser {
     Match parseSingleMatch(HtmlDivision content);
 
     Match parseDoubleMatch(HtmlDivision content);
+
+    Match parseMixedMatch(HtmlDivision content);
 }

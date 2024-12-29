@@ -2,6 +2,7 @@ package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.parser.match.api.MatchParser;
 import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
+import de.ostfale.qk.parser.match.internal.model.MixedMatchDTO;
 import de.ostfale.qk.parser.match.internal.model.SingleMatchDTO;
 import de.ostfale.qk.parser.player.PlayerDTO;
 import de.ostfale.qk.parser.set.SetDTO;
@@ -21,26 +22,24 @@ public class MatchParserService implements MatchParser {
 
     private static final Logger log = LoggerFactory.getLogger(MatchParserService.class);
 
+    private static final String WINNER_MARKER = "W";
+    private static final String LOSER_MARKER = "L";
+
     @Override
     public SingleMatchDTO parseSingleMatch(HtmlDivision content) {
         log.debug("Parsing single match");
-        String[] resultSplit = content.asNormalizedText().split("\n");
+        String[] resultSplit = splitRawData(content);
         var result = extractNumbersFromStrings(List.of(resultSplit));
         var sets = prepareSets(result);
 
-        String firstPlayer = resultSplit[0];
-        String secondPlayer = resultSplit[1];
-        PlayerDTO firstPlayerDTO = new PlayerDTO(firstPlayer);
-        PlayerDTO secondPlayerDTO = new PlayerDTO(secondPlayer);
-        var matchDTO = new SingleMatchDTO(firstPlayerDTO, secondPlayerDTO, sets);
-        log.debug("Single match parsed and winner is: {}", matchDTO.hasFirstPlayerWon() ? firstPlayer : secondPlayer);
-        return matchDTO;
+        List<PlayerDTO> playerDTOs = createPlayerDTOsFromResult(resultSplit);
+        return new SingleMatchDTO(playerDTOs.get(0), playerDTOs.get(1), sets);
     }
 
     @Override
     public DoubleMatchDTO parseDoubleMatch(HtmlDivision content) {
         log.debug("Parsing double match");
-        String[] resultSplit = content.asNormalizedText().split("\n");
+        String[] resultSplit = splitRawData(content);
         var result = extractNumbersFromStrings(List.of(resultSplit));
         var sets = prepareSets(result);
 
@@ -49,10 +48,27 @@ public class MatchParserService implements MatchParser {
         return new DoubleMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3), sets);
     }
 
+    @Override
+    public MixedMatchDTO parseMixedMatch(HtmlDivision content) {
+        log.debug("Parsing mixed  match");
+        String[] resultSplit = splitRawData(content);
+        var result = extractNumbersFromStrings(List.of(resultSplit));
+        var sets = prepareSets(result);
+
+        List<PlayerDTO> playerDTOs = createPlayerDTOsFromResult(resultSplit);
+
+        return new MixedMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3), sets);
+    }
+
+    private String[] splitRawData(HtmlDivision inputDiv) {
+        final String SEPARATOR = "\n";
+        return inputDiv.asNormalizedText().split(SEPARATOR);
+    }
+
     // Helper function to eliminate repetitive PlayerDTO creation logic
     private List<PlayerDTO> createPlayerDTOsFromResult(String[] resultSplit) {
         return Arrays.stream(resultSplit)
-                .filter(str -> !str.equalsIgnoreCase("W"))
+                .filter(this::isValidPlayerString)
                 .map(PlayerDTO::new)
                 .collect(Collectors.toList());
     }
@@ -69,6 +85,10 @@ public class MatchParserService implements MatchParser {
             }
         }
         return setDTOs;
+    }
+
+    private boolean isValidPlayerString(String str) {
+        return !str.equalsIgnoreCase(WINNER_MARKER) && !str.equalsIgnoreCase(LOSER_MARKER);
     }
 
     private List<Integer> extractNumbersFromStrings(List<String> inputStrings) {
