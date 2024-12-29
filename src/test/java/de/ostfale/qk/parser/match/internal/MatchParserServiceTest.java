@@ -1,6 +1,7 @@
 package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.parser.BaseTest;
+import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
 import de.ostfale.qk.parser.match.internal.model.SingleMatchDTO;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -22,7 +23,7 @@ class MatchParserServiceTest extends BaseTest {
     MatchParserService parser;
 
     @Test
-    @DisplayName("Parse match information")
+    @DisplayName("Parse single match information")
     void parseSingleMatch() {
         // given
         String testFileName = "SingleMatch.txt";
@@ -44,4 +45,30 @@ class MatchParserServiceTest extends BaseTest {
         );
     }
 
+    @Test
+    @DisplayName("Parse double match information")
+    void parseDoubleMatch() {
+        // given
+        String testFileName = "DoubleMatch.txt";
+        HtmlPage page = loadHtmlPage(testFileName);
+        HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
+
+        // when
+        DoubleMatchDTO result = parser.parseDoubleMatch(content);
+
+        // then
+        assertAll("Test double match information",
+                () -> assertEquals("Louis Sauerbrei", result.getFirstDoublePlayerOne().name),
+                () -> assertEquals("Tony Chengxi Wang", result.getFirstDoublePlayerTwo().name),
+                () -> assertEquals("Joey Kobylanski", result.getSecondDoublePlayerOne().name),
+                () -> assertEquals("Artur Plaisant", result.getSecondDoublePlayerTwo().name),
+                () -> assertTrue(result.hasFirstPlayerWon()),
+                () -> assertEquals(10, result.getPlayersSets().getFirst().getFirstValue()),
+                () -> assertEquals(21, result.getPlayersSets().getFirst().getSecondValue()),
+                () -> assertEquals(24, result.getPlayersSets().get(1).getFirstValue()),
+                () -> assertEquals(22, result.getPlayersSets().get(1).getSecondValue()),
+                () -> assertEquals(21, result.getPlayersSets().get(2).getFirstValue()),
+                () -> assertEquals(18, result.getPlayersSets().get(2).getSecondValue())
+        );
+    }
 }

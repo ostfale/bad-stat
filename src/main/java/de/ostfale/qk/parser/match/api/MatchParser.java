@@ -6,4 +6,6 @@ import org.htmlunit.html.HtmlDivision;
 public interface MatchParser {
 
     Match parseSingleMatch(HtmlDivision content);
+
+    Match parseDoubleMatch(HtmlDivision content);
 }

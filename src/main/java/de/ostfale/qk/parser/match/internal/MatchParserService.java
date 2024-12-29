@@ -1,6 +1,7 @@
 package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.parser.match.api.MatchParser;
+import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
 import de.ostfale.qk.parser.match.internal.model.SingleMatchDTO;
 import de.ostfale.qk.parser.player.PlayerDTO;
 import de.ostfale.qk.parser.set.SetDTO;
@@ -11,7 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class MatchParserService implements MatchParser {
@@ -20,7 +23,7 @@ public class MatchParserService implements MatchParser {
 
     @Override
     public SingleMatchDTO parseSingleMatch(HtmlDivision content) {
-        log.debug("Parsing match");
+        log.debug("Parsing single match");
         String[] resultSplit = content.asNormalizedText().split("\n");
         var result = extractNumbersFromStrings(List.of(resultSplit));
         var sets = prepareSets(result);
@@ -30,8 +33,28 @@ public class MatchParserService implements MatchParser {
         PlayerDTO firstPlayerDTO = new PlayerDTO(firstPlayer);
         PlayerDTO secondPlayerDTO = new PlayerDTO(secondPlayer);
         var matchDTO = new SingleMatchDTO(firstPlayerDTO, secondPlayerDTO, sets);
-        log.debug("Match parsed and winner is: {}", matchDTO.hasFirstPlayerWon() ? firstPlayer : secondPlayer);
+        log.debug("Single match parsed and winner is: {}", matchDTO.hasFirstPlayerWon() ? firstPlayer : secondPlayer);
         return matchDTO;
+    }
+
+    @Override
+    public DoubleMatchDTO parseDoubleMatch(HtmlDivision content) {
+        log.debug("Parsing double match");
+        String[] resultSplit = content.asNormalizedText().split("\n");
+        var result = extractNumbersFromStrings(List.of(resultSplit));
+        var sets = prepareSets(result);
+
+        List<PlayerDTO> playerDTOs = createPlayerDTOsFromResult(resultSplit);
+
+        return new DoubleMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3), sets);
+    }
+
+    // Helper function to eliminate repetitive PlayerDTO creation logic
+    private List<PlayerDTO> createPlayerDTOsFromResult(String[] resultSplit) {
+        return Arrays.stream(resultSplit)
+                .filter(str -> !str.equalsIgnoreCase("W"))
+                .map(PlayerDTO::new)
+                .collect(Collectors.toList());
     }
 
     private List<SetDTO> prepareSets(List<Integer> pointsList) {
