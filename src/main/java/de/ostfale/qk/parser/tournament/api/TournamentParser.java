@@ -1,14 +1,14 @@
 package de.ostfale.qk.parser.tournament.api;
 
-import de.ostfale.qk.parser.tournament.internal.model.TournamentDisciplineInfoDTO;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentHeaderInfoDTO;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentDisciplineDTO;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentInfoDTO;
 import org.htmlunit.html.HtmlDivision;
 
 import java.util.List;
 
 public interface TournamentParser {
 
-    TournamentHeaderInfoDTO parseHeader (HtmlDivision content);
+    TournamentInfoDTO parseHeader (HtmlDivision content);
 
-    List<TournamentDisciplineInfoDTO> parseDisciplines (HtmlDivision content);
+    List<TournamentDisciplineDTO> parseDisciplines (HtmlDivision content);
 }

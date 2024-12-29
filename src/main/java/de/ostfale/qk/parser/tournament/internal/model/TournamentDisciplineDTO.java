@@ -4,7 +4,7 @@ package de.ostfale.qk.parser.tournament.internal.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TournamentDisciplineInfoDTO {
+public class TournamentDisciplineDTO {
 
     private String disciplineName;
     private String disciplineAgeGroup;
@@ -18,7 +18,7 @@ public class TournamentDisciplineInfoDTO {
                 '}';
     }
 
-    public TournamentDisciplineInfoDTO(String disciplineName, String disciplineAgeGroup) {
+    public TournamentDisciplineDTO(String disciplineName, String disciplineAgeGroup) {
         this.disciplineName = disciplineName;
         this.disciplineAgeGroup = disciplineAgeGroup;
     }

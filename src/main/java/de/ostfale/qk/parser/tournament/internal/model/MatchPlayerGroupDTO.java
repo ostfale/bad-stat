@@ -11,6 +11,12 @@ public class MatchPlayerGroupDTO {
         this.secondPlayer = secondPlayer;
     }
 
+    public MatchPlayerGroupDTO(MatchPlayerDTO firstPlayer, boolean hasWon) {
+        this.firstPlayer = firstPlayer;
+        this.hasWon = hasWon;
+        this.secondPlayer = null;
+    }
+
     public boolean isHasWon() {
         return hasWon;
     }

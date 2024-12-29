@@ -1,7 +1,8 @@
 package de.ostfale.qk.parser.tournament.api;
 
-import de.ostfale.qk.parser.tournament.internal.model.TournamentDisciplineInfoDTO;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentHeaderInfoDTO;
+import de.ostfale.qk.parser.BaseTest;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentDisciplineDTO;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentInfoDTO;
 import de.ostfale.qk.parser.tournament.internal.TournamentParserService;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -42,7 +43,7 @@ class TournamentParserTest extends BaseTest {
 
         // when
         List<HtmlDivision> tournamentsList = getPlayersTournaments(page);
-        TournamentHeaderInfoDTO headerInfo = parser.parseHeader(tournamentsList.getFirst());
+        TournamentInfoDTO headerInfo = parser.parseHeader(tournamentsList.getFirst());
 
         // then
         assertAll("Test tournament header information",
@@ -68,7 +69,7 @@ class TournamentParserTest extends BaseTest {
         var expectedThirdRoundName = "Semi final";
 
         // when
-        TournamentDisciplineInfoDTO result = parser.parseDisciplines(getPlayersTournaments(page).getFirst()).getFirst();
+        TournamentDisciplineDTO result = parser.parseDisciplines(getPlayersTournaments(page).getFirst()).getFirst();
         // then
         assertAll("Test tournament discipline information",
                 () -> assertEquals(expectedDisciplineName, result.getDisciplineName()),

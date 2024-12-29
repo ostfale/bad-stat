@@ -1,6 +1,5 @@
-package de.ostfale.qk.parser.tournament.api;
+package de.ostfale.qk.parser;
 
-import de.ostfale.qk.parser.ConfiguredWebClient;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlPage;
 
@@ -11,7 +10,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.Objects;
 
-abstract class BaseTest {
+public abstract class BaseTest {
 
     protected final WebClient webClient = ConfiguredWebClient.getWebClient();
 
