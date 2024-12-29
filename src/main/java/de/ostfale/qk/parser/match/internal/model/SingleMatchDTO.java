@@ -16,6 +16,11 @@ public class SingleMatchDTO extends MatchDTO {
         this.playersSets.addAll(playersSets);
     }
 
+    public SingleMatchDTO(PlayerDTO firstPlayer, PlayerDTO secondPlayer) {
+        this.firstPlayer = firstPlayer;
+        this.secondPlayer = secondPlayer;
+    }
+
     @Override
     Discipline getDiscipline() {
         return Discipline.SINGLE;

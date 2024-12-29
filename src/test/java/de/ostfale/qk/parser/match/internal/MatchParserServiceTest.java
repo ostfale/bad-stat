@@ -47,6 +47,25 @@ class MatchParserServiceTest extends BaseTest {
     }
 
     @Test
+    @DisplayName("Parse single match with walkover")
+    void parseSingleMatchWalkover() {
+        // given
+        String testFileName = "SingleMatchWalkover.txt";
+        HtmlPage page = loadHtmlPage(testFileName);
+        HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
+
+        // then
+        SingleMatchDTO result = parser.parseSingleMatch(content);
+
+        // then
+        assertAll("Test  single match information",
+                () -> assertEquals("Ivan Tutic", result.getFirstPlayer().name),
+                () -> assertEquals("Louis Sauerbrei", result.getSecondPlayer().name),
+                () -> assertTrue(result.hasFirstPlayerWon())
+        );
+    }
+
+    @Test
     @DisplayName("Parse double match information")
     void parseDoubleMatch() {
         // given
@@ -70,6 +89,27 @@ class MatchParserServiceTest extends BaseTest {
                 () -> assertEquals(22, result.getPlayersSets().get(1).getSecondValue()),
                 () -> assertEquals(21, result.getPlayersSets().get(2).getFirstValue()),
                 () -> assertEquals(18, result.getPlayersSets().get(2).getSecondValue())
+        );
+    }
+
+    @Test
+    @DisplayName("Parse double match with walkover")
+    void parseDoubleMatchWalkover() {
+        // given
+        String testFileName = "DoubleMatchWalkover.txt";
+        HtmlPage page = loadHtmlPage(testFileName);
+        HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
+
+        // when
+        DoubleMatchDTO result = parser.parseDoubleMatch(content);
+
+        // then
+        assertAll("Test double match information",
+                () -> assertEquals("Louis Sauerbrei", result.getFirstDoublePlayerOne().name),
+                () -> assertEquals("Tony Chengxi Wang", result.getFirstDoublePlayerTwo().name),
+                () -> assertEquals("Florian Soika", result.getSecondDoublePlayerOne().name),
+                () -> assertEquals("Bjarne Pascal Stüve", result.getSecondDoublePlayerTwo().name),
+                () -> assertTrue(result.hasFirstPlayerWon())
         );
     }
 

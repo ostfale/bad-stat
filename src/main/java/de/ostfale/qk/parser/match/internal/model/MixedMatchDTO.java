@@ -20,6 +20,13 @@ public class MixedMatchDTO extends MatchDTO {
         this.playersSets.addAll(playersSets);
     }
 
+    public MixedMatchDTO(PlayerDTO firstDoublePlayerOne, PlayerDTO firstDoublePlayerTwo, PlayerDTO secondDoublePlayerOne, PlayerDTO secondDoublePlayerTwo) {
+        this.firstDoublePlayerOne = firstDoublePlayerOne;
+        this.firstDoublePlayerTwo = firstDoublePlayerTwo;
+        this.secondDoublePlayerOne = secondDoublePlayerOne;
+        this.secondDoublePlayerTwo = secondDoublePlayerTwo;
+    }
+
     @Override
     Discipline getDiscipline() {
         return Discipline.MIXED;

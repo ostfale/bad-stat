@@ -24,6 +24,8 @@ public class MatchParserService implements MatchParser {
 
     private static final String WINNER_MARKER = "W";
     private static final String LOSER_MARKER = "L";
+    private static final String WALKOVER_MARKER = "Walkover";
+    private static final String WALKOVER_MARKER_LOST = "Walkover L";
 
     @Override
     public SingleMatchDTO parseSingleMatch(HtmlDivision content) {
@@ -31,8 +33,19 @@ public class MatchParserService implements MatchParser {
         String[] resultSplit = splitRawData(content);
         var result = extractNumbersFromStrings(List.of(resultSplit));
         var sets = prepareSets(result);
-
         List<PlayerDTO> playerDTOs = createPlayerDTOsFromResult(resultSplit);
+
+        if (containsWalkover(resultSplit)) {
+            log.debug("Walkover detected in single match");
+            var singleMatchDTO = new SingleMatchDTO(playerDTOs.get(0), playerDTOs.get(1));
+            if (resultSplit[2].equalsIgnoreCase(WALKOVER_MARKER_LOST)) {
+                singleMatchDTO.setHasFirstPlayerWonProp(Boolean.TRUE);
+            } else {
+                singleMatchDTO.setHasFirstPlayerWonProp(Boolean.FALSE);
+            }
+            return singleMatchDTO;
+        }
+
         return new SingleMatchDTO(playerDTOs.get(0), playerDTOs.get(1), sets);
     }
 
@@ -40,11 +53,21 @@ public class MatchParserService implements MatchParser {
     public DoubleMatchDTO parseDoubleMatch(HtmlDivision content) {
         log.debug("Parsing double match");
         String[] resultSplit = splitRawData(content);
-        var result = extractNumbersFromStrings(List.of(resultSplit));
-        var sets = prepareSets(result);
-
         List<PlayerDTO> playerDTOs = createPlayerDTOsFromResult(resultSplit);
 
+        if (containsWalkover(resultSplit)) {
+            log.debug("Walkover detected in double match");
+            var doubleMatchDT = new DoubleMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3));
+            if (resultSplit[2].equalsIgnoreCase(WINNER_MARKER)) {
+                doubleMatchDT.setHasFirstPlayerWonProp(Boolean.TRUE);
+            } else {
+                doubleMatchDT.setHasFirstPlayerWonProp(Boolean.FALSE);
+            }
+            return doubleMatchDT;
+        }
+
+        var result = extractNumbersFromStrings(List.of(resultSplit));
+        var sets = prepareSets(result);
         return new DoubleMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3), sets);
     }
 
@@ -57,7 +80,22 @@ public class MatchParserService implements MatchParser {
 
         List<PlayerDTO> playerDTOs = createPlayerDTOsFromResult(resultSplit);
 
+        if (containsWalkover(resultSplit)) {
+            log.debug("Walkover detected in mixed match");
+            var mixedMatchDT = new MixedMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3));
+            if (resultSplit[2].equalsIgnoreCase(WINNER_MARKER)) {
+                mixedMatchDT.setHasFirstPlayerWonProp(Boolean.TRUE);
+            } else {
+                mixedMatchDT.setHasFirstPlayerWonProp(Boolean.FALSE);
+            }
+            return mixedMatchDT;
+        }
+
         return new MixedMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3), sets);
+    }
+
+    private boolean containsWalkover(String[] resultSplit) {
+        return Arrays.stream(resultSplit).anyMatch(s -> s.equalsIgnoreCase(WALKOVER_MARKER) || s.equalsIgnoreCase(WALKOVER_MARKER_LOST));
     }
 
     private String[] splitRawData(HtmlDivision inputDiv) {
