@@ -1,0 +1,44 @@
+<div class="match__body">
+    <div class="match__row-wrapper">
+
+<div class="match__row has-won">
+<div class="match__row-title">
+        <div class="match__row-title-value">
+              <span class="match__row-title-value-content">
+
+      <a href="/sport/player.aspx?id=03E8E4DE-7285-4EB4-8396-02E1EA17A3B5&amp;player=160" class="nav-link"><span class="nav-link__value">Soheyl Safari Araghi</span></a>
+                  </span>
+    </div>
+    </div>
+
+<span class="tag--round tag--success tag tag--small match__status">W</span></div>
+<div class="match__row ">
+<div class="match__row-title">
+        <div class="match__row-title-value">
+              <span class="match__row-title-value-content">
+
+      <a href="/sport/player.aspx?id=03E8E4DE-7285-4EB4-8396-02E1EA17A3B5&amp;player=171" class="nav-link"><span class="nav-link__value">Hannes Merget</span></a>
+                  </span>
+    </div>
+    </div>
+  <span class="tag--warning tag match__message">Retired.</span>
+</div>    </div>
+      <div class="match__result">
+              <ul class="points">
+          <li class="points__cell points__cell--won"> 23
+          </li>
+          <li class="points__cell "> 21
+          </li>
+      </ul>
+      <ul class="points">
+          <li class="points__cell points__cell--won"> 8
+          </li>
+          <li class="points__cell points__cell--won"> 8
+          </li>
+      </ul>
+
+      </div>
+          <div class="match__btn">
+<a class="btn btn--wm-vertical nav-link match__btn-h2h" href="/head-2-head?OrganizationCode=E3B0DC28-EDDE-426A-9DD9-600D26DCF680&amp;T1P1MemberID=04-098630&amp;T2P1MemberID=02-051965">          <span class="nav-link__value">H2H</span>
+</a>      </div>
+      </div>

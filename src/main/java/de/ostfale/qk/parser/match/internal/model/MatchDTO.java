@@ -15,6 +15,10 @@ abstract class MatchDTO implements Match {
 
     protected final List<SetDTO> playersSets = new ArrayList<>();
 
+    // no regular match
+    protected Boolean isMatchWalkover = null;
+    protected Boolean isMatchRetired = null;
+
     protected Boolean hasFirstPlayerWonProp = null;
 
     public boolean hasFirstPlayerWon() {
@@ -37,5 +41,13 @@ abstract class MatchDTO implements Match {
 
     public void setHasFirstPlayerWonProp(Boolean hasFirstPlayerWonProp) {
         this.hasFirstPlayerWonProp = hasFirstPlayerWonProp;
+    }
+
+    public void setMatchRetired(Boolean matchRetired) {
+        isMatchRetired = matchRetired;
+    }
+
+    public Boolean getMatchRetired() {
+        return isMatchRetired;
     }
 }

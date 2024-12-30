@@ -58,10 +58,71 @@ class MatchParserServiceTest extends BaseTest {
         SingleMatchDTO result = parser.parseSingleMatch(content);
 
         // then
-        assertAll("Test  single match information",
+        assertAll("Test  single match with walkover information",
                 () -> assertEquals("Ivan Tutic", result.getFirstPlayer().name),
                 () -> assertEquals("Louis Sauerbrei", result.getSecondPlayer().name),
                 () -> assertTrue(result.hasFirstPlayerWon())
+        );
+    }
+
+    @Test
+    @DisplayName("Parse single match retired lost")
+    void parseSingleMatchRetiredLost() {
+        // given
+        String testFileName = "SingleMatchRetiredLost.txt";
+        HtmlPage page = loadHtmlPage(testFileName);
+        HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
+
+        // then
+        SingleMatchDTO result = parser.parseSingleMatch(content);
+
+        // then
+        assertAll("Test  single match with retired information",
+                () -> assertEquals("Louis Sauerbrei", result.getFirstPlayer().name),
+                () -> assertEquals("Joris Meyer", result.getSecondPlayer().name),
+                () -> assertFalse(result.hasFirstPlayerWon()),
+                ()-> assertTrue(result.getMatchRetired())
+        );
+    }
+
+    @Test
+    @DisplayName("Parse single match retired won")
+    void parseSingleMatchRetiredWon() {
+        // given
+        String testFileName = "SingleMatchRetiredWon.txt";
+        HtmlPage page = loadHtmlPage(testFileName);
+        HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
+
+        // then
+        SingleMatchDTO result = parser.parseSingleMatch(content);
+
+        // then
+        assertAll("Test  single match with retired information",
+                () -> assertEquals("Soheyl Safari Araghi", result.getFirstPlayer().name),
+                () -> assertEquals("Hannes Merget", result.getSecondPlayer().name),
+                () -> assertTrue(result.hasFirstPlayerWon()),
+                ()-> assertTrue(result.getMatchRetired())
+        );
+    }
+
+    @Test
+    @DisplayName("Parse single match retired won - kein Spiel")
+    void parseSingleMatchRetiredWonNoMatch() {
+        // given
+        String testFileName = "SingleMatchRetiredKeinSpiel.txt";
+        HtmlPage page = loadHtmlPage(testFileName);
+        HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
+
+        // then
+        SingleMatchDTO result = parser.parseSingleMatch(content);
+
+        // then
+        assertAll("Test  single match with retired information = Kein Spiel",
+                () -> assertEquals("Soheyl Safari Araghi", result.getFirstPlayer().name),
+                () -> assertEquals("Aaron Winter", result.getSecondPlayer().name),
+                () -> assertTrue(result.hasFirstPlayerWon()),
+                ()-> assertTrue(result.getMatchRetired()),
+                ()-> assertTrue(result.getPlayersSets().isEmpty() )
         );
     }
 

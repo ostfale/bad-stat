@@ -26,6 +26,11 @@ public class MatchParserService implements MatchParser {
     private static final String LOSER_MARKER = "L";
     private static final String WALKOVER_MARKER = "Walkover";
     private static final String WALKOVER_MARKER_LOST = "Walkover L";
+    private static final String RETIRED_MARKER = "Retired.";
+    private static final String RETIRED_MARKER_LOST = "Retired. L";
+    private static final String RETIRED_MARKER_NO_MATCH = "Kein Spiel";
+    private static final String H2H_MARKER = "H2H";
+
 
     @Override
     public SingleMatchDTO parseSingleMatch(HtmlDivision content) {
@@ -42,6 +47,26 @@ public class MatchParserService implements MatchParser {
                 singleMatchDTO.setHasFirstPlayerWonProp(Boolean.TRUE);
             } else {
                 singleMatchDTO.setHasFirstPlayerWonProp(Boolean.FALSE);
+            }
+            return singleMatchDTO;
+        }
+
+        if (containsRetired(resultSplit)) {
+            log.debug("Retired detected in single match");
+            var singleMatchDTO = new SingleMatchDTO(playerDTOs.get(0), playerDTOs.get(1));
+            singleMatchDTO.setMatchRetired(Boolean.TRUE);
+
+            if (!sets.isEmpty()) {
+                log.debug("Found {} sets found for retired match", sets.size());
+                singleMatchDTO.getPlayersSets().addAll(sets);
+            }
+
+            if (resultSplit[1].equalsIgnoreCase(RETIRED_MARKER_LOST)) {
+                singleMatchDTO.setHasFirstPlayerWonProp(Boolean.FALSE);
+            } else if (resultSplit[1].equalsIgnoreCase(WINNER_MARKER)) {
+                singleMatchDTO.setHasFirstPlayerWonProp(Boolean.TRUE);
+            } else {
+                singleMatchDTO.setHasFirstPlayerWonProp(Boolean.TRUE);
             }
             return singleMatchDTO;
         }
@@ -98,6 +123,13 @@ public class MatchParserService implements MatchParser {
         return Arrays.stream(resultSplit).anyMatch(s -> s.equalsIgnoreCase(WALKOVER_MARKER) || s.equalsIgnoreCase(WALKOVER_MARKER_LOST));
     }
 
+    private boolean containsRetired(String[] resultSplit) {
+        return Arrays.stream(resultSplit).anyMatch(s ->
+                s.equalsIgnoreCase(RETIRED_MARKER_LOST)
+                        || s.equalsIgnoreCase(RETIRED_MARKER)
+                        || s.equalsIgnoreCase(RETIRED_MARKER_NO_MATCH));
+    }
+
     private String[] splitRawData(HtmlDivision inputDiv) {
         final String SEPARATOR = "\n";
         return inputDiv.asNormalizedText().split(SEPARATOR);
@@ -126,7 +158,12 @@ public class MatchParserService implements MatchParser {
     }
 
     private boolean isValidPlayerString(String str) {
-        return !str.equalsIgnoreCase(WINNER_MARKER) && !str.equalsIgnoreCase(LOSER_MARKER);
+        return !str.equalsIgnoreCase(WINNER_MARKER)
+                && !str.equalsIgnoreCase(LOSER_MARKER)
+                && !str.equalsIgnoreCase(RETIRED_MARKER_LOST)
+                && !str.equalsIgnoreCase(RETIRED_MARKER)
+                && !str.equalsIgnoreCase(H2H_MARKER)
+                && !isNumeric(str);
     }
 
     private List<Integer> extractNumbersFromStrings(List<String> inputStrings) {
