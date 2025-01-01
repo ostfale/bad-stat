@@ -2,6 +2,7 @@ package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.parser.match.api.MatchParser;
 import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
+import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
 import de.ostfale.qk.parser.match.internal.model.MixedMatchDTO;
 import de.ostfale.qk.parser.match.internal.model.SingleMatchDTO;
 import de.ostfale.qk.parser.player.PlayerDTO;
@@ -9,6 +10,7 @@ import de.ostfale.qk.parser.set.SetDTO;
 import de.ostfale.qk.parser.set.SetNo;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlDivision;
+import org.htmlunit.html.HtmlElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,6 +119,30 @@ public class MatchParserService implements MatchParser {
         }
 
         return new MixedMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3), sets);
+    }
+
+    final String MATCH_ROUND_PLAYER = "//div[contains(@class, 'match__body')]";
+    final String MATCH_ROUND_PLAYER_WON = ".//div[contains(@class, 'match__row has-won')]";
+    final String MATCH_ROUND_PLAYER_LOST = "//div[contains(@class, 'match__row')]";
+    final String MATCH_PLAYER_INFO = "//span[contains(@class, 'match__row-title-value-content')]";
+
+    final String MATCH_ROUND_NAME = ".//li[contains(@class, 'match__header-title-item')]";
+    final String MATCH_ROUND_LOCATION_DATE = ".//li[contains(@class, 'match__footer-list-item')]";
+    final String MATCH_ROUND_DURATION = ".//div[contains(@class, 'match__header-aside')]";
+
+    @Override
+    public MatchInfoDTO parseMatchGroupInfo(HtmlElement matchGroup) {
+        log.debug("Parsing match group info ");
+        HtmlElement matchRoundNameDiv = matchGroup.getFirstByXPath(MATCH_ROUND_NAME);
+        List<HtmlElement> matchRoundDateLocDiv = matchGroup.getByXPath(MATCH_ROUND_LOCATION_DATE);
+        HtmlElement matchRoundDurationDiv = matchGroup.getFirstByXPath(MATCH_ROUND_DURATION);
+
+        var matchRoundDuration = matchRoundDurationDiv != null ? matchRoundDurationDiv.asNormalizedText() : "";
+        var matchRoundName = matchRoundNameDiv != null ? matchRoundNameDiv.asNormalizedText() : "";
+        var matchRoundDate = matchRoundDateLocDiv.getFirst() != null ? matchRoundDateLocDiv.getFirst().asNormalizedText() : "";
+        var matchRoundCourt = matchRoundDateLocDiv.getLast() != null ? matchRoundDateLocDiv.getLast().asNormalizedText() : "";
+
+        return new MatchInfoDTO(matchRoundName, matchRoundDate, matchRoundCourt, matchRoundDuration);
     }
 
     private boolean containsWalkover(String[] resultSplit) {

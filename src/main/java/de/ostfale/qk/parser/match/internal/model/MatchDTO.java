@@ -14,6 +14,7 @@ abstract class MatchDTO implements Match {
     abstract Discipline getDiscipline();
 
     protected final List<SetDTO> playersSets = new ArrayList<>();
+    protected final MatchInfoDTO matchInfoDTO = new MatchInfoDTO();
 
     // no regular match
     protected Boolean isMatchWalkover = null;

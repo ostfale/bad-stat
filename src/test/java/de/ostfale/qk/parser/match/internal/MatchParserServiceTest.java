@@ -2,11 +2,13 @@ package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.parser.BaseTest;
 import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
+import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
 import de.ostfale.qk.parser.match.internal.model.MixedMatchDTO;
 import de.ostfale.qk.parser.match.internal.model.SingleMatchDTO;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlDivision;
+import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -81,7 +83,7 @@ class MatchParserServiceTest extends BaseTest {
                 () -> assertEquals("Louis Sauerbrei", result.getFirstPlayer().name),
                 () -> assertEquals("Joris Meyer", result.getSecondPlayer().name),
                 () -> assertFalse(result.hasFirstPlayerWon()),
-                ()-> assertTrue(result.getMatchRetired())
+                () -> assertTrue(result.getMatchRetired())
         );
     }
 
@@ -101,7 +103,7 @@ class MatchParserServiceTest extends BaseTest {
                 () -> assertEquals("Soheyl Safari Araghi", result.getFirstPlayer().name),
                 () -> assertEquals("Hannes Merget", result.getSecondPlayer().name),
                 () -> assertTrue(result.hasFirstPlayerWon()),
-                ()-> assertTrue(result.getMatchRetired())
+                () -> assertTrue(result.getMatchRetired())
         );
     }
 
@@ -121,8 +123,8 @@ class MatchParserServiceTest extends BaseTest {
                 () -> assertEquals("Soheyl Safari Araghi", result.getFirstPlayer().name),
                 () -> assertEquals("Aaron Winter", result.getSecondPlayer().name),
                 () -> assertTrue(result.hasFirstPlayerWon()),
-                ()-> assertTrue(result.getMatchRetired()),
-                ()-> assertTrue(result.getPlayersSets().isEmpty() )
+                () -> assertTrue(result.getMatchRetired()),
+                () -> assertTrue(result.getPlayersSets().isEmpty())
         );
     }
 
@@ -196,6 +198,26 @@ class MatchParserServiceTest extends BaseTest {
                 () -> assertEquals(21, result.getPlayersSets().getFirst().getSecondValue()),
                 () -> assertEquals(17, result.getPlayersSets().get(1).getFirstValue()),
                 () -> assertEquals(21, result.getPlayersSets().get(1).getSecondValue())
+        );
+    }
+
+    @Test
+    @DisplayName("General match data")
+    void parseMatchInfo() {
+        // given
+        String testFileName = "MatchGroup.txt";
+        HtmlPage page = loadHtmlPage(testFileName);
+        HtmlElement content = page.getActiveElement();
+
+        // when
+        MatchInfoDTO matchInfoDTO = parser.parseMatchGroupInfo(content);
+
+        // then
+        assertAll("Test general match information ",
+                () -> assertEquals("Round of 16", matchInfoDTO.getRoundName()),
+                () -> assertEquals("Sa 02.03.2024", matchInfoDTO.getRoundDate()),
+                () -> assertEquals("17m", matchInfoDTO.getRoundDuration()),
+                () -> assertEquals("Sporthalle Dwasieden - 2", matchInfoDTO.getRoundLocation())
         );
     }
 }
