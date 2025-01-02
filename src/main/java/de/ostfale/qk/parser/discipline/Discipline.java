@@ -1,4 +1,4 @@
-package de.ostfale.qk.parser.match.internal.model;
+package de.ostfale.qk.parser.discipline;
 
 public enum Discipline {
     SINGLE, DOUBLE, MIXED
