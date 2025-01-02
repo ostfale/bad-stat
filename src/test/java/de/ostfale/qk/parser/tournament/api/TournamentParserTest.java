@@ -33,7 +33,7 @@ class TournamentParserTest extends BaseTest {
     @DisplayName("Parse tournament header information")
     void parseHeader() {
         // given
-        String testFileName = "SingleTournamentMatches.txt";
+        String testFileName = "matches/SingleTournamentMatches.txt";
         HtmlPage page = loadHtmlPage(testFileName);
         var expectedID = "DDAD417D-28AD-4C58-A5BD-38D34E647136";
         var expectedDate = "02.03.2024";
@@ -59,7 +59,7 @@ class TournamentParserTest extends BaseTest {
     @DisplayName("Parse tournament discipline information")
     void parseDiscipline() {
         // given
-        String testFileName = "SingleTournamentMatches.txt";
+        String testFileName = "matches/SingleTournamentMatches.txt";
         HtmlPage page = loadHtmlPage(testFileName);
         var expectedDisciplineName = "JE";
         var expectedDisciplineAgeGroup = "U17";

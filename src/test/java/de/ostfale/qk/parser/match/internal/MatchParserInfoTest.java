@@ -26,7 +26,7 @@ public class MatchParserInfoTest extends BaseParserTest {
     @DisplayName("General match data")
     void parseMatchInfo() {
         // given
-        String testFileName = "MatchGroup.txt";
+        String testFileName = "matches/MatchGroup.txt";
         HtmlPage page = loadHtmlPage(testFileName);
         HtmlElement content = page.getActiveElement();
 

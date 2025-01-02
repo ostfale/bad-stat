@@ -2,11 +2,9 @@ package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.parser.BaseParserTest;
 import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
-import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlDivision;
-import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -27,7 +25,7 @@ class MatchParserDoubleTest extends BaseParserTest {
     @DisplayName("Parse double match information")
     void parseDoubleMatch() {
         // given
-        String testFileName = "DoubleMatch.txt";
+        String testFileName = "matches/DoubleMatch.txt";
         HtmlPage page = loadHtmlPage(testFileName);
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
@@ -54,7 +52,7 @@ class MatchParserDoubleTest extends BaseParserTest {
     @DisplayName("Parse double match with walkover")
     void parseDoubleMatchWalkover() {
         // given
-        String testFileName = "DoubleMatchWalkover.txt";
+        String testFileName = "matches/DoubleMatchWalkover.txt";
         HtmlPage page = loadHtmlPage(testFileName);
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 

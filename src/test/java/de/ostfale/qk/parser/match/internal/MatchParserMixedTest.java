@@ -25,7 +25,7 @@ public class MatchParserMixedTest extends BaseParserTest {
     @DisplayName("Parse mixed match information")
     void parseMixedMatch() {
         // given
-        String testFileName = "MixedMatch.txt";
+        String testFileName = "matches/MixedMatch.txt";
         HtmlPage page = loadHtmlPage(testFileName);
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 

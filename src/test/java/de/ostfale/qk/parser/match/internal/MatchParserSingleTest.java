@@ -25,7 +25,7 @@ public class MatchParserSingleTest extends BaseParserTest {
     @DisplayName("Parse single match information")
     void parseSingleMatch() {
         // given
-        String testFileName = "SingleMatch.txt";
+        String testFileName = "matches/SingleMatch.txt";
         HtmlPage page = loadHtmlPage(testFileName);
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
@@ -48,7 +48,7 @@ public class MatchParserSingleTest extends BaseParserTest {
     @DisplayName("Parse single match with walkover")
     void parseSingleMatchWalkover() {
         // given
-        String testFileName = "SingleMatchWalkover.txt";
+        String testFileName = "matches/SingleMatchWalkover.txt";
         HtmlPage page = loadHtmlPage(testFileName);
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
@@ -67,7 +67,7 @@ public class MatchParserSingleTest extends BaseParserTest {
     @DisplayName("Parse single match retired lost")
     void parseSingleMatchRetiredLost() {
         // given
-        String testFileName = "SingleMatchRetiredLost.txt";
+        String testFileName = "matches/SingleMatchRetiredLost.txt";
         HtmlPage page = loadHtmlPage(testFileName);
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
@@ -87,7 +87,7 @@ public class MatchParserSingleTest extends BaseParserTest {
     @DisplayName("Parse single match retired won")
     void parseSingleMatchRetiredWon() {
         // given
-        String testFileName = "SingleMatchRetiredWon.txt";
+        String testFileName = "matches/SingleMatchRetiredWon.txt";
         HtmlPage page = loadHtmlPage(testFileName);
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
@@ -107,7 +107,7 @@ public class MatchParserSingleTest extends BaseParserTest {
     @DisplayName("Parse single match retired won - kein Spiel")
     void parseSingleMatchRetiredWonNoMatch() {
         // given
-        String testFileName = "SingleMatchRetiredKeinSpiel.txt";
+        String testFileName = "matches/SingleMatchRetiredKeinSpiel.txt";
         HtmlPage page = loadHtmlPage(testFileName);
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
