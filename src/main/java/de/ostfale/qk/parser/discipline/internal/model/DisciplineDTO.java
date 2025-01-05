@@ -1,4 +1,4 @@
-package de.ostfale.qk.parser.discipline;
+package de.ostfale.qk.parser.discipline.internal.model;
 
 import de.ostfale.qk.parser.match.internal.model.Match;
 

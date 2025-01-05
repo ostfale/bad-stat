@@ -1,6 +1,6 @@
 package de.ostfale.qk.parser.match.internal.model;
 
-import de.ostfale.qk.parser.discipline.Discipline;
+import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.player.PlayerDTO;
 import de.ostfale.qk.parser.set.SetDTO;
 

@@ -1,6 +1,6 @@
 package de.ostfale.qk.parser.match.internal.model;
 
-import de.ostfale.qk.parser.discipline.Discipline;
+import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.set.SetDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
