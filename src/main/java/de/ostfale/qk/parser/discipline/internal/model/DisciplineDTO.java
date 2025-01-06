@@ -8,11 +8,13 @@ import java.util.List;
 public class DisciplineDTO {
 
     private final Discipline discipline;
+    private final AgeClass ageClass;
     private final List<Match> treeMatches = new ArrayList<>();
     private final List<Match> groupMatches = new ArrayList<>();
 
-    public DisciplineDTO(Discipline discipline) {
+    public DisciplineDTO(Discipline discipline, AgeClass ageClass) {
         this.discipline = discipline;
+        this.ageClass = ageClass;
     }
 
     public void addTreeMatch(Match match) {
@@ -25,6 +27,10 @@ public class DisciplineDTO {
 
     public Discipline getDiscipline() {
         return discipline;
+    }
+
+    public AgeClass getAgeClass() {
+        return ageClass;
     }
 
     public List<Match> getTreeMatches() {
