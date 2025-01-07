@@ -5,12 +5,12 @@ import de.ostfale.qk.parser.discipline.internal.model.AgeClass;
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.discipline.internal.model.DisciplineDTO;
 import de.ostfale.qk.parser.match.api.MatchParser;
+import de.ostfale.qk.parser.match.internal.model.Match;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlDivision;
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlHeading5;
-import org.htmlunit.html.HtmlListItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +30,8 @@ public class DisciplineParserService implements DisciplineParser {
     final String DISCIPLINE_INFO = ".//h4[contains(@class, 'module-divider')]";
     final String DISCIPLINE_MODE = ".//h5[contains(@class, 'module-divider')]";
     final String DISCIPLINE_MATCH_GROUP = ".//li[contains(@class, 'match-group__item')]";
+    final String DISCIPLINE_MATCH_BODY = ".//div[contains(@class, 'match')]";
+
 
 
     @Override
@@ -50,8 +52,10 @@ public class DisciplineParserService implements DisciplineParser {
             List<HtmlHeading5> mode = content.getByXPath(DISCIPLINE_MODE);
             if (mode.size() == 1) {
                 log.debug("Found mode: {}", mode.getFirst().asNormalizedText());
-                List<HtmlListItem> matchGroup = content.getByXPath(DISCIPLINE_MATCH_GROUP);
+                List<HtmlDivision> matchGroup = content.getByXPath(DISCIPLINE_MATCH_BODY);
                 log.debug("Found {} match groups", matchGroup.size());
+                List<Match> matchResults = matchParser.parseMatchDiscipline(Discipline.fromString(disciplineString), matchGroup);
+
                // matchGroup.forEach(htmlDivision ->
                       //  disciplineDTO.addTreeMatch(matchParser.parseSingleMatch(htmlDivision)));
             }

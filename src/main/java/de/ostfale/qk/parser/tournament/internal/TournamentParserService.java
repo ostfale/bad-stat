@@ -1,8 +1,9 @@
 package de.ostfale.qk.parser.tournament.internal;
 
-import de.ostfale.qk.parser.set.SetDTO;
 import de.ostfale.qk.parser.tournament.api.TournamentParser;
-import de.ostfale.qk.parser.tournament.internal.model.*;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentDisciplineDTO;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentInfoDTO;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentMatchInfoDTO;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlDivision;
 import org.htmlunit.html.HtmlElement;

@@ -1,10 +1,8 @@
 package de.ostfale.qk.parser.match.internal;
 
+import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.match.api.MatchParser;
-import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
-import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
-import de.ostfale.qk.parser.match.internal.model.MixedMatchDTO;
-import de.ostfale.qk.parser.match.internal.model.SingleMatchDTO;
+import de.ostfale.qk.parser.match.internal.model.*;
 import de.ostfale.qk.parser.player.PlayerDTO;
 import de.ostfale.qk.parser.set.SetDTO;
 import de.ostfale.qk.parser.set.SetNo;
@@ -143,6 +141,18 @@ public class MatchParserService implements MatchParser {
         var matchRoundCourt = matchRoundDateLocDiv.getLast() != null ? matchRoundDateLocDiv.getLast().asNormalizedText() : "";
 
         return new MatchInfoDTO(matchRoundName, matchRoundDate, matchRoundCourt, matchRoundDuration);
+    }
+
+
+    @Override
+    public List<Match> parseMatchDiscipline(Discipline discipline, List<HtmlDivision> matchGroups) {
+        log.debug("Read all matches for discipline: {}", discipline);
+        for (HtmlDivision matchGroup : matchGroups) {
+           var result =  parseSingleMatch(matchGroup);
+            System.out.println("dd");
+        }
+
+        return List.of();
     }
 
     private boolean containsWalkover(String[] resultSplit) {
