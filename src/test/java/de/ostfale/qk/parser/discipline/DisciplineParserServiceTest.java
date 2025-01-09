@@ -32,6 +32,7 @@ class DisciplineParserServiceTest extends BaseParserTest {
 
         // when
         DisciplineDTO disciplineDTO = disciplineParser.parseDiscipline(content);
+        System.out.println(disciplineDTO);
 
         // then
     }

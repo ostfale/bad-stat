@@ -6,13 +6,18 @@ public class SetDTO {
 
     private SetNo setNo;
     private Boolean isRegular = true;
-    private final  Integer firstValue;
-    private final  Integer secondValue;
+    private final Integer firstValue;
+    private final Integer secondValue;
 
     public SetDTO(SetNo setNo, Integer firstValue, Integer secondValue) {
         this.setNo = setNo;
         this.firstValue = firstValue;
         this.secondValue = secondValue;
+    }
+
+    @Override
+    public String toString() {
+        return "\r Set No: " + setNo.getSetNo() + " -> " + firstValue + " : " + secondValue;
     }
 
     public boolean firstIsBetterThanSecond() {
