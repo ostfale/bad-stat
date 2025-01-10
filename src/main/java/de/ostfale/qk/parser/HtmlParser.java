@@ -1,7 +1,6 @@
 package de.ostfale.qk.parser;
 
 import jakarta.inject.Singleton;
-import org.htmlunit.html.HtmlDivision;
 import org.htmlunit.html.HtmlElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,31 +14,47 @@ public class HtmlParser {
 
     final String TOURNAMENT_MODULE_CARD = "//div[contains(@class, 'module module--card')]";
     final String TOURNAMENT_DISCIPLINES_MATCH_GROUP = ".//ol[contains(@class, 'match-group')]";
-    final String TOURNAMENT_DISCIPLINES_MATCH = ".//div[contains(@class, 'match')]";
+    final String TOURNAMENT_DISCIPLINES_MATCH = ".//li[contains(@class, 'match-group__item')]";
+
+    final String MATCH_HEADER_ELEMENT = ".//li[contains(@class, 'match__header-title-item')]";
+    final String MATCH_FOOTER_ELEMENT = ".//li[contains(@class, 'match__footer-list-item')]";
+
 
 
     // all tournaments from the page for this year
-    List<HtmlDivision> getAllTournaments(HtmlElement content) {
+    List<HtmlElement> getAllTournaments(HtmlElement content) {
         log.debug("Parsing all tournament module cards elements");
-        List<HtmlDivision> tournaments = content.getByXPath(TOURNAMENT_MODULE_CARD);
+        List<HtmlElement> tournaments = content.getByXPath(TOURNAMENT_MODULE_CARD);
         log.debug("Found {} tournament module cards", tournaments.size());
         return tournaments;
     }
 
     // all disciplines (match groups) played within this tournament
-    List<HtmlDivision> getAllDisciplines(HtmlDivision tournament) {
+    List<HtmlElement> getAllDisciplines(HtmlElement tournament) {
         log.debug("Parsing all disciplines within the tournament");
-        List<HtmlDivision> disciplines = tournament.getByXPath(TOURNAMENT_DISCIPLINES_MATCH_GROUP);
+        List<HtmlElement> disciplines = tournament.getByXPath(TOURNAMENT_DISCIPLINES_MATCH_GROUP);
         log.debug("Found {} disciplines", disciplines.size());
         return disciplines;
     }
 
     // read match with the general info and the match result
-    List<HtmlDivision> getFullMatchInfo(HtmlDivision matchGroup) {
+    List<HtmlElement> getFullMatchInfo(HtmlElement matchGroup) {
         log.debug("Parsing a single match with all info");
-        List<HtmlDivision> matches = matchGroup.getByXPath(TOURNAMENT_DISCIPLINES_MATCH);
+        List<HtmlElement> matches = matchGroup.getByXPath(TOURNAMENT_DISCIPLINES_MATCH);
         log.debug("Found {} matches", matches.size());
         return matches;
+    }
+
+    // read element which contains the round of the match
+    HtmlElement getMatchHeaderElement(HtmlElement singleMatch) {
+        log.debug("Parsing match header info");
+        return singleMatch.getFirstByXPath(MATCH_HEADER_ELEMENT);
+    }
+
+    // read element which contains the round of the match
+    HtmlElement getMatchFooterElement(HtmlElement singleMatch) {
+        log.debug("Parsing match footer info");
+        return singleMatch.getFirstByXPath(MATCH_FOOTER_ELEMENT);
     }
 }
 

@@ -2,7 +2,6 @@ package de.ostfale.qk.parser;
 
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import org.htmlunit.html.HtmlDivision;
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +34,7 @@ class HtmlParserTest extends BaseParserTest {
     @DisplayName("Get all tournaments divs for the year")
     void getAllTournamentsDivsForTheYear() {
         // when
-        List<HtmlDivision> tournamentModules = htmlParser.getAllTournaments(content);
+        List<HtmlElement> tournamentModules = htmlParser.getAllTournaments(content);
 
         // then
         assertEquals(18, tournamentModules.size());
@@ -45,10 +44,10 @@ class HtmlParserTest extends BaseParserTest {
     @DisplayName("Get all disciplines within a tournament")
     void getAllDisciplinesInTournament() {
         // given
-        HtmlDivision tournamentModule = htmlParser.getAllTournaments(content).getFirst();
+        HtmlElement tournamentModule = htmlParser.getAllTournaments(content).getFirst();
 
         // when
-        List<HtmlDivision> disciplineGroups = htmlParser.getAllDisciplines(tournamentModule);
+        List<HtmlElement> disciplineGroups = htmlParser.getAllDisciplines(tournamentModule);
 
         // then
         assertEquals(3, disciplineGroups.size());
@@ -58,13 +57,43 @@ class HtmlParserTest extends BaseParserTest {
     @DisplayName("Get all matches within a discipline")
     void getAllMatchesInDiscipline() {
         // given
-        HtmlDivision tournamentModule = htmlParser.getAllTournaments(content).getFirst();
-        List<HtmlDivision> disciplineGroups = htmlParser.getAllDisciplines(tournamentModule);
+        HtmlElement tournamentModule = htmlParser.getAllTournaments(content).getFirst();
+        List<HtmlElement> disciplineGroups = htmlParser.getAllDisciplines(tournamentModule);
 
         // when
         var matches = htmlParser.getFullMatchInfo(disciplineGroups.getFirst());
 
         // then
         assertEquals(3, matches.size());
+    }
+
+    @Test
+    @DisplayName("Get header information for a single match")
+    void getMatchHeaderInfoForSingleMatch() {
+        // given
+        HtmlElement tournamentModule = htmlParser.getAllTournaments(content).getFirst();
+        List<HtmlElement> disciplineGroups = htmlParser.getAllDisciplines(tournamentModule);
+        var matches = htmlParser.getFullMatchInfo(disciplineGroups.getFirst());
+
+        // when
+        var headerInfo = htmlParser.getMatchHeaderElement(matches.getFirst());
+
+        // then
+        assertEquals("Round of 16", headerInfo.asNormalizedText());
+    }
+
+    @Test
+    @DisplayName("Get footer information for a single match")
+    void getMatchFooterInfoForSingleMatch() {
+        // given
+        HtmlElement tournamentModule = htmlParser.getAllTournaments(content).getFirst();
+        List<HtmlElement> disciplineGroups = htmlParser.getAllDisciplines(tournamentModule);
+        var matches = htmlParser.getFullMatchInfo(disciplineGroups.getFirst());
+
+        // when
+        var footerInfo = htmlParser.getMatchFooterElement(matches.getFirst());
+
+        // then
+        assertEquals("Sa 30.11.2024", footerInfo.asNormalizedText());
     }
 }
