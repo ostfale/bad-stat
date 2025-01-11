@@ -1,13 +1,16 @@
 package de.ostfale.qk.parser.tournament.api;
 
 import de.ostfale.qk.parser.BaseTest;
+import de.ostfale.qk.parser.tournament.internal.TournamentParserService;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentDisciplineDTO;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentInfoDTO;
-import de.ostfale.qk.parser.tournament.internal.TournamentParserService;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentYearDTO;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlDivision;
+import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -19,7 +22,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Test reading the header information from a tournament")
+@DisplayName("Read all tournaments for a given year")
 @QuarkusTest
 @Tag("unittest")
 class TournamentParserTest extends BaseTest {
@@ -28,6 +31,31 @@ class TournamentParserTest extends BaseTest {
 
     @Inject
     TournamentParserService parser;
+
+    HtmlElement content;
+
+    @BeforeEach
+    void setUp() {
+        String testFileName = "tournaments/Tournaments24.txt";
+        HtmlPage page = loadHtmlPage(testFileName);
+        content = page.getActiveElement();
+    }
+
+    @Test
+    @DisplayName("Parse tournaments for 2024")
+    void parseTournament() {
+        // given
+        String testYear = "2024";
+
+        // when
+        TournamentYearDTO result = parser.parseTournamentYear(testYear, content);
+
+        // then
+        assertAll("Parse all tournaments for 2024",
+                () -> assertEquals(testYear, result.year()));
+
+    }
+
 
     @Test
     @DisplayName("Parse tournament header information")
@@ -43,7 +71,7 @@ class TournamentParserTest extends BaseTest {
 
         // when
         List<HtmlDivision> tournamentsList = getPlayersTournaments(page);
-        TournamentInfoDTO headerInfo = parser.parseHeader(tournamentsList.getFirst());
+        TournamentInfoDTO headerInfo = parser.parseTournamentInfo(tournamentsList.getFirst());
 
         // then
         assertAll("Test tournament header information",

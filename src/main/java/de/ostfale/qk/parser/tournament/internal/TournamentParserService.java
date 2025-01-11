@@ -1,9 +1,9 @@
 package de.ostfale.qk.parser.tournament.internal;
 
+import de.ostfale.qk.parser.HtmlParser;
 import de.ostfale.qk.parser.tournament.api.TournamentParser;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentDisciplineDTO;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentInfoDTO;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentMatchInfoDTO;
+import de.ostfale.qk.parser.tournament.internal.model.*;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlDivision;
 import org.htmlunit.html.HtmlElement;
@@ -16,12 +16,10 @@ import java.util.List;
 @Singleton
 public class TournamentParserService implements TournamentParser {
 
-    private static final Logger log = LoggerFactory.getLogger(TournamentParserService.class);
+    @Inject
+    HtmlParser htmlParser;
 
-    final String TOURNAMENT_NAME = ".//h4[contains(@class, 'media__title media__title--medium')]";
-    final String TOURNAMENT_ORGANISATION = ".//small[contains(@class, 'media__subheading')]";
-    final String TOURNAMENT_DATE = ".//small[contains(@class, 'media__subheading media__subheading--muted')]";
-    final String TOURNAMENT_ID = "//a[contains(@class, 'media__img')]";
+    private static final Logger log = LoggerFactory.getLogger(TournamentParserService.class);
 
     final String TOURNAMENT_DISCIPLINES = "//div[contains(@class, 'module module--card')]";
     final String TOURNAMENT_DISCIPLINE_INFO = "//h5[contains(@class, 'module-divider')]";
@@ -33,24 +31,35 @@ public class TournamentParserService implements TournamentParser {
 
 
     @Override
-    public TournamentInfoDTO parseHeader(HtmlDivision content) {
-        log.info("Parsing tournament header ");
+    public TournamentYearDTO parseTournamentYear(String year, HtmlElement content) {
+        log.info("Parsing tournament year {}", year);
+        TournamentYearDTO tournamentYearDTO = new TournamentYearDTO(year);
+        List<HtmlElement> tournamentElements = htmlParser.getAllTournaments(content);
+        tournamentElements.forEach(tournamentElement -> {
+            var tournamentInfo = parseTournamentInfo(tournamentElement);
+            TournamentDTO tournamentDTO = new TournamentDTO(tournamentInfo);
+            tournamentYearDTO.addTournament(tournamentDTO);
+        });
 
-        HtmlElement tournamentNameElement = content.getFirstByXPath(TOURNAMENT_NAME);
-        HtmlElement tournamentOrgElement = content.getFirstByXPath(TOURNAMENT_ORGANISATION);
-        HtmlElement tournamentDateElement = content.getFirstByXPath(TOURNAMENT_DATE);
-        List<HtmlElement> tournamentIdElements = content.getByXPath(TOURNAMENT_ID);
+        return tournamentYearDTO;
+    }
 
-        //  <a href="/sport/tournament?id=DDAD417D-28AD-4C58-A5BD-38D34E647136" class="media__img">
+    @Override
+    public TournamentInfoDTO parseTournamentInfo(HtmlElement content) {
+
+        HtmlElement tournamentNameElement = htmlParser.getTournamentNameElement(content);
+        HtmlElement tournamentDateElement = htmlParser.getTournamentDateElement(content);
+        List<HtmlElement> tournamentIdElements = htmlParser.getTournamentIdElement(content);
         var tournamentIdArray = tournamentIdElements.getFirst().getAttribute("href").split("=");
-        var orgaAndLocation = tournamentOrgElement.asNormalizedText().split("\\|");
+
+        HtmlElement tournamentOrganisationElement = htmlParser.getTournamentOrganisationElement(content);
+        String[] orgaAndLocation = tournamentOrganisationElement.asNormalizedText().split("\\|");
 
         var tournamentName = tournamentNameElement.asNormalizedText();
         var tournamentOrganisation = orgaAndLocation[0].trim();
         var tournamentLocation = orgaAndLocation[1].trim();
         var tournamentId = tournamentIdArray[tournamentIdArray.length - 1];
         var tournamentDate = tournamentDateElement.asNormalizedText();
-
         return new TournamentInfoDTO(tournamentId, tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate);
     }
 
@@ -71,8 +80,8 @@ public class TournamentParserService implements TournamentParser {
                 var tournamentMatchInfo = getTournamentMatchInfo(matchGroup);
 
                 // read a match info with the player and the results
-            //    var matchDTO = getTournamentMatchDTO(matchGroup);
-             //   tournamentMatchInfo.setTournamentMatchDTO(matchDTO);
+                //    var matchDTO = getTournamentMatchDTO(matchGroup);
+                //   tournamentMatchInfo.setTournamentMatchDTO(matchDTO);
 
                 tournamentDisciplineInfo.addMatchInfo(tournamentMatchInfo);
             });
