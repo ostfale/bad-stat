@@ -16,5 +16,6 @@ public interface TournamentParser {
 
 
 
+
     List<TournamentDisciplineDTO> parseDisciplines (HtmlDivision content);
 }

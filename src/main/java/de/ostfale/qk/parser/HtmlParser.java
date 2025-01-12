@@ -13,6 +13,8 @@ public class HtmlParser {
     private static final Logger log = LoggerFactory.getLogger(HtmlParser.class);
 
     final String TOURNAMENT_MODULE_CARD = "//div[contains(@class, 'module module--card')]";
+
+    final String TOURNAMENT_DISCIPLINES_MATCH_INFO = ".//h4[contains(@class, 'module-divider')]";
     final String TOURNAMENT_DISCIPLINES_MATCH_GROUP = ".//ol[contains(@class, 'match-group')]";
     final String TOURNAMENT_DISCIPLINES_MATCH = ".//li[contains(@class, 'match-group__item')]";
 
@@ -33,6 +35,15 @@ public class HtmlParser {
         return tournaments;
     }
 
+    // HtmlElements which contain information about discipline and age class
+    public List<HtmlElement> getAllDisciplineInfos(HtmlElement tournament) {
+        log.debug("Parsing all discipline header info elements");
+        List<HtmlElement> disciplines = tournament.getByXPath(TOURNAMENT_DISCIPLINES_MATCH_INFO);
+        log.debug("Found {} discipline header info elements", disciplines.size());
+        return disciplines;
+    }
+
+
     // all disciplines (match groups) played within this tournament
     public List<HtmlElement> getAllDisciplines(HtmlElement tournament) {
         log.debug("Parsing all disciplines within the tournament");
@@ -47,16 +58,19 @@ public class HtmlParser {
         return element.getFirstByXPath(TOURNAMENT_NAME_ELEMENT);
     }
 
+    // List of HtmlElement to extract the tournament id information
     public List<HtmlElement> getTournamentIdElement(HtmlElement element) {
         log.debug("Parsing tournament header id element");
         return element.getByXPath(TOURNAMENT_ID_ELEMENT);
     }
 
+    // HtmlElement which contains the information who organized the tournament
     public HtmlElement getTournamentOrganisationElement(HtmlElement element) {
         log.debug("Parsing tournament header organisation and location element");
         return element.getFirstByXPath(TOURNAMENT_ORGANISATION_ELEMENT);
     }
 
+    // HtmlElement which contains the date the tournament happened
     public HtmlElement getTournamentDateElement(HtmlElement element) {
         log.debug("Parsing tournament date element");
         return element.getFirstByXPath(TOURNAMENT_DATE_ELEMENT);

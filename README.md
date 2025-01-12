@@ -2,6 +2,9 @@
 
 This project uses Quarkus, to create a parser for Turnier.de. 
 
+## Links
+ + https://www.zenrows.com/blog/htmlunit-web-scraping#extract-single-element
+
 ## App Links
  + Dev UI : http://localhost:8181/q/dev/
  + HtmlUnit (Maven) : https://mvnrepository.com/artifact/org.htmlunit/htmlunit 

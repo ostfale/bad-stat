@@ -1,6 +1,7 @@
 package de.ostfale.qk.parser.tournament.internal;
 
 import de.ostfale.qk.parser.HtmlParser;
+import de.ostfale.qk.parser.discipline.api.DisciplineParser;
 import de.ostfale.qk.parser.tournament.api.TournamentParser;
 import de.ostfale.qk.parser.tournament.internal.model.*;
 import jakarta.inject.Inject;
@@ -19,6 +20,9 @@ public class TournamentParserService implements TournamentParser {
     @Inject
     HtmlParser htmlParser;
 
+    @Inject
+    DisciplineParser disciplineParser;
+
     private static final Logger log = LoggerFactory.getLogger(TournamentParserService.class);
 
     final String TOURNAMENT_DISCIPLINES = "//div[contains(@class, 'module module--card')]";
@@ -32,12 +36,14 @@ public class TournamentParserService implements TournamentParser {
 
     @Override
     public TournamentYearDTO parseTournamentYear(String year, HtmlElement content) {
-        log.info("Parsing tournament year {}", year);
+        log.debug("Parsing tournament year {}", year);
         TournamentYearDTO tournamentYearDTO = new TournamentYearDTO(year);
         List<HtmlElement> tournamentElements = htmlParser.getAllTournaments(content);
         tournamentElements.forEach(tournamentElement -> {
             var tournamentInfo = parseTournamentInfo(tournamentElement);
             TournamentDTO tournamentDTO = new TournamentDTO(tournamentInfo);
+            List<TournamentDisciplineDTO> disciplineDTOS = disciplineParser.parseTournamentDisciplines(tournamentElement);
+            tournamentDTO.getTournamentDisciplines().addAll(disciplineDTOS);
             tournamentYearDTO.addTournament(tournamentDTO);
         });
 
@@ -46,7 +52,7 @@ public class TournamentParserService implements TournamentParser {
 
     @Override
     public TournamentInfoDTO parseTournamentInfo(HtmlElement content) {
-
+        log.debug("Parsing tournament info");
         HtmlElement tournamentNameElement = htmlParser.getTournamentNameElement(content);
         HtmlElement tournamentDateElement = htmlParser.getTournamentDateElement(content);
         List<HtmlElement> tournamentIdElements = htmlParser.getTournamentIdElement(content);
@@ -62,6 +68,22 @@ public class TournamentParserService implements TournamentParser {
         var tournamentDate = tournamentDateElement.asNormalizedText();
         return new TournamentInfoDTO(tournamentId, tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate);
     }
+
+  /*  @Override
+    public List<TournamentDisciplineDTO> parseTournamentDisciplines(HtmlElement moduleCard) {
+        log.debug("Parsing tournament disciplines for info and matches");
+        List<TournamentDisciplineDTO> disciplineList = new ArrayList<>();
+
+        // read all discipline header starting with
+        List<HtmlElement> disciplineHeaderElements = htmlParser.getAllDisciplineInfos(moduleCard);
+        for (HtmlElement disciplineHeaderElement : disciplineHeaderElements) {
+
+            TournamentDisciplineDTO tournamentDisciplineDTO = getTournamentDisciplineInfoDTO(disciplineHeaderElement);
+            disciplineList.add(tournamentDisciplineDTO);
+        }
+        return disciplineList;
+    }*/
+
 
     @Override
     public List<TournamentDisciplineDTO> parseDisciplines(HtmlDivision content) {
@@ -108,11 +130,10 @@ public class TournamentParserService implements TournamentParser {
         return matchInfo;
     }
 
-    private TournamentDisciplineDTO getTournamentDisciplineInfoDTO(HtmlDivision moduleCard) {
-        HtmlElement discipline = moduleCard.getFirstByXPath(TOURNAMENT_DISCIPLINE_INFO);
-        String[] disciplineAge = discipline.asNormalizedText().split(" ");
-        var disciplineName = disciplineAge[0];
-        var disciplineAgeGroup = disciplineAge[1];
+    private TournamentDisciplineDTO getTournamentDisciplineInfoDTO(HtmlElement headerElement) {
+        String[] disciplineAge = headerElement.asNormalizedText().split(" ");
+        var disciplineName = disciplineAge[1];
+        var disciplineAgeGroup = disciplineAge[2];
         var disciplineInfo = new TournamentDisciplineDTO(disciplineName, disciplineAgeGroup);
         log.debug("Tournament discipline info: {}", disciplineInfo);
         return disciplineInfo;

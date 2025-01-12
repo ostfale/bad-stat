@@ -1,11 +1,13 @@
 package de.ostfale.qk.parser.discipline;
 
+import de.ostfale.qk.parser.HtmlParser;
 import de.ostfale.qk.parser.discipline.api.DisciplineParser;
 import de.ostfale.qk.parser.discipline.internal.model.AgeClass;
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.discipline.internal.model.DisciplineDTO;
 import de.ostfale.qk.parser.match.api.MatchParser;
 import de.ostfale.qk.parser.match.internal.model.Match;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentDisciplineDTO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlDivision;
@@ -14,15 +16,60 @@ import org.htmlunit.html.HtmlHeading5;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
 public class DisciplineParserService implements DisciplineParser {
 
     @Inject
+    HtmlParser htmlParser;
+
+    @Inject
     MatchParser matchParser;
 
     private static final Logger log = LoggerFactory.getLogger(DisciplineParserService.class);
+
+
+    @Override
+    public List<TournamentDisciplineDTO> parseTournamentDisciplines(HtmlElement moduleCard) {
+        log.debug("Parsing tournament disciplines for info and matches");
+        List<TournamentDisciplineDTO> disciplineList = new ArrayList<>();
+
+        // read all discipline header starting with
+        List<HtmlElement> disciplineHeaderElements = htmlParser.getAllDisciplineInfos(moduleCard);
+        for (HtmlElement disciplineHeaderElement : disciplineHeaderElements) {
+            TournamentDisciplineDTO tournamentDisciplineDTO = getTournamentDisciplineInfoDTO(disciplineHeaderElement);
+            disciplineList.add(tournamentDisciplineDTO);
+        }
+        return disciplineList;
+    }
+
+    private TournamentDisciplineDTO getTournamentDisciplineInfoDTO(HtmlElement headerElement) {
+        String[] disciplineAge = headerElement.asNormalizedText().split(" ");
+        var disciplineName = disciplineAge[1];
+        var disciplineAgeGroup = disciplineAge[2];
+        var disciplineInfo = new TournamentDisciplineDTO(disciplineName, disciplineAgeGroup);
+        log.debug("Tournament discipline info: {}", disciplineInfo);
+        return disciplineInfo;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private static final String DISCIPLINE_MARKER = "Konkurrenz";
     private static final String DISCIPLINE_SEPARATOR = " ";
@@ -66,6 +113,8 @@ public class DisciplineParserService implements DisciplineParser {
             throw new RuntimeException("Could not find discipline");
         }
     }
+
+
 
     private Discipline findDisciplineByName(String disciplineName) {
         log.debug("Finding discipline for -> {}", disciplineName);

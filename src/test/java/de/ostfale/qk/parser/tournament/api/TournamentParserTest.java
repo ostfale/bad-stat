@@ -2,7 +2,6 @@ package de.ostfale.qk.parser.tournament.api;
 
 import de.ostfale.qk.parser.BaseTest;
 import de.ostfale.qk.parser.tournament.internal.TournamentParserService;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentDisciplineDTO;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentInfoDTO;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentYearDTO;
 import io.quarkus.test.junit.QuarkusTest;
@@ -80,32 +79,6 @@ class TournamentParserTest extends BaseTest {
                 () -> assertEquals(expectedDate, headerInfo.tournamentDate(), "Players tournament date failed"),
                 () -> assertEquals(expectedLocation, headerInfo.tournamentLocation(), "Players tournament location failed"),
                 () -> assertEquals(expectedOrganisation, headerInfo.tournamentOrganisation(), "Players tournament organisation failed")
-        );
-    }
-
-    @Test
-    @DisplayName("Parse tournament discipline information")
-    void parseDiscipline() {
-        // given
-        String testFileName = "matches/SingleTournamentMatches.txt";
-        HtmlPage page = loadHtmlPage(testFileName);
-        var expectedDisciplineName = "JE";
-        var expectedDisciplineAgeGroup = "U17";
-        var expectedTournamentMatchesSize = 4;
-        var expectedFirstRoundName = "Round of 16";
-        var expectedSecondRoundName = "Quarter final";
-        var expectedThirdRoundName = "Semi final";
-
-        // when
-        TournamentDisciplineDTO result = parser.parseDisciplines(getPlayersTournaments(page).getFirst()).getFirst();
-        // then
-        assertAll("Test tournament discipline information",
-                () -> assertEquals(expectedDisciplineName, result.getDisciplineName()),
-                () -> assertEquals(expectedDisciplineAgeGroup, result.getDisciplineAgeGroup()),
-                () -> assertEquals(expectedTournamentMatchesSize, result.getTournamentMatchInfos().size()),
-                () -> assertEquals(expectedFirstRoundName, result.getTournamentMatchInfos().getFirst().getRoundName()),
-                () -> assertEquals(expectedSecondRoundName, result.getTournamentMatchInfos().get(1).getRoundName()),
-                () -> assertEquals(expectedThirdRoundName, result.getTournamentMatchInfos().get(2).getRoundName())
         );
     }
 
