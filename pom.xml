@@ -12,7 +12,7 @@
         <!-- quarkus -->
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.17.4</quarkus.platform.version>
+        <quarkus.platform.version>3.17.6</quarkus.platform.version>
         <skipITs>true</skipITs>
 
         <!-- maven -->
@@ -21,7 +21,7 @@
         <surefire-plugin.version>3.5.0</surefire-plugin.version>
 
         <!-- libs -->
-        <htmlunit.version>4.7.0</htmlunit.version>
+        <htmlunit.version>4.8.0</htmlunit.version>
         <quarkus-fx.version>0.9.0</quarkus-fx.version>
     </properties>
 
