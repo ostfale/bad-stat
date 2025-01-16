@@ -30,6 +30,17 @@ public class DisciplineParserService implements DisciplineParser {
 
     private static final Logger log = LoggerFactory.getLogger(DisciplineParserService.class);
 
+    @Override
+    public List<DisciplineDTO> parseDisciplines(HtmlElement moduleCard) {
+        log.debug("Parsing disciplines for tournament");
+        List<DisciplineDTO> disciplineList = new ArrayList<>();
+
+        // read all discipline header starting with
+        List<HtmlElement> disciplineHeaderElements = htmlParser.getAllDisciplineInfos(moduleCard);
+
+        return disciplineList;
+    }
+
 
     @Override
     public List<TournamentDisciplineDTO> parseTournamentDisciplines(HtmlElement moduleCard) {
@@ -82,7 +93,7 @@ public class DisciplineParserService implements DisciplineParser {
 
 
     @Override
-    public DisciplineDTO parseDiscipline(HtmlDivision content) {
+    public DisciplineDTO parseDiscipline(HtmlElement content) {
         log.debug("Parsing tournament discipline ");
         HtmlElement disciplineInfo = content.getFirstByXPath(DISCIPLINE_INFO);
         String disciplineName = disciplineInfo.asNormalizedText();
@@ -113,7 +124,6 @@ public class DisciplineParserService implements DisciplineParser {
             throw new RuntimeException("Could not find discipline");
         }
     }
-
 
 
     private Discipline findDisciplineByName(String disciplineName) {

@@ -34,10 +34,10 @@ public class MatchParserMixedTest extends BaseParserTest {
 
         // then
         assertAll("Test mixed match information",
-                () -> assertEquals("Louis Sauerbrei", result.getFirstDoublePlayerOne().name),
-                () -> assertEquals("Victoria Braun", result.getFirstDoublePlayerTwo().name),
-                () -> assertEquals("Malthe Heilesen", result.getSecondDoublePlayerOne().name),
-                () -> assertEquals("Madeleine Dam", result.getSecondDoublePlayerTwo().name),
+                () -> assertEquals("Louis Sauerbrei", result.getFirstMixedPlayerOne().name),
+                () -> assertEquals("Victoria Braun", result.getFirstMixedPlayerTwo().name),
+                () -> assertEquals("Malthe Heilesen", result.getSecondMixedPlayerOne().name),
+                () -> assertEquals("Madeleine Dam", result.getSecondMixedPlayerTwo().name),
                 () -> assertFalse(result.hasFirstPlayerWon()),
                 () -> assertEquals(19, result.getPlayersSets().getFirst().getFirstValue()),
                 () -> assertEquals(21, result.getPlayersSets().getFirst().getSecondValue()),

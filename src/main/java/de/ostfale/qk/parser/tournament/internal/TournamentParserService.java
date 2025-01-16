@@ -2,6 +2,7 @@ package de.ostfale.qk.parser.tournament.internal;
 
 import de.ostfale.qk.parser.HtmlParser;
 import de.ostfale.qk.parser.discipline.api.DisciplineParser;
+import de.ostfale.qk.parser.discipline.internal.model.DisciplineDTO;
 import de.ostfale.qk.parser.tournament.api.TournamentParser;
 import de.ostfale.qk.parser.tournament.internal.model.*;
 import jakarta.inject.Inject;
@@ -42,7 +43,7 @@ public class TournamentParserService implements TournamentParser {
         tournamentElements.forEach(tournamentElement -> {
             var tournamentInfo = parseTournamentInfo(tournamentElement);
             TournamentDTO tournamentDTO = new TournamentDTO(tournamentInfo);
-            List<TournamentDisciplineDTO> disciplineDTOS = disciplineParser.parseTournamentDisciplines(tournamentElement);
+            List<DisciplineDTO> disciplineDTOS = disciplineParser.parseDisciplines(tournamentElement);
             tournamentDTO.getTournamentDisciplines().addAll(disciplineDTOS);
             tournamentYearDTO.addTournament(tournamentDTO);
         });
@@ -59,57 +60,16 @@ public class TournamentParserService implements TournamentParser {
         var tournamentIdArray = tournamentIdElements.getFirst().getAttribute("href").split("=");
 
         HtmlElement tournamentOrganisationElement = htmlParser.getTournamentOrganisationElement(content);
-        String[] orgaAndLocation = tournamentOrganisationElement.asNormalizedText().split("\\|");
+        String[] organizerAndLocation = tournamentOrganisationElement.asNormalizedText().split("\\|");
 
         var tournamentName = tournamentNameElement.asNormalizedText();
-        var tournamentOrganisation = orgaAndLocation[0].trim();
-        var tournamentLocation = orgaAndLocation[1].trim();
+        var tournamentOrganisation = organizerAndLocation[0].trim();
+        var tournamentLocation = organizerAndLocation[1].trim();
         var tournamentId = tournamentIdArray[tournamentIdArray.length - 1];
         var tournamentDate = tournamentDateElement.asNormalizedText();
         return new TournamentInfoDTO(tournamentId, tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate);
     }
 
-  /*  @Override
-    public List<TournamentDisciplineDTO> parseTournamentDisciplines(HtmlElement moduleCard) {
-        log.debug("Parsing tournament disciplines for info and matches");
-        List<TournamentDisciplineDTO> disciplineList = new ArrayList<>();
-
-        // read all discipline header starting with
-        List<HtmlElement> disciplineHeaderElements = htmlParser.getAllDisciplineInfos(moduleCard);
-        for (HtmlElement disciplineHeaderElement : disciplineHeaderElements) {
-
-            TournamentDisciplineDTO tournamentDisciplineDTO = getTournamentDisciplineInfoDTO(disciplineHeaderElement);
-            disciplineList.add(tournamentDisciplineDTO);
-        }
-        return disciplineList;
-    }*/
-
-
-    @Override
-    public List<TournamentDisciplineDTO> parseDisciplines(HtmlDivision content) {
-        List<HtmlDivision> moduleCards = content.getByXPath(TOURNAMENT_DISCIPLINES);   // find all module--card for tournament
-        List<TournamentDisciplineDTO> disciplineList = new ArrayList<>();
-        moduleCards.forEach(moduleCard -> {
-
-            // read header info of the discipline which contains a list of matches
-            var tournamentDisciplineInfo = getTournamentDisciplineInfoDTO(moduleCard);
-            disciplineList.add(tournamentDisciplineInfo);
-
-            // each match group has a round, a timestamp (when played) and a location (where played)
-            List<HtmlElement> matchGroupList = content.getByXPath(TOURNAMENT_MATCH_GROUP);
-            matchGroupList.forEach(matchGroup -> {
-
-                var tournamentMatchInfo = getTournamentMatchInfo(matchGroup);
-
-                // read a match info with the player and the results
-                //    var matchDTO = getTournamentMatchDTO(matchGroup);
-                //   tournamentMatchInfo.setTournamentMatchDTO(matchDTO);
-
-                tournamentDisciplineInfo.addMatchInfo(tournamentMatchInfo);
-            });
-        });
-        return disciplineList;
-    }
 
     final String MATCH_ROUND_PLAYER = "//div[contains(@class, 'match__body')]";
     final String MATCH_ROUND_PLAYER_WON = ".//div[contains(@class, 'match__row has-won')]";

@@ -8,24 +8,24 @@ import java.util.List;
 
 public class MixedMatchDTO extends MatchDTO {
 
-    private PlayerDTO firstDoublePlayerOne;
-    private PlayerDTO firstDoublePlayerTwo;
-    private PlayerDTO secondDoublePlayerOne;
-    private PlayerDTO secondDoublePlayerTwo;
+    private PlayerDTO firstMixedPlayerOne;
+    private PlayerDTO firstMixedPlayerTwo;
+    private PlayerDTO secondMixedPlayerOne;
+    private PlayerDTO secondMixedPlayerTwo;
 
-    public MixedMatchDTO(PlayerDTO firstDoublePlayerOne, PlayerDTO firstDoublePlayerTwo, PlayerDTO secondDoublePlayerOne, PlayerDTO secondDoublePlayerTwo, List<SetDTO> playersSets) {
-        this.firstDoublePlayerOne = firstDoublePlayerOne;
-        this.firstDoublePlayerTwo = firstDoublePlayerTwo;
-        this.secondDoublePlayerOne = secondDoublePlayerOne;
-        this.secondDoublePlayerTwo = secondDoublePlayerTwo;
+    public MixedMatchDTO(PlayerDTO firstMixedPlayerOne, PlayerDTO firstMixedPlayerTwo, PlayerDTO secondMixedPlayerOne, PlayerDTO secondMixedPlayerTwo, List<SetDTO> playersSets) {
+        this.firstMixedPlayerOne = firstMixedPlayerOne;
+        this.firstMixedPlayerTwo = firstMixedPlayerTwo;
+        this.secondMixedPlayerOne = secondMixedPlayerOne;
+        this.secondMixedPlayerTwo = secondMixedPlayerTwo;
         this.playersSets.addAll(playersSets);
     }
 
-    public MixedMatchDTO(PlayerDTO firstDoublePlayerOne, PlayerDTO firstDoublePlayerTwo, PlayerDTO secondDoublePlayerOne, PlayerDTO secondDoublePlayerTwo) {
-        this.firstDoublePlayerOne = firstDoublePlayerOne;
-        this.firstDoublePlayerTwo = firstDoublePlayerTwo;
-        this.secondDoublePlayerOne = secondDoublePlayerOne;
-        this.secondDoublePlayerTwo = secondDoublePlayerTwo;
+    public MixedMatchDTO(PlayerDTO firstMixedPlayerOne, PlayerDTO firstMixedPlayerTwo, PlayerDTO secondMixedPlayerOne, PlayerDTO secondMixedPlayerTwo) {
+        this.firstMixedPlayerOne = firstMixedPlayerOne;
+        this.firstMixedPlayerTwo = firstMixedPlayerTwo;
+        this.secondMixedPlayerOne = secondMixedPlayerOne;
+        this.secondMixedPlayerTwo = secondMixedPlayerTwo;
     }
 
     @Override
@@ -33,35 +33,35 @@ public class MixedMatchDTO extends MatchDTO {
         return Discipline.MIXED;
     }
 
-    public PlayerDTO getFirstDoublePlayerOne() {
-        return firstDoublePlayerOne;
+    public PlayerDTO getFirstMixedPlayerOne() {
+        return firstMixedPlayerOne;
     }
 
-    public void setFirstDoublePlayerOne(PlayerDTO firstDoublePlayerOne) {
-        this.firstDoublePlayerOne = firstDoublePlayerOne;
+    public void setFirstMixedPlayerOne(PlayerDTO firstMixedPlayerOne) {
+        this.firstMixedPlayerOne = firstMixedPlayerOne;
     }
 
-    public PlayerDTO getFirstDoublePlayerTwo() {
-        return firstDoublePlayerTwo;
+    public PlayerDTO getFirstMixedPlayerTwo() {
+        return firstMixedPlayerTwo;
     }
 
-    public void setFirstDoublePlayerTwo(PlayerDTO firstDoublePlayerTwo) {
-        this.firstDoublePlayerTwo = firstDoublePlayerTwo;
+    public void setFirstMixedPlayerTwo(PlayerDTO firstMixedPlayerTwo) {
+        this.firstMixedPlayerTwo = firstMixedPlayerTwo;
     }
 
-    public PlayerDTO getSecondDoublePlayerOne() {
-        return secondDoublePlayerOne;
+    public PlayerDTO getSecondMixedPlayerOne() {
+        return secondMixedPlayerOne;
     }
 
-    public void setSecondDoublePlayerOne(PlayerDTO secondDoublePlayerOne) {
-        this.secondDoublePlayerOne = secondDoublePlayerOne;
+    public void setSecondMixedPlayerOne(PlayerDTO secondMixedPlayerOne) {
+        this.secondMixedPlayerOne = secondMixedPlayerOne;
     }
 
-    public PlayerDTO getSecondDoublePlayerTwo() {
-        return secondDoublePlayerTwo;
+    public PlayerDTO getSecondMixedPlayerTwo() {
+        return secondMixedPlayerTwo;
     }
 
-    public void setSecondDoublePlayerTwo(PlayerDTO secondDoublePlayerTwo) {
-        this.secondDoublePlayerTwo = secondDoublePlayerTwo;
+    public void setSecondMixedPlayerTwo(PlayerDTO secondMixedPlayerTwo) {
+        this.secondMixedPlayerTwo = secondMixedPlayerTwo;
     }
 }

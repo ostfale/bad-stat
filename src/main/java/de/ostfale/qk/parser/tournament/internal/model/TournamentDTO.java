@@ -1,5 +1,7 @@
 package de.ostfale.qk.parser.tournament.internal.model;
 
+import de.ostfale.qk.parser.discipline.internal.model.DisciplineDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -7,7 +9,7 @@ import java.util.Objects;
 public class TournamentDTO {
 
     private TournamentInfoDTO tournamentInfo;
-    private List<TournamentDisciplineDTO> tournamentDisciplines = new ArrayList<>();
+    private List<DisciplineDTO> tournamentDisciplines = new ArrayList<>();
 
     public TournamentDTO(TournamentInfoDTO tournamentInfo) {
         this.tournamentInfo = tournamentInfo;
@@ -21,15 +23,15 @@ public class TournamentDTO {
         this.tournamentInfo = tournamentInfo;
     }
 
-    public void addDiscipline(TournamentDisciplineDTO tournamentDiscipline) {
+    public void addDiscipline(DisciplineDTO tournamentDiscipline) {
         this.tournamentDisciplines.add(tournamentDiscipline);
     }
 
-    public List<TournamentDisciplineDTO> getTournamentDisciplines() {
+    public List<DisciplineDTO> getTournamentDisciplines() {
         return tournamentDisciplines;
     }
 
-    public void setTournamentDisciplines(List<TournamentDisciplineDTO> tournamentDisciplines) {
+    public void setTournamentDisciplines(List<DisciplineDTO> tournamentDisciplines) {
         this.tournamentDisciplines = tournamentDisciplines;
     }
 

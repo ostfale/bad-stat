@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface DisciplineParser {
 
-    DisciplineDTO parseDiscipline(HtmlDivision content);
+    List<DisciplineDTO> parseDisciplines (HtmlElement content);
+
+    DisciplineDTO parseDiscipline(HtmlElement content);
 
     List<TournamentDisciplineDTO> parseTournamentDisciplines (HtmlElement content);
 

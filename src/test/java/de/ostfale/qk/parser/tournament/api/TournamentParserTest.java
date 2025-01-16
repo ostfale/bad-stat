@@ -57,8 +57,11 @@ class TournamentParserTest extends BaseTest {
 
         // when
         TournamentYearDTO result = parser.parseTournamentYear("2024", content);
-        
+
         var firstTournament = result.tournaments().getFirst();
+        var doubleDiscipline = firstTournament.getTournamentDisciplines().getFirst();
+        var singleDiscipline = firstTournament.getTournamentDisciplines().get(1);
+        var mixedDiscipline = firstTournament.getTournamentDisciplines().get(2);
 
         // then
         assertAll("Parse complete tournament for DM Bonn 2024",
@@ -70,12 +73,12 @@ class TournamentParserTest extends BaseTest {
                 () -> assertEquals(expectedTournamentLocation, firstTournament.getTournamentInfo().tournamentLocation()),
                 () -> assertEquals(expectedTournamentDate, firstTournament.getTournamentInfo().tournamentDate()),
                 () -> assertEquals(expectedTournamentDisciplinesSize, firstTournament.getTournamentDisciplines().size()),
-                () -> assertEquals(expectedTournamentFirstDisciplineName, firstTournament.getTournamentDisciplines().getFirst().getDisciplineName()),
-                () -> assertEquals(expectedTournamentDisciplineAgeGroup, firstTournament.getTournamentDisciplines().getFirst().getDisciplineAgeGroup()),
-                () -> assertEquals(expectedTournamentSecondDisciplineName, firstTournament.getTournamentDisciplines().get(1).getDisciplineName()),
-                () -> assertEquals(expectedTournamentDisciplineAgeGroup, firstTournament.getTournamentDisciplines().get(1).getDisciplineAgeGroup()),
-                () -> assertEquals(expectedTournamentThirdDisciplineName, firstTournament.getTournamentDisciplines().get(2).getDisciplineName()),
-                () -> assertEquals(expectedTournamentDisciplineAgeGroup, firstTournament.getTournamentDisciplines().get(2).getDisciplineAgeGroup())
+                () -> assertEquals(expectedTournamentFirstDisciplineName, doubleDiscipline.getDiscipline().name()),
+                () -> assertEquals(expectedTournamentDisciplineAgeGroup, doubleDiscipline.getAgeClass().name()),
+                () -> assertEquals(expectedTournamentSecondDisciplineName, singleDiscipline.getDiscipline().name()),
+                () -> assertEquals(expectedTournamentDisciplineAgeGroup, singleDiscipline.getAgeClass().name()),
+                () -> assertEquals(expectedTournamentThirdDisciplineName, mixedDiscipline.getDiscipline().name()),
+                () -> assertEquals(expectedTournamentDisciplineAgeGroup, mixedDiscipline.getAgeClass().name())
         );
     }
 }
