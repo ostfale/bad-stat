@@ -23,6 +23,7 @@ public class HtmlParser {
     final String TOURNAMENT_ORGANISATION_ELEMENT = ".//small[contains(@class, 'media__subheading')]";
     final String TOURNAMENT_DATE_ELEMENT = ".//small[contains(@class, 'media__subheading media__subheading--muted')]";
 
+    final String MATCH_GROUP_ELEMENT = ".//li[contains(@class, 'match-group__item')]";
     final String MATCH_HEADER_ELEMENT = ".//li[contains(@class, 'match__header-title-item')]";
     final String MATCH_FOOTER_ELEMENT = ".//li[contains(@class, 'match__footer-list-item')]";
 
@@ -35,7 +36,7 @@ public class HtmlParser {
         return tournaments;
     }
 
-    // HtmlElements which contain information about discipline and age class
+    // HtmlElements which contain header information about discipline and age class
     public List<HtmlElement> getAllDisciplineInfos(HtmlElement tournament) {
         log.debug("Parsing all discipline header info elements");
         List<HtmlElement> disciplines = tournament.getByXPath(TOURNAMENT_DISCIPLINES_MATCH_INFO);
@@ -45,9 +46,9 @@ public class HtmlParser {
 
 
     // all disciplines (match groups) played within this tournament
-    public List<HtmlElement> getAllDisciplines(HtmlElement tournament) {
+    public List<HtmlElement> getAllDisciplines(HtmlElement matchGroup) {
         log.debug("Parsing all disciplines within the tournament");
-        List<HtmlElement> disciplines = tournament.getByXPath(TOURNAMENT_DISCIPLINES_MATCH_GROUP);
+        List<HtmlElement> disciplines = matchGroup.getByXPath(TOURNAMENT_DISCIPLINES_MATCH_GROUP);
         log.debug("Found {} disciplines", disciplines.size());
         return disciplines;
     }
@@ -77,7 +78,7 @@ public class HtmlParser {
     }
 
     // read match with the general info and the match result
-    public List<HtmlElement> getFullMatchInfo(HtmlElement matchGroup) {
+    public List<HtmlElement> getAllMatchesForDisciplineContainer(HtmlElement matchGroup) {
         log.debug("Parsing a single match with all info");
         List<HtmlElement> matches = matchGroup.getByXPath(TOURNAMENT_DISCIPLINES_MATCH);
         log.debug("Found {} matches", matches.size());

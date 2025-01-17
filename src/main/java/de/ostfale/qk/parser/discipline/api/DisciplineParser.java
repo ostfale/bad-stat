@@ -13,6 +13,4 @@ public interface DisciplineParser {
 
     DisciplineDTO parseDiscipline(HtmlElement content);
 
-    List<TournamentDisciplineDTO> parseTournamentDisciplines (HtmlElement content);
-
 }

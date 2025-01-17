@@ -7,7 +7,6 @@ import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.discipline.internal.model.DisciplineDTO;
 import de.ostfale.qk.parser.match.api.MatchParser;
 import de.ostfale.qk.parser.match.internal.model.Match;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentDisciplineDTO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlDivision;
@@ -37,59 +36,33 @@ public class DisciplineParserService implements DisciplineParser {
 
         // read all discipline header starting with
         List<HtmlElement> disciplineHeaderElements = htmlParser.getAllDisciplineInfos(moduleCard);
-
-        return disciplineList;
-    }
-
-
-    @Override
-    public List<TournamentDisciplineDTO> parseTournamentDisciplines(HtmlElement moduleCard) {
-        log.debug("Parsing tournament disciplines for info and matches");
-        List<TournamentDisciplineDTO> disciplineList = new ArrayList<>();
-
-        // read all discipline header starting with
-        List<HtmlElement> disciplineHeaderElements = htmlParser.getAllDisciplineInfos(moduleCard);
         for (HtmlElement disciplineHeaderElement : disciplineHeaderElements) {
-            TournamentDisciplineDTO tournamentDisciplineDTO = getTournamentDisciplineInfoDTO(disciplineHeaderElement);
-            disciplineList.add(tournamentDisciplineDTO);
+            // read discipline type and age class
+            DisciplineDTO disciplineDTO = getDisciplineInfos(disciplineHeaderElement);
+            disciplineList.add(disciplineDTO);
         }
+
+
+        // get a list of container for all matches for a discipline
+        List<HtmlElement> disciplineMatchContainerList = htmlParser.getAllDisciplines(moduleCard);
+        for (HtmlElement disciplineMatchContainer : disciplineMatchContainerList) {
+            // list of containers with a match from this discipline
+            List<HtmlElement> matchContainerList = htmlParser.getAllMatchesForDisciplineContainer(disciplineMatchContainer);
+        }
+
+
         return disciplineList;
     }
 
-    private TournamentDisciplineDTO getTournamentDisciplineInfoDTO(HtmlElement headerElement) {
+
+    private DisciplineDTO getDisciplineInfos(HtmlElement headerElement) {
         String[] disciplineAge = headerElement.asNormalizedText().split(" ");
         var disciplineName = disciplineAge[1];
         var disciplineAgeGroup = disciplineAge[2];
-        var disciplineInfo = new TournamentDisciplineDTO(disciplineName, disciplineAgeGroup);
+        var disciplineInfo = new DisciplineDTO(disciplineName, disciplineAgeGroup);
         log.debug("Tournament discipline info: {}", disciplineInfo);
         return disciplineInfo;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private static final String DISCIPLINE_MARKER = "Konkurrenz";
-    private static final String DISCIPLINE_SEPARATOR = " ";
-
-    final String DISCIPLINE_INFO = ".//h4[contains(@class, 'module-divider')]";
-    final String DISCIPLINE_MODE = ".//h5[contains(@class, 'module-divider')]";
-    final String DISCIPLINE_MATCH_GROUP = ".//li[contains(@class, 'match-group__item')]";
-    final String DISCIPLINE_MATCH_BODY = ".//div[contains(@class, 'match')]";
-
 
 
     @Override
@@ -114,8 +87,8 @@ public class DisciplineParserService implements DisciplineParser {
                 log.debug("Found {} match groups", matchGroup.size());
                 List<Match> matchResults = matchParser.parseMatchDiscipline(Discipline.fromString(disciplineString), matchGroup);
 
-               // matchGroup.forEach(htmlDivision ->
-                      //  disciplineDTO.addTreeMatch(matchParser.parseSingleMatch(htmlDivision)));
+                // matchGroup.forEach(htmlDivision ->
+                //  disciplineDTO.addTreeMatch(matchParser.parseSingleMatch(htmlDivision)));
             }
 
             return disciplineDTO;
@@ -126,9 +99,13 @@ public class DisciplineParserService implements DisciplineParser {
     }
 
 
-    private Discipline findDisciplineByName(String disciplineName) {
-        log.debug("Finding discipline for -> {}", disciplineName);
-        // if (disciplineName.)
-        return null;
-    }
+    private static final String DISCIPLINE_MARKER = "Konkurrenz";
+    private static final String DISCIPLINE_SEPARATOR = " ";
+
+    final String DISCIPLINE_INFO = ".//h4[contains(@class, 'module-divider')]";
+    final String DISCIPLINE_MODE = ".//h5[contains(@class, 'module-divider')]";
+    final String DISCIPLINE_MATCH_GROUP = ".//li[contains(@class, 'match-group__item')]";
+    final String DISCIPLINE_MATCH_BODY = ".//div[contains(@class, 'match')]";
+
+
 }

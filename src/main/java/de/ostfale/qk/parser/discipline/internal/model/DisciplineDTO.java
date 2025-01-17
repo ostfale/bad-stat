@@ -17,6 +17,11 @@ public class DisciplineDTO {
         this.ageClass = ageClass;
     }
 
+    public DisciplineDTO(String discipline, String ageClass) {
+        this.discipline = Discipline.fromString(discipline);
+        this.ageClass = AgeClass.fromString(ageClass);
+    }
+
     public void addTreeMatch(Match match) {
         this.treeMatches.add(match);
     }

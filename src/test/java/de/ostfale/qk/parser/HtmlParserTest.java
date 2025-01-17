@@ -61,7 +61,7 @@ class HtmlParserTest extends BaseParserTest {
         List<HtmlElement> disciplineGroups = htmlParser.getAllDisciplines(tournamentModule);
 
         // when
-        var matches = htmlParser.getFullMatchInfo(disciplineGroups.getFirst());
+        var matches = htmlParser.getAllMatchesForDisciplineContainer(disciplineGroups.getFirst());
 
         // then
         assertEquals(3, matches.size());
@@ -73,7 +73,7 @@ class HtmlParserTest extends BaseParserTest {
         // given
         HtmlElement tournamentModule = htmlParser.getAllTournaments(content).getFirst();
         List<HtmlElement> disciplineGroups = htmlParser.getAllDisciplines(tournamentModule);
-        var matches = htmlParser.getFullMatchInfo(disciplineGroups.getFirst());
+        var matches = htmlParser.getAllMatchesForDisciplineContainer(disciplineGroups.getFirst());
 
         // when
         var headerInfo = htmlParser.getMatchHeaderElement(matches.getFirst());
@@ -88,7 +88,7 @@ class HtmlParserTest extends BaseParserTest {
         // given
         HtmlElement tournamentModule = htmlParser.getAllTournaments(content).getFirst();
         List<HtmlElement> disciplineGroups = htmlParser.getAllDisciplines(tournamentModule);
-        var matches = htmlParser.getFullMatchInfo(disciplineGroups.getFirst());
+        var matches = htmlParser.getAllMatchesForDisciplineContainer(disciplineGroups.getFirst());
 
         // when
         var footerInfo = htmlParser.getMatchFooterElement(matches.getFirst());
