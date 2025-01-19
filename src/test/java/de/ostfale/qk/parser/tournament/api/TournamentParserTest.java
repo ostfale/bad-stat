@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Read all tournaments for a given year")
+@DisplayName("Read all Information DM 2024")
 @QuarkusTest
 @Tag("unittest")
 class TournamentParserTest extends BaseTest {
@@ -37,8 +37,8 @@ class TournamentParserTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Parse tournaments for 2024")
-    void parseTournament() {
+    @DisplayName("Parse all tournament infos for DM 2024 Bonn")
+    void parseTournamentInfos() {
         // given
         var expectedYear = "2024";
         var expectedTournaments = 1;
@@ -49,37 +49,77 @@ class TournamentParserTest extends BaseTest {
         var expectedTournamentLocation = "Bonn [01-0027]";
         var expectedTournamentDate = "29.11.2024 bis 01.12.2024";
 
-        var expectedTournamentDisciplinesSize = 3;
-        var expectedTournamentDisciplineAgeGroup = "U15";
-        var expectedTournamentFirstDisciplineName = "JD";
-        var expectedTournamentSecondDisciplineName = "JE";
-        var expectedTournamentThirdDisciplineName = "MX";
-
         // when
         TournamentYearDTO result = parser.parseTournamentYear("2024", content);
-
         var firstTournament = result.tournaments().getFirst();
-        var doubleDiscipline = firstTournament.getTournamentDisciplines().getFirst();
-        var singleDiscipline = firstTournament.getTournamentDisciplines().get(1);
-        var mixedDiscipline = firstTournament.getTournamentDisciplines().get(2);
 
         // then
-        assertAll("Parse complete tournament for DM Bonn 2024",
+        assertAll("Parse tournament general information",
                 () -> assertEquals(expectedYear, result.year()),
                 () -> assertEquals(expectedTournaments, result.tournaments().size()),
                 () -> assertEquals(expectedTournamentId, firstTournament.getTournamentInfo().tournamentId()),
                 () -> assertEquals(expectedTournamentName, firstTournament.getTournamentInfo().tournamentName()),
                 () -> assertEquals(expectedTournamentOrga, firstTournament.getTournamentInfo().tournamentOrganisation()),
                 () -> assertEquals(expectedTournamentLocation, firstTournament.getTournamentInfo().tournamentLocation()),
-                () -> assertEquals(expectedTournamentDate, firstTournament.getTournamentInfo().tournamentDate()),
+                () -> assertEquals(expectedTournamentDate, firstTournament.getTournamentInfo().tournamentDate())
+        );
+    }
+
+    @Test
+    @DisplayName("Parse general information for all disciplines played")
+    void parseTournamentDisciplines() {
+        // given
+        var expectedTournamentDisciplinesSize = 3;
+        var expectedTournamentDisciplineAgeGroup = "U15";
+        var expectedTournamentFirstDisciplineName = "JD";
+        var expectedTournamentFirstDiscipline = "DOUBLE";
+        var expectedTournamentSecondDisciplineName = "JE";
+        var expectedTournamentSecondDiscipline = "SINGLE";
+        var expectedTournamentThirdDisciplineName = "MX";
+        var expectedTournamentThirdDiscipline = "MIXED";
+
+
+        // when
+        TournamentYearDTO result = parser.parseTournamentYear("2024", content);
+        var firstTournament = result.tournaments().getFirst();
+        var doubleDiscipline = firstTournament.getTournamentDisciplines().getFirst();
+        var singleDiscipline = firstTournament.getTournamentDisciplines().get(1);
+        var mixedDiscipline = firstTournament.getTournamentDisciplines().get(2);
+
+        // then
+        assertAll("Test parameter for general discipline information",
                 () -> assertEquals(expectedTournamentDisciplinesSize, firstTournament.getTournamentDisciplines().size()),
-                () -> assertEquals(expectedTournamentFirstDisciplineName, doubleDiscipline.getDiscipline().name()),
                 () -> assertEquals(expectedTournamentDisciplineAgeGroup, doubleDiscipline.getAgeClass().name()),
-                () -> assertEquals(expectedTournamentSecondDisciplineName, singleDiscipline.getDiscipline().name()),
+                () -> assertEquals(expectedTournamentFirstDisciplineName, doubleDiscipline.getDisciplineName()),
+                () -> assertEquals(expectedTournamentFirstDiscipline, doubleDiscipline.getDiscipline().name()),
+                () -> assertEquals(expectedTournamentSecondDisciplineName, singleDiscipline.getDisciplineName()),
+                () -> assertEquals(expectedTournamentSecondDiscipline, singleDiscipline.getDiscipline().name()),
                 () -> assertEquals(expectedTournamentDisciplineAgeGroup, singleDiscipline.getAgeClass().name()),
-                () -> assertEquals(expectedTournamentThirdDisciplineName, mixedDiscipline.getDiscipline().name()),
+                () -> assertEquals(expectedTournamentThirdDisciplineName, mixedDiscipline.getDisciplineName()),
+                () -> assertEquals(expectedTournamentThirdDiscipline, mixedDiscipline.getDiscipline().name()),
                 () -> assertEquals(expectedTournamentDisciplineAgeGroup, mixedDiscipline.getAgeClass().name())
         );
+    }
+
+
+    @Test
+    @DisplayName("Parse discipline match information")
+    void parseDisciplineGroups() {
+        // given
+
+        // when
+
+        // then
+    }
+
+    @Test
+    @DisplayName("Parse all matches information")
+    void parseMatches() {
+        // given
+
+        // when
+
+        // then
     }
 }
 

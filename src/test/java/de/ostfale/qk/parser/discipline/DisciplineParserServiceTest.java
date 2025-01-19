@@ -47,4 +47,22 @@ class DisciplineParserServiceTest extends BaseParserTest {
                 () -> assertEquals((expectedAge), disciplineDTOs.getFirst().getAgeClass().name())
         );
     }
+
+
+    @Test
+    @DisplayName("Parse discipline with group phase")
+    void parseDisciplineWithGroupPhase() {
+        // given
+        String testFileName = "tournaments/TournamentWithGroupPhase.txt";
+        HtmlPage page = loadHtmlPage(testFileName);
+        HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
+
+        // when
+        List<DisciplineDTO> disciplineDTOs = disciplineParser.parseDisciplines(content);
+
+        // then
+        assertAll("Test parsing a discipline with group phase",
+                () -> assertNotNull(disciplineDTOs.getFirst())
+        );
+    }
 }

@@ -75,3 +75,25 @@ The Quarkus application configuration is located in `src/main/resources/applicat
 Easily start your RESTful Web Services
 
 [Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
+
+
+# Errors
+
+## BasicLoggingEnabler failed to retrieve config
++ happens with start of a test
++ could be fixed in pom with exclusion of Junit5 properties
++ https://quarkus.io/guides/getting-started-testing#testing_different_profiles
+
+````xml
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-junit5</artifactId>
+    <scope>test</scope>
+    <exclusions>
+        <exclusion>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit5-properties</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+````

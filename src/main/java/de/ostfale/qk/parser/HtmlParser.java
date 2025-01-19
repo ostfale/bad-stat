@@ -23,6 +23,8 @@ public class HtmlParser {
     final String TOURNAMENT_ORGANISATION_ELEMENT = ".//small[contains(@class, 'media__subheading')]";
     final String TOURNAMENT_DATE_ELEMENT = ".//small[contains(@class, 'media__subheading media__subheading--muted')]";
 
+    final String DISCIPLINE_MODE = ".//h5[contains(@class, 'module-divider')]";
+
     final String MATCH_GROUP_ELEMENT = ".//li[contains(@class, 'match-group__item')]";
     final String MATCH_HEADER_ELEMENT = ".//li[contains(@class, 'match__header-title-item')]";
     final String MATCH_FOOTER_ELEMENT = ".//li[contains(@class, 'match__footer-list-item')]";
@@ -51,6 +53,14 @@ public class HtmlParser {
         List<HtmlElement> disciplines = matchGroup.getByXPath(TOURNAMENT_DISCIPLINES_MATCH_GROUP);
         log.debug("Found {} disciplines", disciplines.size());
         return disciplines;
+    }
+
+    // check the existence of a group phase within the discipline
+    public List<HtmlElement> getDisciplineTreeGroupContainerList(HtmlElement discipline) {
+        log.debug("Parsing discipline mode for a group hase");
+        List<HtmlElement> mode = discipline.getByXPath(DISCIPLINE_MODE);
+        log.debug("Found {} mode", mode.size());
+        return mode;
     }
 
     // HtmlElement which contains the name of the tournament
