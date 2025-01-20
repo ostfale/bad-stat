@@ -20,6 +20,7 @@ abstract class MatchDTO implements Match {
     // no regular match
     protected Boolean isMatchWalkover = null;
     protected Boolean isMatchRetired = null;
+    protected Boolean isTreeSystem = Boolean.TRUE;
 
     protected Boolean hasFirstPlayerWonProp = null;
 

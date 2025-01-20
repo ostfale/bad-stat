@@ -10,8 +10,7 @@ public class DisciplineDTO {
     private final String disciplineName;
     private final Discipline discipline;
     private final AgeClass ageClass;
-    private final List<Match> treeMatches = new ArrayList<>();
-    private final List<Match> groupMatches = new ArrayList<>();
+    private final List<Match> matches = new ArrayList<>();
 
     public DisciplineDTO(String disciplineName, Discipline discipline, AgeClass ageClass) {
         this.disciplineName = disciplineName;
@@ -26,11 +25,7 @@ public class DisciplineDTO {
     }
 
     public void addTreeMatch(Match match) {
-        this.treeMatches.add(match);
-    }
-
-    public void addGroupMatch(Match match) {
-        this.groupMatches.add(match);
+        this.matches.add(match);
     }
 
     public String getDisciplineName() {
@@ -45,11 +40,7 @@ public class DisciplineDTO {
         return ageClass;
     }
 
-    public List<Match> getTreeMatches() {
-        return treeMatches;
-    }
-
-    public List<Match> getGroupMatches() {
-        return groupMatches;
+    public List<Match> getMatches() {
+        return matches;
     }
 }

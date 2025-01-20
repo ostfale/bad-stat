@@ -1,7 +1,5 @@
 package de.ostfale.qk.parser.match.internal.model;
 
-import de.ostfale.qk.parser.tournament.internal.model.TournamentMatchDTO;
-
 public class MatchInfoDTO {
     private String roundName;
     private String roundDate;
