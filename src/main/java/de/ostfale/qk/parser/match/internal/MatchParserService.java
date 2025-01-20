@@ -119,11 +119,6 @@ public class MatchParserService implements MatchParser {
         return new MixedMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3), sets);
     }
 
-    final String MATCH_ROUND_PLAYER = "//div[contains(@class, 'match__body')]";
-    final String MATCH_ROUND_PLAYER_WON = ".//div[contains(@class, 'match__row has-won')]";
-    final String MATCH_ROUND_PLAYER_LOST = "//div[contains(@class, 'match__row')]";
-    final String MATCH_PLAYER_INFO = "//span[contains(@class, 'match__row-title-value-content')]";
-
     final String MATCH_ROUND_NAME = ".//li[contains(@class, 'match__header-title-item')]";
     final String MATCH_ROUND_LOCATION_DATE = ".//li[contains(@class, 'match__footer-list-item')]";
     final String MATCH_ROUND_DURATION = ".//div[contains(@class, 'match__header-aside')]";

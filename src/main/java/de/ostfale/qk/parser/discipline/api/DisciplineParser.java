@@ -8,5 +8,4 @@ import java.util.List;
 public interface DisciplineParser {
 
     List<DisciplineDTO> parseDisciplines (HtmlElement content);
-
 }

@@ -38,9 +38,15 @@ public class DisciplineParserService implements DisciplineParser {
         }
 
         var isTreeMode = isTreeMode(moduleCard);
+        if (isTreeMode) {
+            parseAllTreeMatchesForThisDiscipline(disciplineList,moduleCard);
+        }
+        else {
+            parseCombinedTreeAndGroupMatchesForThisDiscipline(disciplineList,moduleCard);
+        }
 
 
-        // get a list of container for all matches for a discipline
+       /* // get a list of container for all matches for a discipline
         List<HtmlElement> disciplineMatchContainerList = htmlParser.getAllDisciplines(moduleCard);
         for (HtmlElement disciplineMatchContainer : disciplineMatchContainerList) {
 
@@ -50,11 +56,26 @@ public class DisciplineParserService implements DisciplineParser {
             for (HtmlElement matchContainer : matchContainerList) {
                 log.debug("Parse a single match");
             }
-        }
+        }*/
 
         return disciplineList;
     }
 
+    private void parseCombinedTreeAndGroupMatchesForThisDiscipline(List<DisciplineDTO> disciplineList, HtmlElement moduleCard) {
+        log.debug("Tree mode found -> parse only tree matches for this discipline");
+
+
+    }
+
+    private void parseAllTreeMatchesForThisDiscipline(List<DisciplineDTO> disciplineList, HtmlElement moduleCard) {
+        log.debug("Group mode found -> parse all tree and group matches for this discipline");
+        // get a list of container for all matches for a discipline
+        List<HtmlElement> disciplineMatchContainerList = htmlParser.getAllDisciplines(moduleCard);
+        for (HtmlElement disciplineMatchContainer : disciplineMatchContainerList) {
+            System.out.println("dd");
+        }
+    }
+    
 
     // check if there are less header than match groups -> there is a group phase
     private boolean isTreeMode(HtmlElement moduleCard) {
