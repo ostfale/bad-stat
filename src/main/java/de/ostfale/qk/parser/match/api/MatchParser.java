@@ -10,13 +10,13 @@ import java.util.List;
 
 public interface MatchParser {
 
-    Match parseSingleMatch(HtmlDivision content);
+    Match parseSingleMatch(HtmlElement content);
 
-    Match parseDoubleMatch(HtmlDivision content);
+    Match parseDoubleMatch(HtmlElement content);
 
-    Match parseMixedMatch(HtmlDivision content);
+    Match parseMixedMatch(HtmlElement content);
 
     MatchInfoDTO parseMatchGroupInfo(HtmlElement matchGroup);
 
-    List<Match> parseMatchDiscipline(Discipline discipline, List<HtmlDivision> matchGroups);
+    List<Match> parseMatchDiscipline(Discipline discipline, List<HtmlElement> matchGroups);
 }

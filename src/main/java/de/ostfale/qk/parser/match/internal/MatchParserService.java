@@ -7,7 +7,6 @@ import de.ostfale.qk.parser.player.PlayerDTO;
 import de.ostfale.qk.parser.set.SetDTO;
 import de.ostfale.qk.parser.set.SetNo;
 import jakarta.inject.Singleton;
-import org.htmlunit.html.HtmlDivision;
 import org.htmlunit.html.HtmlElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +32,7 @@ public class MatchParserService implements MatchParser {
 
 
     @Override
-    public SingleMatchDTO parseSingleMatch(HtmlDivision content) {
+    public SingleMatchDTO parseSingleMatch(HtmlElement content) {
         log.debug("Parsing single match");
         String[] resultSplit = splitRawData(content);
         var result = extractNumbersFromStrings(List.of(resultSplit));
@@ -75,7 +74,7 @@ public class MatchParserService implements MatchParser {
     }
 
     @Override
-    public DoubleMatchDTO parseDoubleMatch(HtmlDivision content) {
+    public DoubleMatchDTO parseDoubleMatch(HtmlElement content) {
         log.debug("Parsing double match");
         String[] resultSplit = splitRawData(content);
         List<PlayerDTO> playerDTOs = createPlayerDTOsFromResult(resultSplit);
@@ -97,7 +96,7 @@ public class MatchParserService implements MatchParser {
     }
 
     @Override
-    public MixedMatchDTO parseMixedMatch(HtmlDivision content) {
+    public MixedMatchDTO parseMixedMatch(HtmlElement content) {
         log.debug("Parsing mixed  match");
         String[] resultSplit = splitRawData(content);
         var result = extractNumbersFromStrings(List.of(resultSplit));
@@ -140,10 +139,10 @@ public class MatchParserService implements MatchParser {
 
 
     @Override
-    public List<Match> parseMatchDiscipline(Discipline discipline, List<HtmlDivision> matchGroups) {
+    public List<Match> parseMatchDiscipline(Discipline discipline, List<HtmlElement> matchGroups) {
         log.debug("Read all matches for discipline: {}", discipline);
-        for (HtmlDivision matchGroup : matchGroups) {
-           var result =  parseSingleMatch(matchGroup);
+        for (HtmlElement matchGroup : matchGroups) {
+            var result = parseSingleMatch(matchGroup);
             System.out.println("dd");
         }
 
@@ -161,7 +160,7 @@ public class MatchParserService implements MatchParser {
                         || s.equalsIgnoreCase(RETIRED_MARKER_NO_MATCH));
     }
 
-    private String[] splitRawData(HtmlDivision inputDiv) {
+    private String[] splitRawData(HtmlElement inputDiv) {
         final String SEPARATOR = "\n";
         return inputDiv.asNormalizedText().split(SEPARATOR);
     }

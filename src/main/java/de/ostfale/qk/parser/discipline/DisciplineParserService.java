@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 public class DisciplineParserService implements DisciplineParser {
@@ -39,10 +40,9 @@ public class DisciplineParserService implements DisciplineParser {
 
         var isTreeMode = isTreeMode(moduleCard);
         if (isTreeMode) {
-            parseAllTreeMatchesForThisDiscipline(disciplineList,moduleCard);
-        }
-        else {
-            parseCombinedTreeAndGroupMatchesForThisDiscipline(disciplineList,moduleCard);
+            parseAllTreeMatchesForThisDiscipline(disciplineList, moduleCard);
+        } else {
+            parseCombinedTreeAndGroupMatchesForThisDiscipline(disciplineList, moduleCard);
         }
 
 
@@ -69,13 +69,39 @@ public class DisciplineParserService implements DisciplineParser {
 
     private void parseAllTreeMatchesForThisDiscipline(List<DisciplineDTO> disciplineList, HtmlElement moduleCard) {
         log.debug("Group mode found -> parse all tree and group matches for this discipline");
+
+        var disciplineIndex = new AtomicInteger(0);
+
         // get a list of container for all matches for a discipline
         List<HtmlElement> disciplineMatchContainerList = htmlParser.getAllDisciplines(moduleCard);
+
         for (HtmlElement disciplineMatchContainer : disciplineMatchContainerList) {
-            System.out.println("dd");
+            var currentDiscipline = disciplineList.get(disciplineIndex.get()).getDiscipline();
+
+            List<HtmlElement> matchContainerList = htmlParser.getAllMatchesForDisciplineContainer(disciplineMatchContainer);
+            for (HtmlElement matchContainer : matchContainerList) {
+                switch (currentDiscipline) {
+                    case SINGLE -> {
+                        var singleMatch = matchParser.parseSingleMatch(matchContainer);
+                        disciplineList.get(disciplineIndex.get()).getMatches().add(singleMatch);
+                    }
+                    case DOUBLE -> {
+                        var doubleMatch = matchParser.parseDoubleMatch(matchContainer);
+                        disciplineList.get(disciplineIndex.get()).getMatches().add(doubleMatch);
+                    }
+                    case MIXED -> {
+                        var mixedMatch = matchParser.parseMixedMatch(matchContainer);
+                        disciplineList.get(disciplineIndex.get()).getMatches().add(mixedMatch);
+                    }
+                    default -> {
+                        log.error("Unknown discipline found: {}", currentDiscipline);
+                    }
+                }
+            }
         }
+        disciplineIndex.incrementAndGet();
     }
-    
+
 
     // check if there are less header than match groups -> there is a group phase
     private boolean isTreeMode(HtmlElement moduleCard) {
