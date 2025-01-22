@@ -4,6 +4,10 @@ import de.ostfale.qk.parser.HtmlParser;
 import de.ostfale.qk.parser.discipline.api.DisciplineParser;
 import de.ostfale.qk.parser.discipline.internal.model.DisciplineDTO;
 import de.ostfale.qk.parser.match.api.MatchParser;
+import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
+import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
+import de.ostfale.qk.parser.match.internal.model.MixedMatchDTO;
+import de.ostfale.qk.parser.match.internal.model.SingleMatchDTO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlElement;
@@ -12,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 public class DisciplineParserService implements DisciplineParser {
@@ -44,20 +47,6 @@ public class DisciplineParserService implements DisciplineParser {
         } else {
             parseCombinedTreeAndGroupMatchesForThisDiscipline(disciplineList, moduleCard);
         }
-
-
-       /* // get a list of container for all matches for a discipline
-        List<HtmlElement> disciplineMatchContainerList = htmlParser.getAllDisciplines(moduleCard);
-        for (HtmlElement disciplineMatchContainer : disciplineMatchContainerList) {
-
-
-            // list of containers with a match from this discipline
-            List<HtmlElement> matchContainerList = htmlParser.getAllMatchesForDisciplineContainer(disciplineMatchContainer);
-            for (HtmlElement matchContainer : matchContainerList) {
-                log.debug("Parse a single match");
-            }
-        }*/
-
         return disciplineList;
     }
 
@@ -70,38 +59,45 @@ public class DisciplineParserService implements DisciplineParser {
     private void parseAllTreeMatchesForThisDiscipline(List<DisciplineDTO> disciplineList, HtmlElement moduleCard) {
         log.debug("Group mode found -> parse all tree and group matches for this discipline");
 
-        var disciplineIndex = new AtomicInteger(0);
+        int disciplineIndex = 0;
 
         // get a list of container for all matches for a discipline
         List<HtmlElement> disciplineMatchContainerList = htmlParser.getAllDisciplines(moduleCard);
 
         for (HtmlElement disciplineMatchContainer : disciplineMatchContainerList) {
-            var currentDiscipline = disciplineList.get(disciplineIndex.get()).getDiscipline();
+            var currentDiscipline = disciplineList.get(disciplineIndex).getDiscipline();
+            log.debug("Parse all matches for discipline {} ", currentDiscipline.name());
 
             List<HtmlElement> matchContainerList = htmlParser.getAllMatchesForDisciplineContainer(disciplineMatchContainer);
             for (HtmlElement matchContainer : matchContainerList) {
+
+                MatchInfoDTO matchInfoDTO = matchParser.parseMatchGroupInfo(matchContainer);
+                HtmlElement matchBody = htmlParser.getMatchBodyElement(matchContainer);
+
                 switch (currentDiscipline) {
                     case SINGLE -> {
-                        var singleMatch = matchParser.parseSingleMatch(matchContainer);
-                        disciplineList.get(disciplineIndex.get()).getMatches().add(singleMatch);
+                        SingleMatchDTO singleMatch = (SingleMatchDTO) matchParser.parseSingleMatch(matchBody);
+                        singleMatch.setMatchInfoDTO(matchInfoDTO);
+                        disciplineList.get(disciplineIndex).getMatches().add(singleMatch);
                     }
                     case DOUBLE -> {
-                        var doubleMatch = matchParser.parseDoubleMatch(matchContainer);
-                        disciplineList.get(disciplineIndex.get()).getMatches().add(doubleMatch);
+                        DoubleMatchDTO doubleMatch = (DoubleMatchDTO) matchParser.parseDoubleMatch(matchBody);
+                        doubleMatch.setMatchInfoDTO(matchInfoDTO);
+                        disciplineList.get(disciplineIndex).getMatches().add(doubleMatch);
                     }
                     case MIXED -> {
-                        var mixedMatch = matchParser.parseMixedMatch(matchContainer);
-                        disciplineList.get(disciplineIndex.get()).getMatches().add(mixedMatch);
+                        MixedMatchDTO mixedMatch = (MixedMatchDTO) matchParser.parseMixedMatch(matchBody);
+                        mixedMatch.setMatchInfoDTO(matchInfoDTO);
+                        disciplineList.get(disciplineIndex).getMatches().add(mixedMatch);
                     }
                     default -> {
                         log.error("Unknown discipline found: {}", currentDiscipline);
                     }
                 }
             }
+            disciplineIndex++;
         }
-        disciplineIndex.incrementAndGet();
     }
-
 
     // check if there are less header than match groups -> there is a group phase
     private boolean isTreeMode(HtmlElement moduleCard) {

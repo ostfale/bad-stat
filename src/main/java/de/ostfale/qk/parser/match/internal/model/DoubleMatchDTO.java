@@ -19,6 +19,7 @@ public class DoubleMatchDTO extends MatchDTO {
         this.secondDoublePlayerOne = secondDoublePlayerOne;
         this.secondDoublePlayerTwo = secondDoublePlayerTwo;
         this.playersSets.addAll(playersSets);
+        hasFirstPlayerWon();
     }
 
     public DoubleMatchDTO(PlayerDTO firstDoublePlayerOne, PlayerDTO firstDoublePlayerTwo, PlayerDTO secondDoublePlayerOne, PlayerDTO secondDoublePlayerTwo) {

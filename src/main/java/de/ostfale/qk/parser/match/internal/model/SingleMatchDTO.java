@@ -15,6 +15,7 @@ public class SingleMatchDTO extends MatchDTO {
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;
         this.playersSets.addAll(playersSets);
+        hasFirstPlayerWon();
     }
 
     public SingleMatchDTO(PlayerDTO firstPlayer, PlayerDTO secondPlayer) {

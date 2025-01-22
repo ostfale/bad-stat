@@ -27,6 +27,7 @@ public class HtmlParser {
 
     final String MATCH_GROUP_ELEMENT = ".//li[contains(@class, 'match-group__item')]";
     final String MATCH_HEADER_ELEMENT = ".//li[contains(@class, 'match__header-title-item')]";
+    final String MATCH_BODY_ELEMENT = ".//div[contains(@class, 'match__body')]";
     final String MATCH_FOOTER_ELEMENT = ".//li[contains(@class, 'match__footer-list-item')]";
 
 
@@ -99,6 +100,12 @@ public class HtmlParser {
     public HtmlElement getMatchHeaderElement(HtmlElement singleMatch) {
         log.debug("Parsing match header info");
         return singleMatch.getFirstByXPath(MATCH_HEADER_ELEMENT);
+    }
+
+    // read element which contains the player, sets and the result
+    public HtmlElement getMatchBodyElement(HtmlElement singleMatch) {
+        log.debug("Parsing match body info");
+        return singleMatch.getFirstByXPath(MATCH_BODY_ELEMENT);
     }
 
     // read element which contains the round of the match

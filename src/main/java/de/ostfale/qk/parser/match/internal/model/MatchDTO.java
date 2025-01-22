@@ -15,7 +15,8 @@ abstract class MatchDTO implements Match {
     abstract Discipline getDiscipline();
 
     protected final List<SetDTO> playersSets = new ArrayList<>();
-    protected final MatchInfoDTO matchInfoDTO = new MatchInfoDTO();
+
+    private  MatchInfoDTO matchInfoDTO = new MatchInfoDTO();
 
     // no regular match
     protected Boolean isMatchWalkover = null;
@@ -33,9 +34,24 @@ abstract class MatchDTO implements Match {
         long firstWins = playersSets.stream().filter(SetDTO::firstIsBetterThanSecond).count();
         long secondWins = playersSets.size() - firstWins;
 
+        if (firstWins > secondWins) {
+            hasFirstPlayerWonProp = Boolean.TRUE;
+        }
+        else  {
+            hasFirstPlayerWonProp = Boolean.FALSE;
+        }
+
         var result = firstWins > secondWins;
         log.debug("hasFirstPlayerWon property not set -> calculated: {} ", result);
         return result;
+    }
+
+    public MatchInfoDTO getMatchInfoDTO() {
+        return matchInfoDTO;
+    }
+
+    public void setMatchInfoDTO(MatchInfoDTO matchInfoDTO) {
+        this.matchInfoDTO = matchInfoDTO;
     }
 
     public List<SetDTO> getPlayersSets() {

@@ -92,6 +92,7 @@ public class MatchParserService implements MatchParser {
 
         var result = extractNumbersFromStrings(List.of(resultSplit));
         var sets = prepareSets(result);
+
         return new DoubleMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3), sets);
     }
 

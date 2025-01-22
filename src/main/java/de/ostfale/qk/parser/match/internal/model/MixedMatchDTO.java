@@ -19,6 +19,7 @@ public class MixedMatchDTO extends MatchDTO {
         this.secondMixedPlayerOne = secondMixedPlayerOne;
         this.secondMixedPlayerTwo = secondMixedPlayerTwo;
         this.playersSets.addAll(playersSets);
+        hasFirstPlayerWon();
     }
 
     public MixedMatchDTO(PlayerDTO firstMixedPlayerOne, PlayerDTO firstMixedPlayerTwo, PlayerDTO secondMixedPlayerOne, PlayerDTO secondMixedPlayerTwo) {
