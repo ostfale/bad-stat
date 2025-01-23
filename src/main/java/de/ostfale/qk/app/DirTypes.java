@@ -3,7 +3,9 @@ package de.ostfale.qk.app;
 public enum DirTypes {
     CONFIG("config"),
     DATA("data"),
-    LOG("logs");
+    LOG("logs"),
+    TOURNAMENT("tournament"),
+    RANKING("ranking");
 
     public final String displayName;
 

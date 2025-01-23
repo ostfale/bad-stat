@@ -6,3 +6,10 @@ quarkus:
     port: 8181
   fx:
     views-root: views
+  datasource:
+    jdbc:
+      url: jdbc:h2:file:~/.bad-stat/data/baddb
+    db-kind: h2
+  hibernate-orm:
+    database:
+      generation: drop-and-create
