@@ -1,0 +1,6 @@
+/* File was given a name different than view name on purpose */
+Label {
+    -fx-font-size: 2em;
+    -fx-font-weight: bold;
+    -fx-text-fill: blue;
+}

@@ -22,7 +22,7 @@
 
         <!-- libs -->
         <htmlunit.version>4.8.0</htmlunit.version>
-        <quarkus-fx.version>0.9.0</quarkus-fx.version>
+        <quarkus-fx.version>0.9.1</quarkus-fx.version>
     </properties>
 
     <dependencyManagement>

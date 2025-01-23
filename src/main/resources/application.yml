@@ -4,3 +4,5 @@ quarkus:
     path: banner.txt
   http:
     port: 8181
+  fx:
+    views-root: views
