@@ -23,6 +23,7 @@
         <!-- libs -->
         <htmlunit.version>4.8.0</htmlunit.version>
         <quarkus-fx.version>0.9.1</quarkus-fx.version>
+        <quarkus-poi.version>2.1.1</quarkus-poi.version>
     </properties>
 
     <dependencyManagement>
@@ -56,6 +57,11 @@
             <groupId>org.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
             <version>${htmlunit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.poi</groupId>
+            <artifactId>quarkus-poi</artifactId>
+            <version>${quarkus-poi.version}</version>
         </dependency>
 
         <!-- ui -->
