@@ -16,17 +16,21 @@ public abstract class BaseParserTest {
 
     protected HtmlPage loadHtmlPage(String fileName) {
         try {
-            var htmlString = readFile(fileName);
+            var htmlString = readFileToString(fileName);
             return webClient.loadHtmlCodeIntoCurrentWindow(htmlString);
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String readFile(String fileName) throws IOException, URISyntaxException {
+    private String readFileToString(String fileName) throws IOException, URISyntaxException {
+        var file = readFile(fileName);
+        return Files.readString(file.toPath());
+    }
+
+    protected File readFile(String fileName) throws URISyntaxException {
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = Objects.requireNonNull(classLoader.getResource(fileName), "file not found! " + fileName);
-        var file = new File(resource.toURI());
-        return Files.readString(file.toPath());
+        return new File(resource.toURI());
     }
 }

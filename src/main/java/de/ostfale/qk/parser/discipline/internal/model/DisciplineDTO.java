@@ -20,7 +20,7 @@ public class DisciplineDTO {
 
     public DisciplineDTO( String discipline, String ageClass) {
         this.disciplineName = discipline;
-        this.discipline = Discipline.fromString(discipline);
+        this.discipline = Discipline.lookup(discipline);
         this.ageClass = AgeClass.fromString(ageClass);
     }
 

@@ -1,4 +1,4 @@
-package de.ostfale.qk.parser.excel.internal;
+package de.ostfale.qk.parser.ranking.internal;
 
 public enum Group {
     NORTH("DBV-Gruppe Nord"),
