@@ -2,15 +2,15 @@ package de.ostfale.qk.parser.match.internal.model;
 
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.set.SetDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 abstract class MatchDTO implements Match {
 
-    private static final Logger log = LoggerFactory.getLogger(MatchDTO.class);
+    private static final Logger log = Logger.getLogger(MatchDTO.class);
 
     abstract Discipline getDiscipline();
 
@@ -27,7 +27,7 @@ abstract class MatchDTO implements Match {
 
     public boolean hasFirstPlayerWon() {
         if (hasFirstPlayerWonProp != null) {
-            log.debug("hasFirstPlayerWon property not null -> returned: {} ", hasFirstPlayerWonProp);
+            log.debugf("hasFirstPlayerWon property not null -> returned: {} ", hasFirstPlayerWonProp);
             return hasFirstPlayerWonProp;
         }
 
@@ -42,7 +42,7 @@ abstract class MatchDTO implements Match {
         }
 
         var result = firstWins > secondWins;
-        log.debug("hasFirstPlayerWon property not set -> calculated: {} ", result);
+        log.debugf("hasFirstPlayerWon property not set -> calculated: {} ", result);
         return result;
     }
 

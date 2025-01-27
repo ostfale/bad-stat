@@ -10,8 +10,8 @@ import de.ostfale.qk.parser.tournament.internal.model.TournamentYearDTO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
+
 
 import java.util.List;
 
@@ -24,11 +24,11 @@ public class TournamentParserService implements TournamentParser {
     @Inject
     DisciplineParser disciplineParser;
 
-    private static final Logger log = LoggerFactory.getLogger(TournamentParserService.class);
+    private static final Logger log = Logger.getLogger(TournamentParserService.class);
 
     @Override
     public TournamentYearDTO parseTournamentYear(String year, HtmlElement content) {
-        log.debug("Parsing tournament year {}", year);
+        log.debugf("Parsing tournament year {}", year);
         TournamentYearDTO tournamentYearDTO = new TournamentYearDTO(year);
         List<HtmlElement> tournamentElements = htmlParser.getAllTournaments(content);
         tournamentElements.forEach(tournamentElement -> {

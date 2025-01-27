@@ -8,8 +8,7 @@ import de.ostfale.qk.parser.set.SetDTO;
 import de.ostfale.qk.parser.set.SetNo;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class MatchParserService implements MatchParser {
 
-    private static final Logger log = LoggerFactory.getLogger(MatchParserService.class);
+    private static final Logger log = Logger.getLogger(MatchParserService.class);
 
     private static final String WINNER_MARKER = "W";
     private static final String LOSER_MARKER = "L";
@@ -56,7 +55,7 @@ public class MatchParserService implements MatchParser {
             singleMatchDTO.setMatchRetired(Boolean.TRUE);
 
             if (!sets.isEmpty()) {
-                log.debug("Found {} sets found for retired match", sets.size());
+                log.debugf("Found {} sets found for retired match", sets.size());
                 singleMatchDTO.getPlayersSets().addAll(sets);
             }
 
@@ -141,7 +140,7 @@ public class MatchParserService implements MatchParser {
 
     @Override
     public List<Match> parseMatchDiscipline(Discipline discipline, List<HtmlElement> matchGroups) {
-        log.debug("Read all matches for discipline: {}", discipline);
+        log.debugf("Read all matches for discipline: {}", discipline);
         for (HtmlElement matchGroup : matchGroups) {
             var result = parseSingleMatch(matchGroup);
             System.out.println("dd");

@@ -2,15 +2,16 @@ package de.ostfale.qk.parser;
 
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
 
 import java.util.List;
+
 
 @Singleton
 public class HtmlParser {
 
-    private static final Logger log = LoggerFactory.getLogger(HtmlParser.class);
+    private static final Logger log = Logger.getLogger(HtmlParser.class);
+
 
     final String TOURNAMENT_MODULE_CARD = "//div[contains(@class, 'module module--card')]";
 
@@ -33,84 +34,84 @@ public class HtmlParser {
 
     // all tournaments from the page for this year
     public List<HtmlElement> getAllTournaments(HtmlElement content) {
-        log.debug("Parsing all tournament module cards elements");
+        log.debugf("Parsing all tournament module cards elements");
         List<HtmlElement> tournaments = content.getByXPath(TOURNAMENT_MODULE_CARD);
-        log.debug("Found {} tournament module cards", tournaments.size());
+        log.debugf("Found {} tournament module cards", tournaments.size());
         return tournaments;
     }
 
     // HtmlElements which contain header information about discipline and age class
     public List<HtmlElement> getAllDisciplineInfos(HtmlElement tournament) {
-        log.debug("Parsing all discipline header info elements");
+        log.debugf("Parsing all discipline header info elements");
         List<HtmlElement> disciplines = tournament.getByXPath(TOURNAMENT_DISCIPLINES_MATCH_INFO);
-        log.debug("Found {} discipline header info elements", disciplines.size());
+        log.debugf("Found {} discipline header info elements", disciplines.size());
         return disciplines;
     }
 
 
     // all disciplines (match groups) played within this tournament
     public List<HtmlElement> getAllDisciplines(HtmlElement matchGroup) {
-        log.debug("Parsing all disciplines within the tournament");
+        log.debugf("Parsing all disciplines within the tournament");
         List<HtmlElement> disciplines = matchGroup.getByXPath(TOURNAMENT_DISCIPLINES_MATCH_GROUP);
-        log.debug("Found {} disciplines", disciplines.size());
+        log.debugf("Found {} disciplines", disciplines.size());
         return disciplines;
     }
 
     // check the existence of a group phase within the discipline
     public List<HtmlElement> getDisciplineTreeGroupContainerList(HtmlElement discipline) {
-        log.debug("Parsing discipline mode for a group hase");
+        log.debugf("Parsing discipline mode for a group hase");
         List<HtmlElement> mode = discipline.getByXPath(DISCIPLINE_MODE);
-        log.debug("Found {} mode", mode.size());
+        log.debugf("Found {} mode", mode.size());
         return mode;
     }
 
     // HtmlElement which contains the name of the tournament
     public HtmlElement getTournamentNameElement(HtmlElement element) {
-        log.debug("Parsing tournament header name element");
+        log.debugf("Parsing tournament header name element");
         return element.getFirstByXPath(TOURNAMENT_NAME_ELEMENT);
     }
 
     // List of HtmlElement to extract the tournament id information
     public List<HtmlElement> getTournamentIdElement(HtmlElement element) {
-        log.debug("Parsing tournament header id element");
+        log.debugf("Parsing tournament header id element");
         return element.getByXPath(TOURNAMENT_ID_ELEMENT);
     }
 
     // HtmlElement which contains the information who organized the tournament
     public HtmlElement getTournamentOrganisationElement(HtmlElement element) {
-        log.debug("Parsing tournament header organisation and location element");
+        log.debugf("Parsing tournament header organisation and location element");
         return element.getFirstByXPath(TOURNAMENT_ORGANISATION_ELEMENT);
     }
 
     // HtmlElement which contains the date the tournament happened
     public HtmlElement getTournamentDateElement(HtmlElement element) {
-        log.debug("Parsing tournament date element");
+        log.debugf("Parsing tournament date element");
         return element.getFirstByXPath(TOURNAMENT_DATE_ELEMENT);
     }
 
     // read match with the general info and the match result
     public List<HtmlElement> getAllMatchesForDisciplineContainer(HtmlElement matchGroup) {
-        log.debug("Parsing a single match with all info");
+        log.debugf("Parsing a single match with all info");
         List<HtmlElement> matches = matchGroup.getByXPath(TOURNAMENT_DISCIPLINES_MATCH);
-        log.debug("Found {} matches", matches.size());
+        log.debugf("Found {} matches", matches.size());
         return matches;
     }
 
     // read element which contains the round of the match
     public HtmlElement getMatchHeaderElement(HtmlElement singleMatch) {
-        log.debug("Parsing match header info");
+        log.debugf("Parsing match header info");
         return singleMatch.getFirstByXPath(MATCH_HEADER_ELEMENT);
     }
 
     // read element which contains the player, sets and the result
     public HtmlElement getMatchBodyElement(HtmlElement singleMatch) {
-        log.debug("Parsing match body info");
+        log.debugf("Parsing match body info");
         return singleMatch.getFirstByXPath(MATCH_BODY_ELEMENT);
     }
 
     // read element which contains the round of the match
     public HtmlElement getMatchFooterElement(HtmlElement singleMatch) {
-        log.debug("Parsing match footer info");
+        log.debugf("Parsing match footer info");
         return singleMatch.getFirstByXPath(MATCH_FOOTER_ELEMENT);
     }
 }

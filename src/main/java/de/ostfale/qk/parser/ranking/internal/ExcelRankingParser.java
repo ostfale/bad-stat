@@ -5,8 +5,7 @@ import de.ostfale.qk.parser.ranking.api.RankingParser;
 import jakarta.inject.Singleton;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,7 +17,7 @@ import java.util.Map;
 @Singleton
 public class ExcelRankingParser implements RankingParser {
 
-    private static final Logger log = LoggerFactory.getLogger(ExcelRankingParser.class);
+    private static final Logger log = Logger.getLogger(ExcelRankingParser.class);
 
     @Override
     public List<Player> parseRankingFile(File rankingFile) {
@@ -46,7 +45,7 @@ public class ExcelRankingParser implements RankingParser {
             Workbook workbook = new XSSFWorkbook(file);
             return workbook.getSheetAt(0);
         } catch (IOException e) {
-            log.error("PARSER :: Player : could not parse file: {} because of: {}", excelFile.getName(), e.getMessage());
+            log.errorf("PARSER :: Player : could not parse file: {} because of: {}", excelFile.getName(), e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -95,7 +94,7 @@ public class ExcelRankingParser implements RankingParser {
             }
 
         } catch (Exception e) {
-            log.error("Failed to parse row {} because of: {}", row.getRowNum(), e.getMessage());
+            log.errorf("Failed to parse row {} because of: {}", row.getRowNum(), e.getMessage());
         }
     }
 
@@ -107,7 +106,7 @@ public class ExcelRankingParser implements RankingParser {
     }
 
     private String getCellValue(Row row, RankingFileColIndex colIndex) {
-        log.debug("Parse row for column index  {}", colIndex.name());
+        log.debugf("Parse row for column index  {}", colIndex.name());
         Cell cell = row.getCell(colIndex.getIndex());
         if (cell == null) {
             return "";

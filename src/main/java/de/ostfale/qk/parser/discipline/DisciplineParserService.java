@@ -11,8 +11,7 @@ import de.ostfale.qk.parser.match.internal.model.SingleMatchDTO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ public class DisciplineParserService implements DisciplineParser {
     @Inject
     MatchParser matchParser;
 
-    private static final Logger log = LoggerFactory.getLogger(DisciplineParserService.class);
+    private static final Logger log = Logger.getLogger(DisciplineParserService.class);
 
     @Override
     public List<DisciplineDTO> parseDisciplines(HtmlElement moduleCard) {
@@ -66,7 +65,7 @@ public class DisciplineParserService implements DisciplineParser {
 
         for (HtmlElement disciplineMatchContainer : disciplineMatchContainerList) {
             var currentDiscipline = disciplineList.get(disciplineIndex).getDiscipline();
-            log.debug("Parse all matches for discipline {} ", currentDiscipline.name());
+            log.debugf("Parse all matches for discipline {} ", currentDiscipline.name());
 
             List<HtmlElement> matchContainerList = htmlParser.getAllMatchesForDisciplineContainer(disciplineMatchContainer);
             for (HtmlElement matchContainer : matchContainerList) {
@@ -91,7 +90,7 @@ public class DisciplineParserService implements DisciplineParser {
                         disciplineList.get(disciplineIndex).getMatches().add(mixedMatch);
                     }
                     default -> {
-                        log.error("Unknown discipline found: {}", currentDiscipline);
+                        log.errorf("Unknown discipline found: {}", currentDiscipline);
                     }
                 }
             }
@@ -119,7 +118,7 @@ public class DisciplineParserService implements DisciplineParser {
         var disciplineName = disciplineAge[1];
         var disciplineAgeGroup = disciplineAge[2];
         var disciplineInfo = new DisciplineDTO(disciplineName, disciplineAgeGroup);
-        log.debug("Tournament discipline info: {}", disciplineInfo);
+        log.debugf("Tournament discipline info: {}", disciplineInfo);
         return disciplineInfo;
     }
 }

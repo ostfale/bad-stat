@@ -2,7 +2,6 @@ package de.ostfale.qk.parser.tournament.api;
 
 import de.ostfale.qk.parser.BaseTest;
 import de.ostfale.qk.parser.discipline.DisciplineParserService;
-import de.ostfale.qk.parser.discipline.internal.model.DisciplineDTO;
 import de.ostfale.qk.parser.tournament.internal.TournamentParserService;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentYearDTO;
 import io.quarkus.test.junit.QuarkusTest;
@@ -13,10 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Tag("unittest")
 class TournamentParserTest extends BaseTest {
 
-    private static final Logger log = LoggerFactory.getLogger(TournamentParserTest.class);
 
     @Inject
     TournamentParserService parser;
@@ -115,7 +109,7 @@ class TournamentParserTest extends BaseTest {
         // given
 
         // when
-     //   List<DisciplineDTO> result = di.
+        //   List<DisciplineDTO> result = di.
 
         // then
     }
