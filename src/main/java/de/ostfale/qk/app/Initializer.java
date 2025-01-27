@@ -1,6 +1,7 @@
 package de.ostfale.qk.app;
 
 import io.quarkus.runtime.Startup;
+import io.quarkus.runtime.configuration.ConfigUtils;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
@@ -17,6 +18,12 @@ public class Initializer {
     public void init() {
         log.info("Check existence of application home directory");
         var result = applicationSetup.createApplicationDirectories(FileSystemFacade.getUserHome());
+
+        var profile = ConfigUtils.isProfileActive("dev");
+        if (profile) {
+            log.infof("Running Application in DEV mode. Application directory: %s");
+        }
+
         log.debugf("Application directory: {}", result.toFile().getPath());
     }
 }
