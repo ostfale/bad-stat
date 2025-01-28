@@ -14,6 +14,9 @@ public class Initializer {
     @Inject
     ApplicationSetup applicationSetup;
 
+    @Inject
+    DevSimulation devSimulation;
+
     @Startup
     public void init() {
         log.info("Check existence of application home directory");
@@ -22,6 +25,7 @@ public class Initializer {
         var profile = ConfigUtils.isProfileActive("dev");
         if (profile) {
             log.infof("Running Application in DEV mode. Application directory: %s");
+            devSimulation.loadSimulationData();
         }
 
         log.debugf("Application directory: {}", result.toFile().getPath());

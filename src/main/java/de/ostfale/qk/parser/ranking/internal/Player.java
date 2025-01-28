@@ -22,6 +22,7 @@ public class Player {
     private Integer mixedPoints = 0;
     private Integer mixedRanking = 0;
     private Integer mixedTournaments = 0;
+    private Boolean isFavorite = false;
 
     public Player(String playerId, String firstName, String lastName, GenderType genderType, Integer yearOfBirth,
                   String ageClassGeneral, String ageClassDetail, String clubName, String districtName, String stateName, Group stateGroup) {
@@ -36,6 +37,18 @@ public class Player {
         this.districtName = districtName;
         this.stateName = stateName;
         this.stateGroup = stateGroup;
+    }
+
+    public String getName() {
+        return firstName + " " + lastName;
+    }
+
+    public Boolean getFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
     }
 
     public Integer getSingleTournaments() {

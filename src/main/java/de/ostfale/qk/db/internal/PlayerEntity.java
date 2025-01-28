@@ -1,6 +1,7 @@
 package de.ostfale.qk.db.internal;
 
-import de.ostfale.qk.parser.player.Gender;
+import de.ostfale.qk.parser.ranking.internal.GenderType;
+import de.ostfale.qk.parser.ranking.internal.Player;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,7 +17,19 @@ public class PlayerEntity {
     private Integer yearOfBirth;
 
     @Enumerated(EnumType.STRING)
-    private Gender gender;
+    private GenderType gender;
+
+    public PlayerEntity(Player player) {
+        this.playerId = player.getPlayerId();
+        this.firstName = player.getFirstName();
+        this.lastName = player.getLastName();
+        this.yearOfBirth = player.getYearOfBirth();
+        this.gender = player.getGenderType();
+    }
+
+    public PlayerEntity() {
+
+    }
 
     public Long getId() {
         return id;
@@ -58,11 +71,11 @@ public class PlayerEntity {
         this.yearOfBirth = yearOfBirth;
     }
 
-    public Gender getGender() {
+    public GenderType getGender() {
         return gender;
     }
 
-    public void setGender(Gender gender) {
+    public void setGender(GenderType gender) {
         this.gender = gender;
     }
 }
