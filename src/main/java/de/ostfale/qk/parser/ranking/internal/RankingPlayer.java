@@ -1,6 +1,6 @@
 package de.ostfale.qk.parser.ranking.internal;
 
-public class Player {
+public class RankingPlayer {
 
     private final String playerId;
     private final String firstName;
@@ -24,8 +24,8 @@ public class Player {
     private Integer mixedTournaments = 0;
     private Boolean isFavorite = false;
 
-    public Player(String playerId, String firstName, String lastName, GenderType genderType, Integer yearOfBirth,
-                  String ageClassGeneral, String ageClassDetail, String clubName, String districtName, String stateName, Group stateGroup) {
+    public RankingPlayer(String playerId, String firstName, String lastName, GenderType genderType, Integer yearOfBirth,
+                         String ageClassGeneral, String ageClassDetail, String clubName, String districtName, String stateName, Group stateGroup) {
         this.playerId = playerId;
         this.firstName = firstName;
         this.lastName = lastName;

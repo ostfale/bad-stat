@@ -20,8 +20,8 @@ public class ExcelRankingParser implements RankingParser {
     private static final Logger log = Logger.getLogger(ExcelRankingParser.class);
 
     @Override
-    public List<Player> parseRankingFile(File rankingFile) {
-        final Map<String, Player> playerMap = new HashMap<>();
+    public List<RankingPlayer> parseRankingFile(File rankingFile) {
+        final Map<String, RankingPlayer> playerMap = new HashMap<>();
         Sheet sheet = readFirstSheet(rankingFile);
         for (Row row : sheet) {
             // Skip first row if it contains headers
@@ -50,7 +50,7 @@ public class ExcelRankingParser implements RankingParser {
         }
     }
 
-    private void parseRow(Row row, Map<String, Player> playerMap) {
+    private void parseRow(Row row, Map<String, RankingPlayer> playerMap) {
         try {
             String playerId = getCellValue(row, RankingFileColIndex.PLAYER_ID_INDEX);
             String firstName = getCellValue(row, RankingFileColIndex.FIRST_NAME_INDEX);
@@ -84,13 +84,13 @@ public class ExcelRankingParser implements RankingParser {
             String tournaments = getCellValue(row, RankingFileColIndex.TOURNAMENTS_INDEX);
             Integer noOfTournaments = Integer.parseInt(tournaments);
 
-            Player existingOrNewPlayer = getOrCreatePlayer(playerId, firstName, lastName, genderType, birthYear, ageClassGeneral,
+            RankingPlayer existingOrNewRankingPlayer = getOrCreatePlayer(playerId, firstName, lastName, genderType, birthYear, ageClassGeneral,
                     ageClassDetail, clubName, districtName, stateName, group, playerMap);
 
             switch (discipline) {
-                case SINGLE -> existingOrNewPlayer.setSinglePointsAndRanking(points, rankingInt, noOfTournaments);
-                case DOUBLE -> existingOrNewPlayer.setDoublePointsAndRanking(points, rankingInt, noOfTournaments);
-                case MIXED -> existingOrNewPlayer.setMixedPointsAndRanking(points, rankingInt, noOfTournaments);
+                case SINGLE -> existingOrNewRankingPlayer.setSinglePointsAndRanking(points, rankingInt, noOfTournaments);
+                case DOUBLE -> existingOrNewRankingPlayer.setDoublePointsAndRanking(points, rankingInt, noOfTournaments);
+                case MIXED -> existingOrNewRankingPlayer.setMixedPointsAndRanking(points, rankingInt, noOfTournaments);
             }
 
         } catch (Exception e) {
@@ -98,11 +98,11 @@ public class ExcelRankingParser implements RankingParser {
         }
     }
 
-    private Player getOrCreatePlayer(String playerId, String firstName, String lastName, GenderType genderType, Integer birthYear,
-                                     String ageClassGeneral, String ageClassDetail, String clubName, String districtName,
-                                     String stateName, Group group, Map<String, Player> playerMap) {
+    private RankingPlayer getOrCreatePlayer(String playerId, String firstName, String lastName, GenderType genderType, Integer birthYear,
+                                            String ageClassGeneral, String ageClassDetail, String clubName, String districtName,
+                                            String stateName, Group group, Map<String, RankingPlayer> playerMap) {
         return playerMap.computeIfAbsent(playerId, id ->
-                new Player(id, firstName, lastName, genderType, birthYear, ageClassGeneral, ageClassDetail, clubName, districtName, stateName, group));
+                new RankingPlayer(id, firstName, lastName, genderType, birthYear, ageClassGeneral, ageClassDetail, clubName, districtName, stateName, group));
     }
 
     private String getCellValue(Row row, RankingFileColIndex colIndex) {

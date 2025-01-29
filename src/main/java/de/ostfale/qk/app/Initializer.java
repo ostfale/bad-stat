@@ -24,7 +24,7 @@ public class Initializer {
 
         var profile = ConfigUtils.isProfileActive("dev");
         if (profile) {
-            log.infof("Running Application in DEV mode. Application directory: %s");
+            log.infof("Running Application in DEV mode. Application directory: %s",result.toFile().getPath());
             devSimulation.loadSimulationData();
         }
 

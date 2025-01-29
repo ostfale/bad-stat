@@ -49,15 +49,15 @@ class ExcelRankingParserTest extends BaseParserTest {
         var expectedMixedRanking = 9;
 
         // when
-        List<Player> players = parser.parseRankingFile(file);
+        List<RankingPlayer> rankingPlayers = parser.parseRankingFile(file);
 
         // then
-        var playerOptional = players.stream().filter(player -> player.getPlayerId().equalsIgnoreCase("06-153539"))
+        var playerOptional = rankingPlayers.stream().filter(player -> player.getPlayerId().equalsIgnoreCase("06-153539"))
                 .findFirst();
 
         assertAll("Test reading an excel ranking file",
-                () -> assertNotNull(players),
-                () -> assertEquals(37, players.size()),
+                () -> assertNotNull(rankingPlayers),
+                () -> assertEquals(37, rankingPlayers.size()),
                 () -> assertTrue(playerOptional.isPresent()),
                 () -> assertEquals(expectedFirstName, playerOptional.orElseThrow().getFirstName()),
                 () -> assertEquals(expectedLastName, playerOptional.orElseThrow().getLastName()),

@@ -24,7 +24,9 @@ quarkus:
       db-kind: h2
       jdbc:
         driver: org.h2.Driver
-        url: jdbc:h2:mem:bad-test-db;DB_CLOSE_DELAY=-1
+        url: jdbc:h2:file:d:/db/test;
+      username: sa
+      password:
     hibernate-orm:
       database:
         generation: drop-and-create

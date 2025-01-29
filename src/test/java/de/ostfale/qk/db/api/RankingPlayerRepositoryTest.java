@@ -1,6 +1,6 @@
 package de.ostfale.qk.db.api;
 
-import de.ostfale.qk.db.internal.PlayerEntity;
+import de.ostfale.qk.db.internal.Player;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @QuarkusTest
-class PlayerRepositoryTest {
+class RankingPlayerRepositoryTest {
 
     @InjectMock
     PlayerRepository playerRepository;
@@ -25,12 +25,12 @@ class PlayerRepositoryTest {
     @Test
     void testFindByPlayerId_PlayerExists() {
         // given
-        PlayerEntity player = createPlayerEntity();
+        Player player = createPlayer();
 
         // when
         when(playerRepository.findByPlayerId("player123")).thenReturn(player);
 
-        PlayerEntity result = playerRepository.findByPlayerId("player123");
+        Player result = playerRepository.findByPlayerId("player123");
 
         // then
         assertNotNull(result);
@@ -48,7 +48,7 @@ class PlayerRepositoryTest {
 
         when(mockRepository.findByPlayerId("invalidId")).thenReturn(null);
 
-        PlayerEntity result = mockRepository.findByPlayerId("invalidId");
+        Player result = mockRepository.findByPlayerId("invalidId");
 
         assertNull(result);
 
@@ -61,15 +61,15 @@ class PlayerRepositoryTest {
 
         when(mockRepository.findByPlayerId(null)).thenReturn(null);
 
-        PlayerEntity result = mockRepository.findByPlayerId(null);
+        Player result = mockRepository.findByPlayerId(null);
 
         assertNull(result);
 
         verify(mockRepository, times(1)).findByPlayerId(null);
     }
 
-    private PlayerEntity createPlayerEntity() {
-        PlayerEntity player = new PlayerEntity();
+    private Player createPlayer() {
+        Player player = new Player();
         player.setId(1L);
         player.setPlayerId("player123");
         player.setFirstName("John");

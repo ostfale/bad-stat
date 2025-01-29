@@ -1,11 +1,11 @@
 package de.ostfale.qk.db.internal;
 
 import de.ostfale.qk.parser.ranking.internal.GenderType;
-import de.ostfale.qk.parser.ranking.internal.Player;
+import de.ostfale.qk.parser.ranking.internal.RankingPlayer;
 import jakarta.persistence.*;
 
 @Entity
-public class PlayerEntity {
+public class Player {
 
     @Id
     @GeneratedValue
@@ -19,16 +19,27 @@ public class PlayerEntity {
     @Enumerated(EnumType.STRING)
     private GenderType gender;
 
-    public PlayerEntity(Player player) {
-        this.playerId = player.getPlayerId();
-        this.firstName = player.getFirstName();
-        this.lastName = player.getLastName();
-        this.yearOfBirth = player.getYearOfBirth();
-        this.gender = player.getGenderType();
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private PlayerMasterData playerMasterData;
+
+    public Player(RankingPlayer rankingPlayer) {
+        this.playerId = rankingPlayer.getPlayerId();
+        this.firstName = rankingPlayer.getFirstName();
+        this.lastName = rankingPlayer.getLastName();
+        this.yearOfBirth = rankingPlayer.getYearOfBirth();
+        this.gender = rankingPlayer.getGenderType();
     }
 
-    public PlayerEntity() {
+    public Player() {
 
+    }
+
+    public PlayerMasterData getPlayerMasterData() {
+        return playerMasterData;
+    }
+
+    public void setPlayerMasterData(PlayerMasterData playerMasterData) {
+        this.playerMasterData = playerMasterData;
     }
 
     public Long getId() {
