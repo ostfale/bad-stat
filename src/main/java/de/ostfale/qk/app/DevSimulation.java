@@ -1,7 +1,9 @@
 package de.ostfale.qk.app;
 
+import de.ostfale.qk.db.api.PlayerInfoRepository;
 import de.ostfale.qk.db.api.PlayerRepository;
 import de.ostfale.qk.db.internal.Player;
+import de.ostfale.qk.db.internal.PlayerInfo;
 import de.ostfale.qk.parser.ranking.api.RankingParser;
 import de.ostfale.qk.parser.ranking.internal.RankingPlayer;
 import jakarta.inject.Inject;
@@ -26,12 +28,17 @@ public class DevSimulation {
     @Inject
     PlayerRepository playerRepository;
 
+    @Inject
+    PlayerInfoRepository playerInfoRepository;
+
     public void loadSimulationData() {
         log.info("Load simulation data");
 
         Path path = Paths.get(PLAYER_RANKING_FILE);
         List<RankingPlayer> rankingPlayerList = rankingParser.parseRankingFile(path.toFile());
         log.infof("Loaded %d players", rankingPlayerList.size());
+
+
         savePlayer(rankingPlayerList);
     }
 
@@ -39,7 +46,14 @@ public class DevSimulation {
     public void savePlayer(List<RankingPlayer> rankingPlayerList) {
         log.infof("Number of players to save: %d", rankingPlayerList.size());
         for (RankingPlayer rankingPlayer : rankingPlayerList) {
-            playerRepository.persist(new Player(rankingPlayer));
+            Player player = new Player(rankingPlayer);
+            PlayerInfo playerInfo = new PlayerInfo();
+            playerInfo.setClubName(rankingPlayer.getClubName());
+            playerInfo.setPlayer(player);
+
+
+            playerRepository.persist(player);
+            playerInfoRepository.persist(playerInfo);
             log.infof("Saved player: %s", rankingPlayer.getName());
         }
     }

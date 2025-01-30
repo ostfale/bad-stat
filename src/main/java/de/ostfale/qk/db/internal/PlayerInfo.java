@@ -1,19 +1,28 @@
 package de.ostfale.qk.db.internal;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "player_info")
-public class PlayerMasterData {
+public class PlayerInfo {
 
     @Id
     @GeneratedValue
     private Long id;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    private Player player;
+
     private String clubName;
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 
     public Long getId() {
         return id;

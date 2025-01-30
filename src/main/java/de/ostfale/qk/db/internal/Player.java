@@ -20,7 +20,7 @@ public class Player {
     private GenderType gender;
 
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private PlayerMasterData playerMasterData;
+    private PlayerInfo playerInfo;
 
     public Player(RankingPlayer rankingPlayer) {
         this.playerId = rankingPlayer.getPlayerId();
@@ -34,12 +34,12 @@ public class Player {
 
     }
 
-    public PlayerMasterData getPlayerMasterData() {
-        return playerMasterData;
+    public PlayerInfo getPlayerMasterData() {
+        return playerInfo;
     }
 
-    public void setPlayerMasterData(PlayerMasterData playerMasterData) {
-        this.playerMasterData = playerMasterData;
+    public void setPlayerMasterData(PlayerInfo playerInfo) {
+        this.playerInfo = playerInfo;
     }
 
     public Long getId() {
