@@ -47,14 +47,23 @@ public class DevSimulation {
         log.infof("Number of players to save: %d", rankingPlayerList.size());
         for (RankingPlayer rankingPlayer : rankingPlayerList) {
             Player player = new Player(rankingPlayer);
-            PlayerInfo playerInfo = new PlayerInfo();
-            playerInfo.setClubName(rankingPlayer.getClubName());
+            PlayerInfo playerInfo = createPlayerInfo(rankingPlayer);
             playerInfo.setPlayer(player);
-
 
             playerRepository.persist(player);
             playerInfoRepository.persist(playerInfo);
             log.infof("Saved player: %s", rankingPlayer.getName());
         }
+    }
+
+    private PlayerInfo createPlayerInfo(RankingPlayer rankingPlayer) {
+        PlayerInfo playerInfo = new PlayerInfo();
+        playerInfo.setClubName(rankingPlayer.getClubName());
+        playerInfo.setDistrictName(rankingPlayer.getDistrictName());
+        playerInfo.setStateName(rankingPlayer.getStateName());
+        playerInfo.setStateGroup(rankingPlayer.getStateGroup());
+        playerInfo.setAgeClassGeneral(rankingPlayer.getAgeClassGeneral());
+        playerInfo.setAgeClassDetail(rankingPlayer.getAgeClassDetail());
+        return playerInfo;
     }
 }
