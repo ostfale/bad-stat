@@ -24,7 +24,7 @@ public class DisciplineDTO {
         this.ageClass = AgeClass.fromString(ageClass);
     }
 
-    public void addTreeMatch(Match match) {
+    public void addMatch(Match match) {
         this.matches.add(match);
     }
 

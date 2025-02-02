@@ -20,6 +20,10 @@ public class SetDTO {
         return "\r Set No: " + setNo.getSetNo() + " -> " + firstValue + " : " + secondValue;
     }
 
+    public String getSetAsString() {
+        return setNo.getSetNo() + ":" + getFirstValue() + ":" + getSecondValue();
+    }
+
     public boolean firstIsBetterThanSecond() {
         return firstValue > secondValue;
     }

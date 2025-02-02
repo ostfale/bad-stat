@@ -3,6 +3,9 @@ package de.ostfale.qk.db.internal;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.Set;
 
 @Entity
 public class Tournament {
@@ -18,6 +21,15 @@ public class Tournament {
     private String tournamentDate;
     private Integer tournamentYear;
 
+    @OneToMany(mappedBy = "associatedTournament")
+    private Set<SingleMatch> singleMatches;
+
+    @OneToMany(mappedBy = "associatedTournament")
+    private Set<DoubleMatch> doubleMatches;
+
+    @OneToMany(mappedBy = "associatedTournament")
+    private Set<MixedMatch> mixedMatches;
+
     public Tournament(String tournamentID, String tournamentName, String tournamentOrganizer, String tournamentLocation, String tournamentDate, Integer tournamentYear) {
         this.tournamentID = tournamentID;
         this.tournamentName = tournamentName;
@@ -28,6 +40,30 @@ public class Tournament {
     }
 
     public Tournament() {
+    }
+
+    public Set<MixedMatch> getMixedMatches() {
+        return mixedMatches;
+    }
+
+    public void setMixedMatches(Set<MixedMatch> mixedMatches) {
+        this.mixedMatches = mixedMatches;
+    }
+
+    public Set<SingleMatch> getSingleMatches() {
+        return singleMatches;
+    }
+
+    public void setSingleMatches(Set<SingleMatch> singleMatches) {
+        this.singleMatches = singleMatches;
+    }
+
+    public Set<DoubleMatch> getDoubleMatches() {
+        return doubleMatches;
+    }
+
+    public void setDoubleMatches(Set<DoubleMatch> doubleMatches) {
+        this.doubleMatches = doubleMatches;
     }
 
     public Long getId() {

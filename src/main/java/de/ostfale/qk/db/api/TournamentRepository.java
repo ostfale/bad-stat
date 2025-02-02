@@ -6,4 +6,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class TournamentRepository implements PanacheRepository<Tournament> {
+
+    public Tournament findByTournamentId(String tournamentId) {
+        return find("tournamentID", tournamentId).firstResult();
+    }
 }

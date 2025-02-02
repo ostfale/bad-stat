@@ -9,13 +9,14 @@ quarkus:
 
 # To start the application using a H2 instance (./mvnw -Dquarkus-profile=prod quarkus:dev)
 "%prod":
-  datasource:
-    jdbc:
-      url: jdbc:h2:file:~/.bad-stat/data/bad-db
-    db-kind: h2
-  hibernate-orm:
-    database:
-      generation: drop-and-create
+  quarkus:
+    datasource:
+      jdbc:
+        url:  jdbc:h2:file:~/.bad-stat/data/bad-db
+      db-kind: h2
+    hibernate-orm:
+      database:
+        generation: drop-and-create
 
 # To start the application using an H2 (./mvnw -Dquarkus-profile=dev quarkus:dev)
 "%dev":
