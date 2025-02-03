@@ -1,17 +1,13 @@
 package de.ostfale.qk.db.internal;
 
+import de.ostfale.qk.db.internal.match.BaseMatch;
+import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
 import de.ostfale.qk.parser.match.internal.model.MixedMatchDTO;
-import de.ostfale.qk.parser.set.SetDTO;
 import jakarta.persistence.*;
 
-import java.util.stream.Collectors;
-
 @Entity
-public class MixedMatch {
-
-    public static final String TOURNAMENT_ID_COLUMN = "tournament_id";
-    public static final String TOURNAMENT_REFERENCED_ID_COLUMN = "id";
+public class MixedMatch extends BaseMatch {
 
     @Id
     @GeneratedValue
@@ -38,15 +34,16 @@ public class MixedMatch {
         this.roundName = matchInfoDTO.getRoundName();
         this.matchDuration = matchInfoDTO.getRoundDuration();
         this.associatedTournament = associatedTournament;
-        this.femalePlayerOneName = mixedMatchDTO.getFirstMixedPlayerOne().getName();
-        this.malePlayerOneName = mixedMatchDTO.getFirstMixedPlayerTwo().getName();
-        this.femalePlayerTwoName = mixedMatchDTO.getSecondMixedPlayerOne().getName();
-        this.malePlayerTwoName = mixedMatchDTO.getSecondMixedPlayerTwo().getName();
+        this.malePlayerOneName = mixedMatchDTO.getFirstMixedPlayerOne().getName();
+        this.femalePlayerOneName = mixedMatchDTO.getFirstMixedPlayerTwo().getName();
+        this.malePlayerTwoName = mixedMatchDTO.getSecondMixedPlayerOne().getName();
+        this.femalePlayerTwoName = mixedMatchDTO.getSecondMixedPlayerTwo().getName();
+        this.playersSets = mapPlayerSetsToString(mixedMatchDTO);
+    }
 
-        playersSets = mixedMatchDTO.getPlayersSets()
-                .stream()
-                .map(SetDTO::getSetAsString)
-                .collect(Collectors.joining(";"));
+    @Override
+    public Discipline getDiscipline() {
+        return Discipline.MIXED;
     }
 
     public String getPlayersSets() {

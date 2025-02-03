@@ -8,7 +8,7 @@ import org.jboss.logging.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class MatchDTO implements Match {
+public abstract class MatchDTO implements Match {
 
     private static final Logger log = Logger.getLogger(MatchDTO.class);
 

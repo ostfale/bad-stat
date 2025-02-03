@@ -1,17 +1,13 @@
 package de.ostfale.qk.db.internal;
 
+import de.ostfale.qk.db.internal.match.BaseMatch;
+import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
 import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
-import de.ostfale.qk.parser.set.SetDTO;
 import jakarta.persistence.*;
 
-import java.util.stream.Collectors;
-
 @Entity
-public class DoubleMatch {
-
-    public static final String TOURNAMENT_ID_COLUMN = "tournament_id";
-    public static final String TOURNAMENT_REFERENCED_ID_COLUMN = "id";
+public class DoubleMatch extends BaseMatch {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
@@ -42,11 +38,12 @@ public class DoubleMatch {
         this.onePlayerTwoName = doubleMatchDTO.getFirstDoublePlayerTwo().getName();
         this.twoPlayerOneName = doubleMatchDTO.getSecondDoublePlayerOne().getName();
         this.twoPlayerTwoName = doubleMatchDTO.getSecondDoublePlayerTwo().getName();
+        this.playersSets = mapPlayerSetsToString(doubleMatchDTO);
+    }
 
-        playersSets = doubleMatchDTO.getPlayersSets()
-                .stream()
-                .map(SetDTO::getSetAsString)
-                .collect(Collectors.joining(";"));
+    @Override
+    public Discipline getDiscipline() {
+        return Discipline.DOUBLE;
     }
 
     public String getPlayersSets() {
