@@ -1,4 +1,4 @@
-package de.ostfale.qk.db.internal;
+package de.ostfale.qk.db.internal.player;
 
 import de.ostfale.qk.parser.ranking.internal.GenderType;
 import de.ostfale.qk.parser.ranking.internal.RankingPlayer;

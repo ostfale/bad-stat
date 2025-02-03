@@ -1,5 +1,8 @@
 package de.ostfale.qk.db.internal;
 
+import de.ostfale.qk.db.internal.match.DoubleMatch;
+import de.ostfale.qk.db.internal.match.MixedMatch;
+import de.ostfale.qk.db.internal.match.SingleMatch;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

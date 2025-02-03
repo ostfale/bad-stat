@@ -1,6 +1,6 @@
-package de.ostfale.qk.db.internal;
+package de.ostfale.qk.db.internal.match;
 
-import de.ostfale.qk.db.internal.match.BaseMatch;
+import de.ostfale.qk.db.internal.Tournament;
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
 import de.ostfale.qk.parser.match.internal.model.MixedMatchDTO;

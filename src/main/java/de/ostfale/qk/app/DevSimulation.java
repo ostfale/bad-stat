@@ -2,6 +2,11 @@ package de.ostfale.qk.app;
 
 import de.ostfale.qk.db.api.*;
 import de.ostfale.qk.db.internal.*;
+import de.ostfale.qk.db.internal.match.DoubleMatch;
+import de.ostfale.qk.db.internal.match.MixedMatch;
+import de.ostfale.qk.db.internal.match.SingleMatch;
+import de.ostfale.qk.db.internal.player.Player;
+import de.ostfale.qk.db.internal.player.PlayerInfo;
 import de.ostfale.qk.parser.ConfiguredWebClient;
 import de.ostfale.qk.parser.discipline.internal.model.DisciplineDTO;
 import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
@@ -39,6 +44,7 @@ public class DevSimulation {
 
     private static final String PLAYER_RANKING_FILE = "src/main/resources/simulation/Ranking_2025_Sim.xlsx";
     private static final String TOURNAMENT_BONN_FILE = "simulation/TournamentDMBonn.html";
+    private static final String TOURNAMENTS_FILE = "simulation/Tournaments.html";
 
     protected final WebClient webClient = ConfiguredWebClient.getWebClient();
 
@@ -76,7 +82,8 @@ public class DevSimulation {
         savePlayer(rankingPlayerList);
 
         // load and save tournament data
-        HtmlPage page = loadHtmlPage(TOURNAMENT_BONN_FILE);
+      //  HtmlPage page = loadHtmlPage(TOURNAMENT_BONN_FILE);
+        HtmlPage page = loadHtmlPage(TOURNAMENTS_FILE);
         HtmlElement htmlElement = page.getActiveElement();
         TournamentYearDTO tournamentYearDTO = tournamentParserService.parseTournamentYear("2024", htmlElement);
         Tournament tournament = saveTournament(tournamentYearDTO);

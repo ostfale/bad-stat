@@ -1,6 +1,6 @@
 package de.ostfale.qk.db.api;
 
-import de.ostfale.qk.db.internal.Player;
+import de.ostfale.qk.db.internal.player.Player;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.DisplayName;
