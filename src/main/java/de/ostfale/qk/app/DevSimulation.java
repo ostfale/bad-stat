@@ -1,7 +1,7 @@
 package de.ostfale.qk.app;
 
 import de.ostfale.qk.db.api.*;
-import de.ostfale.qk.db.internal.*;
+import de.ostfale.qk.db.internal.Tournament;
 import de.ostfale.qk.db.internal.match.DoubleMatch;
 import de.ostfale.qk.db.internal.match.MixedMatch;
 import de.ostfale.qk.db.internal.match.SingleMatch;
@@ -32,8 +32,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,14 +80,10 @@ public class DevSimulation {
         savePlayer(rankingPlayerList);
 
         // load and save tournament data
-      //  HtmlPage page = loadHtmlPage(TOURNAMENT_BONN_FILE);
         HtmlPage page = loadHtmlPage(TOURNAMENTS_FILE);
         HtmlElement htmlElement = page.getActiveElement();
         TournamentYearDTO tournamentYearDTO = tournamentParserService.parseTournamentYear("2024", htmlElement);
-        Tournament tournament = saveTournament(tournamentYearDTO);
-
-        // save matches for all disciplines
-        saveMatches(tournament.getTournamentID(), tournamentYearDTO.tournaments().getFirst().getTournamentDisciplines());
+        saveTournament(tournamentYearDTO);
     }
 
     @Transactional
@@ -107,18 +101,26 @@ public class DevSimulation {
     }
 
     @Transactional
-    public Tournament saveTournament(TournamentYearDTO tournamentYearDTO) {
-        TournamentInfoDTO tInfo = tournamentYearDTO.tournaments().getFirst().getTournamentInfo();
+    public void saveTournament(TournamentYearDTO tournamentYearDTO) {
+        tournamentYearDTO.tournaments().forEach(tournamentDTO -> {
+            TournamentInfoDTO tInfo = tournamentDTO.getTournamentInfo();
+            log.infof("Save tournament %s", tInfo.tournamentName());
+            Tournament tournament = getTournamentInfos(tournamentYearDTO, tInfo);
+            tournamentRepository.persist(tournament);
+
+            // save matches for all disciplines
+            saveMatches(tournament.getTournamentID(), tournamentDTO.getTournamentDisciplines());
+        });
+    }
+
+    private static Tournament getTournamentInfos(TournamentYearDTO tournamentYearDTO, TournamentInfoDTO tInfo) {
         String tournamentId = tInfo.tournamentId();
         String tournamentName = tInfo.tournamentName();
         String tournamentOrganisation = tInfo.tournamentOrganisation();
         String tournamentLocation = tInfo.tournamentLocation();
         String tournamentDate = tInfo.tournamentDate();
         Integer year = Integer.parseInt(tournamentYearDTO.year());
-        log.infof("Save tournament: %s", tInfo.tournamentName());
-        Tournament tournament = new Tournament(tournamentId, tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate, year);
-        tournamentRepository.persist(tournament);
-        return tournament;
+        return new Tournament(tournamentId, tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate, year);
     }
 
     public void saveMatches(String tournamentId, List<DisciplineDTO> disciplines) {
@@ -131,16 +133,6 @@ public class DevSimulation {
                 case MIXED -> saveMixedMatches(tournamentId, disciplineDTO);
             }
         });
-    }
-
-    private Collection<SingleMatch> mapToSingleMatches(Tournament tournament, DisciplineDTO disciplineDTO) {
-        log.info("Save single matches");
-        Collection<SingleMatch> matches = new ArrayList<>();
-        disciplineDTO.getMatches().forEach(singleMatch -> {
-            SingleMatchDTO dto = (SingleMatchDTO) singleMatch;
-            matches.add(new SingleMatch(tournament, dto));
-        });
-        return matches;
     }
 
     public void saveDoubleMatches(String tournamentId, DisciplineDTO dto) {
