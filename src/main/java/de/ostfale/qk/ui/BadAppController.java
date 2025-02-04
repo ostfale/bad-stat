@@ -5,23 +5,14 @@ import jakarta.enterprise.context.Dependent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
-import java.security.SecureRandom;
-import java.util.Random;
-
-@FxView("custom-sample")
+@FxView("app-view")
 @Dependent
-public class YetAnotherSampleController {
-
-    private static final Random RANDOM = new SecureRandom();
+public class BadAppController {
 
     @FXML
     Parent root;
-
-    @FXML
-    Label rollResultLabel;
 
     @FXML
     public void initialize() {
@@ -31,10 +22,10 @@ public class YetAnotherSampleController {
         stage.show();
     }
 
-    @FXML
+   /* @FXML
     private void handleClickMeAction() {
         // Roll a d20
         int value = RANDOM.nextInt(0, 21);
         this.rollResultLabel.setText(String.valueOf(value));
-    }
+    }*/
 }
