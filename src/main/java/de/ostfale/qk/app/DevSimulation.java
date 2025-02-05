@@ -40,8 +40,7 @@ public class DevSimulation {
 
     private static final Logger log = Logger.getLogger(DevSimulation.class);
 
-    private static final String PLAYER_RANKING_FILE = "src/main/resources/simulation/Ranking_2025_Sim.xlsx";
-    private static final String TOURNAMENT_BONN_FILE = "simulation/TournamentDMBonn.html";
+    private static final String PLAYER_RANKING_FILE = "src/main/resources/simulation/Ranking_2025_Full_Sim.xlsx";
     private static final String TOURNAMENTS_FILE = "simulation/Tournaments.html";
 
     protected final WebClient webClient = ConfiguredWebClient.getWebClient();
@@ -96,7 +95,6 @@ public class DevSimulation {
 
             playerRepository.persist(player);
             playerInfoRepository.persist(playerInfo);
-            log.infof("Saved player: %s", rankingPlayer.getName());
         }
     }
 

@@ -5,6 +5,7 @@ import jakarta.enterprise.context.Dependent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.jboss.logging.Logger;
 
@@ -22,7 +23,8 @@ public class DashboardController {
         Stage stage = new Stage();
         Scene scene = new Scene(this.root);
         stage.setScene(scene);
-        stage.setTitle("Dashboard");
+        stage.setTitle("Badminton Statistics");
+        stage.getIcons().add(new Image("images/shuttle_logo.jpg"));
         log.info("Dashboard initialized");
         stage.show();
     }
