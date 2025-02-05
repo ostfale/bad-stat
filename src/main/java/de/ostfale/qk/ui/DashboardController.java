@@ -6,10 +6,13 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.jboss.logging.Logger;
 
-@FxView("app-view")
+@FxView("dashboard-view")
 @Dependent
-public class BadAppController {
+public class DashboardController {
+
+    private static final Logger log = Logger.getLogger(DashboardController.class);
 
     @FXML
     Parent root;
@@ -19,13 +22,8 @@ public class BadAppController {
         Stage stage = new Stage();
         Scene scene = new Scene(this.root);
         stage.setScene(scene);
+        stage.setTitle("Dashboard");
+        log.info("Dashboard initialized");
         stage.show();
     }
-
-   /* @FXML
-    private void handleClickMeAction() {
-        // Roll a d20
-        int value = RANDOM.nextInt(0, 21);
-        this.rollResultLabel.setText(String.valueOf(value));
-    }*/
 }
