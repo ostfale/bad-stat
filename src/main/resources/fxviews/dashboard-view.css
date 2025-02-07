@@ -1,2 +1,17 @@
-/* File was given a name different than view name on purpose */
 
+.parent {
+    -fx-background-color: #F5F5F7;
+}
+
+.sidebar {
+    -fx-background-color: #2D3039;
+}
+
+.sidebar-btn {
+    -fx-background-color: transparent;
+}
+
+.sidebar-btn:hover {
+    -fx-background-color: #258ED9;
+    -fx-border-width: 0px,0px,0px,2px;
+}

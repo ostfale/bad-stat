@@ -25,6 +25,10 @@
         <htmlunit.version>4.8.0</htmlunit.version>
         <quarkus-fx.version>0.9.1</quarkus-fx.version>
         <quarkus-poi.version>2.1.1</quarkus-poi.version>
+
+        <!-- ui -->
+        <ikonli-javafx.version>12.3.1</ikonli-javafx.version>
+        <controlsfx.version>11.2.1</controlsfx.version>
     </properties>
 
     <dependencyManagement>
@@ -70,6 +74,37 @@
             <groupId>io.quarkiverse.fx</groupId>
             <artifactId>quarkus-fx</artifactId>
             <version>${quarkus-fx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>${ikonli-javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-materialdesign-pack</artifactId>
+            <version>${ikonli-javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-websymbols-pack</artifactId>
+            <version>${ikonli-javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome5-pack</artifactId>
+            <version>${ikonli-javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome-pack</artifactId>
+            <version>${ikonli-javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>${controlsfx.version}</version>
         </dependency>
 
 

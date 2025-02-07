@@ -1,11 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
-            prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="de.ostfale.qk.ui.DashboardController" stylesheets="@dashboard-view.css">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1400.0" styleClass="parent" stylesheets="@dashboard-view.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ostfale.qk.ui.DashboardController">
     <children>
-        <Pane prefHeight="200.0" prefWidth="75.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-              AnchorPane.topAnchor="0.0"/>
+        <Pane prefHeight="200.0" prefWidth="75.0" styleClass="sidebar" stylesheets="@dashboard-view.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER" layoutY="159.0" prefHeight="75.0" prefWidth="75.0">
+               <children>
+                  <FontIcon iconColor="#fdfdfd" iconLiteral="fa-home" iconSize="32" selectionEnd="0">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </FontIcon>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutY="234.0" prefHeight="69.0" prefWidth="75.0">
+               <children>
+                  <FontIcon iconColor="#fdfdfd" iconLiteral="ws-group" iconSize="32" selectionEnd="0" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="4.0" layoutY="303.0" prefHeight="100.0" prefWidth="67.0">
+               <children>
+                  <FontIcon iconColor="#fdfdfd" iconLiteral="fa-bar-chart" iconSize="32" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="4.0" layoutY="392.0" prefHeight="100.0" prefWidth="67.0">
+               <children>
+                  <FontIcon iconColor="#fdfdfd" iconLiteral="fa-heartbeat" iconSize="32" />
+               </children>
+            </HBox>
+         </children></Pane>
+      <Pane layoutX="75.0" prefHeight="75.0" prefWidth="925.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <FontIcon iconLiteral="fa-info-circle" iconSize="28" layoutX="1250.0" layoutY="47.0" selectionEnd="0" />
+         </children></Pane>
     </children>
 </AnchorPane>
