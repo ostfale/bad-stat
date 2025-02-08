@@ -4,11 +4,15 @@
 }
 
 .sidebar {
-    -fx-background-color: #2D3039;
+    -fx-background-color: #ae1732;
 }
 
 .sidebar-btn {
     -fx-background-color: transparent;
+}
+
+.sidebar-btn-exit {
+    -fx-background-color: d27b85;
 }
 
 .sidebar-btn:hover {
