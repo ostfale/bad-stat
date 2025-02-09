@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.jboss.logging.Logger;
 
@@ -20,9 +21,13 @@ public class ApplicationController {
     Parent root;
 
     @FXML
+    AnchorPane centerAnchorPane;
+
+    @FXML
     public void initialize() {
         Stage stage = new Stage();
         Scene scene = new Scene(this.root);
+        scene.getStylesheets().addAll("/static/css/app-view.css");
         stage.setScene(scene);
         stage.setTitle("Badminton Statistics");
         stage.getIcons().add(new Image("images/shuttle_logo.jpg"));

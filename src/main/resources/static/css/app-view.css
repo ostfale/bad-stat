@@ -1,0 +1,21 @@
+
+.parent {
+    -fx-background-color: #F5F5F7;
+}
+
+.sidebar {
+    -fx-background-color: #ae1732;
+}
+
+.sidebar-btn {
+    -fx-background-color: transparent;
+}
+
+.sidebar-btn-exit {
+    -fx-background-color: d27b85;
+}
+
+.sidebar-btn:hover {
+    -fx-background-color: #258ED9;
+    -fx-border-width: 0px,0px,0px,2px;
+}
