@@ -1,11 +1,15 @@
 package de.ostfale.qk.ui;
 
+import de.ostfale.qk.ui.statistics.PlayerTournamentsStatisticsModel;
+import de.ostfale.qk.ui.statistics.PlayerTournamentsStatisticsTreeTableController;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TreeTableView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -22,6 +26,9 @@ public class ApplicationController {
 
     @FXML
     AnchorPane centerAnchorPane;
+
+    @Inject
+    PlayerTournamentsStatisticsTreeTableController playerTourStatsController;
 
     @FXML
     public void initialize() {
@@ -43,7 +50,13 @@ public class ApplicationController {
 
     @FXML
     void showStatisticsView(ActionEvent event) {
-        log.info("Show Ranking View");
+        log.info("Show Statistics View");
+        TreeTableView<PlayerTournamentsStatisticsModel> ttv = playerTourStatsController.getPlStatTreeView();
+        AnchorPane.setTopAnchor(ttv, 0.0);
+        AnchorPane.setLeftAnchor(ttv, 0.0);
+        AnchorPane.setRightAnchor(ttv, 0.0);
+        AnchorPane.setBottomAnchor(ttv, 0.0);
+        centerAnchorPane.getChildren().setAll(ttv);
     }
 
     @FXML
