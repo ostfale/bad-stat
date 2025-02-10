@@ -25,14 +25,10 @@ public class ApplicationController {
 
     @FXML
     public void initialize() {
-        Stage stage = new Stage();
-        Scene scene = new Scene(this.root);
-        scene.getStylesheets().addAll("/static/css/app-view.css");
-        stage.setScene(scene);
-        stage.setTitle("Badminton Statistics");
-        stage.getIcons().add(new Image("images/shuttle_logo.jpg"));
-        log.info("Dashboard initialized");
-        stage.show();
+        Stage dashboardStage = createStageWithScene();
+        configureStage(dashboardStage);
+        log.info("Dashboard stage successfully initialized and shown.");
+        dashboardStage.show();
     }
 
     @FXML
@@ -63,5 +59,20 @@ public class ApplicationController {
     @FXML
     void closeApplication(ActionEvent event) {
         System.exit(0);
+    }
+
+    private Stage createStageWithScene() {
+        final String STYLESHEET_PATH = "/static/css/app-view.css";
+        final String ICON_PATH = "images/shuttle_logo.jpg";
+        Stage stage = new Stage();
+        Scene scene = new Scene(this.root);
+        scene.getStylesheets().add(STYLESHEET_PATH);
+        stage.setScene(scene);
+        stage.getIcons().add(new Image(ICON_PATH));
+        return stage;
+    }
+
+    private void configureStage(Stage stage) {
+        stage.setTitle("Badminton Statistics");
     }
 }
