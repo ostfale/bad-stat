@@ -42,6 +42,11 @@ public class SingleMatch extends BaseMatch {
         return Discipline.SINGLE;
     }
 
+    @Override
+    public boolean containsPlayer(String playerName) {
+        return isPlayerNameMatch(firstPlayerName, playerName) ||
+                isPlayerNameMatch(secondPlayerName, playerName);
+    }
 
     public String getPlayersSets() {
         return playersSets;

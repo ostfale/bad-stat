@@ -10,20 +10,20 @@ import jakarta.persistence.*;
 public class DoubleMatch extends BaseMatch {
 
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = TOURNAMENT_ID_COLUMN, referencedColumnName = TOURNAMENT_REFERENCED_ID_COLUMN, nullable = false)
     private Tournament associatedTournament;
 
-    private String onePlayerOneName ;
-    private String onePlayerTwoName ;
-    private String twoPlayerOneName ;
-    private String twoPlayerTwoName ;
+    private String onePlayerOneName;
+    private String onePlayerTwoName;
+    private String twoPlayerOneName;
+    private String twoPlayerTwoName;
 
-    private String roundName ="";
-    private String matchDuration ="";
+    private String roundName = "";
+    private String matchDuration = "";
     private String playersSets = "";
 
     public DoubleMatch() {
@@ -40,6 +40,15 @@ public class DoubleMatch extends BaseMatch {
         this.twoPlayerTwoName = doubleMatchDTO.getSecondDoublePlayerTwo().getName();
         this.playersSets = mapPlayerSetsToString(doubleMatchDTO);
     }
+
+    @Override
+    public boolean containsPlayer(String playerName) {
+        return isPlayerNameMatch(onePlayerOneName, playerName) ||
+                isPlayerNameMatch(onePlayerTwoName, playerName) ||
+                isPlayerNameMatch(twoPlayerOneName, playerName) ||
+                isPlayerNameMatch(twoPlayerTwoName, playerName);
+    }
+
 
     @Override
     public Discipline getDiscipline() {

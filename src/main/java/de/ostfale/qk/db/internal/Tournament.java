@@ -1,5 +1,6 @@
 package de.ostfale.qk.db.internal;
 
+import de.ostfale.qk.db.internal.match.BaseMatch;
 import de.ostfale.qk.db.internal.match.DoubleMatch;
 import de.ostfale.qk.db.internal.match.MixedMatch;
 import de.ostfale.qk.db.internal.match.SingleMatch;
@@ -43,6 +44,16 @@ public class Tournament {
     }
 
     public Tournament() {
+    }
+
+    public boolean containsPlayer(String playerName) {
+        return hasPlayerInMatchSet(singleMatches, playerName) ||
+                hasPlayerInMatchSet(doubleMatches, playerName) ||
+                hasPlayerInMatchSet(mixedMatches, playerName);
+    }
+
+    private <T> boolean hasPlayerInMatchSet(Set<T> matches, String playerName) {
+        return matches.stream().anyMatch(match -> ((BaseMatch) match).containsPlayer(playerName));
     }
 
     public Set<MixedMatch> getMixedMatches() {

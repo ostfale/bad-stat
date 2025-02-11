@@ -17,13 +17,13 @@ public class MixedMatch extends BaseMatch {
     @JoinColumn(name = TOURNAMENT_ID_COLUMN, referencedColumnName = TOURNAMENT_REFERENCED_ID_COLUMN, nullable = false)
     private Tournament associatedTournament;
 
-    private String femalePlayerOneName ;
-    private String malePlayerOneName ;
-    private String femalePlayerTwoName ;
-    private String malePlayerTwoName ;
+    private String femalePlayerOneName;
+    private String malePlayerOneName;
+    private String femalePlayerTwoName;
+    private String malePlayerTwoName;
 
-    private String roundName ="";
-    private String matchDuration ="";
+    private String roundName = "";
+    private String matchDuration = "";
     private String playersSets = "";
 
     public MixedMatch() {
@@ -44,6 +44,14 @@ public class MixedMatch extends BaseMatch {
     @Override
     public Discipline getDiscipline() {
         return Discipline.MIXED;
+    }
+
+    @Override
+    public boolean containsPlayer(String playerName) {
+        return isPlayerNameMatch(femalePlayerOneName, playerName) ||
+                isPlayerNameMatch(malePlayerOneName, playerName) ||
+                isPlayerNameMatch(femalePlayerTwoName, playerName) ||
+                isPlayerNameMatch(malePlayerTwoName, playerName);
     }
 
     public String getPlayersSets() {

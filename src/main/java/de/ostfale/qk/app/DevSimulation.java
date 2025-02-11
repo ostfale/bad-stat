@@ -7,6 +7,7 @@ import de.ostfale.qk.db.internal.match.MixedMatch;
 import de.ostfale.qk.db.internal.match.SingleMatch;
 import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.internal.player.PlayerInfo;
+import de.ostfale.qk.db.service.TournamentServiceProvider;
 import de.ostfale.qk.parser.ConfiguredWebClient;
 import de.ostfale.qk.parser.discipline.internal.model.DisciplineDTO;
 import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
@@ -70,6 +71,12 @@ public class DevSimulation {
     @Inject
     MixedMatchRepository mixedMatchRepository;
 
+    @Inject
+    TournamentPlayerRepository tournamentPlayerRepository;
+
+    @Inject
+    TournamentServiceProvider tournamentServiceProvider;
+
     public void loadSimulationData() {
         log.info("Load simulation data");
 
@@ -83,6 +90,10 @@ public class DevSimulation {
         HtmlElement htmlElement = page.getActiveElement();
         TournamentYearDTO tournamentYearDTO = tournamentParserService.parseTournamentYear("2024", htmlElement);
         saveTournament(tournamentYearDTO);
+
+        // find all tournaments for 2024 and Louis Sauerbrei
+        var result = tournamentServiceProvider.getAllTournamentsForYearAndPlayer(2024,"Louis Sauerbrei");
+        System.out.println("dd");
     }
 
     @Transactional

@@ -13,7 +13,15 @@ public abstract class BaseMatch {
     protected static final String TOURNAMENT_ID_COLUMN = "tournament_id";
     protected static final String TOURNAMENT_REFERENCED_ID_COLUMN = "id";
 
+
     public abstract Discipline getDiscipline();
+
+    public abstract boolean containsPlayer(String playerName);
+
+    protected boolean isPlayerNameMatch(String matchPlayerName, String searchedPlayerName
+    ) {
+        return matchPlayerName.equalsIgnoreCase(searchedPlayerName);
+    }
 
     protected String mapPlayerSetsToString(MatchDTO matchDTO) {
         return matchDTO.getPlayersSets()
