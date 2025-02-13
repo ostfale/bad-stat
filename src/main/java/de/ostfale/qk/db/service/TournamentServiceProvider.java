@@ -2,9 +2,10 @@ package de.ostfale.qk.db.service;
 
 import de.ostfale.qk.db.api.TournamentRepository;
 import de.ostfale.qk.db.api.tournament.TournamentService;
-import de.ostfale.qk.db.internal.Tournament;
+import de.ostfale.qk.db.api.tournament.Tournament;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class TournamentServiceProvider implements TournamentService {
     TournamentRepository tournamentRepository;
 
     @Override
+    @Transactional
     public List<Tournament> getAllTournamentsForYearAndPlayer(Integer year, String player) {
         List<Tournament> tournaments = tournamentRepository.findByTournamentYear(year);
         var result = tournaments.stream().filter(tournament -> tournament.containsPlayer(player)).toList();

@@ -1,4 +1,4 @@
-package de.ostfale.qk.db.internal;
+package de.ostfale.qk.db.api.tournament;
 
 import de.ostfale.qk.db.internal.match.BaseMatch;
 import de.ostfale.qk.db.internal.match.DoubleMatch;

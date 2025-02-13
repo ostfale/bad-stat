@@ -4,6 +4,7 @@ import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.match.internal.model.MatchDTO;
 import de.ostfale.qk.parser.set.SetDTO;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class BaseMatch {
@@ -16,11 +17,10 @@ public abstract class BaseMatch {
 
     public abstract Discipline getDiscipline();
 
-    public abstract boolean containsPlayer(String playerName);
+    public abstract List<String> getPlayerNames();
 
-    protected boolean isPlayerNameMatch(String matchPlayerName, String searchedPlayerName
-    ) {
-        return matchPlayerName.equalsIgnoreCase(searchedPlayerName);
+    public boolean containsPlayer(String playerName) {
+        return getPlayerNames().contains(playerName);
     }
 
     protected String mapPlayerSetsToString(MatchDTO matchDTO) {

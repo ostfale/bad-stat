@@ -8,6 +8,8 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import org.jboss.logging.Logger;
 
+import java.util.List;
+
 @ApplicationScoped
 public class PlayerTournamentsStatisticsTreeTableController {
 
@@ -46,6 +48,11 @@ public class PlayerTournamentsStatisticsTreeTableController {
 
     public TreeTableView<PlayerTournamentsStatisticsModel> getPlStatTreeView() {
         return plStatTreeView;
+    }
+
+    public void updateTreeTableView(List<PlayerTournamentsStatisticsModel> playerTournaments) {
+        root.getChildren().clear();
+        playerTournaments.forEach(ptm -> root.getChildren().add(new TreeItem<>(ptm)));
     }
 
     private TreeItem<PlayerTournamentsStatisticsModel> createTreeItemRoot() {

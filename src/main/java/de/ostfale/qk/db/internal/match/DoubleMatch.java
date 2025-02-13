@@ -1,10 +1,12 @@
 package de.ostfale.qk.db.internal.match;
 
-import de.ostfale.qk.db.internal.Tournament;
+import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
 import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class DoubleMatch extends BaseMatch {
@@ -42,13 +44,9 @@ public class DoubleMatch extends BaseMatch {
     }
 
     @Override
-    public boolean containsPlayer(String playerName) {
-        return isPlayerNameMatch(onePlayerOneName, playerName) ||
-                isPlayerNameMatch(onePlayerTwoName, playerName) ||
-                isPlayerNameMatch(twoPlayerOneName, playerName) ||
-                isPlayerNameMatch(twoPlayerTwoName, playerName);
+    public List<String> getPlayerNames() {
+        return List.of(onePlayerOneName, onePlayerTwoName, twoPlayerOneName, twoPlayerTwoName);
     }
-
 
     @Override
     public Discipline getDiscipline() {

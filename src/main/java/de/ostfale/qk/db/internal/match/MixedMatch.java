@@ -1,10 +1,12 @@
 package de.ostfale.qk.db.internal.match;
 
-import de.ostfale.qk.db.internal.Tournament;
+import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
 import de.ostfale.qk.parser.match.internal.model.MixedMatchDTO;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class MixedMatch extends BaseMatch {
@@ -47,11 +49,8 @@ public class MixedMatch extends BaseMatch {
     }
 
     @Override
-    public boolean containsPlayer(String playerName) {
-        return isPlayerNameMatch(femalePlayerOneName, playerName) ||
-                isPlayerNameMatch(malePlayerOneName, playerName) ||
-                isPlayerNameMatch(femalePlayerTwoName, playerName) ||
-                isPlayerNameMatch(malePlayerTwoName, playerName);
+    public List<String> getPlayerNames() {
+        return List.of(femalePlayerOneName, femalePlayerTwoName, malePlayerOneName, malePlayerTwoName);
     }
 
     public String getPlayersSets() {
@@ -125,4 +124,14 @@ public class MixedMatch extends BaseMatch {
     public void setAssociatedTournament(Tournament tournament) {
         this.associatedTournament = tournament;
     }
+
+    private List<String> getAllPlayerNames() {
+        return List.of(
+                femalePlayerOneName,
+                femalePlayerTwoName,
+                malePlayerOneName,
+                malePlayerTwoName
+        );
+    }
+
 }

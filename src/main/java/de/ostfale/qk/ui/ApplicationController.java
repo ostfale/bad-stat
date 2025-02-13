@@ -1,5 +1,6 @@
 package de.ostfale.qk.ui;
 
+import de.ostfale.qk.ui.statistics.PlayerTournamentsStatisticsHandler;
 import de.ostfale.qk.ui.statistics.PlayerTournamentsStatisticsModel;
 import de.ostfale.qk.ui.statistics.PlayerTournamentsStatisticsTreeTableController;
 import io.quarkiverse.fx.views.FxView;
@@ -28,7 +29,7 @@ public class ApplicationController {
     AnchorPane centerAnchorPane;
 
     @Inject
-    PlayerTournamentsStatisticsTreeTableController playerTourStatsController;
+    PlayerTournamentsStatisticsHandler playerTourStatsHandler;
 
     @FXML
     public void initialize() {
@@ -51,12 +52,8 @@ public class ApplicationController {
     @FXML
     void showStatisticsView(ActionEvent event) {
         log.info("Show Statistics View");
-        TreeTableView<PlayerTournamentsStatisticsModel> ttv = playerTourStatsController.getPlStatTreeView();
-        AnchorPane.setTopAnchor(ttv, 0.0);
-        AnchorPane.setLeftAnchor(ttv, 0.0);
-        AnchorPane.setRightAnchor(ttv, 0.0);
-        AnchorPane.setBottomAnchor(ttv, 0.0);
-        centerAnchorPane.getChildren().setAll(ttv);
+        centerAnchorPane.getChildren().setAll(playerTourStatsHandler.getUI());
+        playerTourStatsHandler.refreshUI();
     }
 
     @FXML
