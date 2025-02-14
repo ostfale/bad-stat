@@ -22,6 +22,7 @@ public class PlayerTournamentsStatisticsTreeTableController {
     TreeTableColumn<PlayerTournamentsStatisticsModel, String> colTournamentDate;
     TreeTableColumn<PlayerTournamentsStatisticsModel, String> colTournamentName;
     TreeTableColumn<PlayerTournamentsStatisticsModel, String> colTournamentLocation;
+    TreeTableColumn<PlayerTournamentsStatisticsModel, String> colDiscipline;
 
     public PlayerTournamentsStatisticsTreeTableController() {
         log.debug("Init PlayerTournamentsStatisticsTreeTableController");
@@ -42,7 +43,10 @@ public class PlayerTournamentsStatisticsTreeTableController {
         colTournamentLocation = new TreeTableColumn<>("Ort");
         colTournamentLocation.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getTournamentLocation()));
 
-        plStatTreeView.getColumns().addAll(colTournamentDate, colTournamentName, colTournamentLocation);
+        colDiscipline = new TreeTableColumn<>("Disziplin");
+        colDiscipline.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getDiscipline()));
+
+        plStatTreeView.getColumns().addAll(colTournamentDate, colTournamentName, colTournamentLocation, colDiscipline);
         plStatTreeView.setRoot(root);
     }
 
@@ -60,4 +64,15 @@ public class PlayerTournamentsStatisticsTreeTableController {
         return new TreeItem<>(rOpsRoot);
     }
 
+    private TreeItem<PlayerTournamentsStatisticsModel> createTreeItem(PlayerTournamentsStatisticsModel ptm) {
+        // root item
+        TreeItem<PlayerTournamentsStatisticsModel> rootItem = new TreeItem<>(ptm);
+
+        // create child tree items
+        List<TreeItem<PlayerTournamentsStatisticsModel>> childTreeItems = null;
+        rootItem.getChildren().addAll(childTreeItems);
+        return rootItem;
+
+
+    }
 }

@@ -24,6 +24,7 @@ public class DoubleMatch extends BaseMatch {
     private String twoPlayerOneName;
     private String twoPlayerTwoName;
 
+    private String disciplineName = "";
     private String roundName = "";
     private String matchDuration = "";
     private String playersSets = "";
@@ -31,8 +32,9 @@ public class DoubleMatch extends BaseMatch {
     public DoubleMatch() {
     }
 
-    public DoubleMatch(Tournament tournament, DoubleMatchDTO doubleMatchDTO) {
+    public DoubleMatch(Tournament tournament, DoubleMatchDTO doubleMatchDTO, String disciplineName) {
         MatchInfoDTO matchInfoDTO = doubleMatchDTO.getMatchInfoDTO();
+        this.disciplineName = disciplineName;
         this.roundName = matchInfoDTO.getRoundName();
         this.matchDuration = matchInfoDTO.getRoundDuration();
         this.associatedTournament = tournament;
@@ -51,6 +53,14 @@ public class DoubleMatch extends BaseMatch {
     @Override
     public Discipline getDiscipline() {
         return Discipline.DOUBLE;
+    }
+
+    public String getDisciplineName() {
+        return disciplineName;
+    }
+
+    public void setDisciplineName(String disciplineName) {
+        this.disciplineName = disciplineName;
     }
 
     public String getPlayersSets() {

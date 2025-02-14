@@ -24,6 +24,7 @@ public class MixedMatch extends BaseMatch {
     private String femalePlayerTwoName;
     private String malePlayerTwoName;
 
+    private String disciplineName = "";
     private String roundName = "";
     private String matchDuration = "";
     private String playersSets = "";
@@ -31,8 +32,9 @@ public class MixedMatch extends BaseMatch {
     public MixedMatch() {
     }
 
-    public MixedMatch(Tournament associatedTournament, MixedMatchDTO mixedMatchDTO) {
+    public MixedMatch(Tournament associatedTournament, MixedMatchDTO mixedMatchDTO, String disciplineName) {
         MatchInfoDTO matchInfoDTO = mixedMatchDTO.getMatchInfoDTO();
+        this.disciplineName = disciplineName;
         this.roundName = matchInfoDTO.getRoundName();
         this.matchDuration = matchInfoDTO.getRoundDuration();
         this.associatedTournament = associatedTournament;
@@ -51,6 +53,14 @@ public class MixedMatch extends BaseMatch {
     @Override
     public List<String> getPlayerNames() {
         return List.of(femalePlayerOneName, femalePlayerTwoName, malePlayerOneName, malePlayerTwoName);
+    }
+
+    public String getDisciplineName() {
+        return disciplineName;
+    }
+
+    public void setDisciplineName(String disciplineName) {
+        this.disciplineName = disciplineName;
     }
 
     public String getPlayersSets() {

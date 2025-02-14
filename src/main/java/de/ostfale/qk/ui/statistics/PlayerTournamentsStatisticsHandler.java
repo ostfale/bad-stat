@@ -26,10 +26,10 @@ public class PlayerTournamentsStatisticsHandler {
         return tournaments.stream().map(PlayerTournamentsStatisticsModel::new).toList();
     }
 
-    public void refreshUI(){
-        var result =tournamentService.getAllTournamentsForYearAndPlayer(2024, "Louis Sauerbrei");
+    public void refreshUI() {
+        var result = tournamentService.getAllTournamentsForYearAndPlayer(2024, "Louis Sauerbrei");
         var mapped = mapFromTournaments(result);
-        playerTourStatsController.updateTreeTableView( mapped);
+        playerTourStatsController.updateTreeTableView(mapped);
     }
 
     public TreeTableView<PlayerTournamentsStatisticsModel> getUI() {

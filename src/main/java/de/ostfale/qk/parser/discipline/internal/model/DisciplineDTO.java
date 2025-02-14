@@ -18,9 +18,9 @@ public class DisciplineDTO {
         this.ageClass = ageClass;
     }
 
-    public DisciplineDTO( String discipline, String ageClass) {
-        this.disciplineName = discipline;
-        this.discipline = Discipline.lookup(discipline);
+    public DisciplineDTO(String disciplineName, String ageClass) {
+        this.disciplineName = disciplineName + " " + ageClass;
+        this.discipline = Discipline.lookup(disciplineName);
         this.ageClass = AgeClass.fromString(ageClass);
     }
 

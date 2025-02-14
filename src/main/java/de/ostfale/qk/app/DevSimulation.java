@@ -145,7 +145,7 @@ public class DevSimulation {
         log.info("Save double matches");
         dto.getMatches().forEach(match -> {
             DoubleMatchDTO doubleMatchDTO = (DoubleMatchDTO) match;
-            saveDoubleMatch(tournamentId, doubleMatchDTO);
+            saveDoubleMatch(tournamentId, doubleMatchDTO,dto.getDisciplineName());
         });
     }
 
@@ -153,7 +153,7 @@ public class DevSimulation {
         log.info("Save mixed matches");
         dto.getMatches().forEach(match -> {
             MixedMatchDTO mixedMatchDTO = (MixedMatchDTO) match;
-            saveMixedMatch(tournamentId, mixedMatchDTO);
+            saveMixedMatch(tournamentId, mixedMatchDTO,dto.getDisciplineName());
         });
     }
 
@@ -161,28 +161,28 @@ public class DevSimulation {
         log.info("Save single matches");
         dto.getMatches().forEach(match -> {
             SingleMatchDTO singleMatchDTO = (SingleMatchDTO) match;
-            saveSingleMatch(tournamentId, singleMatchDTO);
+            saveSingleMatch(tournamentId, singleMatchDTO,dto.getDisciplineName());
         });
     }
 
     @Transactional()
-    public void saveSingleMatch(String tournamentId, SingleMatchDTO singleMatchDTO) {
+    public void saveSingleMatch(String tournamentId, SingleMatchDTO singleMatchDTO, String disciplineName) {
         Tournament tournament = tournamentRepository.findByTournamentId(tournamentId);
-        var match = new SingleMatch(tournament, singleMatchDTO);
+        var match = new SingleMatch(tournament, singleMatchDTO, disciplineName);
         singleMatchRepository.persist(match);
     }
 
     @Transactional()
-    public void saveDoubleMatch(String tournamentId, DoubleMatchDTO doubleMatchDTO) {
+    public void saveDoubleMatch(String tournamentId, DoubleMatchDTO doubleMatchDTO, String disciplineName) {
         Tournament tournament = tournamentRepository.findByTournamentId(tournamentId);
-        var match = new DoubleMatch(tournament, doubleMatchDTO);
+        var match = new DoubleMatch(tournament, doubleMatchDTO,disciplineName);
         doubleMatchRepository.persist(match);
     }
 
     @Transactional()
-    public void saveMixedMatch(String tournamentId, MixedMatchDTO mixedMatchDTO) {
+    public void saveMixedMatch(String tournamentId, MixedMatchDTO mixedMatchDTO, String disciplineName) {
         Tournament tournament = tournamentRepository.findByTournamentId(tournamentId);
-        var match = new MixedMatch(tournament, mixedMatchDTO);
+        var match = new MixedMatch(tournament, mixedMatchDTO,disciplineName);
         mixedMatchRepository.persist(match);
     }
 

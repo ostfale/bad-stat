@@ -1,8 +1,6 @@
 package de.ostfale.qk.ui;
 
 import de.ostfale.qk.ui.statistics.PlayerTournamentsStatisticsHandler;
-import de.ostfale.qk.ui.statistics.PlayerTournamentsStatisticsModel;
-import de.ostfale.qk.ui.statistics.PlayerTournamentsStatisticsTreeTableController;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -10,7 +8,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TreeTableView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
