@@ -2,8 +2,8 @@ package de.ostfale.qk.db.internal.match;
 
 import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
-import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
-import de.ostfale.qk.parser.match.internal.model.SingleMatchDTO;
+import de.ostfale.qk.parser.match.internal.model.MatchInfoRawModel;
+import de.ostfale.qk.parser.match.internal.model.SingleMatchRawModel;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -30,15 +30,14 @@ public class SingleMatch extends BaseMatch {
     public SingleMatch() {
     }
 
-    public SingleMatch(Tournament tournament, SingleMatchDTO singleMatchDTO,String disciplineName) {
-        MatchInfoDTO matchInfoDTO = singleMatchDTO.getMatchInfoDTO();
+    public SingleMatch(Tournament tournament, SingleMatchRawModel singleMatchRawModel, String disciplineName) {
         this.disciplineName = disciplineName;
-        this.roundName = matchInfoDTO.getRoundName();
-        this.matchDuration = matchInfoDTO.getRoundDuration();
+        this.roundName = singleMatchRawModel.getRoundName();
+        this.matchDuration = singleMatchRawModel.getRoundDuration();
         this.associatedTournament = tournament;
-        this.firstPlayerName = singleMatchDTO.getFirstPlayer().getName();
-        this.secondPlayerName = singleMatchDTO.getSecondPlayer().getName();
-        this.playersSets = mapPlayerSetsToString(singleMatchDTO);
+        this.firstPlayerName = singleMatchRawModel.getFirstPlayer().getName();
+        this.secondPlayerName = singleMatchRawModel.getSecondPlayer().getName();
+        this.playersSets = mapPlayerSetsToString(singleMatchRawModel);
     }
 
     @Override
@@ -51,6 +50,7 @@ public class SingleMatch extends BaseMatch {
         return List.of(firstPlayerName, secondPlayerName);
     }
 
+    @Override
     public String getDisciplineName() {
         return disciplineName;
     }

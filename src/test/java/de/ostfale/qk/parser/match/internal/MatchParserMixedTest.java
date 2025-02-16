@@ -1,7 +1,7 @@
 package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.match.internal.model.MixedMatchDTO;
+import de.ostfale.qk.parser.match.internal.model.MixedMatchRawModel;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlDivision;
@@ -29,7 +29,7 @@ public class MatchParserMixedTest extends BaseParserTest {
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
         // when
-        MixedMatchDTO result = parser.parseMixedMatch(content);
+        MixedMatchRawModel result = parser.parseMixedMatch(content);
 
         // then
         assertAll("Test mixed match information",

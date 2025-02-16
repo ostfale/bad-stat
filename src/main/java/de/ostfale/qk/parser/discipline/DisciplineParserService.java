@@ -2,12 +2,12 @@ package de.ostfale.qk.parser.discipline;
 
 import de.ostfale.qk.parser.HtmlParser;
 import de.ostfale.qk.parser.discipline.api.DisciplineParser;
-import de.ostfale.qk.parser.discipline.internal.model.DisciplineDTO;
+import de.ostfale.qk.parser.discipline.internal.model.DisciplineRawModel;
 import de.ostfale.qk.parser.match.api.MatchParser;
-import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
-import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
-import de.ostfale.qk.parser.match.internal.model.MixedMatchDTO;
-import de.ostfale.qk.parser.match.internal.model.SingleMatchDTO;
+import de.ostfale.qk.parser.match.internal.model.DoubleMatchRawModel;
+import de.ostfale.qk.parser.match.internal.model.MatchInfoRawModel;
+import de.ostfale.qk.parser.match.internal.model.MixedMatchRawModel;
+import de.ostfale.qk.parser.match.internal.model.SingleMatchRawModel;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlElement;
@@ -28,15 +28,15 @@ public class DisciplineParserService implements DisciplineParser {
     private static final Logger log = Logger.getLogger(DisciplineParserService.class);
 
     @Override
-    public List<DisciplineDTO> parseDisciplines(HtmlElement moduleCard) {
+    public List<DisciplineRawModel> parseDisciplines(HtmlElement moduleCard) {
         log.debug("Parsing disciplines for tournament");
-        List<DisciplineDTO> disciplineList = new ArrayList<>();
+        List<DisciplineRawModel> disciplineList = new ArrayList<>();
 
         // read all discipline header starting with
         List<HtmlElement> disciplineHeaderElements = htmlParser.getAllDisciplineInfos(moduleCard);
         for (HtmlElement disciplineHeaderElement : disciplineHeaderElements) {
             // read discipline type and age class
-            DisciplineDTO disciplineDTO = getDisciplineInfos(disciplineHeaderElement);
+            DisciplineRawModel disciplineDTO = getDisciplineInfos(disciplineHeaderElement);
             disciplineList.add(disciplineDTO);
         }
 
@@ -49,13 +49,13 @@ public class DisciplineParserService implements DisciplineParser {
         return disciplineList;
     }
 
-    private void parseCombinedTreeAndGroupMatchesForThisDiscipline(List<DisciplineDTO> disciplineList, HtmlElement moduleCard) {
+    private void parseCombinedTreeAndGroupMatchesForThisDiscipline(List<DisciplineRawModel> disciplineList, HtmlElement moduleCard) {
         log.debug("Tree mode found -> parse only tree matches for this discipline");
 
 
     }
 
-    private void parseAllTreeMatchesForThisDiscipline(List<DisciplineDTO> disciplineList, HtmlElement moduleCard) {
+    private void parseAllTreeMatchesForThisDiscipline(List<DisciplineRawModel> disciplineList, HtmlElement moduleCard) {
         log.debug("Group mode found -> parse all tree and group matches for this discipline");
 
         int disciplineIndex = 0;
@@ -70,23 +70,23 @@ public class DisciplineParserService implements DisciplineParser {
             List<HtmlElement> matchContainerList = htmlParser.getAllMatchesForDisciplineContainer(disciplineMatchContainer);
             for (HtmlElement matchContainer : matchContainerList) {
 
-                MatchInfoDTO matchInfoDTO = matchParser.parseMatchGroupInfo(matchContainer);
+                MatchInfoRawModel matchInfoRawModel = matchParser.parseMatchGroupInfo(matchContainer);
                 HtmlElement matchBody = htmlParser.getMatchBodyElement(matchContainer);
 
                 switch (currentDiscipline) {
                     case SINGLE -> {
-                        SingleMatchDTO singleMatch = (SingleMatchDTO) matchParser.parseSingleMatch(matchBody);
-                        singleMatch.setMatchInfoDTO(matchInfoDTO);
+                        SingleMatchRawModel singleMatch = (SingleMatchRawModel) matchParser.parseSingleMatch(matchBody);
+                        singleMatch.setMatchInfoDTO(matchInfoRawModel);
                         disciplineList.get(disciplineIndex).getMatches().add(singleMatch);
                     }
                     case DOUBLE -> {
-                        DoubleMatchDTO doubleMatch = (DoubleMatchDTO) matchParser.parseDoubleMatch(matchBody);
-                        doubleMatch.setMatchInfoDTO(matchInfoDTO);
+                        DoubleMatchRawModel doubleMatch = (DoubleMatchRawModel) matchParser.parseDoubleMatch(matchBody);
+                        doubleMatch.setMatchInfoDTO(matchInfoRawModel);
                         disciplineList.get(disciplineIndex).getMatches().add(doubleMatch);
                     }
                     case MIXED -> {
-                        MixedMatchDTO mixedMatch = (MixedMatchDTO) matchParser.parseMixedMatch(matchBody);
-                        mixedMatch.setMatchInfoDTO(matchInfoDTO);
+                        MixedMatchRawModel mixedMatch = (MixedMatchRawModel) matchParser.parseMixedMatch(matchBody);
+                        mixedMatch.setMatchInfoDTO(matchInfoRawModel);
                         disciplineList.get(disciplineIndex).getMatches().add(mixedMatch);
                     }
                     default -> {
@@ -113,11 +113,11 @@ public class DisciplineParserService implements DisciplineParser {
         return false;
     }
 
-    private DisciplineDTO getDisciplineInfos(HtmlElement headerElement) {
+    private DisciplineRawModel getDisciplineInfos(HtmlElement headerElement) {
         String[] disciplineAge = headerElement.asNormalizedText().split(" ");
         var disciplineName = disciplineAge[1];
         var disciplineAgeGroup = disciplineAge[2];
-        var disciplineInfo = new DisciplineDTO(disciplineName, disciplineAgeGroup);
+        var disciplineInfo = new DisciplineRawModel(disciplineName, disciplineAgeGroup);
         log.debugf("Tournament discipline info: {}", disciplineInfo);
         return disciplineInfo;
     }

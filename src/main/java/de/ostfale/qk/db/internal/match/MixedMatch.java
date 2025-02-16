@@ -2,8 +2,8 @@ package de.ostfale.qk.db.internal.match;
 
 import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
-import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
-import de.ostfale.qk.parser.match.internal.model.MixedMatchDTO;
+import de.ostfale.qk.parser.match.internal.model.MatchInfoRawModel;
+import de.ostfale.qk.parser.match.internal.model.MixedMatchRawModel;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -32,17 +32,16 @@ public class MixedMatch extends BaseMatch {
     public MixedMatch() {
     }
 
-    public MixedMatch(Tournament associatedTournament, MixedMatchDTO mixedMatchDTO, String disciplineName) {
-        MatchInfoDTO matchInfoDTO = mixedMatchDTO.getMatchInfoDTO();
+    public MixedMatch(Tournament associatedTournament, MixedMatchRawModel mixedMatchRawModel, String disciplineName) {
         this.disciplineName = disciplineName;
-        this.roundName = matchInfoDTO.getRoundName();
-        this.matchDuration = matchInfoDTO.getRoundDuration();
+        this.roundName = mixedMatchRawModel.getRoundName();
+        this.matchDuration = mixedMatchRawModel.getRoundDuration();
         this.associatedTournament = associatedTournament;
-        this.malePlayerOneName = mixedMatchDTO.getFirstMixedPlayerOne().getName();
-        this.femalePlayerOneName = mixedMatchDTO.getFirstMixedPlayerTwo().getName();
-        this.malePlayerTwoName = mixedMatchDTO.getSecondMixedPlayerOne().getName();
-        this.femalePlayerTwoName = mixedMatchDTO.getSecondMixedPlayerTwo().getName();
-        this.playersSets = mapPlayerSetsToString(mixedMatchDTO);
+        this.malePlayerOneName = mixedMatchRawModel.getFirstMixedPlayerOne().getName();
+        this.femalePlayerOneName = mixedMatchRawModel.getFirstMixedPlayerTwo().getName();
+        this.malePlayerTwoName = mixedMatchRawModel.getSecondMixedPlayerOne().getName();
+        this.femalePlayerTwoName = mixedMatchRawModel.getSecondMixedPlayerTwo().getName();
+        this.playersSets = mapPlayerSetsToString(mixedMatchRawModel);
     }
 
     @Override
@@ -55,6 +54,7 @@ public class MixedMatch extends BaseMatch {
         return List.of(femalePlayerOneName, femalePlayerTwoName, malePlayerOneName, malePlayerTwoName);
     }
 
+    @Override
     public String getDisciplineName() {
         return disciplineName;
     }

@@ -1,7 +1,7 @@
 package de.ostfale.qk.parser.discipline;
 
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.discipline.internal.model.DisciplineDTO;
+import de.ostfale.qk.parser.discipline.internal.model.DisciplineRawModel;
 import de.ostfale.qk.parser.match.internal.MatchParserService;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -38,7 +38,7 @@ class DisciplineParserServiceTest extends BaseParserTest {
         String expectedAge = "U17";
 
         // when
-        List<DisciplineDTO> disciplineDTOs = disciplineParser.parseDisciplines(content);
+        List<DisciplineRawModel> disciplineDTOs = disciplineParser.parseDisciplines(content);
 
         // then
         assertAll("Test parsing tournament discipline",
@@ -58,7 +58,7 @@ class DisciplineParserServiceTest extends BaseParserTest {
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
         // when
-        List<DisciplineDTO> disciplineDTOs = disciplineParser.parseDisciplines(content);
+        List<DisciplineRawModel> disciplineDTOs = disciplineParser.parseDisciplines(content);
 
         // then
         assertAll("Test parsing a discipline with group phase",

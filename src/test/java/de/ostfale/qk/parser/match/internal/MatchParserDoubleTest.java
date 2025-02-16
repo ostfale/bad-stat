@@ -1,7 +1,7 @@
 package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
+import de.ostfale.qk.parser.match.internal.model.DoubleMatchRawModel;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlDivision;
@@ -30,7 +30,7 @@ class MatchParserDoubleTest extends BaseParserTest {
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
         // when
-        DoubleMatchDTO result = parser.parseDoubleMatch(content);
+        DoubleMatchRawModel result = parser.parseDoubleMatch(content);
 
         // then
         assertAll("Test double match information",
@@ -57,7 +57,7 @@ class MatchParserDoubleTest extends BaseParserTest {
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
         // when
-        DoubleMatchDTO result = parser.parseDoubleMatch(content);
+        DoubleMatchRawModel result = parser.parseDoubleMatch(content);
 
         // then
         assertAll("Test double match information",

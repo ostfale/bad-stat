@@ -9,15 +9,15 @@ import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.internal.player.PlayerInfo;
 import de.ostfale.qk.db.service.TournamentServiceProvider;
 import de.ostfale.qk.parser.ConfiguredWebClient;
-import de.ostfale.qk.parser.discipline.internal.model.DisciplineDTO;
-import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
-import de.ostfale.qk.parser.match.internal.model.MixedMatchDTO;
-import de.ostfale.qk.parser.match.internal.model.SingleMatchDTO;
+import de.ostfale.qk.parser.discipline.internal.model.DisciplineRawModel;
+import de.ostfale.qk.parser.match.internal.model.DoubleMatchRawModel;
+import de.ostfale.qk.parser.match.internal.model.MixedMatchRawModel;
+import de.ostfale.qk.parser.match.internal.model.SingleMatchRawModel;
 import de.ostfale.qk.parser.ranking.api.RankingParser;
 import de.ostfale.qk.parser.ranking.internal.RankingPlayer;
 import de.ostfale.qk.parser.tournament.internal.TournamentParserService;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentInfoDTO;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentYearDTO;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentRawModel;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentYearRawModel;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
@@ -85,8 +85,8 @@ public class DevSimulation {
         // load and save tournament data
         HtmlPage page = loadHtmlPage(TOURNAMENTS_FILE);
         HtmlElement htmlElement = page.getActiveElement();
-        TournamentYearDTO tournamentYearDTO = tournamentParserService.parseTournamentYear("2024", htmlElement);
-        saveTournament(tournamentYearDTO);
+        TournamentYearRawModel tournamentYearRawModel = tournamentParserService.parseTournamentYear("2024", htmlElement);
+        saveTournament(tournamentYearRawModel);
 
         // find all tournaments for 2024 and Louis Sauerbrei
         var result = tournamentServiceProvider.getAllTournamentsForYearAndPlayer(2024,"Louis Sauerbrei");
@@ -107,29 +107,28 @@ public class DevSimulation {
     }
 
     @Transactional
-    public void saveTournament(TournamentYearDTO tournamentYearDTO) {
-        tournamentYearDTO.tournaments().forEach(tournamentDTO -> {
-            TournamentInfoDTO tInfo = tournamentDTO.getTournamentInfo();
-            log.infof("Save tournament %s", tInfo.tournamentName());
-            Tournament tournament = getTournamentInfos(tournamentYearDTO, tInfo);
+    public void saveTournament(TournamentYearRawModel tournamentYearRawModel) {
+        tournamentYearRawModel.tournaments().forEach(tournamentRawModel -> {
+            log.infof("Save tournament %s", tournamentRawModel.getTournamentName());
+            Tournament tournament = getTournamentInfos(tournamentYearRawModel, tournamentRawModel);
             tournamentRepository.persist(tournament);
 
             // save matches for all disciplines
-            saveMatches(tournament.getTournamentID(), tournamentDTO.getTournamentDisciplines());
+            saveMatches(tournament.getTournamentID(), tournamentRawModel.getTournamentDisciplines());
         });
     }
 
-    private static Tournament getTournamentInfos(TournamentYearDTO tournamentYearDTO, TournamentInfoDTO tInfo) {
-        String tournamentId = tInfo.tournamentId();
-        String tournamentName = tInfo.tournamentName();
-        String tournamentOrganisation = tInfo.tournamentOrganisation();
-        String tournamentLocation = tInfo.tournamentLocation();
-        String tournamentDate = tInfo.tournamentDate();
-        Integer year = Integer.parseInt(tournamentYearDTO.year());
+    private static Tournament getTournamentInfos(TournamentYearRawModel tournamentYearRawModel, TournamentRawModel tInfo) {
+        String tournamentId = tInfo.getTournamentId();
+        String tournamentName = tInfo.getTournamentName();
+        String tournamentOrganisation = tInfo.getTournamentOrganisation();
+        String tournamentLocation = tInfo.getTournamentLocation();
+        String tournamentDate = tInfo.getTournamentDate();
+        Integer year = Integer.parseInt(tournamentYearRawModel.year());
         return new Tournament(tournamentId, tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate, year);
     }
 
-    public void saveMatches(String tournamentId, List<DisciplineDTO> disciplines) {
+    public void saveMatches(String tournamentId, List<DisciplineRawModel> disciplines) {
         log.info("Save match disciplines:");
 
         disciplines.forEach(disciplineDTO -> {
@@ -141,48 +140,48 @@ public class DevSimulation {
         });
     }
 
-    public void saveDoubleMatches(String tournamentId, DisciplineDTO dto) {
+    public void saveDoubleMatches(String tournamentId, DisciplineRawModel dto) {
         log.info("Save double matches");
         dto.getMatches().forEach(match -> {
-            DoubleMatchDTO doubleMatchDTO = (DoubleMatchDTO) match;
-            saveDoubleMatch(tournamentId, doubleMatchDTO,dto.getDisciplineName());
+            DoubleMatchRawModel doubleMatchRawModel = (DoubleMatchRawModel) match;
+            saveDoubleMatch(tournamentId, doubleMatchRawModel,dto.getDisciplineName());
         });
     }
 
-    public void saveMixedMatches(String tournamentId, DisciplineDTO dto) {
+    public void saveMixedMatches(String tournamentId, DisciplineRawModel dto) {
         log.info("Save mixed matches");
         dto.getMatches().forEach(match -> {
-            MixedMatchDTO mixedMatchDTO = (MixedMatchDTO) match;
-            saveMixedMatch(tournamentId, mixedMatchDTO,dto.getDisciplineName());
+            MixedMatchRawModel mixedMatchRawModel = (MixedMatchRawModel) match;
+            saveMixedMatch(tournamentId, mixedMatchRawModel,dto.getDisciplineName());
         });
     }
 
-    public void saveSingleMatches(String tournamentId, DisciplineDTO dto) {
+    public void saveSingleMatches(String tournamentId, DisciplineRawModel dto) {
         log.info("Save single matches");
         dto.getMatches().forEach(match -> {
-            SingleMatchDTO singleMatchDTO = (SingleMatchDTO) match;
-            saveSingleMatch(tournamentId, singleMatchDTO,dto.getDisciplineName());
+            SingleMatchRawModel singleMatchRawModel = (SingleMatchRawModel) match;
+            saveSingleMatch(tournamentId, singleMatchRawModel,dto.getDisciplineName());
         });
     }
 
     @Transactional()
-    public void saveSingleMatch(String tournamentId, SingleMatchDTO singleMatchDTO, String disciplineName) {
+    public void saveSingleMatch(String tournamentId, SingleMatchRawModel singleMatchRawModel, String disciplineName) {
         Tournament tournament = tournamentRepository.findByTournamentId(tournamentId);
-        var match = new SingleMatch(tournament, singleMatchDTO, disciplineName);
+        var match = new SingleMatch(tournament, singleMatchRawModel, disciplineName);
         singleMatchRepository.persist(match);
     }
 
     @Transactional()
-    public void saveDoubleMatch(String tournamentId, DoubleMatchDTO doubleMatchDTO, String disciplineName) {
+    public void saveDoubleMatch(String tournamentId, DoubleMatchRawModel doubleMatchRawModel, String disciplineName) {
         Tournament tournament = tournamentRepository.findByTournamentId(tournamentId);
-        var match = new DoubleMatch(tournament, doubleMatchDTO,disciplineName);
+        var match = new DoubleMatch(tournament, doubleMatchRawModel,disciplineName);
         doubleMatchRepository.persist(match);
     }
 
     @Transactional()
-    public void saveMixedMatch(String tournamentId, MixedMatchDTO mixedMatchDTO, String disciplineName) {
+    public void saveMixedMatch(String tournamentId, MixedMatchRawModel mixedMatchRawModel, String disciplineName) {
         Tournament tournament = tournamentRepository.findByTournamentId(tournamentId);
-        var match = new MixedMatch(tournament, mixedMatchDTO,disciplineName);
+        var match = new MixedMatch(tournament, mixedMatchRawModel,disciplineName);
         mixedMatchRepository.persist(match);
     }
 

@@ -1,7 +1,7 @@
 package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
+import de.ostfale.qk.parser.match.internal.model.MatchInfoRawModel;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlElement;
@@ -31,14 +31,14 @@ public class MatchParserInfoTest extends BaseParserTest {
         HtmlElement content = page.getActiveElement();
 
         // when
-        MatchInfoDTO matchInfoDTO = parser.parseMatchGroupInfo(content);
+        MatchInfoRawModel matchInfoRawModel = parser.parseMatchGroupInfo(content);
 
         // then
         assertAll("Test general match information ",
-                () -> assertEquals("Round of 16", matchInfoDTO.getRoundName()),
-                () -> assertEquals("Sa 02.03.2024", matchInfoDTO.getRoundDate()),
-                () -> assertEquals("17m", matchInfoDTO.getRoundDuration()),
-                () -> assertEquals("Sporthalle Dwasieden - 2", matchInfoDTO.getRoundLocation())
+                () -> assertEquals("Round of 16", matchInfoRawModel.getRoundName()),
+                () -> assertEquals("Sa 02.03.2024", matchInfoRawModel.getRoundDate()),
+                () -> assertEquals("17m", matchInfoRawModel.getRoundDuration()),
+                () -> assertEquals("Sporthalle Dwasieden - 2", matchInfoRawModel.getRoundLocation())
         );
     }
 }

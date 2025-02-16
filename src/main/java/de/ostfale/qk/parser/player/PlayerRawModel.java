@@ -1,16 +1,16 @@
 package de.ostfale.qk.parser.player;
 
-public class PlayerDTO {
+public class PlayerRawModel {
 
     public String name;
     public String id;
 
-    public PlayerDTO(String name, String id) {
+    public PlayerRawModel(String name, String id) {
         this.name = name;
         this.id = id;
     }
 
-    public PlayerDTO(String name) {
+    public PlayerRawModel(String name) {
         this.name = name;
     }
 

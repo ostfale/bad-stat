@@ -3,7 +3,7 @@ package de.ostfale.qk.parser.tournament.api;
 import de.ostfale.qk.parser.BaseTest;
 import de.ostfale.qk.parser.discipline.DisciplineParserService;
 import de.ostfale.qk.parser.tournament.internal.TournamentParserService;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentYearDTO;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentYearRawModel;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlElement;
@@ -51,7 +51,7 @@ class TournamentParserTest extends BaseTest {
         var expectedTournamentDate = "29.11.2024 bis 01.12.2024";
 
         // when
-        TournamentYearDTO result = parser.parseTournamentYear("2024", content);
+        TournamentYearRawModel result = parser.parseTournamentYear("2024", content);
         var firstTournament = result.tournaments().getFirst();
 
         // then
@@ -81,7 +81,7 @@ class TournamentParserTest extends BaseTest {
 
 
         // when
-        TournamentYearDTO result = parser.parseTournamentYear("2024", content);
+        TournamentYearRawModel result = parser.parseTournamentYear("2024", content);
         var firstTournament = result.tournaments().getFirst();
         var doubleDiscipline = firstTournament.getTournamentDisciplines().getFirst();
         var singleDiscipline = firstTournament.getTournamentDisciplines().get(1);

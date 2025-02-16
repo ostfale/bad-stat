@@ -3,15 +3,15 @@ package de.ostfale.qk.parser.tournament.internal.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public record TournamentYearDTO(
+public record TournamentYearRawModel(
         String year,
-        List<TournamentDTO> tournaments
+        List<TournamentRawModel> tournaments
 ) {
-    public TournamentYearDTO(String year) {
+    public TournamentYearRawModel(String year) {
         this(year, new ArrayList<>());
     }
 
-    public void addTournament(TournamentDTO tournament) {
+    public void addTournament(TournamentRawModel tournament) {
         tournaments.add(tournament);
     }
 

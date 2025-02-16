@@ -1,13 +1,13 @@
 package de.ostfale.qk.parser.tournament.api;
 
-import de.ostfale.qk.parser.tournament.internal.model.TournamentInfoDTO;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentYearDTO;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentRawModel;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentYearRawModel;
 import org.htmlunit.html.HtmlElement;
 
 public interface TournamentParser {
 
-    TournamentYearDTO parseTournamentYear (String year, HtmlElement content);
+    TournamentYearRawModel parseTournamentYear (String year, HtmlElement content);
 
-    TournamentInfoDTO parseTournamentInfo (HtmlElement content);
+    TournamentRawModel parseTournamentInfo (HtmlElement content);
 
 }

@@ -1,7 +1,7 @@
 package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.match.internal.model.SingleMatchDTO;
+import de.ostfale.qk.parser.match.internal.model.SingleMatchRawModel;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlDivision;
@@ -29,7 +29,7 @@ public class MatchParserSingleTest extends BaseParserTest {
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
         // then
-        SingleMatchDTO result = parser.parseSingleMatch(content);
+        SingleMatchRawModel result = parser.parseSingleMatch(content);
 
         // then
         assertAll("Test  single match information",
@@ -52,7 +52,7 @@ public class MatchParserSingleTest extends BaseParserTest {
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
         // then
-        SingleMatchDTO result = parser.parseSingleMatch(content);
+        SingleMatchRawModel result = parser.parseSingleMatch(content);
 
         // then
         assertAll("Test  single match with walkover information",
@@ -71,7 +71,7 @@ public class MatchParserSingleTest extends BaseParserTest {
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
         // then
-        SingleMatchDTO result = parser.parseSingleMatch(content);
+        SingleMatchRawModel result = parser.parseSingleMatch(content);
 
         // then
         assertAll("Test  single match with retired information",
@@ -91,7 +91,7 @@ public class MatchParserSingleTest extends BaseParserTest {
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
         // then
-        SingleMatchDTO result = parser.parseSingleMatch(content);
+        SingleMatchRawModel result = parser.parseSingleMatch(content);
 
         // then
         assertAll("Test  single match with retired information",
@@ -111,7 +111,7 @@ public class MatchParserSingleTest extends BaseParserTest {
         HtmlDivision content = (HtmlDivision) page.getActiveElement().getFirstChild();
 
         // then
-        SingleMatchDTO result = parser.parseSingleMatch(content);
+        SingleMatchRawModel result = parser.parseSingleMatch(content);
 
         // then
         assertAll("Test  single match with retired information = Kein Spiel",

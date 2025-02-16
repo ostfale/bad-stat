@@ -3,8 +3,8 @@ package de.ostfale.qk.parser.match.internal;
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.match.api.MatchParser;
 import de.ostfale.qk.parser.match.internal.model.*;
-import de.ostfale.qk.parser.player.PlayerDTO;
-import de.ostfale.qk.parser.set.SetDTO;
+import de.ostfale.qk.parser.player.PlayerRawModel;
+import de.ostfale.qk.parser.set.SetRawModel;
 import de.ostfale.qk.parser.set.SetNo;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlElement;
@@ -31,16 +31,16 @@ public class MatchParserService implements MatchParser {
 
 
     @Override
-    public SingleMatchDTO parseSingleMatch(HtmlElement content) {
+    public SingleMatchRawModel parseSingleMatch(HtmlElement content) {
         log.debug("Parsing single match");
         String[] resultSplit = splitRawData(content);
         var result = extractNumbersFromStrings(List.of(resultSplit));
         var sets = prepareSets(result);
-        List<PlayerDTO> playerDTOs = createPlayerDTOsFromResult(resultSplit);
+        List<PlayerRawModel> playerRawModelList = createPlayerDTOsFromResult(resultSplit);
 
         if (containsWalkover(resultSplit)) {
             log.debug("Walkover detected in single match");
-            var singleMatchDTO = new SingleMatchDTO(playerDTOs.get(0), playerDTOs.get(1));
+            var singleMatchDTO = new SingleMatchRawModel(playerRawModelList.get(0), playerRawModelList.get(1));
             if (resultSplit[2].equalsIgnoreCase(WALKOVER_MARKER_LOST)) {
                 singleMatchDTO.setHasFirstPlayerWonProp(Boolean.TRUE);
             } else {
@@ -51,7 +51,7 @@ public class MatchParserService implements MatchParser {
 
         if (containsRetired(resultSplit)) {
             log.debug("Retired detected in single match");
-            var singleMatchDTO = new SingleMatchDTO(playerDTOs.get(0), playerDTOs.get(1));
+            var singleMatchDTO = new SingleMatchRawModel(playerRawModelList.get(0), playerRawModelList.get(1));
             singleMatchDTO.setMatchRetired(Boolean.TRUE);
 
             if (!sets.isEmpty()) {
@@ -69,18 +69,18 @@ public class MatchParserService implements MatchParser {
             return singleMatchDTO;
         }
 
-        return new SingleMatchDTO(playerDTOs.get(0), playerDTOs.get(1), sets);
+        return new SingleMatchRawModel(playerRawModelList.get(0), playerRawModelList.get(1), sets);
     }
 
     @Override
-    public DoubleMatchDTO parseDoubleMatch(HtmlElement content) {
+    public DoubleMatchRawModel parseDoubleMatch(HtmlElement content) {
         log.debug("Parsing double match");
         String[] resultSplit = splitRawData(content);
-        List<PlayerDTO> playerDTOs = createPlayerDTOsFromResult(resultSplit);
+        List<PlayerRawModel> playerRawModelList = createPlayerDTOsFromResult(resultSplit);
 
         if (containsWalkover(resultSplit)) {
             log.debug("Walkover detected in double match");
-            var doubleMatchDT = new DoubleMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3));
+            var doubleMatchDT = new DoubleMatchRawModel(playerRawModelList.get(0), playerRawModelList.get(1), playerRawModelList.get(2), playerRawModelList.get(3));
             if (resultSplit[2].equalsIgnoreCase(WINNER_MARKER)) {
                 doubleMatchDT.setHasFirstPlayerWonProp(Boolean.TRUE);
             } else {
@@ -92,21 +92,21 @@ public class MatchParserService implements MatchParser {
         var result = extractNumbersFromStrings(List.of(resultSplit));
         var sets = prepareSets(result);
 
-        return new DoubleMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3), sets);
+        return new DoubleMatchRawModel(playerRawModelList.get(0), playerRawModelList.get(1), playerRawModelList.get(2), playerRawModelList.get(3), sets);
     }
 
     @Override
-    public MixedMatchDTO parseMixedMatch(HtmlElement content) {
+    public MixedMatchRawModel parseMixedMatch(HtmlElement content) {
         log.debug("Parsing mixed  match");
         String[] resultSplit = splitRawData(content);
         var result = extractNumbersFromStrings(List.of(resultSplit));
         var sets = prepareSets(result);
 
-        List<PlayerDTO> playerDTOs = createPlayerDTOsFromResult(resultSplit);
+        List<PlayerRawModel> playerRawModelList = createPlayerDTOsFromResult(resultSplit);
 
         if (containsWalkover(resultSplit)) {
             log.debug("Walkover detected in mixed match");
-            var mixedMatchDT = new MixedMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3));
+            var mixedMatchDT = new MixedMatchRawModel(playerRawModelList.get(0), playerRawModelList.get(1), playerRawModelList.get(2), playerRawModelList.get(3));
             if (resultSplit[2].equalsIgnoreCase(WINNER_MARKER)) {
                 mixedMatchDT.setHasFirstPlayerWonProp(Boolean.TRUE);
             } else {
@@ -115,7 +115,7 @@ public class MatchParserService implements MatchParser {
             return mixedMatchDT;
         }
 
-        return new MixedMatchDTO(playerDTOs.get(0), playerDTOs.get(1), playerDTOs.get(2), playerDTOs.get(3), sets);
+        return new MixedMatchRawModel(playerRawModelList.get(0), playerRawModelList.get(1), playerRawModelList.get(2), playerRawModelList.get(3), sets);
     }
 
     final String MATCH_ROUND_NAME = ".//li[contains(@class, 'match__header-title-item')]";
@@ -123,7 +123,7 @@ public class MatchParserService implements MatchParser {
     final String MATCH_ROUND_DURATION = ".//div[contains(@class, 'match__header-aside')]";
 
     @Override
-    public MatchInfoDTO parseMatchGroupInfo(HtmlElement matchGroup) {
+    public MatchInfoRawModel parseMatchGroupInfo(HtmlElement matchGroup) {
         log.debug("Parsing match group info ");
         HtmlElement matchRoundNameDiv = matchGroup.getFirstByXPath(MATCH_ROUND_NAME);
         List<HtmlElement> matchRoundDateLocDiv = matchGroup.getByXPath(MATCH_ROUND_LOCATION_DATE);
@@ -134,7 +134,7 @@ public class MatchParserService implements MatchParser {
         var matchRoundDate = matchRoundDateLocDiv.getFirst() != null ? matchRoundDateLocDiv.getFirst().asNormalizedText() : "";
         var matchRoundCourt = matchRoundDateLocDiv.getLast() != null ? matchRoundDateLocDiv.getLast().asNormalizedText() : "";
 
-        return new MatchInfoDTO(matchRoundName, matchRoundDate, matchRoundCourt, matchRoundDuration);
+        return new MatchInfoRawModel(matchRoundName, matchRoundDate, matchRoundCourt, matchRoundDuration);
     }
 
 
@@ -166,25 +166,25 @@ public class MatchParserService implements MatchParser {
     }
 
     // Helper function to eliminate repetitive PlayerDTO creation logic
-    private List<PlayerDTO> createPlayerDTOsFromResult(String[] resultSplit) {
+    private List<PlayerRawModel> createPlayerDTOsFromResult(String[] resultSplit) {
         return Arrays.stream(resultSplit)
                 .filter(this::isValidPlayerString)
-                .map(PlayerDTO::new)
+                .map(PlayerRawModel::new)
                 .collect(Collectors.toList());
     }
 
-    private List<SetDTO> prepareSets(List<Integer> pointsList) {
+    private List<SetRawModel> prepareSets(List<Integer> pointsList) {
         final int numberOfSets = pointsList.size() / 2;
         final int POINTS_PER_SET = 2; // Each set contains two points
-        List<SetDTO> setDTOs = new ArrayList<>();
+        List<SetRawModel> setRawModelList = new ArrayList<>();
 
         if (pointsList.size() == numberOfSets * POINTS_PER_SET) {
             for (int i = 0; i < numberOfSets; i++) {
-                SetDTO set = new SetDTO(SetNo.values()[i], pointsList.get(i * 2), pointsList.get(i * 2 + 1));
-                setDTOs.add(set);
+                SetRawModel set = new SetRawModel(SetNo.values()[i], pointsList.get(i * 2), pointsList.get(i * 2 + 1));
+                setRawModelList.add(set);
             }
         }
-        return setDTOs;
+        return setRawModelList;
     }
 
     private boolean isValidPlayerString(String str) {

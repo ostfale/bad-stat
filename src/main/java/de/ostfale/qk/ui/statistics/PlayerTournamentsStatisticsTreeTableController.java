@@ -44,7 +44,7 @@ public class PlayerTournamentsStatisticsTreeTableController {
         colTournamentLocation.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getTournamentLocation()));
 
         colDiscipline = new TreeTableColumn<>("Disziplin");
-        colDiscipline.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getDiscipline()));
+        colDiscipline.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getDisciplineName()));
 
         plStatTreeView.getColumns().addAll(colTournamentDate, colTournamentName, colTournamentLocation, colDiscipline);
         plStatTreeView.setRoot(root);
@@ -55,8 +55,10 @@ public class PlayerTournamentsStatisticsTreeTableController {
     }
 
     public void updateTreeTableView(List<PlayerTournamentsStatisticsModel> playerTournaments) {
+        log.debugf("Update tree table view with %d entries", playerTournaments.size());
+        var treeItemList = playerTournaments.stream().map(this::createTreeItem).toList();
         root.getChildren().clear();
-        playerTournaments.forEach(ptm -> root.getChildren().add(new TreeItem<>(ptm)));
+        root.getChildren().addAll(treeItemList);
     }
 
     private TreeItem<PlayerTournamentsStatisticsModel> createTreeItemRoot() {
@@ -69,10 +71,8 @@ public class PlayerTournamentsStatisticsTreeTableController {
         TreeItem<PlayerTournamentsStatisticsModel> rootItem = new TreeItem<>(ptm);
 
         // create child tree items
-        List<TreeItem<PlayerTournamentsStatisticsModel>> childTreeItems = null;
+        List<TreeItem<PlayerTournamentsStatisticsModel>> childTreeItems = ptm.getMatchRows().stream().map(TreeItem::new).toList();
         rootItem.getChildren().addAll(childTreeItems);
         return rootItem;
-
-
     }
 }

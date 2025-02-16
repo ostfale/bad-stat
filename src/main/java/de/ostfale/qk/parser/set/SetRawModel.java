@@ -2,14 +2,14 @@ package de.ostfale.qk.parser.set;
 
 import java.util.Objects;
 
-public class SetDTO {
+public class SetRawModel {
 
     private SetNo setNo;
     private Boolean isRegular = true;
     private final Integer firstValue;
     private final Integer secondValue;
 
-    public SetDTO(SetNo setNo, Integer firstValue, Integer secondValue) {
+    public SetRawModel(SetNo setNo, Integer firstValue, Integer secondValue) {
         this.setNo = setNo;
         this.firstValue = firstValue;
         this.secondValue = secondValue;
@@ -56,8 +56,8 @@ public class SetDTO {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        SetDTO setDTO = (SetDTO) o;
-        return setNo == setDTO.setNo;
+        SetRawModel setRawModel = (SetRawModel) o;
+        return setNo == setRawModel.setNo;
     }
 
     @Override

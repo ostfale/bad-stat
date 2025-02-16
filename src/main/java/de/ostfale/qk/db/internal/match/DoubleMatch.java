@@ -2,8 +2,8 @@ package de.ostfale.qk.db.internal.match;
 
 import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
-import de.ostfale.qk.parser.match.internal.model.DoubleMatchDTO;
-import de.ostfale.qk.parser.match.internal.model.MatchInfoDTO;
+import de.ostfale.qk.parser.match.internal.model.DoubleMatchRawModel;
+import de.ostfale.qk.parser.match.internal.model.MatchInfoRawModel;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -32,17 +32,16 @@ public class DoubleMatch extends BaseMatch {
     public DoubleMatch() {
     }
 
-    public DoubleMatch(Tournament tournament, DoubleMatchDTO doubleMatchDTO, String disciplineName) {
-        MatchInfoDTO matchInfoDTO = doubleMatchDTO.getMatchInfoDTO();
+    public DoubleMatch(Tournament tournament, DoubleMatchRawModel doubleMatchRawModel, String disciplineName) {
         this.disciplineName = disciplineName;
-        this.roundName = matchInfoDTO.getRoundName();
-        this.matchDuration = matchInfoDTO.getRoundDuration();
+        this.roundName = doubleMatchRawModel.getRoundName();
+        this.matchDuration = doubleMatchRawModel.getRoundDuration();
         this.associatedTournament = tournament;
-        this.onePlayerOneName = doubleMatchDTO.getFirstDoublePlayerOne().getName();
-        this.onePlayerTwoName = doubleMatchDTO.getFirstDoublePlayerTwo().getName();
-        this.twoPlayerOneName = doubleMatchDTO.getSecondDoublePlayerOne().getName();
-        this.twoPlayerTwoName = doubleMatchDTO.getSecondDoublePlayerTwo().getName();
-        this.playersSets = mapPlayerSetsToString(doubleMatchDTO);
+        this.onePlayerOneName = doubleMatchRawModel.getFirstDoublePlayerOne().getName();
+        this.onePlayerTwoName = doubleMatchRawModel.getFirstDoublePlayerTwo().getName();
+        this.twoPlayerOneName = doubleMatchRawModel.getSecondDoublePlayerOne().getName();
+        this.twoPlayerTwoName = doubleMatchRawModel.getSecondDoublePlayerTwo().getName();
+        this.playersSets = mapPlayerSetsToString(doubleMatchRawModel);
     }
 
     @Override
@@ -55,6 +54,7 @@ public class DoubleMatch extends BaseMatch {
         return Discipline.DOUBLE;
     }
 
+    @Override
     public String getDisciplineName() {
         return disciplineName;
     }
