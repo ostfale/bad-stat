@@ -58,11 +58,11 @@ class TournamentParserTest extends BaseTest {
         assertAll("Parse tournament general information",
                 () -> assertEquals(expectedYear, result.year()),
                 () -> assertEquals(expectedTournaments, result.tournaments().size()),
-                () -> assertEquals(expectedTournamentId, firstTournament.getTournamentInfo().tournamentId()),
-                () -> assertEquals(expectedTournamentName, firstTournament.getTournamentInfo().tournamentName()),
-                () -> assertEquals(expectedTournamentOrga, firstTournament.getTournamentInfo().tournamentOrganisation()),
-                () -> assertEquals(expectedTournamentLocation, firstTournament.getTournamentInfo().tournamentLocation()),
-                () -> assertEquals(expectedTournamentDate, firstTournament.getTournamentInfo().tournamentDate())
+                () -> assertEquals(expectedTournamentId, firstTournament.getTournamentId()),
+                () -> assertEquals(expectedTournamentName, firstTournament.getTournamentName()),
+                () -> assertEquals(expectedTournamentOrga, firstTournament.getTournamentOrganisation()),
+                () -> assertEquals(expectedTournamentLocation, firstTournament.getTournamentLocation()),
+                () -> assertEquals(expectedTournamentDate, firstTournament.getTournamentDate())
         );
     }
 
@@ -72,11 +72,11 @@ class TournamentParserTest extends BaseTest {
         // given
         var expectedTournamentDisciplinesSize = 3;
         var expectedTournamentDisciplineAgeGroup = "U15";
-        var expectedTournamentFirstDisciplineName = "JD";
+        var expectedTournamentFirstDisciplineName = "JD U15";
         var expectedTournamentFirstDiscipline = "DOUBLE";
-        var expectedTournamentSecondDisciplineName = "JE";
+        var expectedTournamentSecondDisciplineName = "JE U15";
         var expectedTournamentSecondDiscipline = "SINGLE";
-        var expectedTournamentThirdDisciplineName = "MX";
+        var expectedTournamentThirdDisciplineName = "MX U15";
         var expectedTournamentThirdDiscipline = "MIXED";
 
 

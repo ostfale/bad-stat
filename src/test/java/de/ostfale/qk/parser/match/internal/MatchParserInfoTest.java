@@ -35,10 +35,10 @@ public class MatchParserInfoTest extends BaseParserTest {
 
         // then
         assertAll("Test general match information ",
-                () -> assertEquals("Round of 16", matchInfoRawModel.getRoundName()),
-                () -> assertEquals("Sa 02.03.2024", matchInfoRawModel.getRoundDate()),
-                () -> assertEquals("17m", matchInfoRawModel.getRoundDuration()),
-                () -> assertEquals("Sporthalle Dwasieden - 2", matchInfoRawModel.getRoundLocation())
+                () -> assertEquals("Round of 16", matchInfoRawModel.roundName()),
+                () -> assertEquals("Sa 02.03.2024", matchInfoRawModel.roundDate()),
+                () -> assertEquals("17m", matchInfoRawModel.roundDuration()),
+                () -> assertEquals("Sporthalle Dwasieden - 2", matchInfoRawModel.roundLocation())
         );
     }
 }
