@@ -11,7 +11,9 @@ public abstract class MatchRawModel implements Match {
 
     private static final Logger log = Logger.getLogger(MatchRawModel.class);
 
-    abstract Discipline getDiscipline();
+    public abstract Discipline getDiscipline();
+
+    public abstract List<String> getPlayerNames();
 
     protected final List<SetRawModel> playersSets = new ArrayList<>();
 

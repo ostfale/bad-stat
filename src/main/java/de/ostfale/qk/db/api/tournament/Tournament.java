@@ -1,9 +1,6 @@
 package de.ostfale.qk.db.api.tournament;
 
-import de.ostfale.qk.db.internal.match.BaseMatch;
-import de.ostfale.qk.db.internal.match.DoubleMatch;
-import de.ostfale.qk.db.internal.match.MixedMatch;
-import de.ostfale.qk.db.internal.match.SingleMatch;
+import de.ostfale.qk.db.internal.match.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -26,13 +23,7 @@ public class Tournament {
     private Integer tournamentYear;
 
     @OneToMany(mappedBy = "associatedTournament")
-    private Set<SingleMatch> singleMatches;
-
-    @OneToMany(mappedBy = "associatedTournament")
-    private Set<DoubleMatch> doubleMatches;
-
-    @OneToMany(mappedBy = "associatedTournament")
-    private Set<MixedMatch> mixedMatches;
+    private Set<Match> matches;
 
     public Tournament(String tournamentID, String tournamentName, String tournamentOrganizer, String tournamentLocation, String tournamentDate, Integer tournamentYear) {
         this.tournamentID = tournamentID;
@@ -47,37 +38,19 @@ public class Tournament {
     }
 
     public boolean containsPlayer(String playerName) {
-        return hasPlayerInMatchSet(singleMatches, playerName) ||
-                hasPlayerInMatchSet(doubleMatches, playerName) ||
-                hasPlayerInMatchSet(mixedMatches, playerName);
+        return hasPlayerInMatchSet(matches, playerName);
     }
 
     private <T> boolean hasPlayerInMatchSet(Set<T> matches, String playerName) {
-        return matches.stream().anyMatch(match -> ((BaseMatch) match).containsPlayer(playerName));
+        return matches.stream().anyMatch(match -> ((Match) match).containsPlayer(playerName));
     }
 
-    public Set<MixedMatch> getMixedMatches() {
-        return mixedMatches;
+    public Set<Match> getMatches() {
+        return matches;
     }
 
-    public void setMixedMatches(Set<MixedMatch> mixedMatches) {
-        this.mixedMatches = mixedMatches;
-    }
-
-    public Set<SingleMatch> getSingleMatches() {
-        return singleMatches;
-    }
-
-    public void setSingleMatches(Set<SingleMatch> singleMatches) {
-        this.singleMatches = singleMatches;
-    }
-
-    public Set<DoubleMatch> getDoubleMatches() {
-        return doubleMatches;
-    }
-
-    public void setDoubleMatches(Set<DoubleMatch> doubleMatches) {
-        this.doubleMatches = doubleMatches;
+    public void setMatches(Set<Match> matches) {
+        this.matches = matches;
     }
 
     public Long getId() {

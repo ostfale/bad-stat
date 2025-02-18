@@ -24,9 +24,9 @@ public class PlayerTournamentsStatisticsModel {
         this.tournamentDate = tournament.getTournamentDate();
         this.tournamentName = tournament.getTournamentName();
         this.tournamentLocation = tournament.getTournamentLocation();
-        tournament.getSingleMatches().stream().map(this::mapMatch).forEach(this.matchRows::add);
+       /* tournament.getSingleMatches().stream().map(this::mapMatch).forEach(this.matchRows::add);
         tournament.getDoubleMatches().stream().map(this::mapMatch).forEach(this.matchRows::add);
-        tournament.getMixedMatches().stream().map(this::mapMatch).forEach(this.matchRows::add);
+        tournament.getMixedMatches().stream().map(this::mapMatch).forEach(this.matchRows::add);*/
     }
 
     public PlayerTournamentsStatisticsModel() {

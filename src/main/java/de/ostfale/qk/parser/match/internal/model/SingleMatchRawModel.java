@@ -24,8 +24,13 @@ public class SingleMatchRawModel extends MatchRawModel {
     }
 
     @Override
-    Discipline getDiscipline() {
+    public Discipline getDiscipline() {
         return Discipline.SINGLE;
+    }
+
+    @Override
+    public List<String> getPlayerNames() {
+        return List.of(firstPlayer.getName(), secondPlayer.getName());
     }
 
     public PlayerRawModel getFirstPlayer() {

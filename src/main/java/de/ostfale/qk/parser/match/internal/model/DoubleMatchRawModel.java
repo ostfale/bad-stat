@@ -30,8 +30,14 @@ public class DoubleMatchRawModel extends MatchRawModel {
     }
 
     @Override
-    Discipline getDiscipline() {
+    public Discipline getDiscipline() {
         return Discipline.DOUBLE;
+    }
+
+    @Override
+    public List<String> getPlayerNames() {
+        return List.of(firstDoublePlayerOne.name, firstDoublePlayerTwo.name,
+                secondDoublePlayerOne.name, secondDoublePlayerTwo.name);
     }
 
     public PlayerRawModel getFirstDoublePlayerOne() {

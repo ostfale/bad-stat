@@ -30,8 +30,14 @@ public class MixedMatchRawModel extends MatchRawModel {
     }
 
     @Override
-    Discipline getDiscipline() {
+    public Discipline getDiscipline() {
         return Discipline.MIXED;
+    }
+
+    @Override
+    public List<String> getPlayerNames() {
+        return List.of(firstMixedPlayerOne.getName(), firstMixedPlayerTwo.getName(),
+                secondMixedPlayerOne.getName(), secondMixedPlayerTwo.getName());
     }
 
     public PlayerRawModel getFirstMixedPlayerOne() {
