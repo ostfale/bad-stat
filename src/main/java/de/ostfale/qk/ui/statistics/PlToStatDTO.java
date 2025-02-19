@@ -2,14 +2,15 @@ package de.ostfale.qk.ui.statistics;
 
 import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.db.internal.match.BaseMatch;
+import de.ostfale.qk.db.internal.match.Match;
 import org.jboss.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerTournamentsStatisticsModel {
+public class PlToStatDTO {
 
-    private static final Logger log = Logger.getLogger(PlayerTournamentsStatisticsModel.class);
+    private static final Logger log = Logger.getLogger(PlToStatDTO.class);
 
     private static final String SPACE = "";
 
@@ -17,23 +18,32 @@ public class PlayerTournamentsStatisticsModel {
     private String tournamentName;
     private String tournamentLocation;
     private String disciplineName;
-    private List<PlayerTournamentsStatisticsModel> matchRows = new ArrayList<>();
+    private List<PlToStatDTO> matchRows = new ArrayList<>();
 
-    public PlayerTournamentsStatisticsModel(Tournament tournament) {
-        log.debug("Init PlayerTournamentsStatisticsModel from Tournament");
-        this.tournamentDate = tournament.getTournamentDate();
-        this.tournamentName = tournament.getTournamentName();
-        this.tournamentLocation = tournament.getTournamentLocation();
-       /* tournament.getSingleMatches().stream().map(this::mapMatch).forEach(this.matchRows::add);
-        tournament.getDoubleMatches().stream().map(this::mapMatch).forEach(this.matchRows::add);
-        tournament.getMixedMatches().stream().map(this::mapMatch).forEach(this.matchRows::add);*/
+    public static PlToStatDTO createChildData(Match match) {
+        log.debug("PlToStatDTO :: Create new child row ");
+        var dto = new PlToStatDTO();
+        dto.setTournamentName(SPACE);
+        dto.setTournamentDate(SPACE);
+        dto.setTournamentLocation(SPACE);
+        dto.setDisciplineName(match.getDisciplineName());
+        return dto;
     }
 
-    public PlayerTournamentsStatisticsModel() {
+    public static PlToStatDTO createRootData(Tournament tournament) {
+        log.debug("PlToStatDTO :: Create new root row ");
+        var dto = new PlToStatDTO();
+        dto.setTournamentName(tournament.getTournamentName());
+        dto.setTournamentDate(tournament.getTournamentDate());
+        dto.setTournamentLocation(tournament.getTournamentLocation());
+        return dto;
     }
 
-    private <T extends BaseMatch> PlayerTournamentsStatisticsModel mapMatch(T match) {
-        PlayerTournamentsStatisticsModel model = new PlayerTournamentsStatisticsModel();
+    public PlToStatDTO() {
+    }
+
+    private <T extends BaseMatch> PlToStatDTO mapMatch(T match) {
+        PlToStatDTO model = new PlToStatDTO();
         model.setTournamentDate(SPACE);
         model.setTournamentLocation(SPACE);
         model.setTournamentName(SPACE);
@@ -49,11 +59,11 @@ public class PlayerTournamentsStatisticsModel {
         this.disciplineName = disciplineName;
     }
 
-    public List<PlayerTournamentsStatisticsModel> getMatchRows() {
+    public List<PlToStatDTO> getMatchRows() {
         return matchRows;
     }
 
-    public void setMatchRows(List<PlayerTournamentsStatisticsModel> matchRows) {
+    public void setMatchRows(List<PlToStatDTO> matchRows) {
         this.matchRows = matchRows;
     }
 
