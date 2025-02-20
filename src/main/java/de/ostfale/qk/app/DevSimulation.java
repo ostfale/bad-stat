@@ -1,6 +1,9 @@
 package de.ostfale.qk.app;
 
-import de.ostfale.qk.db.api.*;
+import de.ostfale.qk.db.api.MatchRepository;
+import de.ostfale.qk.db.api.PlayerInfoRepository;
+import de.ostfale.qk.db.api.PlayerRepository;
+import de.ostfale.qk.db.api.TournamentRepository;
 import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.db.internal.match.Match;
 import de.ostfale.qk.db.internal.player.Player;
@@ -63,15 +66,6 @@ public class DevSimulation {
 
     @Inject
     MatchRepository matchRepository;
-
-    @Inject
-    SingleMatchRepository singleMatchRepository;
-
-    @Inject
-    DoubleMatchRepository doubleMatchRepository;
-
-    @Inject
-    MixedMatchRepository mixedMatchRepository;
 
     @Inject
     TournamentServiceProvider tournamentServiceProvider;

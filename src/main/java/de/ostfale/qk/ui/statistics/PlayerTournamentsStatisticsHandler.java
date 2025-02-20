@@ -52,7 +52,7 @@ public class PlayerTournamentsStatisticsHandler {
     public void refreshUI() {
         var result = tournamentService.getAllTournamentsForYearAndPlayer(2024, "Louis Sauerbrei");
         var mapped = mapFromTournaments(result);
-        playerTourStatsController.updateTreeTableView(mapped);
+        playerTourStatsController.updateTreeTable(mapped);
     }
 
     public TreeTableView<PlToStatDTO> getUI() {

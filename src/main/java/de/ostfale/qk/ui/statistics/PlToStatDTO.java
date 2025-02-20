@@ -1,7 +1,6 @@
 package de.ostfale.qk.ui.statistics;
 
 import de.ostfale.qk.db.api.tournament.Tournament;
-import de.ostfale.qk.db.internal.match.BaseMatch;
 import de.ostfale.qk.db.internal.match.Match;
 import org.jboss.logging.Logger;
 
@@ -40,15 +39,6 @@ public class PlToStatDTO {
     }
 
     public PlToStatDTO() {
-    }
-
-    private <T extends BaseMatch> PlToStatDTO mapMatch(T match) {
-        PlToStatDTO model = new PlToStatDTO();
-        model.setTournamentDate(SPACE);
-        model.setTournamentLocation(SPACE);
-        model.setTournamentName(SPACE);
-        model.setDisciplineName(match.getDisciplineName());
-        return model;
     }
 
     public String getDisciplineName() {

@@ -1,6 +1,7 @@
 package de.ostfale.qk.db.internal.match;
 
 import de.ostfale.qk.db.api.tournament.Tournament;
+import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.match.internal.model.MatchRawModel;
 import de.ostfale.qk.parser.set.SetRawModel;
 import jakarta.persistence.*;
@@ -9,13 +10,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-public class Match {
+public class Match implements Comparable<Match>{
 
     private static final String EMPTY_STRING = "";
     private static final String PLAYERS_SETS_DELIMITER = ";";
 
-    protected static final String TOURNAMENT_ID_COLUMN = "tournament_id";
-    protected static final String TOURNAMENT_REFERENCED_ID_COLUMN = "id";
+    private static final String TOURNAMENT_ID_COLUMN = "tournament_id";
+    private static final String TOURNAMENT_REFERENCED_ID_COLUMN = "id";
 
     @Id
     @GeneratedValue
@@ -24,6 +25,9 @@ public class Match {
     @ManyToOne
     @JoinColumn(name = TOURNAMENT_ID_COLUMN, referencedColumnName = TOURNAMENT_REFERENCED_ID_COLUMN, nullable = false)
     private Tournament associatedTournament;
+
+    @Enumerated(EnumType.STRING)
+    private Discipline discipline;
 
     private String disciplineName = "";
     private String roundName = "";
@@ -39,6 +43,7 @@ public class Match {
     }
 
     public Match(Tournament tournament, MatchRawModel matchRawModel, String disciplineName) {
+        this.discipline = matchRawModel.getDiscipline();
         this.disciplineName = disciplineName;
         this.roundName = matchRawModel.getRoundName();
         this.matchDuration = matchRawModel.getRoundDuration();
@@ -69,6 +74,14 @@ public class Match {
                 .stream()
                 .map(SetRawModel::getSetAsString)
                 .collect(Collectors.joining(PLAYERS_SETS_DELIMITER));
+    }
+
+    public Discipline getDiscipline() {
+        return discipline;
+    }
+
+    public void setDiscipline(Discipline discipline) {
+        this.discipline = discipline;
     }
 
     public Long getId() {
@@ -145,5 +158,25 @@ public class Match {
 
     public void setPlayersSets(String playersSets) {
         this.playersSets = playersSets;
+    }
+
+    @Override
+    public int compareTo(Match other) {
+        if (this.discipline == other.discipline) {
+            return 0;
+        }
+
+        // Define the custom order: SINGLE -> DOUBLE -> MIXED
+        if (this.discipline == Discipline.SINGLE) {
+            return -1;  // SINGLE comes before everything
+        } else if (this.discipline == Discipline.MIXED) {
+            return 1;   // MIXED comes after everything
+        } else if (this.discipline == Discipline.DOUBLE) {
+            // DOUBLE comes after SINGLE but before MIXED
+            return other.discipline == Discipline.SINGLE ? 1 : -1;
+        }
+
+        return 0; // fallback case
+
     }
 }

@@ -1,12 +1,14 @@
 package de.ostfale.qk.db.api.tournament;
 
-import de.ostfale.qk.db.internal.match.*;
+import de.ostfale.qk.db.internal.match.Match;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Tournament {
@@ -45,8 +47,10 @@ public class Tournament {
         return matches.stream().anyMatch(match -> ((Match) match).containsPlayer(playerName));
     }
 
-    public Set<Match> getMatches() {
-        return matches;
+    public List<Match> getMatches() {
+        return matches.stream()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     public void setMatches(Set<Match> matches) {
