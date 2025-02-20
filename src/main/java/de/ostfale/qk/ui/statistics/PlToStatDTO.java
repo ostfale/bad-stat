@@ -17,6 +17,7 @@ public class PlToStatDTO {
     private String tournamentName;
     private String tournamentLocation;
     private String disciplineName;
+    private String roundName;
     private List<PlToStatDTO> matchRows = new ArrayList<>();
 
     public static PlToStatDTO createChildData(Match match) {
@@ -26,6 +27,7 @@ public class PlToStatDTO {
         dto.setTournamentDate(SPACE);
         dto.setTournamentLocation(SPACE);
         dto.setDisciplineName(match.getDisciplineName());
+        dto.setRoundName(match.getRoundName());
         return dto;
     }
 
@@ -39,6 +41,14 @@ public class PlToStatDTO {
     }
 
     public PlToStatDTO() {
+    }
+
+    public String getRoundName() {
+        return roundName;
+    }
+
+    public void setRoundName(String roundName) {
+        this.roundName = roundName;
     }
 
     public String getDisciplineName() {
