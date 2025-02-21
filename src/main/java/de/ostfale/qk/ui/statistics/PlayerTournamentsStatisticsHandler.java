@@ -8,7 +8,6 @@ import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.AnchorPane;
 import org.jboss.logging.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
@@ -22,32 +21,28 @@ public class PlayerTournamentsStatisticsHandler {
     @Inject
     TournamentService tournamentService;
 
-    public List<PlToStatDTO> mapFromTournaments(List<Tournament> tournaments) {
+    public List<PlayerMatchStatistics> mapFromTournaments(List<Tournament> tournaments) {
         log.debugf("Found %d tournaments to be mapped into PlayerTournamentsStatisticsModel", tournaments.size());
 
-        // Map all tournaments and their matches using a helper method
         return tournaments.stream()
-                .flatMap(tournament -> mapTournamentToPlToStatDTO(tournament).stream())
-                .toList();
+                .map(this::mapTournamentToPlToStatDTO) // Directly map each tournament
+                .toList(); // Collect as an immutable list
     }
 
-    private List<PlToStatDTO> mapTournamentToPlToStatDTO(Tournament tournament) {
-        // Log tournament details first
+    private PlayerMatchStatistics mapTournamentToPlToStatDTO(Tournament tournament) {
         log.debugf("Mapping Tournament: %s", tournament.getTournamentName());
 
-        // Create the root data from the Tournament
-        List<PlToStatDTO> tournamentData = new ArrayList<>();
-        tournamentData.add(PlToStatDTO.createRootData(tournament));
-
-        // Add match-specific data
-        tournament.getMatches()
-                .stream()
-                .map(PlToStatDTO::createChildData)
-                .forEach(tournamentData::add);
-
-        return tournamentData;
+        PlayerMatchStatistics rootData = PlayerMatchStatistics.createRootData(tournament);
+        rootData.setMatchDetails(mapMatchesToChildStatistics(tournament));
+        return rootData;
     }
 
+    private List<PlayerMatchStatistics> mapMatchesToChildStatistics(Tournament tournament) {
+        return tournament.getMatches()
+                .stream()
+                .map(PlayerMatchStatistics::createChildData)
+                .toList(); // Use stream API for concise and functional transformation
+    }
 
     public void refreshUI() {
         var result = tournamentService.getAllTournamentsForYearAndPlayer(2024, "Louis Sauerbrei");
@@ -55,8 +50,8 @@ public class PlayerTournamentsStatisticsHandler {
         playerTourStatsController.updateTreeTable(mapped);
     }
 
-    public TreeTableView<PlToStatDTO> getUI() {
-        TreeTableView<PlToStatDTO> ttv = playerTourStatsController.getPlStatTreeView();
+    public TreeTableView<PlayerMatchStatistics> getUI() {
+        TreeTableView<PlayerMatchStatistics> ttv = playerTourStatsController.getPlStatTreeView();
         AnchorPane.setTopAnchor(ttv, 0.0);
         AnchorPane.setLeftAnchor(ttv, 0.0);
         AnchorPane.setRightAnchor(ttv, 0.0);

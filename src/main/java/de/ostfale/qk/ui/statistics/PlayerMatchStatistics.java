@@ -7,9 +7,9 @@ import org.jboss.logging.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlToStatDTO {
+public class PlayerMatchStatistics {
 
-    private static final Logger log = Logger.getLogger(PlToStatDTO.class);
+    private static final Logger log = Logger.getLogger(PlayerMatchStatistics.class);
 
     private static final String SPACE = "";
 
@@ -18,11 +18,11 @@ public class PlToStatDTO {
     private String tournamentLocation;
     private String disciplineName;
     private String roundName;
-    private List<PlToStatDTO> matchRows = new ArrayList<>();
+    private List<PlayerMatchStatistics> matchDetails = new ArrayList<>();
 
-    public static PlToStatDTO createChildData(Match match) {
+    public static PlayerMatchStatistics createChildData(Match match) {
         log.debug("PlToStatDTO :: Create new child row ");
-        var dto = new PlToStatDTO();
+        var dto = new PlayerMatchStatistics();
         dto.setTournamentName(SPACE);
         dto.setTournamentDate(SPACE);
         dto.setTournamentLocation(SPACE);
@@ -31,16 +31,16 @@ public class PlToStatDTO {
         return dto;
     }
 
-    public static PlToStatDTO createRootData(Tournament tournament) {
+    public static PlayerMatchStatistics createRootData(Tournament tournament) {
         log.debug("PlToStatDTO :: Create new root row ");
-        var dto = new PlToStatDTO();
+        var dto = new PlayerMatchStatistics();
         dto.setTournamentName(tournament.getTournamentName());
         dto.setTournamentDate(tournament.getTournamentDate());
         dto.setTournamentLocation(tournament.getTournamentLocation());
         return dto;
     }
 
-    public PlToStatDTO() {
+    public PlayerMatchStatistics() {
     }
 
     public String getRoundName() {
@@ -59,12 +59,12 @@ public class PlToStatDTO {
         this.disciplineName = disciplineName;
     }
 
-    public List<PlToStatDTO> getMatchRows() {
-        return matchRows;
+    public List<PlayerMatchStatistics> getMatchDetails() {
+        return matchDetails;
     }
 
-    public void setMatchRows(List<PlToStatDTO> matchRows) {
-        this.matchRows = matchRows;
+    public void setMatchDetails(List<PlayerMatchStatistics> matchDetails) {
+        this.matchDetails = matchDetails;
     }
 
     public String getTournamentDate() {

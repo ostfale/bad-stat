@@ -15,15 +15,15 @@ public class PlayerTournamentsStatisticsTreeTableController {
 
     private static final Logger log = Logger.getLogger(PlayerTournamentsStatisticsTreeTableController.class);
 
-    private final TreeTableView<PlToStatDTO> ttView;
-    private final TreeItem<PlToStatDTO> root;
+    private final TreeTableView<PlayerMatchStatistics> ttView;
+    private final TreeItem<PlayerMatchStatistics> root;
 
     // declare tree table columns
-    TreeTableColumn<PlToStatDTO, String> colTournamentDate;
-    TreeTableColumn<PlToStatDTO, String> colTournamentName;
-    TreeTableColumn<PlToStatDTO, String> colTournamentLocation;
-    TreeTableColumn<PlToStatDTO, String> colDiscipline;
-    TreeTableColumn<PlToStatDTO, String> colRoundName;
+    TreeTableColumn<PlayerMatchStatistics, String> colTournamentDate;
+    TreeTableColumn<PlayerMatchStatistics, String> colTournamentName;
+    TreeTableColumn<PlayerMatchStatistics, String> colTournamentLocation;
+    TreeTableColumn<PlayerMatchStatistics, String> colDiscipline;
+    TreeTableColumn<PlayerMatchStatistics, String> colRoundName;
 
 
     public PlayerTournamentsStatisticsTreeTableController() {
@@ -52,39 +52,43 @@ public class PlayerTournamentsStatisticsTreeTableController {
         colRoundName = new TreeTableColumn<>("Runde");
         colRoundName.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getRoundName()));
 
-
         ttView.getColumns().addAll(colTournamentDate, colTournamentName, colTournamentLocation, colDiscipline, colRoundName);
     }
 
-    public TreeTableView<PlToStatDTO> getPlStatTreeView() {
+    public TreeTableView<PlayerMatchStatistics> getPlStatTreeView() {
         return ttView;
     }
 
-    public void updateTreeTable(List<PlToStatDTO> playerTournaments) {
+    public void updateTreeTable(List<PlayerMatchStatistics> playerTournaments) {
         log.debugf("Update tree table view with %d entries", playerTournaments.size());
-        var treeItemList = playerTournaments.stream().map(this::createTreeItem).toList();
+        //   var treeItemList = playerTournaments.stream().map(this::createTreeItem).toList();
+
         root.getChildren().clear();
-        root.getChildren().addAll(treeItemList);
+        playerTournaments.forEach(ptm -> {
+            var result = createTreeItem(ptm);
+            root.getChildren().add(result);
+        });
+
         ttView.setRoot(root);
-        ttView.refresh();
     }
 
-    private TreeItem<PlToStatDTO> createTreeItemRoot() {
-        var rOpsRoot = new PlToStatDTO();
+    private TreeItem<PlayerMatchStatistics> createTreeItemRoot() {
+        var rOpsRoot = new PlayerMatchStatistics();
         return new TreeItem<>(rOpsRoot);
     }
 
-    private TreeItem<PlToStatDTO> createTreeItem(PlToStatDTO ptm) {
+    private TreeItem<PlayerMatchStatistics> createTreeItem(PlayerMatchStatistics ptm) {
         // root item
-        TreeItem<PlToStatDTO> parentTreeItem = new TreeItem<>(ptm);
+        TreeItem<PlayerMatchStatistics> parentTreeItem = new TreeItem<>(ptm);
 
-        if (ptm.getMatchRows().isEmpty()) {
+        if (ptm.getMatchDetails().isEmpty()) {
             return parentTreeItem;
         }
 
         // create child tree items
-        List<TreeItem<PlToStatDTO>> childTreeItems = ptm.getMatchRows().stream().map(TreeItem::new).toList();
+        List<TreeItem<PlayerMatchStatistics>> childTreeItems = ptm.getMatchDetails().stream().map(TreeItem::new).toList();
         parentTreeItem.getChildren().addAll(childTreeItems);
+        System.out.println(ptm.getMatchDetails());
         return parentTreeItem;
     }
 }
