@@ -66,6 +66,24 @@ public class Match implements Comparable<Match> {
         return getPlayerNames().contains(playerName);
     }
 
+    public String getPlayerOrTeamOne() {
+        if (getPlayerNames().size() == 2) {
+            return teamOnePlayerOneName;
+        } else if (getPlayerNames().size() == 4) {
+            return teamOnePlayerOneName + " / " + teamOnePlayerTwoName;
+        }
+        throw new IllegalStateException("Match has no player or team one");
+    }
+
+    public String getPlayerOrTeamTwo() {
+        if (getPlayerNames().size() == 2) {
+            return teamTwoPlayerOneName;
+        } else if (getPlayerNames().size() == 4) {
+            return teamTwoPlayerOneName + " / " + teamTwoPlayerTwoName;
+        }
+        throw new IllegalStateException("Match has no player or team one");
+    }
+
     public List<String> getPlayerNames() {
         var allPlayersList = List.of(teamOnePlayerOneName, teamOnePlayerTwoName, teamTwoPlayerOneName, teamTwoPlayerTwoName);
         return allPlayersList.stream().filter(playerName -> !playerName.isBlank()).toList();

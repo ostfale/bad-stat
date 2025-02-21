@@ -18,6 +18,8 @@ public class PlayerMatchStatistics {
     private String tournamentLocation;
     private String disciplineName;
     private String roundName;
+    private String ptOneName;
+    private String ptTwoName;
     private List<PlayerMatchStatistics> matchDetails = new ArrayList<>();
 
     public static PlayerMatchStatistics createChildData(Match match) {
@@ -28,6 +30,8 @@ public class PlayerMatchStatistics {
         dto.setTournamentLocation(SPACE);
         dto.setDisciplineName(match.getDisciplineName());
         dto.setRoundName(match.getRoundName());
+        dto.setPtOneName(match.getPlayerOrTeamOne());
+        dto.setPtTwoName(match.getPlayerOrTeamTwo());
         return dto;
     }
 
@@ -41,6 +45,22 @@ public class PlayerMatchStatistics {
     }
 
     public PlayerMatchStatistics() {
+    }
+
+    public String getPtOneName() {
+        return ptOneName;
+    }
+
+    public void setPtOneName(String ptOneName) {
+        this.ptOneName = ptOneName;
+    }
+
+    public String getPtTwoName() {
+        return ptTwoName;
+    }
+
+    public void setPtTwoName(String ptTwoName) {
+        this.ptTwoName = ptTwoName;
     }
 
     public String getRoundName() {

@@ -24,6 +24,8 @@ public class PlayerTournamentsStatisticsTreeTableController {
     TreeTableColumn<PlayerMatchStatistics, String> colTournamentLocation;
     TreeTableColumn<PlayerMatchStatistics, String> colDiscipline;
     TreeTableColumn<PlayerMatchStatistics, String> colRoundName;
+    TreeTableColumn<PlayerMatchStatistics, String> colTPOne;
+    TreeTableColumn<PlayerMatchStatistics, String> colTPTwo;
 
 
     public PlayerTournamentsStatisticsTreeTableController() {
@@ -52,7 +54,13 @@ public class PlayerTournamentsStatisticsTreeTableController {
         colRoundName = new TreeTableColumn<>("Runde");
         colRoundName.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getRoundName()));
 
-        ttView.getColumns().addAll(colTournamentDate, colTournamentName, colTournamentLocation, colDiscipline, colRoundName);
+        colTPOne = new TreeTableColumn<>("Player / Team");
+        colTPOne.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getPtOneName()));
+
+        colTPTwo = new TreeTableColumn<>("Player / Team");
+        colTPTwo.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getPtTwoName()));
+
+        ttView.getColumns().addAll(colTournamentDate, colTournamentName, colTournamentLocation, colDiscipline, colRoundName, colTPOne, colTPTwo);
     }
 
     public TreeTableView<PlayerMatchStatistics> getPlStatTreeView() {
