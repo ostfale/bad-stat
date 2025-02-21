@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-public class Match implements Comparable<Match>{
+public class Match implements Comparable<Match> {
 
     private static final String EMPTY_STRING = "";
     private static final String PLAYERS_SETS_DELIMITER = ";";
@@ -29,6 +29,7 @@ public class Match implements Comparable<Match>{
     @Enumerated(EnumType.STRING)
     private Discipline discipline;
 
+    private int matchOrder = 0;
     private String disciplineName = "";
     private String roundName = "";
     private String matchDuration = "";
@@ -46,6 +47,7 @@ public class Match implements Comparable<Match>{
         this.discipline = matchRawModel.getDiscipline();
         this.disciplineName = disciplineName;
         this.roundName = matchRawModel.getRoundName();
+        this.matchOrder = extractFromRoundName(roundName);
         this.matchDuration = matchRawModel.getRoundDuration();
         this.associatedTournament = tournament;
         var playerNames = matchRawModel.getPlayerNames();
@@ -74,6 +76,14 @@ public class Match implements Comparable<Match>{
                 .stream()
                 .map(SetRawModel::getSetAsString)
                 .collect(Collectors.joining(PLAYERS_SETS_DELIMITER));
+    }
+
+    public int getMatchOrder() {
+        return matchOrder;
+    }
+
+    public void setMatchOrder(int matchOrder) {
+        this.matchOrder = matchOrder;
     }
 
     public Discipline getDiscipline() {
@@ -163,7 +173,7 @@ public class Match implements Comparable<Match>{
     @Override
     public int compareTo(Match other) {
         if (this.discipline == other.discipline) {
-            return 0;
+            return Integer.compare(other.matchOrder, this.matchOrder);
         }
 
         // Define the custom order: SINGLE -> DOUBLE -> MIXED
@@ -177,6 +187,9 @@ public class Match implements Comparable<Match>{
         }
 
         return 0; // fallback case
+    }
 
+    private int extractFromRoundName(String roundName) {
+        return MatchOrder.lookupOrder(roundName);
     }
 }
