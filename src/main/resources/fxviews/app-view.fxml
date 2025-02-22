@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="1000.0" prefWidth="1600.0"
+            minWidth="-Infinity" prefHeight="1100.0" prefWidth="1800.0"
             xmlns="http://javafx.com/javafx/23.0.1" fx:controller="de.ostfale.qk.ui.ApplicationController">
     <children>
         <BorderPane layoutX="29.0" layoutY="22.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"

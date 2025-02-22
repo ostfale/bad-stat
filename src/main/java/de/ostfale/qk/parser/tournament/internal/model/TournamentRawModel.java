@@ -62,7 +62,9 @@ public class TournamentRawModel {
     }
 
     public String getTournamentLocation() {
-        return tournamentLocation;
+        int bracketIndex = tournamentLocation.indexOf("[");
+        var strippedLocation = (bracketIndex != -1) ? tournamentLocation.substring(0, bracketIndex) : tournamentLocation;
+        return strippedLocation.trim();
     }
 
     public void setTournamentLocation(String tournamentLocation) {

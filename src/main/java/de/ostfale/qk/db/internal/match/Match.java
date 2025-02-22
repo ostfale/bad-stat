@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class Match implements Comparable<Match> {
 
     private static final String EMPTY_STRING = "";
-    private static final String PLAYERS_SETS_DELIMITER = ";";
+    private static final String PLAYERS_SETS_DELIMITER = "    ";
 
     private static final String TOURNAMENT_ID_COLUMN = "tournament_id";
     private static final String TOURNAMENT_REFERENCED_ID_COLUMN = "id";
@@ -33,7 +33,7 @@ public class Match implements Comparable<Match> {
     private String disciplineName = "";
     private String roundName = "";
     private String matchDuration = "";
-    private String playersSets = "";
+    private String matchResult = "";
 
     private String teamOnePlayerOneName;
     private String teamOnePlayerTwoName = EMPTY_STRING;
@@ -50,6 +50,7 @@ public class Match implements Comparable<Match> {
         this.matchOrder = extractFromRoundName(roundName);
         this.matchDuration = matchRawModel.getRoundDuration();
         this.associatedTournament = tournament;
+        this.matchResult = mapPlayerSetsToString(matchRawModel);
         var playerNames = matchRawModel.getPlayerNames();
         if (playerNames.size() == 2) {
             this.teamOnePlayerOneName = playerNames.getFirst();
@@ -92,7 +93,7 @@ public class Match implements Comparable<Match> {
     public String mapPlayerSetsToString(MatchRawModel matchRawModel) {
         return matchRawModel.getPlayersSets()
                 .stream()
-                .map(SetRawModel::getSetAsString)
+                .map(SetRawModel::toString)
                 .collect(Collectors.joining(PLAYERS_SETS_DELIMITER));
     }
 
@@ -180,12 +181,12 @@ public class Match implements Comparable<Match> {
         this.matchDuration = matchDuration;
     }
 
-    public String getPlayersSets() {
-        return playersSets;
+    public String getMatchResult() {
+        return matchResult;
     }
 
-    public void setPlayersSets(String playersSets) {
-        this.playersSets = playersSets;
+    public void setMatchResult(String playersSets) {
+        this.matchResult = playersSets;
     }
 
     @Override

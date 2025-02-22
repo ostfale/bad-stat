@@ -17,11 +17,10 @@ public class SetRawModel {
 
     @Override
     public String toString() {
-        return "\r Set No: " + setNo.getSetNo() + " -> " + firstValue + " : " + secondValue;
-    }
+        String firstValueString = firstValue < 10  ? " "+ firstValue : firstValue.toString();
+        String secondValueString = secondValue < 10 ? " "+ secondValue : secondValue.toString();
 
-    public String getSetAsString() {
-        return setNo.getSetNo() + ":" + getFirstValue() + ":" + getSecondValue();
+        return "(Satz " + setNo.getSetNo() + ") " + firstValueString + " : " + secondValueString;
     }
 
     public boolean firstIsBetterThanSecond() {
@@ -51,7 +50,6 @@ public class SetRawModel {
     public void setRegular(Boolean regular) {
         isRegular = regular;
     }
-
 
     @Override
     public boolean equals(Object o) {

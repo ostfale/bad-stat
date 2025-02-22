@@ -20,6 +20,7 @@ public class PlayerMatchStatistics {
     private String roundName;
     private String ptOneName;
     private String ptTwoName;
+    private String matchResult;
     private List<PlayerMatchStatistics> matchDetails = new ArrayList<>();
 
     public static PlayerMatchStatistics createChildData(Match match) {
@@ -32,6 +33,7 @@ public class PlayerMatchStatistics {
         dto.setRoundName(match.getRoundName());
         dto.setPtOneName(match.getPlayerOrTeamOne());
         dto.setPtTwoName(match.getPlayerOrTeamTwo());
+        dto.setMatchResult(match.getMatchResult());
         return dto;
     }
 
@@ -45,6 +47,14 @@ public class PlayerMatchStatistics {
     }
 
     public PlayerMatchStatistics() {
+    }
+
+    public String getMatchResult() {
+        return matchResult;
+    }
+
+    public void setMatchResult(String matchResult) {
+        this.matchResult = matchResult;
     }
 
     public String getPtOneName() {

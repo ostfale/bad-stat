@@ -26,7 +26,7 @@ public class PlayerTournamentsStatisticsTreeTableController {
     TreeTableColumn<PlayerMatchStatistics, String> colRoundName;
     TreeTableColumn<PlayerMatchStatistics, String> colTPOne;
     TreeTableColumn<PlayerMatchStatistics, String> colTPTwo;
-
+    TreeTableColumn<PlayerMatchStatistics, String> colMatchResult;
 
     public PlayerTournamentsStatisticsTreeTableController() {
         log.debug("Init PlayerTournamentsStatisticsTreeTableController");
@@ -40,27 +40,46 @@ public class PlayerTournamentsStatisticsTreeTableController {
 
     private void initTreeTableView() {
         colTournamentDate = new TreeTableColumn<>("Datum");
+        colTournamentDate.setSortable(false);
         colTournamentDate.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getTournamentDate()));
+        colTournamentDate.prefWidthProperty().bind(ttView.widthProperty().multiply(0.1));
 
         colTournamentName = new TreeTableColumn<>("Name");
+        colTournamentName.setSortable(false);
         colTournamentName.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getTournamentName()));
+        colTournamentName.prefWidthProperty().bind(ttView.widthProperty().multiply(0.2));
 
         colTournamentLocation = new TreeTableColumn<>("Ort");
+        colTournamentLocation.setSortable(false);
         colTournamentLocation.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getTournamentLocation()));
+        colTournamentLocation.prefWidthProperty().bind(ttView.widthProperty().multiply(0.05));
 
         colDiscipline = new TreeTableColumn<>("Disziplin");
+        colDiscipline.setSortable(false);
         colDiscipline.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getDisciplineName()));
+        colDiscipline.prefWidthProperty().bind(ttView.widthProperty().multiply(0.05));
 
         colRoundName = new TreeTableColumn<>("Runde");
+        colRoundName.setSortable(false);
         colRoundName.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getRoundName()));
+        colRoundName.prefWidthProperty().bind(ttView.widthProperty().multiply(0.05));
 
         colTPOne = new TreeTableColumn<>("Player / Team");
+        colTPOne.setSortable(false);
         colTPOne.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getPtOneName()));
+        colTPOne.prefWidthProperty().bind(ttView.widthProperty().multiply(0.15));
 
         colTPTwo = new TreeTableColumn<>("Player / Team");
+        colTPTwo.setSortable(false);
         colTPTwo.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getPtTwoName()));
+        colTPTwo.prefWidthProperty().bind(ttView.widthProperty().multiply(0.15));
 
-        ttView.getColumns().addAll(colTournamentDate, colTournamentName, colTournamentLocation, colDiscipline, colRoundName, colTPOne, colTPTwo);
+        colMatchResult = new TreeTableColumn<>("Gespielte Sätze");
+        colMatchResult.setSortable(false);
+        colMatchResult.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue().getMatchResult()));
+        colMatchResult.prefWidthProperty().bind(ttView.widthProperty().multiply(0.25));
+
+        ttView.getColumns().addAll(colTournamentDate, colTournamentName, colTournamentLocation, colDiscipline, colRoundName, colTPOne, colTPTwo, colMatchResult);
     }
 
     public TreeTableView<PlayerMatchStatistics> getPlStatTreeView() {
