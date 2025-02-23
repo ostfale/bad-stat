@@ -2,26 +2,26 @@ package de.ostfale.qk.ui.statistics;
 
 import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.db.api.tournament.TournamentService;
+import de.ostfale.qk.ui.statistics.model.PlayerMatchStatisticsUIModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import javafx.scene.control.TreeTableView;
-import javafx.scene.layout.AnchorPane;
 import org.jboss.logging.Logger;
 
 import java.util.List;
 
 @ApplicationScoped
-public class PlayerTournamentsStatisticsHandler {
+public class PlayerStatisticsHandler {
 
-    private static final Logger log = Logger.getLogger(PlayerTournamentsStatisticsHandler.class);
+    private static final Logger log = Logger.getLogger(PlayerStatisticsHandler.class);
 
     @Inject
-    PlayerTournamentsStatisticsTreeTableController playerTourStatsController;
+    PlayerStatisticsController playerTourStatsController;
 
     @Inject
     TournamentService tournamentService;
 
-    public List<PlayerMatchStatistics> mapFromTournaments(List<Tournament> tournaments) {
+    public List<PlayerMatchStatisticsUIModel> mapFromTournaments(List<Tournament> tournaments) {
         log.debugf("Found %d tournaments to be mapped into PlayerTournamentsStatisticsModel", tournaments.size());
 
         return tournaments.stream()
@@ -29,18 +29,18 @@ public class PlayerTournamentsStatisticsHandler {
                 .toList(); // Collect as an immutable list
     }
 
-    private PlayerMatchStatistics mapTournamentToPlToStatDTO(Tournament tournament) {
+    private PlayerMatchStatisticsUIModel mapTournamentToPlToStatDTO(Tournament tournament) {
         log.debugf("Mapping Tournament: %s", tournament.getTournamentName());
 
-        PlayerMatchStatistics rootData = PlayerMatchStatistics.createRootData(tournament);
+        PlayerMatchStatisticsUIModel rootData = PlayerMatchStatisticsUIModel.createRootData(tournament);
         rootData.setMatchDetails(mapMatchesToChildStatistics(tournament));
         return rootData;
     }
 
-    private List<PlayerMatchStatistics> mapMatchesToChildStatistics(Tournament tournament) {
+    private List<PlayerMatchStatisticsUIModel> mapMatchesToChildStatistics(Tournament tournament) {
         return tournament.getMatches()
                 .stream()
-                .map(PlayerMatchStatistics::createChildData)
+                .map(PlayerMatchStatisticsUIModel::createChildData)
                 .toList(); // Use stream API for concise and functional transformation
     }
 
@@ -50,12 +50,7 @@ public class PlayerTournamentsStatisticsHandler {
         playerTourStatsController.updateTreeTable(mapped);
     }
 
-    public TreeTableView<PlayerMatchStatistics> getUI() {
-        TreeTableView<PlayerMatchStatistics> ttv = playerTourStatsController.getPlStatTreeView();
-        AnchorPane.setTopAnchor(ttv, 0.0);
-        AnchorPane.setLeftAnchor(ttv, 0.0);
-        AnchorPane.setRightAnchor(ttv, 0.0);
-        AnchorPane.setBottomAnchor(ttv, 0.0);
-        return ttv;
+    public TreeTableView<PlayerMatchStatisticsUIModel> getUI() {
+        return playerTourStatsController.getPlStatTreeView();
     }
 }

@@ -1,6 +1,7 @@
 package de.ostfale.qk.ui;
 
-import de.ostfale.qk.ui.statistics.PlayerTournamentsStatisticsHandler;
+import de.ostfale.qk.ui.statistics.PlayerStatisticsHandler;
+import de.ostfale.qk.ui.statistics.StatisticsController;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -10,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.jboss.logging.Logger;
 
@@ -23,15 +25,21 @@ public class ApplicationController {
     Parent root;
 
     @FXML
+    private BorderPane bpApp;
+
+    @FXML
     AnchorPane centerAnchorPane;
 
     @Inject
-    PlayerTournamentsStatisticsHandler playerTourStatsHandler;
+    PlayerStatisticsHandler playerTourStatsHandler;
+
+
+    @Inject
+    StatisticsController statisticsController;
 
     @FXML
     public void initialize() {
         Stage dashboardStage = createStageWithScene();
-        configureStage(dashboardStage);
         log.info("Dashboard stage successfully initialized and shown.");
         dashboardStage.show();
     }
@@ -49,7 +57,7 @@ public class ApplicationController {
     @FXML
     void showStatisticsView(ActionEvent event) {
         log.info("Show Statistics View");
-        centerAnchorPane.getChildren().setAll(playerTourStatsHandler.getUI());
+        bpApp.setCenter(statisticsController.getUI());
         playerTourStatsHandler.refreshUI();
     }
 
@@ -71,15 +79,14 @@ public class ApplicationController {
     private Stage createStageWithScene() {
         final String STYLESHEET_PATH = "/static/css/app-view.css";
         final String ICON_PATH = "images/shuttle_logo.jpg";
+
         Stage stage = new Stage();
+        stage.setTitle("Badminton Statistics");
+        stage.getIcons().add(new Image(ICON_PATH));
+
         Scene scene = new Scene(this.root);
         scene.getStylesheets().add(STYLESHEET_PATH);
         stage.setScene(scene);
-        stage.getIcons().add(new Image(ICON_PATH));
         return stage;
-    }
-
-    private void configureStage(Stage stage) {
-        stage.setTitle("Badminton Statistics");
     }
 }

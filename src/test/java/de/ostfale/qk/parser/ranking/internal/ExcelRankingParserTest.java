@@ -23,7 +23,7 @@ class ExcelRankingParserTest extends BaseParserTest {
     ExcelRankingParser parser;
 
     @Test
-    @DisplayName("")
+    @DisplayName("Reading Excel File")
     void readExcelFile() throws URISyntaxException {
         // given
         String fileName = "ranking/Ranking_2025_Part.xlsx";

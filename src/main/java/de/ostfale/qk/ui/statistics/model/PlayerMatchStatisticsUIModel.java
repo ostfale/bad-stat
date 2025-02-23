@@ -1,4 +1,4 @@
-package de.ostfale.qk.ui.statistics;
+package de.ostfale.qk.ui.statistics.model;
 
 import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.db.internal.match.Match;
@@ -7,9 +7,9 @@ import org.jboss.logging.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerMatchStatistics {
+public class PlayerMatchStatisticsUIModel {
 
-    private static final Logger log = Logger.getLogger(PlayerMatchStatistics.class);
+    private static final Logger log = Logger.getLogger(PlayerMatchStatisticsUIModel.class);
 
     private static final String SPACE = "";
 
@@ -21,11 +21,11 @@ public class PlayerMatchStatistics {
     private String ptOneName;
     private String ptTwoName;
     private String matchResult;
-    private List<PlayerMatchStatistics> matchDetails = new ArrayList<>();
+    private List<PlayerMatchStatisticsUIModel> matchDetails = new ArrayList<>();
 
-    public static PlayerMatchStatistics createChildData(Match match) {
+    public static PlayerMatchStatisticsUIModel createChildData(Match match) {
         log.debug("PlToStatDTO :: Create new child row ");
-        var dto = new PlayerMatchStatistics();
+        var dto = new PlayerMatchStatisticsUIModel();
         dto.setTournamentName(SPACE);
         dto.setTournamentDate(SPACE);
         dto.setTournamentLocation(SPACE);
@@ -37,16 +37,16 @@ public class PlayerMatchStatistics {
         return dto;
     }
 
-    public static PlayerMatchStatistics createRootData(Tournament tournament) {
+    public static PlayerMatchStatisticsUIModel createRootData(Tournament tournament) {
         log.debug("PlToStatDTO :: Create new root row ");
-        var dto = new PlayerMatchStatistics();
+        var dto = new PlayerMatchStatisticsUIModel();
         dto.setTournamentName(tournament.getTournamentName());
         dto.setTournamentDate(tournament.getTournamentDate());
         dto.setTournamentLocation(tournament.getTournamentLocation());
         return dto;
     }
 
-    public PlayerMatchStatistics() {
+    public PlayerMatchStatisticsUIModel() {
     }
 
     public String getMatchResult() {
@@ -89,11 +89,11 @@ public class PlayerMatchStatistics {
         this.disciplineName = disciplineName;
     }
 
-    public List<PlayerMatchStatistics> getMatchDetails() {
+    public List<PlayerMatchStatisticsUIModel> getMatchDetails() {
         return matchDetails;
     }
 
-    public void setMatchDetails(List<PlayerMatchStatistics> matchDetails) {
+    public void setMatchDetails(List<PlayerMatchStatisticsUIModel> matchDetails) {
         this.matchDetails = matchDetails;
     }
 

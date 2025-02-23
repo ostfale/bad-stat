@@ -1,5 +1,6 @@
 package de.ostfale.qk.ui.statistics;
 
+import de.ostfale.qk.ui.statistics.model.PlayerMatchStatisticsUIModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.SelectionMode;
@@ -11,24 +12,24 @@ import org.jboss.logging.Logger;
 import java.util.List;
 
 @ApplicationScoped
-public class PlayerTournamentsStatisticsTreeTableController {
+public class PlayerStatisticsController {
 
-    private static final Logger log = Logger.getLogger(PlayerTournamentsStatisticsTreeTableController.class);
+    private static final Logger log = Logger.getLogger(PlayerStatisticsController.class);
 
-    private final TreeTableView<PlayerMatchStatistics> ttView;
-    private final TreeItem<PlayerMatchStatistics> root;
+    private final TreeTableView<PlayerMatchStatisticsUIModel> ttView;
+    private final TreeItem<PlayerMatchStatisticsUIModel> root;
 
     // declare tree table columns
-    TreeTableColumn<PlayerMatchStatistics, String> colTournamentDate;
-    TreeTableColumn<PlayerMatchStatistics, String> colTournamentName;
-    TreeTableColumn<PlayerMatchStatistics, String> colTournamentLocation;
-    TreeTableColumn<PlayerMatchStatistics, String> colDiscipline;
-    TreeTableColumn<PlayerMatchStatistics, String> colRoundName;
-    TreeTableColumn<PlayerMatchStatistics, String> colTPOne;
-    TreeTableColumn<PlayerMatchStatistics, String> colTPTwo;
-    TreeTableColumn<PlayerMatchStatistics, String> colMatchResult;
+    TreeTableColumn<PlayerMatchStatisticsUIModel, String> colTournamentDate;
+    TreeTableColumn<PlayerMatchStatisticsUIModel, String> colTournamentName;
+    TreeTableColumn<PlayerMatchStatisticsUIModel, String> colTournamentLocation;
+    TreeTableColumn<PlayerMatchStatisticsUIModel, String> colDiscipline;
+    TreeTableColumn<PlayerMatchStatisticsUIModel, String> colRoundName;
+    TreeTableColumn<PlayerMatchStatisticsUIModel, String> colTPOne;
+    TreeTableColumn<PlayerMatchStatisticsUIModel, String> colTPTwo;
+    TreeTableColumn<PlayerMatchStatisticsUIModel, String> colMatchResult;
 
-    public PlayerTournamentsStatisticsTreeTableController() {
+    public PlayerStatisticsController() {
         log.debug("Init PlayerTournamentsStatisticsTreeTableController");
         this.root = createTreeItemRoot();
         this.ttView = new TreeTableView<>();
@@ -82,11 +83,11 @@ public class PlayerTournamentsStatisticsTreeTableController {
         ttView.getColumns().addAll(colTournamentDate, colTournamentName, colTournamentLocation, colDiscipline, colRoundName, colTPOne, colTPTwo, colMatchResult);
     }
 
-    public TreeTableView<PlayerMatchStatistics> getPlStatTreeView() {
+    public TreeTableView<PlayerMatchStatisticsUIModel> getPlStatTreeView() {
         return ttView;
     }
 
-    public void updateTreeTable(List<PlayerMatchStatistics> playerTournaments) {
+    public void updateTreeTable(List<PlayerMatchStatisticsUIModel> playerTournaments) {
         log.debugf("Update tree table view with %d entries", playerTournaments.size());
         //   var treeItemList = playerTournaments.stream().map(this::createTreeItem).toList();
 
@@ -99,21 +100,21 @@ public class PlayerTournamentsStatisticsTreeTableController {
         ttView.setRoot(root);
     }
 
-    private TreeItem<PlayerMatchStatistics> createTreeItemRoot() {
-        var rOpsRoot = new PlayerMatchStatistics();
+    private TreeItem<PlayerMatchStatisticsUIModel> createTreeItemRoot() {
+        var rOpsRoot = new PlayerMatchStatisticsUIModel();
         return new TreeItem<>(rOpsRoot);
     }
 
-    private TreeItem<PlayerMatchStatistics> createTreeItem(PlayerMatchStatistics ptm) {
+    private TreeItem<PlayerMatchStatisticsUIModel> createTreeItem(PlayerMatchStatisticsUIModel ptm) {
         // root item
-        TreeItem<PlayerMatchStatistics> parentTreeItem = new TreeItem<>(ptm);
+        TreeItem<PlayerMatchStatisticsUIModel> parentTreeItem = new TreeItem<>(ptm);
 
         if (ptm.getMatchDetails().isEmpty()) {
             return parentTreeItem;
         }
 
         // create child tree items
-        List<TreeItem<PlayerMatchStatistics>> childTreeItems = ptm.getMatchDetails().stream().map(TreeItem::new).toList();
+        List<TreeItem<PlayerMatchStatisticsUIModel>> childTreeItems = ptm.getMatchDetails().stream().map(TreeItem::new).toList();
         parentTreeItem.getChildren().addAll(childTreeItems);
         System.out.println(ptm.getMatchDetails());
         return parentTreeItem;

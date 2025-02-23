@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Tag("unittest")
 class TournamentParserTest extends BaseTest {
 
-
     @Inject
     TournamentParserService parser;
 
@@ -47,7 +46,7 @@ class TournamentParserTest extends BaseTest {
         var expectedTournamentId = "8FE45CBC-7603-47EA-A189-2CD5A6FC6505";
         var expectedTournamentName = "Deutsche Einzelmeisterschaft U15 und U17 Bonn 2024";
         var expectedTournamentOrga = "Deutscher Badminton Verband (U19)";
-        var expectedTournamentLocation = "Bonn [01-0027]";
+        var expectedTournamentLocation = "Bonn";
         var expectedTournamentDate = "29.11.2024 bis 01.12.2024";
 
         // when
