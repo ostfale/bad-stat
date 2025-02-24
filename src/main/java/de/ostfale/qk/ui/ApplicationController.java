@@ -3,8 +3,10 @@ package de.ostfale.qk.ui;
 import de.ostfale.qk.ui.statistics.PlayerStatisticsHandler;
 import de.ostfale.qk.ui.statistics.StatisticsController;
 import io.quarkiverse.fx.views.FxView;
-import jakarta.enterprise.context.Dependent;
+import io.quarkiverse.fx.views.FxViewData;
+import io.quarkiverse.fx.views.FxViewRepository;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -15,8 +17,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.jboss.logging.Logger;
 
+@Singleton
 @FxView("app-view")
-@Dependent
 public class ApplicationController {
 
     private static final Logger log = Logger.getLogger(ApplicationController.class);
@@ -29,6 +31,11 @@ public class ApplicationController {
 
     @FXML
     AnchorPane centerAnchorPane;
+
+
+    @Inject
+    FxViewRepository fxViewRepository;
+
 
     @Inject
     PlayerStatisticsHandler playerTourStatsHandler;
@@ -47,6 +54,8 @@ public class ApplicationController {
     @FXML
     void showDashboardView(ActionEvent event) {
         log.info("Show Dashboard View");
+        FxViewData playerGrid = fxViewRepository.getViewData("player-stat-info");
+        bpApp.setCenter(playerGrid.getRootNode());
     }
 
     @FXML
