@@ -10,7 +10,7 @@ import java.util.List;
 public class PlayerRepository implements PanacheRepository<Player> {
 
     public List<Player> findByFirstnameAndLastname(String firstname, String lastname) {
-        return list("firstname = ?1 and lastname = ?2", firstname, lastname);
+        return list("firstName = ?1 and lastName = ?2", firstname, lastname);
     }
 
     public Player findByPlayerId(String playerId) {
