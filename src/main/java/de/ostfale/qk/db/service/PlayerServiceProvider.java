@@ -20,16 +20,44 @@ public class PlayerServiceProvider {
 
     @Transactional
     public PlayerInfoStatisticsDTO getPlayerInfoStatisticsDTO(String player) {
-        log.infof("Get player info statistics for player %s", player);
-        List<Player> foundPlayers = playerRepository.findByFirstnameAndLastname("Louis", "Sauerbrei");
+        String[] nameParts = splitPlayerName(player);
+        var firstName = nameParts[0];
+        var lastName = nameParts[1];
+        log.infof("Get player info statistics for player: firstName %s - lastName: %s", firstName, lastName);
+        List<Player> foundPlayers = playerRepository.findByFirstnameAndLastname(firstName, lastName);
 
         var playerInfoStatisticsDTO = new PlayerInfoStatisticsDTO();
         if (foundPlayers.size() == 1) {
-            playerInfoStatisticsDTO.setPlayerId(foundPlayers.getFirst().getPlayerId());
+            var foundPlayer = foundPlayers.getFirst();
+            playerInfoStatisticsDTO.setPlayerId(foundPlayer.getPlayerId());
             playerInfoStatisticsDTO.setPlayerName(player);
+            playerInfoStatisticsDTO.setBirthYear(foundPlayer.getYearOfBirth().toString());
+            playerInfoStatisticsDTO.setAgeClass(foundPlayer.getAgeClassDetail());
         }
 
         return playerInfoStatisticsDTO;
     }
 
+    private String[] splitPlayerName(String playerName) {
+        // Check if the input is null or blank
+        if (playerName == null || playerName.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+
+        String[] nameParts = playerName.trim().split("\\s+"); // Split into at most two parts
+
+        if (nameParts.length < 2) {
+            throw new IllegalArgumentException("Full name must include both first and last name");
+        }
+
+        String firstName = nameParts[0];
+        String lastName = nameParts[1];
+
+        if (nameParts.length == 3) {
+            firstName = nameParts[0] + " " + nameParts[1];
+            lastName = nameParts[2];
+        }
+
+        return new String[]{firstName, lastName};
+    }
 }

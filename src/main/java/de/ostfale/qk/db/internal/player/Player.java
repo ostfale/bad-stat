@@ -1,6 +1,7 @@
 package de.ostfale.qk.db.internal.player;
 
 import de.ostfale.qk.parser.ranking.internal.GenderType;
+import de.ostfale.qk.parser.ranking.internal.Group;
 import de.ostfale.qk.parser.ranking.internal.RankingPlayer;
 import jakarta.persistence.*;
 
@@ -17,6 +18,17 @@ public class Player {
     private Integer yearOfBirth;
     private Boolean favorite = false;
 
+    // general info
+    private String clubName;
+    private String districtName;
+    private String stateName;
+    private String ageClassGeneral;
+    private String ageClassDetail;
+
+    @Enumerated(EnumType.STRING)
+    private Group stateGroup;
+
+    // points info
     private Integer singlePoints = 0;
     private Integer singleRanking = 0;
     private Integer singleTournaments = 0;
@@ -29,9 +41,6 @@ public class Player {
 
     @Enumerated(EnumType.STRING)
     private GenderType gender;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private PlayerInfo playerInfo;
 
     public Player(RankingPlayer rankingPlayer) {
         this.playerId = rankingPlayer.getPlayerId();
@@ -54,8 +63,52 @@ public class Player {
 
     }
 
-    public PlayerInfo getPlayerMasterData() {
-        return playerInfo;
+    public Group getStateGroup() {
+        return stateGroup;
+    }
+
+    public void setStateGroup(Group stateGroup) {
+        this.stateGroup = stateGroup;
+    }
+
+    public String getClubName() {
+        return clubName;
+    }
+
+    public void setClubName(String clubName) {
+        this.clubName = clubName;
+    }
+
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
+    }
+
+    public String getStateName() {
+        return stateName;
+    }
+
+    public void setStateName(String stateName) {
+        this.stateName = stateName;
+    }
+
+    public String getAgeClassGeneral() {
+        return ageClassGeneral;
+    }
+
+    public void setAgeClassGeneral(String ageClassGeneral) {
+        this.ageClassGeneral = ageClassGeneral;
+    }
+
+    public String getAgeClassDetail() {
+        return ageClassDetail;
+    }
+
+    public void setAgeClassDetail(String ageClassDetail) {
+        this.ageClassDetail = ageClassDetail;
     }
 
     public Integer getSinglePoints() {
@@ -128,10 +181,6 @@ public class Player {
 
     public void setMixedTournaments(Integer mixedTournaments) {
         this.mixedTournaments = mixedTournaments;
-    }
-
-    public void setPlayerMasterData(PlayerInfo playerInfo) {
-        this.playerInfo = playerInfo;
     }
 
     public Boolean getFavorite() {

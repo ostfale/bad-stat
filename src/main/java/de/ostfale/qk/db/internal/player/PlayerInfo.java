@@ -17,8 +17,8 @@ public class PlayerInfo {
     private String clubName;
     private String districtName;
     private String stateName;
-    private  String ageClassGeneral;
-    private  String ageClassDetail;
+    private String ageClassGeneral;
+    private String ageClassDetail;
 
     @Enumerated(EnumType.STRING)
     private Group stateGroup;

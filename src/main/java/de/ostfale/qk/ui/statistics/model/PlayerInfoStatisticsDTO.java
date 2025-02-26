@@ -8,8 +8,25 @@ public class PlayerInfoStatisticsDTO {
 
     private String playerName;
     private String playerId;
+    private String birthYear;
+    private String ageClass;
 
 
+    public String getBirthYear() {
+        return birthYear;
+    }
+
+    public void setBirthYear(String birthYear) {
+        this.birthYear = birthYear;
+    }
+
+    public String getAgeClass() {
+        return ageClass;
+    }
+
+    public void setAgeClass(String ageClass) {
+        this.ageClass = ageClass;
+    }
 
     public String getPlayerName() {
         return playerName;

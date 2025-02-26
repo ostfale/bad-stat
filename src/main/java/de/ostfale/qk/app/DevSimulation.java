@@ -1,7 +1,6 @@
 package de.ostfale.qk.app;
 
 import de.ostfale.qk.db.api.MatchRepository;
-import de.ostfale.qk.db.api.PlayerInfoRepository;
 import de.ostfale.qk.db.api.PlayerRepository;
 import de.ostfale.qk.db.api.TournamentRepository;
 import de.ostfale.qk.db.api.tournament.Tournament;
@@ -62,9 +61,6 @@ public class DevSimulation {
     TournamentParserService tournamentParserService;
 
     @Inject
-    PlayerInfoRepository playerInfoRepository;
-
-    @Inject
     MatchRepository matchRepository;
 
     @Inject
@@ -93,11 +89,13 @@ public class DevSimulation {
         log.infof("Number of players to save: %d", rankingPlayerList.size());
         for (RankingPlayer rankingPlayer : rankingPlayerList) {
             Player player = new Player(rankingPlayer);
-            PlayerInfo playerInfo = createPlayerInfo(rankingPlayer);
-            playerInfo.setPlayer(player);
+            player.setClubName(rankingPlayer.getClubName());
+            player.setDistrictName(rankingPlayer.getDistrictName());
+            player.setStateName(rankingPlayer.getStateName());
+            player.setAgeClassGeneral(rankingPlayer.getAgeClassGeneral());
+            player.setAgeClassDetail(rankingPlayer.getAgeClassDetail());
 
             playerRepository.persist(player);
-            playerInfoRepository.persist(playerInfo);
         }
     }
 

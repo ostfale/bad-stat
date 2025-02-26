@@ -41,6 +41,12 @@ public class PlayerInfoStatisticsController {
     private Label lblPlayerId;
 
     @FXML
+    private Label lblAgeClass;
+
+    @FXML
+    private Label lblBirthYear;
+
+    @FXML
     public void initialize() {
         log.info("Initialize PlayerInfoStatisticsController");
         ccbYear.getItems().addAll(FXCollections.observableArrayList(SearchableYears.values()));
@@ -63,7 +69,8 @@ public class PlayerInfoStatisticsController {
         log.debugf("Update player info: %s", playerInfo);
         lblName.setText(playerInfo.getPlayerName());
         lblPlayerId.setText(playerInfo.getPlayerId());
-
+        lblBirthYear.setText(playerInfo.getBirthYear());
+        lblAgeClass.setText(playerInfo.getAgeClass());
     }
 
     // TODO replace with dynamic access of favorite players
