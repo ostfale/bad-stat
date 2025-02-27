@@ -63,6 +63,15 @@ public class Player {
 
     }
 
+    public String getName() {
+        return firstName + " " + lastName.toLowerCase();
+    }
+
+    @Override
+    public String toString() {
+        return firstName + " " + lastName;
+    }
+
     public Group getStateGroup() {
         return stateGroup;
     }

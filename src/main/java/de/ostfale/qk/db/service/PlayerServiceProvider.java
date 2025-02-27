@@ -11,6 +11,7 @@ import org.jboss.logging.Logger;
 import java.util.List;
 
 @ApplicationScoped
+@Transactional
 public class PlayerServiceProvider {
 
     private static final Logger log = Logger.getLogger(PlayerInfoStatisticsDTO.class);
@@ -18,7 +19,6 @@ public class PlayerServiceProvider {
     @Inject
     PlayerRepository playerRepository;
 
-    @Transactional
     public PlayerInfoStatisticsDTO getPlayerInfoStatisticsDTO(String player) {
         String[] nameParts = splitPlayerName(player);
         var firstName = nameParts[0];
@@ -34,8 +34,11 @@ public class PlayerServiceProvider {
             playerInfoStatisticsDTO.setBirthYear(foundPlayer.getYearOfBirth().toString());
             playerInfoStatisticsDTO.setAgeClass(foundPlayer.getAgeClassDetail());
         }
-
         return playerInfoStatisticsDTO;
+    }
+
+    public List<Player> getAllPlayers() {
+        return playerRepository.listAll();
     }
 
     private String[] splitPlayerName(String playerName) {

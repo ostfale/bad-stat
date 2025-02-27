@@ -1,5 +1,6 @@
 package de.ostfale.qk.ui.statistics;
 
+import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.service.PlayerServiceProvider;
 import de.ostfale.qk.ui.statistics.model.PlayerInfoStatisticsDTO;
 import de.ostfale.qk.ui.statistics.model.SearchableYears;
@@ -13,8 +14,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
 import org.controlsfx.control.CheckComboBox;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
+import org.controlsfx.control.textfield.CustomTextField;
+import org.controlsfx.control.textfield.TextFields;
 import org.jboss.logging.Logger;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Dependent
 @FxView("player-stat-info")
@@ -22,18 +31,26 @@ public class PlayerInfoStatisticsController {
 
     private static final Logger log = Logger.getLogger(PlayerInfoStatisticsController.class);
 
+    private List<Player> players = new ArrayList<>();
+
     @Inject
     PlayerServiceProvider playerServiceProvider;
 
     @FXML
     GridPane gpPlayerInfo;
 
+    // filter
     @FXML
     private ComboBox<String> cbPlayer;
 
     @FXML
     private CheckComboBox<SearchableYears> ccbYear;
 
+    @FXML
+    private CustomTextField ctfSearchPlayer;
+
+
+    // player general info
     @FXML
     private Label lblName;
 
@@ -51,6 +68,21 @@ public class PlayerInfoStatisticsController {
         log.info("Initialize PlayerInfoStatisticsController");
         ccbYear.getItems().addAll(FXCollections.observableArrayList(SearchableYears.values()));
         initPlayerComboBox();
+        initSearchPlayerTextField();
+    }
+
+    private void initSearchPlayerTextField() {
+        if (players.isEmpty()) {
+            players = playerServiceProvider.getAllPlayers();
+            log.infof("Initialized  %d players", players.size());
+        }
+
+        Callback<AutoCompletionBinding.ISuggestionRequest, Collection<Player>> suggestionProvider =
+                request -> players.stream()
+                        .filter(suggestion -> suggestion.getName().contains(request.getUserText().toLowerCase()))
+                        .toList();
+
+        TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
     }
 
     private void initPlayerComboBox() {
