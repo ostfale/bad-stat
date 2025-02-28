@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
@@ -46,7 +47,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
       </rowConstraints>
    <children>
-      <ComboBox fx:id="cbPlayer" prefWidth="200.0" promptText="Spieler" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
+      <ComboBox fx:id="cbPlayer" prefWidth="200.0" promptText="Favoriten" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets left="50.0" />
          </GridPane.margin>
@@ -57,7 +58,7 @@
             <Insets left="10.0" top="20.0" />
          </GridPane.margin>
       </Separator>
-      <Label text="Filter" GridPane.columnIndex="3">
+      <Label text="Spieler" GridPane.columnIndex="3">
          <GridPane.margin>
             <Insets left="20.0" top="20.0" />
          </GridPane.margin>
@@ -132,5 +133,10 @@
          </GridPane.margin>
       </Label>
       <CustomTextField fx:id="ctfSearchPlayer" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+      <CheckBox fx:id="chkFavPlayer" mnemonicParsing="false" text="Favorit" GridPane.columnIndex="7" GridPane.rowIndex="2">
+         <GridPane.margin>
+            <Insets left="10.0" />
+         </GridPane.margin>
+      </CheckBox>
    </children>
   </GridPane>

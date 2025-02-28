@@ -11,6 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -49,6 +50,8 @@ public class PlayerInfoStatisticsController {
     @FXML
     private CustomTextField ctfSearchPlayer;
 
+    @FXML
+    private CheckBox chkFavPlayer;
 
     // player general info
     @FXML
@@ -69,9 +72,34 @@ public class PlayerInfoStatisticsController {
         ccbYear.getItems().addAll(FXCollections.observableArrayList(SearchableYears.values()));
         initPlayerComboBox();
         initSearchPlayerTextField();
+        initFavPlayerCheckbox();
+    }
+
+    private void initFavPlayerCheckbox() {
+        chkFavPlayer.setOnAction(event -> {
+            log.infof("Favorite player %s is selected: %s", ctfSearchPlayer.getText(), chkFavPlayer.isSelected());
+
+            players.parallelStream()
+                    .filter(player -> player.getName().equalsIgnoreCase(ctfSearchPlayer.getText()))
+                    .findFirst()
+                    .ifPresent(player -> {
+                        player.setFavorite(chkFavPlayer.isSelected());
+                        playerServiceProvider.updatePlayerAsFavorite(player);
+                    });
+            updateFavoritePlayers();
+        });
+    }
+
+    private void updateFavoritePlayers() {
+        ObservableList<String> favoritePlayers = createPlayersList();
+        log.infof("Found %d favorite players", favoritePlayers.size());
+        cbPlayer.getItems().clear();
+        cbPlayer.getItems().addAll(favoritePlayers);
     }
 
     private void initSearchPlayerTextField() {
+        ctfSearchPlayer.setPromptText("Spieler suchen");
+
         if (players.isEmpty()) {
             players = playerServiceProvider.getAllPlayers();
             log.infof("Initialized  %d players", players.size());
@@ -105,14 +133,8 @@ public class PlayerInfoStatisticsController {
         lblAgeClass.setText(playerInfo.getAgeClass());
     }
 
-    // TODO replace with dynamic access of favorite players
     private ObservableList<String> createPlayersList() {
-        return FXCollections.observableArrayList(
-                "Louis Sauerbrei",
-                "Tony Chengxi Wang",
-                "Victoria Braun",
-                "Emily Bischoff",
-                "Frederik Volkert"
-        );
+        List<Player> favoritePlayers = playerServiceProvider.findFavoritePlayers();
+        return FXCollections.observableArrayList(favoritePlayers.stream().map(Player::getName).toList());
     }
 }

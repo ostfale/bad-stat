@@ -37,6 +37,21 @@ public class PlayerServiceProvider {
         return playerInfoStatisticsDTO;
     }
 
+    public void updatePlayerAsFavorite(Player player) {
+        Player existingPlayer = playerRepository.findByPlayerId(player.getPlayerId());
+        if (existingPlayer != null) {
+            log.infof("Updating player %s as favorite : %S", player.getName(), player.getFavorite());
+            existingPlayer.setFavorite(player.getFavorite());
+            playerRepository.persist(existingPlayer);
+        }
+    }
+
+    public List<Player> findFavoritePlayers() {
+        var foundFavoritePlayers =  playerRepository.findFavoritePlayers();
+        log.infof("Found %d favorite players", foundFavoritePlayers.size());
+        return foundFavoritePlayers;
+    }
+
     public List<Player> getAllPlayers() {
         return playerRepository.listAll();
     }

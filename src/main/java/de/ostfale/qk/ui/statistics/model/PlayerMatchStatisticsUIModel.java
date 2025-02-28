@@ -46,6 +46,15 @@ public class PlayerMatchStatisticsUIModel {
         return dto;
     }
 
+    @Override
+    public String toString() {
+        return "PlayerMatchStatisticsUIModel{" +
+                "tournamentName='" + tournamentName + '\'' +
+                ", disciplineName='" + disciplineName + '\'' +
+                ", roundName='" + roundName + '\'' +
+                '}';
+    }
+
     public PlayerMatchStatisticsUIModel() {
     }
 

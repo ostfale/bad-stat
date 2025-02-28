@@ -6,6 +6,8 @@ quarkus:
     port: 8181
   fx:
     views-root: fxviews
+  log:
+    level: INFO
 
 # To start the application using a H2 instance (./mvnw -Dquarkus-profile=prod quarkus:dev)
 "%prod":
