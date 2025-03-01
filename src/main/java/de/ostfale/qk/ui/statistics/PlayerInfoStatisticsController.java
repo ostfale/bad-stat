@@ -10,7 +10,7 @@ import jakarta.inject.Inject;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -50,7 +50,7 @@ public class PlayerInfoStatisticsController {
     private CustomTextField ctfSearchPlayer;
 
     @FXML
-    private CheckBox chkFavPlayer;
+    private Button btnFavorite;
 
     // player general info
     @FXML
@@ -71,12 +71,8 @@ public class PlayerInfoStatisticsController {
         ccbYear.getItems().addAll(FXCollections.observableArrayList(SearchableYears.values()));
         readPlayersFromDB();
         initializeComboBox();
-
-
         initSearchPlayerTextField();
-        initFavPlayerCheckbox();
     }
-
 
     // initialize combobox with favorite players
     private void initializeComboBox() {
@@ -88,8 +84,11 @@ public class PlayerInfoStatisticsController {
 
     private void handlePlayerSelection(ActionEvent event) {
         Player selectedPlayer = cbPlayer.getValue();
-        log.infof("Player selected: %s", selectedPlayer.getName());
-        updatePlayerInfo(selectedPlayer);
+        if (selectedPlayer != null) {
+            log.infof("Player selected: %s", selectedPlayer.getName());
+            updatePlayerInfo(selectedPlayer);
+            ;
+        }
     }
 
     public void updatePlayerInfo(Player player) {
@@ -100,23 +99,41 @@ public class PlayerInfoStatisticsController {
         lblAgeClass.setText(player.getAgeClassGeneral());
     }
 
+    // init text field to search player from all players list
+    private void initSearchPlayerTextField() {
+        ctfSearchPlayer.setPromptText("Spieler suchen");
 
+        if (players.isEmpty()) {
+            players = readPlayersFromDB();
+            log.infof("Initialized  %d players", players.size());
+        }
 
-    private void initFavPlayerCheckbox() {
-        chkFavPlayer.setOnAction(event -> {
-            log.infof("Favorite player %s is selected: %s", ctfSearchPlayer.getText(), chkFavPlayer.isSelected());
+        Callback<AutoCompletionBinding.ISuggestionRequest, Collection<Player>> suggestionProvider =
+                request -> players.stream()
+                        .filter(suggestion -> suggestion.getName().toLowerCase().contains(request.getUserText().toLowerCase()))
+                        .toList();
 
-            players.parallelStream()
-                    .filter(player -> player.getName().equalsIgnoreCase(ctfSearchPlayer.getText()))
-                    .findFirst()
-                    .ifPresent(player -> {
-                        player.setFavorite(chkFavPlayer.isSelected());
-                        playerServiceProvider.updatePlayerAsFavorite(player);
-                    });
-        });
+        TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
     }
 
-    public List<Player> readFavoritePlayers() {
+    // init button to toggle player as favorites
+    @FXML
+    void togglePlayerFavoriteStatus(ActionEvent event) {
+        log.debug("Toggle player favorite status");
+        String playerName = ctfSearchPlayer.getText();
+        Player foundPlayer = players.stream()
+                .filter(player -> player.getName().equalsIgnoreCase(playerName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Player not found"));
+
+        foundPlayer.setFavorite(true);
+        playerServiceProvider.updatePlayerAsFavorite(foundPlayer);
+        var favPlayers = playerServiceProvider.findFavoritePlayers();
+        cbPlayer.getItems().clear();
+        cbPlayer.getItems().addAll(favPlayers);
+    }
+
+    private List<Player> readFavoritePlayers() {
         var favPlayers = playerServiceProvider.findFavoritePlayers();
         log.debugf("PlayerInfoStatisticsController :: Read all favorite players  %d players", favPlayers.size());
         return favPlayers;
@@ -127,22 +144,5 @@ public class PlayerInfoStatisticsController {
         List<Player> allPlayers = playerServiceProvider.getAllPlayers();
         log.debugf("PlayerInfoStatisticsController :: Read all players  %d players", allPlayers.size());
         return allPlayers;
-    }
-
-
-    private void initSearchPlayerTextField() {
-        ctfSearchPlayer.setPromptText("Spieler suchen");
-
-        if (players.isEmpty()) {
-            players = playerServiceProvider.getAllPlayers();
-            log.infof("Initialized  %d players", players.size());
-        }
-
-        Callback<AutoCompletionBinding.ISuggestionRequest, Collection<Player>> suggestionProvider =
-                request -> players.stream()
-                        .filter(suggestion -> suggestion.getName().contains(request.getUserText().toLowerCase()))
-                        .toList();
-
-        TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
     }
 }

@@ -106,7 +106,7 @@ public class ExcelRankingParser implements RankingParser {
     }
 
     private String getCellValue(Row row, RankingFileColIndex colIndex) {
-        log.debugf("Parse row for column index  {}", colIndex.name());
+        log.tracef("Parse row for column index  {}", colIndex.name());
         Cell cell = row.getCell(colIndex.getIndex());
         if (cell == null) {
             return "";
