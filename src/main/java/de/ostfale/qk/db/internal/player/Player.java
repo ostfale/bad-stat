@@ -15,6 +15,7 @@ public class Player {
     private String playerId;
     private String firstName;
     private String lastName;
+    private String fullName;
     private Integer yearOfBirth;
     private Boolean favorite = false;
 
@@ -46,6 +47,7 @@ public class Player {
         this.playerId = rankingPlayer.getPlayerId();
         this.firstName = rankingPlayer.getFirstName();
         this.lastName = rankingPlayer.getLastName();
+        this.fullName = rankingPlayer.getName();
         this.yearOfBirth = rankingPlayer.getYearOfBirth();
         this.gender = rankingPlayer.getGenderType();
         this.singlePoints = rankingPlayer.getSinglePoints();
@@ -63,8 +65,16 @@ public class Player {
 
     }
 
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
     public String getName() {
-        return firstName + " " + lastName.toLowerCase();
+        return firstName + " " + lastName;
     }
 
     @Override

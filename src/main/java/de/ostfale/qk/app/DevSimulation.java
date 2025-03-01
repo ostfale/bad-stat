@@ -88,12 +88,18 @@ public class DevSimulation {
     public void savePlayer(List<RankingPlayer> rankingPlayerList) {
         log.infof("Number of players to save: %d", rankingPlayerList.size());
         for (RankingPlayer rankingPlayer : rankingPlayerList) {
+
+            if (rankingPlayer.getName().equals("Louis Sauerbrei")) {
+                rankingPlayer.setFavorite(true);
+            }
+
             Player player = new Player(rankingPlayer);
             player.setClubName(rankingPlayer.getClubName());
             player.setDistrictName(rankingPlayer.getDistrictName());
             player.setStateName(rankingPlayer.getStateName());
             player.setAgeClassGeneral(rankingPlayer.getAgeClassGeneral());
             player.setAgeClassDetail(rankingPlayer.getAgeClassDetail());
+            player.setFavorite(rankingPlayer.getFavorite());
 
             playerRepository.persist(player);
         }
@@ -171,17 +177,6 @@ public class DevSimulation {
             matchList.add(actualMatch);
         });
         matchRepository.persist(matchList);
-    }
-
-    private PlayerInfo createPlayerInfo(RankingPlayer rankingPlayer) {
-        PlayerInfo playerInfo = new PlayerInfo();
-        playerInfo.setClubName(rankingPlayer.getClubName());
-        playerInfo.setDistrictName(rankingPlayer.getDistrictName());
-        playerInfo.setStateName(rankingPlayer.getStateName());
-        playerInfo.setStateGroup(rankingPlayer.getStateGroup());
-        playerInfo.setAgeClassGeneral(rankingPlayer.getAgeClassGeneral());
-        playerInfo.setAgeClassDetail(rankingPlayer.getAgeClassDetail());
-        return playerInfo;
     }
 
     private HtmlPage loadHtmlPage(String fileName) {

@@ -2,13 +2,12 @@ package de.ostfale.qk.ui.statistics;
 
 import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.service.PlayerServiceProvider;
-import de.ostfale.qk.ui.statistics.model.PlayerInfoStatisticsDTO;
+import de.ostfale.qk.ui.statistics.favplayer.FavPlayerStringConverter;
 import de.ostfale.qk.ui.statistics.model.SearchableYears;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -42,7 +41,7 @@ public class PlayerInfoStatisticsController {
 
     // filter
     @FXML
-    private ComboBox<String> cbPlayer;
+    private ComboBox<Player> cbPlayer;
 
     @FXML
     private CheckComboBox<SearchableYears> ccbYear;
@@ -70,10 +69,38 @@ public class PlayerInfoStatisticsController {
     public void initialize() {
         log.info("Initialize PlayerInfoStatisticsController");
         ccbYear.getItems().addAll(FXCollections.observableArrayList(SearchableYears.values()));
-        initPlayerComboBox();
+        readPlayersFromDB();
+        initializeComboBox();
+
+
         initSearchPlayerTextField();
         initFavPlayerCheckbox();
     }
+
+
+    // initialize combobox with favorite players
+    private void initializeComboBox() {
+        log.debug("Initialize favorite player ComboBox");
+        cbPlayer.setConverter(new FavPlayerStringConverter());
+        cbPlayer.setOnAction(this::handlePlayerSelection);
+        cbPlayer.getItems().addAll(readFavoritePlayers());
+    }
+
+    private void handlePlayerSelection(ActionEvent event) {
+        Player selectedPlayer = cbPlayer.getValue();
+        log.infof("Player selected: %s", selectedPlayer.getName());
+        updatePlayerInfo(selectedPlayer);
+    }
+
+    public void updatePlayerInfo(Player player) {
+        log.debugf("Update player info: %s", player.getName());
+        lblName.setText(player.getName());
+        lblPlayerId.setText(player.getPlayerId());
+        lblBirthYear.setText(player.getYearOfBirth().toString());
+        lblAgeClass.setText(player.getAgeClassGeneral());
+    }
+
+
 
     private void initFavPlayerCheckbox() {
         chkFavPlayer.setOnAction(event -> {
@@ -86,16 +113,22 @@ public class PlayerInfoStatisticsController {
                         player.setFavorite(chkFavPlayer.isSelected());
                         playerServiceProvider.updatePlayerAsFavorite(player);
                     });
-            updateFavoritePlayers();
         });
     }
 
-    private void updateFavoritePlayers() {
-        ObservableList<String> favoritePlayers = createPlayersList();
-        log.infof("Found %d favorite players", favoritePlayers.size());
-        cbPlayer.getItems().clear();
-        cbPlayer.getItems().addAll(favoritePlayers);
+    public List<Player> readFavoritePlayers() {
+        var favPlayers = playerServiceProvider.findFavoritePlayers();
+        log.debugf("PlayerInfoStatisticsController :: Read all favorite players  %d players", favPlayers.size());
+        return favPlayers;
     }
+
+
+    private List<Player> readPlayersFromDB() {
+        List<Player> allPlayers = playerServiceProvider.getAllPlayers();
+        log.debugf("PlayerInfoStatisticsController :: Read all players  %d players", allPlayers.size());
+        return allPlayers;
+    }
+
 
     private void initSearchPlayerTextField() {
         ctfSearchPlayer.setPromptText("Spieler suchen");
@@ -111,30 +144,5 @@ public class PlayerInfoStatisticsController {
                         .toList();
 
         TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
-    }
-
-    private void initPlayerComboBox() {
-        cbPlayer.getItems().addAll(createPlayersList());
-        cbPlayer.setOnAction(this::handlePlayerSelection);
-
-    }
-
-    private void handlePlayerSelection(ActionEvent event) {
-        log.infof("Player selected: %s", cbPlayer.getValue());
-        var playerInfo = playerServiceProvider.getPlayerInfoStatisticsDTO(cbPlayer.getValue());
-        updatePlayerInfo(playerInfo);
-    }
-
-    private void updatePlayerInfo(PlayerInfoStatisticsDTO playerInfo) {
-        log.debugf("Update player info: %s", playerInfo);
-        lblName.setText(playerInfo.getPlayerName());
-        lblPlayerId.setText(playerInfo.getPlayerId());
-        lblBirthYear.setText(playerInfo.getBirthYear());
-        lblAgeClass.setText(playerInfo.getAgeClass());
-    }
-
-    private ObservableList<String> createPlayersList() {
-        List<Player> favoritePlayers = playerServiceProvider.findFavoritePlayers();
-        return FXCollections.observableArrayList(favoritePlayers.stream().map(Player::getName).toList());
     }
 }

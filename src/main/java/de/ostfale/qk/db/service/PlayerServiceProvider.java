@@ -19,6 +19,11 @@ public class PlayerServiceProvider {
     @Inject
     PlayerRepository playerRepository;
 
+    public List<Player> findPlayersByFullName(String fullName) {
+        log.infof("Find players by full name: %s", fullName);
+        return playerRepository.findPlayersByFullNameIgnoreCase(fullName);
+    }
+
     public PlayerInfoStatisticsDTO getPlayerInfoStatisticsDTO(String player) {
         String[] nameParts = splitPlayerName(player);
         var firstName = nameParts[0];
