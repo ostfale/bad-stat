@@ -2,6 +2,9 @@ package de.ostfale.qk.ui.statistics;
 
 import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.service.PlayerServiceProvider;
+import de.ostfale.qk.ui.app.BaseController;
+import de.ostfale.qk.ui.app.DataModel;
+import de.ostfale.qk.ui.statistics.favplayer.FavPlayerChangeListener;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerStringConverter;
 import de.ostfale.qk.ui.statistics.model.SearchableYears;
 import io.quarkiverse.fx.views.FxView;
@@ -27,7 +30,7 @@ import java.util.List;
 
 @Dependent
 @FxView("player-stat-info")
-public class PlayerInfoStatisticsController {
+public class PlayerInfoStatisticsController extends BaseController<Player> {
 
     private static final Logger log = Logger.getLogger(PlayerInfoStatisticsController.class);
 
@@ -66,29 +69,26 @@ public class PlayerInfoStatisticsController {
     private Label lblBirthYear;
 
     @FXML
+    private Label lblClub;
+
+    @FXML
+    private Label lblDistrict;
+
+    @FXML
     public void initialize() {
         log.info("Initialize PlayerInfoStatisticsController");
         ccbYear.getItems().addAll(FXCollections.observableArrayList(SearchableYears.values()));
         readPlayersFromDB();
-        initializeComboBox();
+        initFavPlayerComboboxModel();
         initSearchPlayerTextField();
     }
 
-    // initialize combobox with favorite players
-    private void initializeComboBox() {
-        log.debug("Initialize favorite player ComboBox");
-        cbPlayer.setConverter(new FavPlayerStringConverter());
-        cbPlayer.setOnAction(this::handlePlayerSelection);
-        cbPlayer.getItems().addAll(readFavoritePlayers());
-    }
-
-    private void handlePlayerSelection(ActionEvent event) {
-        Player selectedPlayer = cbPlayer.getValue();
-        if (selectedPlayer != null) {
-            log.infof("Player selected: %s", selectedPlayer.getName());
-            updatePlayerInfo(selectedPlayer);
-            ;
-        }
+    private void initFavPlayerComboboxModel() {
+        log.debug("Initialize DataModel for player combobox");
+        dataModel = new DataModel<>();
+        dataModel.setStringConverter(new FavPlayerStringConverter());
+        dataModel.setChangeListener(new FavPlayerChangeListener(this));
+        dataModel.updateModel(readFavoritePlayers(),cbPlayer);
     }
 
     public void updatePlayerInfo(Player player) {
@@ -97,6 +97,8 @@ public class PlayerInfoStatisticsController {
         lblPlayerId.setText(player.getPlayerId());
         lblBirthYear.setText(player.getYearOfBirth().toString());
         lblAgeClass.setText(player.getAgeClassGeneral());
+        lblClub.setText(player.getClubName());
+        lblDistrict.setText(player.getDistrictName());
     }
 
     // init text field to search player from all players list
@@ -128,9 +130,7 @@ public class PlayerInfoStatisticsController {
 
         foundPlayer.setFavorite(true);
         playerServiceProvider.updatePlayerAsFavorite(foundPlayer);
-        var favPlayers = playerServiceProvider.findFavoritePlayers();
-        cbPlayer.getItems().clear();
-        cbPlayer.getItems().addAll(favPlayers);
+        dataModel.setItemList(playerServiceProvider.findFavoritePlayers());
     }
 
     private List<Player> readFavoritePlayers() {

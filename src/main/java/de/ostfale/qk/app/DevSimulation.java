@@ -6,7 +6,6 @@ import de.ostfale.qk.db.api.TournamentRepository;
 import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.db.internal.match.Match;
 import de.ostfale.qk.db.internal.player.Player;
-import de.ostfale.qk.db.internal.player.PlayerInfo;
 import de.ostfale.qk.db.service.TournamentServiceProvider;
 import de.ostfale.qk.parser.ConfiguredWebClient;
 import de.ostfale.qk.parser.discipline.internal.model.DisciplineRawModel;
