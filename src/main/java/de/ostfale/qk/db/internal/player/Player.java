@@ -32,12 +32,15 @@ public class Player {
     // points info
     private Integer singlePoints = 0;
     private Integer singleRanking = 0;
+    private Integer singleAgeRanking = 0;
     private Integer singleTournaments = 0;
     private Integer doublePoints = 0;
     private Integer doubleRanking = 0;
+    private Integer doubleAgeRanking = 0;
     private Integer doubleTournaments = 0;
     private Integer mixedPoints = 0;
     private Integer mixedRanking = 0;
+    private Integer mixedAgeRanking = 0;
     private Integer mixedTournaments = 0;
 
     @Enumerated(EnumType.STRING)
@@ -52,17 +55,31 @@ public class Player {
         this.gender = rankingPlayer.getGenderType();
         this.singlePoints = rankingPlayer.getSinglePoints();
         this.singleRanking = rankingPlayer.getSingleRanking();
+        this.singleAgeRanking = rankingPlayer.getSingleAgeRanking();
         this.singleTournaments = rankingPlayer.getSingleTournaments();
         this.doublePoints = rankingPlayer.getDoublePoints();
         this.doubleRanking = rankingPlayer.getDoubleRanking();
+        this.doubleAgeRanking = rankingPlayer.getDoubleAgeRanking();
         this.doubleTournaments = rankingPlayer.getDoubleTournaments();
         this.mixedPoints = rankingPlayer.getMixedPoints();
         this.mixedRanking = rankingPlayer.getMixedRanking();
+        this.mixedAgeRanking = rankingPlayer.getMixedAgeRanking();
         this.mixedTournaments = rankingPlayer.getMixedTournaments();
     }
 
     public Player() {
+    }
 
+    public Integer getSingleAgeRanking() {
+        return singleAgeRanking;
+    }
+
+    public Integer getDoubleAgeRanking() {
+        return doubleAgeRanking;
+    }
+
+    public Integer getMixedAgeRanking() {
+        return mixedAgeRanking;
     }
 
     public String getFullName() {

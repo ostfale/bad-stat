@@ -78,6 +78,9 @@ public class ExcelRankingParser implements RankingParser {
             String ranking = getCellValue(row, RankingFileColIndex.RANKING_INDEX);
             Integer rankingInt = Integer.parseInt(ranking);
 
+            String ageRanking = getCellValue(row, RankingFileColIndex.AGE_RANKING_INDEX);
+            Integer ageRankingInt = Integer.parseInt(ageRanking);
+
             String validPoints = getCellValue(row, RankingFileColIndex.VALID_POINTS_INDEX);
             Integer points = Integer.parseInt(validPoints);
 
@@ -88,9 +91,12 @@ public class ExcelRankingParser implements RankingParser {
                     ageClassDetail, clubName, districtName, stateName, group, playerMap);
 
             switch (discipline) {
-                case SINGLE -> existingOrNewRankingPlayer.setSinglePointsAndRanking(points, rankingInt, noOfTournaments);
-                case DOUBLE -> existingOrNewRankingPlayer.setDoublePointsAndRanking(points, rankingInt, noOfTournaments);
-                case MIXED -> existingOrNewRankingPlayer.setMixedPointsAndRanking(points, rankingInt, noOfTournaments);
+                case SINGLE ->
+                        existingOrNewRankingPlayer.setSinglePointsAndRanking(points, rankingInt, ageRankingInt, noOfTournaments);
+                case DOUBLE ->
+                        existingOrNewRankingPlayer.setDoublePointsAndRanking(points, rankingInt, ageRankingInt, noOfTournaments);
+                case MIXED ->
+                        existingOrNewRankingPlayer.setMixedPointsAndRanking(points, rankingInt, ageRankingInt, noOfTournaments);
             }
 
         } catch (Exception e) {

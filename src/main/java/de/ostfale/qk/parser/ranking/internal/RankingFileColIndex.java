@@ -4,6 +4,7 @@ public enum RankingFileColIndex {
     GENDER_INDEX(0),
     DISCIPLINE_INDEX(1),
     RANKING_INDEX(2),
+    AGE_RANKING_INDEX(3),
     LAST_NAME_INDEX(4),
     FIRST_NAME_INDEX(5),
     PLAYER_ID_INDEX(6),

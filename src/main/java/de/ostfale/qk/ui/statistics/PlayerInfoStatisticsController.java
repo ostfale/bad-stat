@@ -74,6 +74,59 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
     @FXML
     private Label lblDistrict;
 
+    // player ranking ,points and tournaments
+
+    @FXML
+    private Label lblDAKRank;
+
+    @FXML
+    private Label lblDPoints;
+
+    @FXML
+    private Label lblDRank;
+
+    @FXML
+    private Label lblDTours;
+
+    @FXML
+    private Label lblMAKRank;
+
+    @FXML
+    private Label lblMRank;
+
+    @FXML
+    private Label lblMTours;
+
+    @FXML
+    private Label lblMPoints;
+
+    @FXML
+    private Label lblSAKRank;
+
+    @FXML
+    private Label lblSPoints;
+
+    @FXML
+    private Label lblSRank;
+
+    @FXML
+    private Label lblSTours;
+
+    // tournaments per year
+
+    @FXML
+    private Label lblYearMinusThree;
+
+    @FXML
+    private Label lblYearMinusTwo;
+
+    @FXML
+    private Label lblYear;
+
+    @FXML
+    private Label lblYearMinusOne;
+
+
     @FXML
     public void initialize() {
         log.info("Initialize PlayerInfoStatisticsController");
@@ -88,7 +141,7 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
         dataModel = new DataModel<>();
         dataModel.setStringConverter(new FavPlayerStringConverter());
         dataModel.setChangeListener(new FavPlayerChangeListener(this));
-        dataModel.updateModel(readFavoritePlayers(),cbPlayer);
+        dataModel.updateModel(readFavoritePlayers(), cbPlayer);
     }
 
     public void updatePlayerInfo(Player player) {
@@ -99,6 +152,22 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
         lblAgeClass.setText(player.getAgeClassGeneral());
         lblClub.setText(player.getClubName());
         lblDistrict.setText(player.getDistrictName());
+
+        lblSTours.setText(player.getSingleTournaments().toString());
+        lblDTours.setText(player.getDoubleTournaments().toString());
+        lblMTours.setText(player.getMixedTournaments().toString());
+
+        lblSPoints.setText(player.getSinglePoints().toString());
+        lblDPoints.setText(player.getDoublePoints().toString());
+        lblMPoints.setText(player.getMixedPoints().toString());
+
+        lblSRank.setText(player.getSingleRanking().toString());
+        lblDRank.setText(player.getDoubleRanking().toString());
+        lblMRank.setText(player.getMixedRanking().toString());
+
+        lblSAKRank.setText(player.getSingleAgeRanking().toString());
+        lblMAKRank.setText(player.getMixedAgeRanking().toString());
+        lblDAKRank.setText(player.getDoubleAgeRanking().toString());
     }
 
     // init text field to search player from all players list

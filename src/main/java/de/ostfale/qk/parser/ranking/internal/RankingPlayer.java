@@ -15,12 +15,15 @@ public class RankingPlayer {
     private final Group stateGroup;
     private Integer singlePoints = 0;
     private Integer singleRanking = 0;
+    private Integer singleAgeRanking = 0;
     private Integer singleTournaments = 0;
     private Integer doublePoints = 0;
     private Integer doubleRanking = 0;
+    private Integer doubleAgeRanking = 0;
     private Integer doubleTournaments = 0;
     private Integer mixedPoints = 0;
     private Integer mixedRanking = 0;
+    private Integer mixedAgeRanking = 0;
     private Integer mixedTournaments = 0;
     private Boolean isFavorite = false;
 
@@ -37,6 +40,30 @@ public class RankingPlayer {
         this.districtName = districtName;
         this.stateName = stateName;
         this.stateGroup = stateGroup;
+    }
+
+    public Integer getSingleAgeRanking() {
+        return singleAgeRanking;
+    }
+
+    public void setSingleAgeRanking(Integer singleAgeRanking) {
+        this.singleAgeRanking = singleAgeRanking;
+    }
+
+    public Integer getDoubleAgeRanking() {
+        return doubleAgeRanking;
+    }
+
+    public void setDoubleAgeRanking(Integer doubleAgeRanking) {
+        this.doubleAgeRanking = doubleAgeRanking;
+    }
+
+    public Integer getMixedAgeRanking() {
+        return mixedAgeRanking;
+    }
+
+    public void setMixedAgeRanking(Integer mixedAgeRanking) {
+        this.mixedAgeRanking = mixedAgeRanking;
     }
 
     public String getName() {
@@ -131,21 +158,24 @@ public class RankingPlayer {
         return mixedRanking;
     }
 
-    public void setSinglePointsAndRanking(Integer singlePoints, Integer singleRanking, Integer singleTournaments) {
+    public void setSinglePointsAndRanking(Integer singlePoints, Integer singleRanking, Integer ageRanking, Integer noOfTournaments) {
         this.singlePoints = singlePoints;
         this.singleRanking = singleRanking;
-        this.singleTournaments = singleTournaments;
+        this.singleAgeRanking = ageRanking;
+        this.singleTournaments = noOfTournaments;
     }
 
-    public void setDoublePointsAndRanking(Integer doublePoints, Integer doubleRanking, Integer doubleTournaments) {
+    public void setDoublePointsAndRanking(Integer doublePoints, Integer doubleRanking, Integer ageRanking, Integer noOfTournaments) {
         this.doublePoints = doublePoints;
         this.doubleRanking = doubleRanking;
-        this.doubleTournaments = doubleTournaments;
+        this.doubleAgeRanking = ageRanking;
+        this.doubleTournaments = noOfTournaments;
     }
 
-    public void setMixedPointsAndRanking(Integer mixedPoints, Integer mixedRanking, Integer mixedTournaments) {
+    public void setMixedPointsAndRanking(Integer mixedPoints, Integer mixedRanking, Integer ageRanking, Integer noOfTournaments) {
         this.mixedPoints = mixedPoints;
         this.mixedRanking = mixedRanking;
-        this.mixedTournaments = mixedTournaments;
+        this.mixedAgeRanking = ageRanking;
+        this.mixedTournaments = noOfTournaments;
     }
 }

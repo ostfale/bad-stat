@@ -49,6 +49,11 @@
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
       </rowConstraints>
    <children>
@@ -94,7 +99,7 @@
             <Insets right="10.0" />
          </GridPane.margin>
       </Separator>
-      <Label text="Name:" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+      <Label text="Name" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
@@ -104,7 +109,7 @@
             <Insets left="10.0" />
          </padding>
       </Label>
-      <Label text="Spieler  ID:" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+      <Label text="Spieler  ID" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
@@ -114,12 +119,12 @@
             <Insets left="10.0" />
          </padding>
       </Label>
-      <Label text="Geburtsjahr:" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+      <Label text="Geburtsjahr" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label text="Altersklasse:" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+      <Label text="Altersklasse" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
@@ -143,12 +148,12 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </Button>
-      <Label text="Verein;" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+      <Label text="Verein" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label text="Bezirk:" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+      <Label text="Bezirk" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
@@ -186,27 +191,101 @@
             <Font name="System Bold Italic" size="14.0" />
          </font>
          <GridPane.margin>
-            <Insets right="20.0" />
+            <Insets />
          </GridPane.margin>
       </Label>
       <Label layoutX="36.0" layoutY="285.0" text="Doppel" GridPane.halignment="RIGHT" GridPane.rowIndex="11">
          <font>
             <Font name="System Bold Italic" size="14.0" />
          </font>
-         <padding>
-            <Insets right="20.0" />
-         </padding>
       </Label>
       <Label layoutX="33.0" layoutY="315.0" text="Mixed" GridPane.halignment="RIGHT" GridPane.rowIndex="12">
          <font>
             <Font name="System Bold Italic" size="14.0" />
          </font>
          <GridPane.margin>
-            <Insets right="20.0" />
+            <Insets />
          </GridPane.margin>
       </Label>
-      <Label text="Turniere" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
-      <Label text="Punkte" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
-      <Label text="Rang" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
+      <Label text="Turniere" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font></Label>
+      <Label text="Punkte" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="9">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font></Label>
+      <Label text="Rang" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="9">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font></Label>
+      <Label text="Rang AK" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="9">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblSTours" text="Label" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="10" />
+      <Label fx:id="lblDTours" text="Label" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="11" />
+      <Label fx:id="lblMTours" text="Label" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="12" />
+      <Label fx:id="lblSPoints" text="Label" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="10" />
+      <Label fx:id="lblSRank" text="Label" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="10" />
+      <Label fx:id="lblSAKRank" text="Label" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="10" />
+      <Label fx:id="lblDPoints" text="Label" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="11" />
+      <Label fx:id="lblMPoints" text="Label" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="12" />
+      <Label fx:id="lblDRank" text="Label" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="11" />
+      <Label fx:id="lblMRank" text="Label" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="12" />
+      <Label fx:id="lblDAKRank" text="Label" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="11" />
+      <Label fx:id="lblMAKRank" text="Label" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="12" />
+      <Separator prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="14">
+         <GridPane.margin>
+            <Insets left="10.0" />
+         </GridPane.margin>
+      </Separator>
+      <Label text="Spieler Turniere" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="14">
+         <GridPane.margin>
+            <Insets left="20.0" />
+         </GridPane.margin>
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Separator prefWidth="200.0" GridPane.columnIndex="5" GridPane.columnSpan="11" GridPane.rowIndex="14">
+         <GridPane.margin>
+            <Insets right="10.0" />
+         </GridPane.margin>
+      </Separator>
+      <Label text="Turniere" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="15">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label text="2025" GridPane.halignment="RIGHT" GridPane.rowIndex="16">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="73.0" layoutY="497.0" text="2024" GridPane.halignment="RIGHT" GridPane.rowIndex="17">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="73.0" layoutY="527.0" text="2023" GridPane.halignment="RIGHT" GridPane.rowIndex="18">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="73.0" layoutY="557.0" text="2022" GridPane.halignment="RIGHT" GridPane.rowIndex="19">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Button mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="16" />
+      <Button layoutX="225.0" layoutY="493.0" mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="17" />
+      <Button layoutX="225.0" layoutY="523.0" mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="18" />
+      <Button layoutX="225.0" layoutY="553.0" mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="19" />
+      <Label fx:id="lblYear" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="16" />
+      <Label fx:id="lblYearMinusOne" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="17" />
+      <Label fx:id="lblYearMinusTwo" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="18" />
+      <Label fx:id="lblYearMinusThree" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="19" />
    </children>
   </GridPane>
