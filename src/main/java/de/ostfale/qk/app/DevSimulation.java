@@ -27,6 +27,7 @@ import org.jboss.logging.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -180,11 +181,18 @@ public class DevSimulation {
 
     private HtmlPage loadHtmlPage(String fileName) {
         try {
-            var htmlString = readFile(fileName);
+            var htmlString = readFileStream(fileName);
             return webClient.loadHtmlCodeIntoCurrentWindow(htmlString);
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String readFileStream(String fileName) throws IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        var inputStream = classLoader.getResourceAsStream(fileName);
+        Objects.requireNonNull(inputStream, "file not found! " + fileName);
+        return new String(inputStream.readAllBytes());
     }
 
     private String readFile(String fileName) throws IOException, URISyntaxException {
