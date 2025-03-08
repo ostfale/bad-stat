@@ -2,6 +2,9 @@
 
 This project uses Quarkus, to create a parser for Turnier.de. 
 
+"https://dbv.turnier.de/player-profile/bd337124-44d1-42c1-9c30-8bed91781a9b"
+"04-098314"
+
 ## Links
  + https://www.zenrows.com/blog/htmlunit-web-scraping#extract-single-element
 

@@ -1,4 +1,4 @@
-package de.ostfale.qk.parser;
+package de.ostfale.qk.web;
 
 
 import org.htmlunit.WebClient;

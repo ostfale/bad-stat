@@ -18,6 +18,7 @@ public class Player {
     private String fullName;
     private Integer yearOfBirth;
     private Boolean favorite = false;
+    private String playerTournamentId ="";
 
     // general info
     private String clubName;
@@ -68,6 +69,14 @@ public class Player {
     }
 
     public Player() {
+    }
+
+    public String getPlayerTournamentId() {
+        return playerTournamentId;
+    }
+
+    public void setPlayerTournamentId(String playerTournamentId) {
+        this.playerTournamentId = playerTournamentId;
     }
 
     public Integer getSingleAgeRanking() {

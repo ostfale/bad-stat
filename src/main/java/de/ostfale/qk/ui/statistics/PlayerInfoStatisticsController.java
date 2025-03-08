@@ -16,6 +16,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import org.controlsfx.control.CheckComboBox;
@@ -33,6 +36,8 @@ import java.util.List;
 public class PlayerInfoStatisticsController extends BaseController<Player> {
 
     private static final Logger log = Logger.getLogger(PlayerInfoStatisticsController.class);
+
+    private static final String PATH_SEPARATOR = "/";
 
     private List<Player> players = new ArrayList<>();
 
@@ -73,6 +78,9 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
 
     @FXML
     private Label lblDistrict;
+
+    @FXML
+    private Label lblIdTurnier;
 
     // player ranking ,points and tournaments
 
@@ -115,6 +123,9 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
     // tournaments per year
 
     @FXML
+    private TextField txtTourURL;
+
+    @FXML
     private Label lblYearMinusThree;
 
     @FXML
@@ -126,7 +137,6 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
     @FXML
     private Label lblYearMinusOne;
 
-
     @FXML
     public void initialize() {
         log.info("Initialize PlayerInfoStatisticsController");
@@ -134,6 +144,18 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
         readPlayersFromDB();
         initFavPlayerComboboxModel();
         initSearchPlayerTextField();
+    }
+
+    @FXML
+    void onEnterKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            var enteredUrl = txtTourURL.getText();
+            String playerTourID = extractLastPathSegment(enteredUrl);
+            log.infof("Enter key pressed with text: %s and extracted player turnier ID: %s", enteredUrl, playerTourID);
+            Player currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
+            playerServiceProvider.updatePlayersTournamentId(currentSelectedPlayer,playerTourID);
+            lblIdTurnier.setText(playerTourID);
+        }
     }
 
     private void initFavPlayerComboboxModel() {
@@ -152,6 +174,7 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
         lblAgeClass.setText(player.getAgeClassGeneral());
         lblClub.setText(player.getClubName());
         lblDistrict.setText(player.getDistrictName());
+        lblIdTurnier.setText(player.getPlayerTournamentId());
 
         lblSTours.setText(player.getSingleTournaments().toString());
         lblDTours.setText(player.getDoubleTournaments().toString());
@@ -168,7 +191,10 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
         lblSAKRank.setText(player.getSingleAgeRanking().toString());
         lblMAKRank.setText(player.getMixedAgeRanking().toString());
         lblDAKRank.setText(player.getDoubleAgeRanking().toString());
+
+        txtTourURL.setText("");                                          // reset url since it is not saved in DB
     }
+
 
     // init text field to search player from all players list
     private void initSearchPlayerTextField() {
@@ -214,4 +240,13 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
         log.debugf("PlayerInfoStatisticsController :: Read all players  %d players", allPlayers.size());
         return allPlayers;
     }
+
+    private String extractLastPathSegment(String url) {
+        if (url == null || !url.contains(PATH_SEPARATOR)) {
+            return ""; // Return empty string if URL is null or doesn't contain slashes
+        }
+        int lastSeparatorIndex = url.lastIndexOf(PATH_SEPARATOR);
+        return url.substring(lastSeparatorIndex + 1);
+    }
+
 }

@@ -1,5 +1,6 @@
 package de.ostfale.qk.parser;
 
+import de.ostfale.qk.web.ConfiguredWebClient;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlPage;
 

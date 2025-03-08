@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -39,6 +40,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -254,38 +256,58 @@
             <Insets right="10.0" />
          </GridPane.margin>
       </Separator>
-      <Label text="Turniere" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="15">
+      <Label text="Turniere" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="16">
          <font>
             <Font name="System Italic" size="12.0" />
          </font>
       </Label>
-      <Label text="2025" GridPane.halignment="RIGHT" GridPane.rowIndex="16">
+      <Label text="2025" GridPane.halignment="RIGHT" GridPane.rowIndex="17">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label layoutX="73.0" layoutY="497.0" text="2024" GridPane.halignment="RIGHT" GridPane.rowIndex="17">
+      <Label layoutX="73.0" layoutY="497.0" text="2024" GridPane.halignment="RIGHT" GridPane.rowIndex="18">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label layoutX="73.0" layoutY="527.0" text="2023" GridPane.halignment="RIGHT" GridPane.rowIndex="18">
+      <Label layoutX="73.0" layoutY="527.0" text="2023" GridPane.halignment="RIGHT" GridPane.rowIndex="19">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label layoutX="73.0" layoutY="557.0" text="2022" GridPane.halignment="RIGHT" GridPane.rowIndex="19">
+      <Label layoutX="73.0" layoutY="557.0" text="2022" GridPane.halignment="RIGHT" GridPane.rowIndex="20">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Button mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="16" />
-      <Button layoutX="225.0" layoutY="493.0" mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="17" />
-      <Button layoutX="225.0" layoutY="523.0" mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="18" />
-      <Button layoutX="225.0" layoutY="553.0" mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="19" />
-      <Label fx:id="lblYear" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="16" />
-      <Label fx:id="lblYearMinusOne" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="17" />
-      <Label fx:id="lblYearMinusTwo" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="18" />
-      <Label fx:id="lblYearMinusThree" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="19" />
+      <Button mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="17" />
+      <Button layoutX="225.0" layoutY="493.0" mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="18" />
+      <Button layoutX="225.0" layoutY="523.0" mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="19" />
+      <Button layoutX="225.0" layoutY="553.0" mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="20" />
+      <Label fx:id="lblYear" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="17" />
+      <Label fx:id="lblYearMinusOne" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="18" />
+      <Label fx:id="lblYearMinusTwo" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="19" />
+      <Label fx:id="lblYearMinusThree" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="20" />
+      <Label text="ID Turnier.de" GridPane.columnIndex="8" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+         <font>
+            <Font name="System Bold" size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblIdTurnier" GridPane.columnIndex="9" GridPane.columnSpan="4" GridPane.rowIndex="5">
+         <GridPane.margin>
+            <Insets left="10.0" />
+         </GridPane.margin>
+      </Label>
+      <Label text="Turnier URL" GridPane.halignment="RIGHT" GridPane.rowIndex="15">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtTourURL" onKeyPressed="#onEnterKeyPressed" promptText="URL der Turnierübersicht" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="15">
+         <GridPane.margin>
+            <Insets left="10.0" />
+         </GridPane.margin>
+      </TextField>
    </children>
   </GridPane>
