@@ -10,4 +10,6 @@ public interface TournamentParser {
 
     TournamentRawModel parseTournamentInfo (HtmlElement content);
 
+    Integer parseNofTournaments (String year, HtmlElement content);
+
 }

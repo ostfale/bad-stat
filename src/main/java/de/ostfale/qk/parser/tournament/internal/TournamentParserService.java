@@ -36,7 +36,6 @@ public class TournamentParserService implements TournamentParser {
             tournamentRawModel.getTournamentDisciplines().addAll(disciplineDTOS);
             tournamentYearRawModel.addTournament(tournamentRawModel);
         });
-
         return tournamentYearRawModel;
     }
 
@@ -58,5 +57,13 @@ public class TournamentParserService implements TournamentParser {
         var tournamentDate = tournamentDateElement.asNormalizedText();
 
         return new TournamentRawModel(tournamentId, tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate);
+    }
+
+    @Override
+    public Integer parseNofTournaments(String year, HtmlElement content) {
+        List<HtmlElement> tournamentElements = htmlParser.getAllTournaments(content);
+        var tournaments =  tournamentElements.size();
+        log.debugf("Found %d tournaments for year %s", tournaments, year);
+        return tournaments;
     }
 }

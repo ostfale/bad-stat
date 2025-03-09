@@ -12,7 +12,6 @@ public class HtmlParser {
 
     private static final Logger log = Logger.getLogger(HtmlParser.class);
 
-
     final String TOURNAMENT_MODULE_CARD = "//div[contains(@class, 'module module--card')]";
 
     final String TOURNAMENT_DISCIPLINES_MATCH_INFO = ".//h4[contains(@class, 'module-divider')]";
