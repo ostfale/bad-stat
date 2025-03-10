@@ -7,6 +7,7 @@ import de.ostfale.qk.ui.app.DataModel;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerChangeListener;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerStringConverter;
 import de.ostfale.qk.ui.statistics.model.SearchableYears;
+import de.ostfale.qk.web.api.WebService;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -43,6 +44,9 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
 
     @Inject
     PlayerServiceProvider playerServiceProvider;
+
+    @Inject
+    WebService webService;
 
     @FXML
     GridPane gpPlayerInfo;
@@ -153,8 +157,11 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
             String playerTourID = extractLastPathSegment(enteredUrl);
             log.infof("Enter key pressed with text: %s and extracted player turnier ID: %s", enteredUrl, playerTourID);
             Player currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-            playerServiceProvider.updatePlayersTournamentId(currentSelectedPlayer,playerTourID);
+            playerServiceProvider.updatePlayersTournamentId(currentSelectedPlayer, playerTourID);
             lblIdTurnier.setText(playerTourID);
+
+            var result = webService.getNumberOfTournamentsForYearAndPlayer(2025, "bd337124-44d1-42c1-9c30-8bed91781a9b");
+            log.infof("Tournaments Found: %d", result);
         }
     }
 
