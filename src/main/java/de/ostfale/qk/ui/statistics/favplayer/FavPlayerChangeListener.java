@@ -1,7 +1,7 @@
 package de.ostfale.qk.ui.statistics.favplayer;
 
 import de.ostfale.qk.db.internal.player.Player;
-import de.ostfale.qk.ui.statistics.PlayerInfoStatisticsController;
+import de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import org.jboss.logging.Logger;
@@ -10,9 +10,9 @@ public class FavPlayerChangeListener implements ChangeListener<Player> {
 
     private static final Logger log = Logger.getLogger(FavPlayerChangeListener.class);
 
-    private final PlayerInfoStatisticsController controller;
+    private final PlayerInfoController controller;
 
-    public FavPlayerChangeListener(PlayerInfoStatisticsController controller) {
+    public FavPlayerChangeListener(PlayerInfoController controller) {
         this.controller = controller;
     }
 

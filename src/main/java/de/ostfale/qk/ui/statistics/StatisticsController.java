@@ -1,6 +1,7 @@
 package de.ostfale.qk.ui.statistics;
 
 import de.ostfale.qk.ui.ApplicationController;
+import de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoController;
 import io.quarkiverse.fx.views.FxViewData;
 import io.quarkiverse.fx.views.FxViewRepository;
 import jakarta.inject.Inject;
@@ -24,7 +25,7 @@ public class StatisticsController {
     PlayerStatisticsHandler playerTourStatsHandler;
 
     @Inject
-    PlayerInfoStatisticsController playerInfoStatisticsController;
+    PlayerInfoController playerInfoController;
 
     private Accordion accordionContainer;
 

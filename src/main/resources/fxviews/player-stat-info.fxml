@@ -13,7 +13,7 @@
 <?import org.controlsfx.control.CheckComboBox?>
 <?import org.controlsfx.control.textfield.CustomTextField?>
 
-<GridPane fx:id="gpPlayerInfo" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ostfale.qk.ui.statistics.PlayerInfoStatisticsController">
+<GridPane fx:id="gpPlayerInfo" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoController">
       <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.3768539428711" minWidth="10.0" prefWidth="90.05016326904297" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="109.94983673095703" minWidth="10.0" prefWidth="109.94983673095703" />
@@ -145,9 +145,9 @@
          </GridPane.margin>
       </Label>
       <CustomTextField fx:id="ctfSearchPlayer" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-      <Button fx:id="btnFavorite" mnemonicParsing="false" onAction="#togglePlayerFavoriteStatus" text="+ Add" GridPane.columnIndex="7" GridPane.rowIndex="2">
+      <Button fx:id="btnFavorite" mnemonicParsing="false" onAction="#togglePlayerFavoriteStatus" text="+" GridPane.columnIndex="7" GridPane.rowIndex="2">
          <GridPane.margin>
-            <Insets left="10.0" />
+            <Insets left="50.0" />
          </GridPane.margin>
       </Button>
       <Label text="Verein" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
@@ -309,5 +309,10 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </TextField>
+      <Button fx:id="btnPlayerView" mnemonicParsing="false" onAction="#viewPlayerInfo" text="?" GridPane.columnIndex="7" GridPane.rowIndex="2">
+         <GridPane.margin>
+            <Insets left="10.0" />
+         </GridPane.margin>
+      </Button>
    </children>
   </GridPane>

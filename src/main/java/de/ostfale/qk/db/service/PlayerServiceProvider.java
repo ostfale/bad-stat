@@ -2,7 +2,7 @@ package de.ostfale.qk.db.service;
 
 import de.ostfale.qk.db.api.PlayerRepository;
 import de.ostfale.qk.db.internal.player.Player;
-import de.ostfale.qk.ui.statistics.model.PlayerInfoStatisticsDTO;
+import de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoDTO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -14,7 +14,7 @@ import java.util.List;
 @Transactional
 public class PlayerServiceProvider {
 
-    private static final Logger log = Logger.getLogger(PlayerInfoStatisticsDTO.class);
+    private static final Logger log = Logger.getLogger(PlayerInfoDTO.class);
 
     @Inject
     PlayerRepository playerRepository;

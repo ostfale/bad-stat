@@ -1,4 +1,4 @@
-package de.ostfale.qk.ui.statistics;
+package de.ostfale.qk.ui.statistics.playerinfo;
 
 import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.service.PlayerServiceProvider;
@@ -34,13 +34,16 @@ import java.util.List;
 
 @Dependent
 @FxView("player-stat-info")
-public class PlayerInfoStatisticsController extends BaseController<Player> {
+public class PlayerInfoController extends BaseController<Player> {
 
-    private static final Logger log = Logger.getLogger(PlayerInfoStatisticsController.class);
+    private static final Logger log = Logger.getLogger(PlayerInfoController.class);
 
     private static final String PATH_SEPARATOR = "/";
 
     private List<Player> players = new ArrayList<>();
+
+    @Inject
+    PlayerInfoHandler playerInfoHandler;
 
     @Inject
     PlayerServiceProvider playerServiceProvider;
@@ -60,6 +63,9 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
 
     @FXML
     private CustomTextField ctfSearchPlayer;
+
+    @FXML
+    private Button btnPlayerView;
 
     @FXML
     private Button btnFavorite;
@@ -145,7 +151,7 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
     public void initialize() {
         log.info("Initialize PlayerInfoStatisticsController");
         ccbYear.getItems().addAll(FXCollections.observableArrayList(SearchableYears.values()));
-        readPlayersFromDB();
+        playerInfoHandler.findAllPlayers();
         initFavPlayerComboboxModel();
         initSearchPlayerTextField();
     }
@@ -155,7 +161,7 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
         if (event.getCode() == KeyCode.ENTER) {
             var enteredUrl = txtTourURL.getText();
             String playerTourID = extractLastPathSegment(enteredUrl);
-            log.infof("Enter key pressed with text: %s and extracted player turnier ID: %s", enteredUrl, playerTourID);
+            log.infof("Enter key pressed with text: %s and extracted player tournament ID: %s", enteredUrl, playerTourID);
             Player currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
             playerServiceProvider.updatePlayersTournamentId(currentSelectedPlayer, playerTourID);
             lblIdTurnier.setText(playerTourID);
@@ -165,12 +171,34 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
         }
     }
 
+    // init button to toggle player as favorites
+    @FXML
+    void togglePlayerFavoriteStatus(ActionEvent event) {
+        log.debug("Toggle player favorite status");
+        String playerName = ctfSearchPlayer.getText();
+        Player foundPlayer = players.stream()
+                .filter(player -> player.getName().equalsIgnoreCase(playerName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Player not found"));
+
+        foundPlayer.setFavorite(true);
+        playerServiceProvider.updatePlayerAsFavorite(foundPlayer);
+        dataModel.setItemList(playerServiceProvider.findFavoritePlayers());
+    }
+
+    @FXML
+    void viewPlayerInfo(ActionEvent event) {
+        log.debugf("View player info");
+    }
+
     private void initFavPlayerComboboxModel() {
         log.debug("Initialize DataModel for player combobox");
+        List<Player> favPlayers = playerInfoHandler.findAllFavoritePlayers();
+
         dataModel = new DataModel<>();
         dataModel.setStringConverter(new FavPlayerStringConverter());
         dataModel.setChangeListener(new FavPlayerChangeListener(this));
-        dataModel.updateModel(readFavoritePlayers(), cbPlayer);
+        dataModel.updateModel(favPlayers, cbPlayer);
     }
 
     public void updatePlayerInfo(Player player) {
@@ -208,7 +236,7 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
         ctfSearchPlayer.setPromptText("Spieler suchen");
 
         if (players.isEmpty()) {
-            players = readPlayersFromDB();
+            players = playerInfoHandler.findAllPlayers();
             log.infof("Initialized  %d players", players.size());
         }
 
@@ -220,33 +248,6 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
         TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
     }
 
-    // init button to toggle player as favorites
-    @FXML
-    void togglePlayerFavoriteStatus(ActionEvent event) {
-        log.debug("Toggle player favorite status");
-        String playerName = ctfSearchPlayer.getText();
-        Player foundPlayer = players.stream()
-                .filter(player -> player.getName().equalsIgnoreCase(playerName))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Player not found"));
-
-        foundPlayer.setFavorite(true);
-        playerServiceProvider.updatePlayerAsFavorite(foundPlayer);
-        dataModel.setItemList(playerServiceProvider.findFavoritePlayers());
-    }
-
-    private List<Player> readFavoritePlayers() {
-        var favPlayers = playerServiceProvider.findFavoritePlayers();
-        log.debugf("PlayerInfoStatisticsController :: Read all favorite players  %d players", favPlayers.size());
-        return favPlayers;
-    }
-
-
-    private List<Player> readPlayersFromDB() {
-        List<Player> allPlayers = playerServiceProvider.getAllPlayers();
-        log.debugf("PlayerInfoStatisticsController :: Read all players  %d players", allPlayers.size());
-        return allPlayers;
-    }
 
     private String extractLastPathSegment(String url) {
         if (url == null || !url.contains(PATH_SEPARATOR)) {
@@ -255,5 +256,4 @@ public class PlayerInfoStatisticsController extends BaseController<Player> {
         int lastSeparatorIndex = url.lastIndexOf(PATH_SEPARATOR);
         return url.substring(lastSeparatorIndex + 1);
     }
-
 }
