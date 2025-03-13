@@ -1,6 +1,5 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
-import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.service.PlayerServiceProvider;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
@@ -21,26 +20,19 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
-import javafx.util.Callback;
 import org.controlsfx.control.CheckComboBox;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.CustomTextField;
-import org.controlsfx.control.textfield.TextFields;
 import org.jboss.logging.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Dependent
 @FxView("player-stat-info")
-public class PlayerInfoController extends BaseController<Player> {
+public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     private static final Logger log = Logger.getLogger(PlayerInfoController.class);
 
     private static final String PATH_SEPARATOR = "/";
-
-    private List<Player> players = new ArrayList<>();
 
     @Inject
     PlayerInfoHandler playerInfoHandler;
@@ -56,7 +48,7 @@ public class PlayerInfoController extends BaseController<Player> {
 
     // filter
     @FXML
-    private ComboBox<Player> cbPlayer;
+    private ComboBox<PlayerInfoDTO> cbPlayer;
 
     @FXML
     private CheckComboBox<SearchableYears> ccbYear;
@@ -162,12 +154,12 @@ public class PlayerInfoController extends BaseController<Player> {
             var enteredUrl = txtTourURL.getText();
             String playerTourID = extractLastPathSegment(enteredUrl);
             log.infof("Enter key pressed with text: %s and extracted player tournament ID: %s", enteredUrl, playerTourID);
-            Player currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-            playerServiceProvider.updatePlayersTournamentId(currentSelectedPlayer, playerTourID);
+            PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
+           /* playerServiceProvider.updatePlayersTournamentId(currentSelectedPlayer, playerTourID);
             lblIdTurnier.setText(playerTourID);
 
             var result = webService.getNumberOfTournamentsForYearAndPlayer(2025, "bd337124-44d1-42c1-9c30-8bed91781a9b");
-            log.infof("Tournaments Found: %d", result);
+            log.infof("Tournaments Found: %d", result);*/
         }
     }
 
@@ -176,14 +168,14 @@ public class PlayerInfoController extends BaseController<Player> {
     void togglePlayerFavoriteStatus(ActionEvent event) {
         log.debug("Toggle player favorite status");
         String playerName = ctfSearchPlayer.getText();
-        Player foundPlayer = players.stream()
+      /*  Player foundPlayer = players.stream()
                 .filter(player -> player.getName().equalsIgnoreCase(playerName))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Player not found"));
 
-        foundPlayer.setFavorite(true);
-        playerServiceProvider.updatePlayerAsFavorite(foundPlayer);
-        dataModel.setItemList(playerServiceProvider.findFavoritePlayers());
+        foundPlayer.setFavorite(true);*/
+     /*   playerServiceProvider.updatePlayerAsFavorite(foundPlayer);
+        dataModel.setItemList(playerServiceProvider.findFavoritePlayers());*/
     }
 
     @FXML
@@ -193,7 +185,7 @@ public class PlayerInfoController extends BaseController<Player> {
 
     private void initFavPlayerComboboxModel() {
         log.debug("Initialize DataModel for player combobox");
-        List<Player> favPlayers = playerInfoHandler.findAllFavoritePlayers();
+        List<PlayerInfoDTO> favPlayers = playerInfoHandler.findAllFavoritePlayers();
 
         dataModel = new DataModel<>();
         dataModel.setStringConverter(new FavPlayerStringConverter());
@@ -201,31 +193,32 @@ public class PlayerInfoController extends BaseController<Player> {
         dataModel.updateModel(favPlayers, cbPlayer);
     }
 
-    public void updatePlayerInfo(Player player) {
-        log.debugf("Update player info: %s", player.getName());
-        lblName.setText(player.getName());
+    public void updatePlayerInfo(PlayerInfoDTO playerInfoDTO) {
+        log.debugf("Update player info: %s", playerInfoDTO.getPlayerName());
+        var player = playerInfoHandler.calculatePlayersAgeClassRanking(playerInfoDTO);
+        lblName.setText(player.getPlayerName());
         lblPlayerId.setText(player.getPlayerId());
-        lblBirthYear.setText(player.getYearOfBirth().toString());
-        lblAgeClass.setText(player.getAgeClassGeneral());
+        lblBirthYear.setText(player.getBirthYear());
+        lblAgeClass.setText(player.getAgeClass());
         lblClub.setText(player.getClubName());
         lblDistrict.setText(player.getDistrictName());
         lblIdTurnier.setText(player.getPlayerTournamentId());
 
-        lblSTours.setText(player.getSingleTournaments().toString());
-        lblDTours.setText(player.getDoubleTournaments().toString());
-        lblMTours.setText(player.getMixedTournaments().toString());
+        lblSTours.setText(player.getSingleDisciplineStatistics().tournaments().toString());
+        lblDTours.setText(player.getDoubleDisciplineStatistics().tournaments().toString());
+        lblMTours.setText(player.getMixedDisciplineStatistics().tournaments().toString());
 
-        lblSPoints.setText(player.getSinglePoints().toString());
-        lblDPoints.setText(player.getDoublePoints().toString());
-        lblMPoints.setText(player.getMixedPoints().toString());
+        lblSPoints.setText(player.getSingleDisciplineStatistics().points().toString());
+        lblDPoints.setText(player.getDoubleDisciplineStatistics().points().toString());
+        lblMPoints.setText(player.getMixedDisciplineStatistics().points().toString());
 
-        lblSRank.setText(player.getSingleRanking().toString());
-        lblDRank.setText(player.getDoubleRanking().toString());
-        lblMRank.setText(player.getMixedRanking().toString());
+        lblSRank.setText(player.getSingleDisciplineStatistics().fullRank().toString());
+        lblDRank.setText(player.getDoubleDisciplineStatistics().fullRank().toString());
+        lblMRank.setText(player.getMixedDisciplineStatistics().fullRank().toString());
 
-        lblSAKRank.setText(player.getSingleAgeRanking().toString());
-        lblMAKRank.setText(player.getMixedAgeRanking().toString());
-        lblDAKRank.setText(player.getDoubleAgeRanking().toString());
+        lblSAKRank.setText(player.getSingleDisciplineStatistics().ageClassRank().toString());
+        lblMAKRank.setText(player.getMixedDisciplineStatistics().ageClassRank().toString());
+        lblDAKRank.setText(player.getDoubleDisciplineStatistics().ageClassRank().toString());
 
         txtTourURL.setText("");                                          // reset url since it is not saved in DB
     }
@@ -235,17 +228,17 @@ public class PlayerInfoController extends BaseController<Player> {
     private void initSearchPlayerTextField() {
         ctfSearchPlayer.setPromptText("Spieler suchen");
 
-        if (players.isEmpty()) {
+      /*  if (players.isEmpty()) {
             players = playerInfoHandler.findAllPlayers();
             log.infof("Initialized  %d players", players.size());
         }
 
-        Callback<AutoCompletionBinding.ISuggestionRequest, Collection<Player>> suggestionProvider =
+        Callback<AutoCompletionBinding.ISuggestionRequest, Collection<PlayerInfoDTO>> suggestionProvider =
                 request -> players.stream()
                         .filter(suggestion -> suggestion.getName().toLowerCase().contains(request.getUserText().toLowerCase()))
-                        .toList();
+                        .toList();*/
 
-        TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
+        // TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
     }
 
 
