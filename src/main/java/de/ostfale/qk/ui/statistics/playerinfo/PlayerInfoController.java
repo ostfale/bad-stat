@@ -143,7 +143,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     public void initialize() {
         log.info("Initialize PlayerInfoStatisticsController");
         ccbYear.getItems().addAll(FXCollections.observableArrayList(SearchableYears.values()));
-        playerInfoHandler.findAllPlayers();
         initFavPlayerComboboxModel();
         initSearchPlayerTextField();
     }
@@ -193,9 +192,9 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         dataModel.updateModel(favPlayers, cbPlayer);
     }
 
-    public void updatePlayerInfo(PlayerInfoDTO playerInfoDTO) {
-        log.debugf("Update player info: %s", playerInfoDTO.getPlayerName());
-        var player = playerInfoHandler.calculatePlayersAgeClassRanking(playerInfoDTO);
+    public void updatePlayerInfo(PlayerInfoDTO player) {
+        log.debugf("Update player info: %s", player.getPlayerName());
+        // var player = playerInfoHandler.calculatePlayersAgeClassRanking(playerInfoDTO);
         lblName.setText(player.getPlayerName());
         lblPlayerId.setText(player.getPlayerId());
         lblBirthYear.setText(player.getBirthYear());
@@ -216,9 +215,9 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         lblDRank.setText(player.getDoubleDisciplineStatistics().fullRank().toString());
         lblMRank.setText(player.getMixedDisciplineStatistics().fullRank().toString());
 
-        lblSAKRank.setText(player.getSingleDisciplineStatistics().ageClassRank().toString());
-        lblMAKRank.setText(player.getMixedDisciplineStatistics().ageClassRank().toString());
-        lblDAKRank.setText(player.getDoubleDisciplineStatistics().ageClassRank().toString());
+        lblSAKRank.setText(playerInfoHandler.getSingleRankingForAgeClass(player).toString());
+        lblDAKRank.setText(playerInfoHandler.getDoubleRankingForAgeClass(player).toString());
+        lblMAKRank.setText(playerInfoHandler.getMixedRankingForAgeClass(player).toString());
 
         txtTourURL.setText("");                                          // reset url since it is not saved in DB
     }

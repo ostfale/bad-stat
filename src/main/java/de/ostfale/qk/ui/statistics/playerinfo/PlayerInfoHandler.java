@@ -9,12 +9,11 @@ import org.jboss.logging.Logger;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.BiConsumer;
 import java.util.function.ToIntFunction;
 
 @ApplicationScoped
 public class PlayerInfoHandler {
+
 
     private static final Logger log = Logger.getLogger(PlayerInfoHandler.class);
 
@@ -27,75 +26,49 @@ public class PlayerInfoHandler {
     WebService webService;
 
     private List<Player> allPlayers;
-
-    public PlayerInfoDTO prepareData(String playerName) {
-        log.debug("Prepare data for player info");
-        return new PlayerInfoDTO();
-    }
-
-   /* public Player calculatePlayersAgeClassRanking(Player player, List<Player> allPlayers) {
-        List<Player> filteredByAgeClass = allPlayers.stream()
-                .filter(p -> p.getAgeClassGeneral().equalsIgnoreCase(player.getAgeClassGeneral()))
-                .toList();
-
-        var singlePlayerList = filteredByAgeClass.stream().sorted(Comparator.comparingInt(Player::getSinglePoints).reversed()).toList();
-        var doublePlayerList = filteredByAgeClass.stream().sorted(Comparator.comparingInt(Player::getDoublePoints).reversed()).toList();
-        var mixedPlayerList = filteredByAgeClass.stream().sorted(Comparator.comparingInt(Player::getMixedPoints).reversed()).toList();
-
-        Integer singleRank = singlePlayerList.indexOf(player) + 1;
-        Integer doubleRank = doublePlayerList.indexOf(player) + 1;
-        Integer mixedRank = mixedPlayerList.indexOf(player) + 1;
-
-        player.setSingleRanking(singleRank);
-        player.setDoubleRanking(doubleRank);
-        player.setMixedRanking(mixedRank);
-
-        return player;
-    }*/
-
-
-    public PlayerInfoDTO calculatePlayersAgeClassRanking(PlayerInfoDTO player) {
-        List<Player> filteredPlayers = filterByAgeClass(allPlayers, player.getAgeClass());
-        Player currentPlayer = allPlayers.stream().filter(p -> p.getPlayerId().equalsIgnoreCase(player.getPlayerId())).findFirst().orElse(null);
-
-        setRankingForDiscipline(currentPlayer, filteredPlayers, Player::getSinglePoints, Player::setSingleRanking);
-        setRankingForDiscipline(currentPlayer, filteredPlayers, Player::getDoublePoints, Player::setDoubleRanking);
-        setRankingForDiscipline(currentPlayer, filteredPlayers, Player::getMixedPoints, Player::setMixedRanking);
-
-        return new PlayerInfoDTO(Objects.requireNonNull(currentPlayer, "Player not found"));
-    }
-
-    private List<Player> filterByAgeClass(List<Player> players, String ageClass) {
-        return players.stream()
-                .filter(p -> p.getAgeClassGeneral().equalsIgnoreCase(ageClass))
-                .toList();
-    }
-
-    private void setRankingForDiscipline(Player player, List<Player> filteredPlayers, ToIntFunction<Player> pointExtractor, BiConsumer<Player, Integer> rankSetter) {
-        List<Player> sortedPlayers = filteredPlayers.stream()
-                .sorted(Comparator.comparingInt(pointExtractor).reversed())
-                .toList();
-        int rank = sortedPlayers.indexOf(player) + 1;
-        rankSetter.accept(player, rank);
-    }
-
+    private List<PlayerInfoDTO> allPlayer;
 
     public List<PlayerInfoDTO> findAllFavoritePlayers() {
-        var favPlayers = playerServiceProvider.findFavoritePlayers();
+        if (allPlayer == null) {
+            allPlayer = playerServiceProvider.getAllPlayers().stream().map(PlayerInfoDTO::new).toList();
+        }
+        var favPlayers = allPlayer.stream().filter(PlayerInfoDTO::getFavorite).toList();
         log.debugf("PlayerInfoHandler :: Read all favorite players  %d players", favPlayers.size());
-        return favPlayers.stream().map(PlayerInfoDTO::new).toList();
+        return favPlayers;
     }
+
+    public Integer getSingleRankingForAgeClass(PlayerInfoDTO player) {
+        return calculateRanking(player, PlayerInfoDTO::getSinglePoints, "single");
+    }
+
+    public Integer getDoubleRankingForAgeClass(PlayerInfoDTO player) {
+        return calculateRanking(player, PlayerInfoDTO::getDoublePoints, "double");
+    }
+
+    public Integer getMixedRankingForAgeClass(PlayerInfoDTO player) {
+        return calculateRanking(player, PlayerInfoDTO::getMixedPoints, "mixed");
+    }
+
+    private Integer calculateRanking(PlayerInfoDTO player, ToIntFunction<PlayerInfoDTO> pointsExtractor, String rankingType) {
+        List<PlayerInfoDTO> filteredPlayers = filterByAgeClassAndGender(allPlayer, player.getAgeClass(), player.getGender());
+        var sortedPlayers = filteredPlayers.stream()
+                .sorted(Comparator.comparingInt(pointsExtractor).reversed())
+                .toList();
+        int rank = sortedPlayers.indexOf(player) + 1;
+        log.debugf("Calculated %s ranking for player %s is %d", rankingType, player.getPlayerName(), rank);
+        return rank;
+    }
+
+    private List<PlayerInfoDTO> filterByAgeClassAndGender(List<PlayerInfoDTO> players, String ageClass, String gender) {
+        return players.stream()
+                .filter(p -> p.getAgeClass().equalsIgnoreCase(ageClass) && p.getGender().equalsIgnoreCase(gender))
+                .toList();
+    }
+
 
     public List<PlayerInfoDTO> findPlayerByName(String playerName) {
         log.debugf("PlayerInfoHandler :: Find player by name %s", playerName);
         return allPlayers.stream().filter(player -> player.getName().equalsIgnoreCase(playerName)).map(PlayerInfoDTO::new).toList();
     }
 
-    public List<PlayerInfoDTO> findAllPlayers() {
-        if (allPlayers == null) {
-            allPlayers = playerServiceProvider.getAllPlayers();
-        }
-        log.debugf("PlayerInfoHandler :: Read all players  %d players", allPlayers.size());
-        return allPlayers.stream().map(PlayerInfoDTO::new).toList();
-    }
 }
