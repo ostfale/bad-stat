@@ -3,29 +3,32 @@ package de.ostfale.qk.ui.statistics.playerinfo;
 import de.ostfale.qk.db.internal.player.Player;
 import org.jboss.logging.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlayerInfoDTO {
 
     private static final Logger log = Logger.getLogger(PlayerInfoDTO.class);
 
-    private String playerName;
-    private String gender;
-    private String birthYear;
-    private String ageClass;
-    private String ageClassDetail;
-    private String clubName;
-    private String districtName;
-    private String stateName;
-    private String stateGroup;
+    private final String playerName;
+    private final String gender;
+    private final String birthYear;
+    private final String ageClass;
+    private final String ageClassDetail;
+    private final String clubName;
+    private final String districtName;
+    private final String stateName;
+    private final String stateGroup;
+    private final String playerId;
 
-    private String playerId;
     private String playerTournamentId;
     private Boolean favorite;
-
 
     // tournament statistics
     private DisciplineStatisticsDTO singleDisciplineStatistics;
     private DisciplineStatisticsDTO doubleDisciplineStatistics;
     private DisciplineStatisticsDTO mixedDisciplineStatistics;
+    private final List<TournamentsStatisticsDTO> tournamentsStatistics = new ArrayList<>(4);
 
     public PlayerInfoDTO(Player player) {
         this.playerName = player.getName();
@@ -51,20 +54,16 @@ public class PlayerInfoDTO {
         return playerName;
     }
 
+    public List<TournamentsStatisticsDTO> getTournamentsStatistics() {
+        return tournamentsStatistics;
+    }
+
     public String getStateName() {
         return stateName;
     }
 
-    public void setStateName(String stateName) {
-        this.stateName = stateName;
-    }
-
     public String getStateGroup() {
         return stateGroup;
-    }
-
-    public void setStateGroup(String stateGroup) {
-        this.stateGroup = stateGroup;
     }
 
     public Integer getSinglePoints() {
@@ -85,10 +84,6 @@ public class PlayerInfoDTO {
 
     public String getAgeClassDetail() {
         return ageClassDetail;
-    }
-
-    public void setAgeClassDetail(String ageClassDetail) {
-        this.ageClassDetail = ageClassDetail;
     }
 
     public DisciplineStatisticsDTO getSingleDisciplineStatistics() {
@@ -119,16 +114,8 @@ public class PlayerInfoDTO {
         return clubName;
     }
 
-    public void setClubName(String clubName) {
-        this.clubName = clubName;
-    }
-
     public String getDistrictName() {
         return districtName;
-    }
-
-    public void setDistrictName(String districtName) {
-        this.districtName = districtName;
     }
 
     public String getPlayerTournamentId() {
@@ -151,32 +138,16 @@ public class PlayerInfoDTO {
         return birthYear;
     }
 
-    public void setBirthYear(String birthYear) {
-        this.birthYear = birthYear;
-    }
-
     public String getAgeClass() {
         return ageClass;
-    }
-
-    public void setAgeClass(String ageClass) {
-        this.ageClass = ageClass;
     }
 
     public String getPlayerName() {
         return playerName;
     }
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
-
     public String getPlayerId() {
         return playerId;
-    }
-
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId;
     }
 
     private DisciplineStatisticsDTO mapSingleDisciplineStatistics(Player player) {

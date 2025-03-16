@@ -37,6 +37,8 @@ public class PlayerInfoHandler {
         return allPlayer;
     }
 
+
+
     public Integer getSingleRankingForAgeClass(PlayerInfoDTO player) {
         return calculateRanking(player, PlayerInfoDTO::getSinglePoints, "single");
     }

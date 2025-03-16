@@ -1,11 +1,9 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
-import de.ostfale.qk.db.service.PlayerServiceProvider;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerChangeListener;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerStringConverter;
-import de.ostfale.qk.web.api.WebService;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -37,12 +35,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @Inject
     PlayerInfoHandler playerInfoHandler;
-
-    @Inject
-    PlayerServiceProvider playerServiceProvider;
-
-    @Inject
-    WebService webService;
 
     @FXML
     GridPane gpPlayerInfo;
