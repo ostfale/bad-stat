@@ -96,6 +96,7 @@ public class DevSimulation {
             player.setClubName(rankingPlayer.getClubName());
             player.setDistrictName(rankingPlayer.getDistrictName());
             player.setStateName(rankingPlayer.getStateName());
+            player.setStateGroup(rankingPlayer.getStateGroup());
             player.setAgeClassGeneral(rankingPlayer.getAgeClassGeneral());
             player.setAgeClassDetail(rankingPlayer.getAgeClassDetail());
             player.setFavorite(rankingPlayer.getFavorite());

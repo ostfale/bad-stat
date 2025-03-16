@@ -27,7 +27,6 @@ public enum Group {
         return displayName;
     }
 
-
     @Override
     public String toString() {
         return displayName;

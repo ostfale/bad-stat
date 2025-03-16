@@ -14,6 +14,8 @@ public class PlayerInfoDTO {
     private String ageClassDetail;
     private String clubName;
     private String districtName;
+    private String stateName;
+    private String stateGroup;
 
     private String playerId;
     private String playerTournamentId;
@@ -36,6 +38,8 @@ public class PlayerInfoDTO {
         this.ageClassDetail = player.getAgeClassDetail();
         this.clubName = player.getClubName();
         this.districtName = player.getDistrictName();
+        this.stateName = player.getStateName();
+        this.stateGroup = player.getStateGroup() == null ? "" : player.getStateGroup().toString();
 
         this.singleDisciplineStatistics = mapSingleDisciplineStatistics(player);
         this.doubleDisciplineStatistics = mapDoubleDisciplineStatistics(player);
@@ -45,6 +49,22 @@ public class PlayerInfoDTO {
     @Override
     public String toString() {
         return playerName;
+    }
+
+    public String getStateName() {
+        return stateName;
+    }
+
+    public void setStateName(String stateName) {
+        this.stateName = stateName;
+    }
+
+    public String getStateGroup() {
+        return stateGroup;
+    }
+
+    public void setStateGroup(String stateGroup) {
+        this.stateGroup = stateGroup;
     }
 
     public Integer getSinglePoints() {

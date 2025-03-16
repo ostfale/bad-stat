@@ -6,11 +6,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
-<?import org.controlsfx.control.CheckComboBox?>
 <?import org.controlsfx.control.textfield.CustomTextField?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
@@ -65,7 +65,6 @@
             <Insets left="50.0" />
          </GridPane.margin>
       </ComboBox>
-      <CheckComboBox fx:id="ccbYear" prefWidth="100.0" title="Jahr" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="2" />
       <Separator prefWidth="200.0" GridPane.columnSpan="3">
          <GridPane.margin>
             <Insets left="10.0" top="20.0" />
@@ -112,27 +111,27 @@
             <Insets left="10.0" />
          </padding>
       </Label>
-      <Label text="Spieler  ID" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+      <Label text="Spieler  ID" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label fx:id="lblPlayerId" GridPane.columnIndex="1" GridPane.rowIndex="6">
+      <Label fx:id="lblPlayerId" GridPane.columnIndex="4" GridPane.rowIndex="5">
          <padding>
             <Insets left="10.0" />
          </padding>
       </Label>
-      <Label text="Geburtsjahr" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+      <Label text="Geburtsjahr" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label text="Altersklasse" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+      <Label text="Altersklasse" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label fx:id="lblBirthYear" GridPane.columnIndex="4" GridPane.rowIndex="5">
+      <Label fx:id="lblBirthYear" GridPane.columnIndex="8" GridPane.rowIndex="5">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
@@ -140,36 +139,39 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="lblAgeClass" GridPane.columnIndex="4" GridPane.rowIndex="6">
+      <Label fx:id="lblAgeClass" GridPane.columnIndex="8" GridPane.rowIndex="6">
          <GridPane.margin>
             <Insets left="10.0" />
          </GridPane.margin>
       </Label>
-      <CustomTextField fx:id="ctfSearchPlayer" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-      <Button fx:id="btnFavorite" mnemonicParsing="false" onAction="#togglePlayerFavoriteStatus" GridPane.columnIndex="7" GridPane.rowIndex="2">
+      <CustomTextField fx:id="ctfSearchPlayer" promptText="Spieler suchen" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+      <Button fx:id="btnFavorite" mnemonicParsing="false" onAction="#togglePlayerFavoriteStatus" GridPane.columnIndex="5" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets left="50.0" />
          </GridPane.margin>
          <graphic>
             <FontIcon iconLiteral="fa-star-o" />
          </graphic>
+         <tooltip>
+            <Tooltip text="Zu den Favoriten hinzufügen" />
+         </tooltip>
       </Button>
-      <Label text="Verein" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+      <Label text="Verein" GridPane.columnIndex="9" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label text="Bezirk" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+      <Label text="Bezirk" GridPane.columnIndex="9" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label fx:id="lblClub" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="5">
+      <Label fx:id="lblClub" GridPane.columnIndex="10" GridPane.columnSpan="2" GridPane.rowIndex="5">
          <GridPane.margin>
             <Insets left="10.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="lblDistrict" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="6">
+      <Label fx:id="lblDistrict" GridPane.columnIndex="10" GridPane.columnSpan="2" GridPane.rowIndex="6">
          <GridPane.margin>
             <Insets left="10.0" />
          </GridPane.margin>
@@ -293,12 +295,12 @@
       <Label fx:id="lblYearMinusOne" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="18" />
       <Label fx:id="lblYearMinusTwo" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="19" />
       <Label fx:id="lblYearMinusThree" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="20" />
-      <Label text="ID Turnier.de" GridPane.columnIndex="8" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+      <Label text="ID Turnier.de" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
          <font>
             <Font name="System Bold" size="11.0" />
          </font>
       </Label>
-      <Label fx:id="lblIdTurnier" GridPane.columnIndex="9" GridPane.columnSpan="4" GridPane.rowIndex="5">
+      <Label fx:id="lblIdTurnier" GridPane.columnIndex="4" GridPane.columnSpan="4" GridPane.rowIndex="6">
          <GridPane.margin>
             <Insets left="10.0" />
          </GridPane.margin>
@@ -313,13 +315,46 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </TextField>
-      <Button fx:id="btnPlayerView" mnemonicParsing="false" onAction="#viewPlayerInfo" GridPane.columnIndex="7" GridPane.rowIndex="2">
+      <Button fx:id="btnPlayerView" mnemonicParsing="false" onAction="#viewPlayerInfo" GridPane.columnIndex="5" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets left="10.0" />
          </GridPane.margin>
          <graphic>
             <FontIcon iconLiteral="far-eye" />
          </graphic>
+         <tooltip>
+            <Tooltip text="Zeige Spielerdaten " />
+         </tooltip>
       </Button>
+      <Label text="M / F" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label text="Gruppe" GridPane.columnIndex="12" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label text="Landesverband" GridPane.columnIndex="12" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblGroup" GridPane.columnIndex="13" GridPane.columnSpan="2" GridPane.rowIndex="5">
+         <GridPane.margin>
+            <Insets left="10.0" />
+         </GridPane.margin>
+      </Label>
+      <Label fx:id="lblState" GridPane.columnIndex="13" GridPane.columnSpan="2" GridPane.rowIndex="6">
+         <GridPane.margin>
+            <Insets left="10.0" />
+         </GridPane.margin>
+      </Label>
+      <Label fx:id="lblGender" GridPane.columnIndex="1" GridPane.rowIndex="6">
+         <GridPane.margin>
+            <Insets left="10.0" />
+         </GridPane.margin>
+      </Label>
    </children>
   </GridPane>

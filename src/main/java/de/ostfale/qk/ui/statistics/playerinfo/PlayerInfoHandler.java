@@ -49,6 +49,14 @@ public class PlayerInfoHandler {
         return calculateRanking(player, PlayerInfoDTO::getMixedPoints, "mixed");
     }
 
+    public void updatePlayerTournamentId(PlayerInfoDTO playerDTO, String playerTournamentId) {
+        Objects.requireNonNull(playerDTO, "Player name must not be null");
+        log.debugf("PlayerInfoHandler :: Updating player %s with tournament id %s", playerDTO.getPlayerName(), playerDTO.getPlayerTournamentId());
+        playerDTO.setPlayerTournamentId(playerTournamentId);
+        Player player = playerServiceProvider.findPlayerById(playerDTO.getPlayerId());
+        playerServiceProvider.updatePlayersTournamentId(player, playerDTO.getPlayerTournamentId());
+    }
+
     public void toggleAndSavePlayerAsFavorite(PlayerInfoDTO playerDTO) {
         Objects.requireNonNull(playerDTO, "Player name must not be null");
         if (playerDTO.getFavorite()) {

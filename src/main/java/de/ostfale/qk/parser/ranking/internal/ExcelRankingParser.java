@@ -71,7 +71,6 @@ public class ExcelRankingParser implements RankingParser {
             String stateGroup = getCellValue(row, RankingFileColIndex.STATE_GROUP_INDEX);
             Group group = Group.lookup(stateGroup);
 
-
             String disciplineString = getCellValue(row, RankingFileColIndex.DISCIPLINE_INDEX);
             Discipline discipline = Discipline.lookup(disciplineString);
 

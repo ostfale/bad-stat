@@ -5,12 +5,10 @@ import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerChangeListener;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerStringConverter;
-import de.ostfale.qk.ui.statistics.model.SearchableYears;
 import de.ostfale.qk.web.api.WebService;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -21,7 +19,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
-import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.control.textfield.TextFields;
@@ -55,9 +52,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     private ComboBox<PlayerInfoDTO> cbPlayer;
 
     @FXML
-    private CheckComboBox<SearchableYears> ccbYear;
-
-    @FXML
     private CustomTextField ctfSearchPlayer;
 
     @FXML
@@ -87,6 +81,15 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @FXML
     private Label lblIdTurnier;
+
+    @FXML
+    private Label lblGroup;
+
+    @FXML
+    private Label lblState;
+
+    @FXML
+    private Label lblGender;
 
     // player ranking ,points and tournaments
 
@@ -146,7 +149,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     public void initialize() {
         log.info("Initialize PlayerInfoStatisticsController");
-        ccbYear.getItems().addAll(FXCollections.observableArrayList(SearchableYears.values()));
         initFavPlayerComboboxModel();
         initSearchPlayerTextField();
     }
@@ -158,11 +160,15 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
             String playerTourID = extractLastPathSegment(enteredUrl);
             log.infof("Enter key pressed with text: %s and extracted player tournament ID: %s", enteredUrl, playerTourID);
             PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-           /* playerServiceProvider.updatePlayersTournamentId(currentSelectedPlayer, playerTourID);
+            if (currentSelectedPlayer == null) {
+                log.warn("No player selected");
+                return;
+            }
+            playerInfoHandler.updatePlayerTournamentId(currentSelectedPlayer, playerTourID);
             lblIdTurnier.setText(playerTourID);
 
-            var result = webService.getNumberOfTournamentsForYearAndPlayer(2025, "bd337124-44d1-42c1-9c30-8bed91781a9b");
-            log.infof("Tournaments Found: %d", result);*/
+            //   var result = webService.getNumberOfTournamentsForYearAndPlayer(2025, "bd337124-44d1-42c1-9c30-8bed91781a9b");
+            //  log.infof("Tournaments Found: %d", result);
         }
     }
 
@@ -215,7 +221,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     public void updatePlayerInfo(PlayerInfoDTO player) {
         log.debugf("Update player info: %s", player.getPlayerName());
-        // var player = playerInfoHandler.calculatePlayersAgeClassRanking(playerInfoDTO);
         lblName.setText(player.getPlayerName());
         lblPlayerId.setText(player.getPlayerId());
         lblBirthYear.setText(player.getBirthYear());
@@ -223,6 +228,9 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         lblClub.setText(player.getClubName());
         lblDistrict.setText(player.getDistrictName());
         lblIdTurnier.setText(player.getPlayerTournamentId());
+        lblGender.setText(player.getGender());
+        lblState.setText(player.getStateName());
+        lblGroup.setText(player.getStateGroup());
 
         lblSTours.setText(player.getSingleDisciplineStatistics().tournaments().toString());
         lblDTours.setText(player.getDoubleDisciplineStatistics().tournaments().toString());
@@ -252,7 +260,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
                         .filter(suggestion -> suggestion.getPlayerName().toLowerCase().contains(request.getUserText().toLowerCase()))
                         .toList();
 
-         TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
+        TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
     }
 
 
