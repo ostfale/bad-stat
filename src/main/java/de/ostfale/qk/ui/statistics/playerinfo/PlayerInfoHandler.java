@@ -9,15 +9,13 @@ import org.jboss.logging.Logger;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.ToIntFunction;
 
 @ApplicationScoped
 public class PlayerInfoHandler {
 
-
     private static final Logger log = Logger.getLogger(PlayerInfoHandler.class);
-
-    private static final String LOG_MESSAGE_FORMAT = "PlayerInfoHandler :: Get player ranking for AgeClass %s and Discipline %s";
 
     @Inject
     PlayerServiceProvider playerServiceProvider;
@@ -25,16 +23,18 @@ public class PlayerInfoHandler {
     @Inject
     WebService webService;
 
-    private List<Player> allPlayers;
     private List<PlayerInfoDTO> allPlayer;
 
     public List<PlayerInfoDTO> findAllFavoritePlayers() {
-        if (allPlayer == null) {
-            allPlayer = playerServiceProvider.getAllPlayers().stream().map(PlayerInfoDTO::new).toList();
-        }
+        initPlayerList();
         var favPlayers = allPlayer.stream().filter(PlayerInfoDTO::getFavorite).toList();
         log.debugf("PlayerInfoHandler :: Read all favorite players  %d players", favPlayers.size());
         return favPlayers;
+    }
+
+    public List<PlayerInfoDTO> getAllPlayer() {
+        initPlayerList();
+        return allPlayer;
     }
 
     public Integer getSingleRankingForAgeClass(PlayerInfoDTO player) {
@@ -47,6 +47,24 @@ public class PlayerInfoHandler {
 
     public Integer getMixedRankingForAgeClass(PlayerInfoDTO player) {
         return calculateRanking(player, PlayerInfoDTO::getMixedPoints, "mixed");
+    }
+
+    public void toggleAndSavePlayerAsFavorite(PlayerInfoDTO playerDTO) {
+        Objects.requireNonNull(playerDTO, "Player name must not be null");
+        if (playerDTO.getFavorite()) {
+            playerDTO.setFavorite(false);
+            log.infof("PlayerInfoHandler :: Player %s is not a favorite anymore", playerDTO.getPlayerName());
+        } else {
+            playerDTO.setFavorite(true);
+            log.infof("PlayerInfoHandler :: Player %s is now a favorite", playerDTO.getPlayerName());
+        }
+        Player player = playerServiceProvider.findPlayerById(playerDTO.getPlayerId());
+        playerServiceProvider.updatePlayerAsFavorite(player);
+    }
+
+    public List<PlayerInfoDTO> findPlayerByName(String playerName) {
+        log.debugf("PlayerInfoHandler :: Find player by name %s", playerName);
+        return allPlayer.stream().filter(player -> player.getPlayerName().equalsIgnoreCase(playerName)).toList();
     }
 
     private Integer calculateRanking(PlayerInfoDTO player, ToIntFunction<PlayerInfoDTO> pointsExtractor, String rankingType) {
@@ -65,10 +83,9 @@ public class PlayerInfoHandler {
                 .toList();
     }
 
-
-    public List<PlayerInfoDTO> findPlayerByName(String playerName) {
-        log.debugf("PlayerInfoHandler :: Find player by name %s", playerName);
-        return allPlayers.stream().filter(player -> player.getName().equalsIgnoreCase(playerName)).map(PlayerInfoDTO::new).toList();
+    private void initPlayerList() {
+        if (allPlayer == null) {
+            allPlayer = playerServiceProvider.getAllPlayers().stream().map(PlayerInfoDTO::new).toList();
+        }
     }
-
 }

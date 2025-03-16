@@ -25,9 +25,6 @@ public class PlayerInfoDTO {
     private DisciplineStatisticsDTO doubleDisciplineStatistics;
     private DisciplineStatisticsDTO mixedDisciplineStatistics;
 
-    public PlayerInfoDTO() {
-    }
-
     public PlayerInfoDTO(Player player) {
         this.playerName = player.getName();
         this.gender = player.getGender().toString();
@@ -43,6 +40,11 @@ public class PlayerInfoDTO {
         this.singleDisciplineStatistics = mapSingleDisciplineStatistics(player);
         this.doubleDisciplineStatistics = mapDoubleDisciplineStatistics(player);
         this.mixedDisciplineStatistics = mapMixedDisciplineStatistics(player);
+    }
+
+    @Override
+    public String toString() {
+        return playerName;
     }
 
     public Integer getSinglePoints() {

@@ -12,6 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
 <?import org.controlsfx.control.textfield.CustomTextField?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <GridPane fx:id="gpPlayerInfo" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoController">
       <columnConstraints>
@@ -145,10 +146,13 @@
          </GridPane.margin>
       </Label>
       <CustomTextField fx:id="ctfSearchPlayer" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-      <Button fx:id="btnFavorite" mnemonicParsing="false" onAction="#togglePlayerFavoriteStatus" text="+" GridPane.columnIndex="7" GridPane.rowIndex="2">
+      <Button fx:id="btnFavorite" mnemonicParsing="false" onAction="#togglePlayerFavoriteStatus" GridPane.columnIndex="7" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets left="50.0" />
          </GridPane.margin>
+         <graphic>
+            <FontIcon iconLiteral="fa-star-o" />
+         </graphic>
       </Button>
       <Label text="Verein" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
          <font>
@@ -309,10 +313,13 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </TextField>
-      <Button fx:id="btnPlayerView" mnemonicParsing="false" onAction="#viewPlayerInfo" text="?" GridPane.columnIndex="7" GridPane.rowIndex="2">
+      <Button fx:id="btnPlayerView" mnemonicParsing="false" onAction="#viewPlayerInfo" GridPane.columnIndex="7" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets left="10.0" />
          </GridPane.margin>
+         <graphic>
+            <FontIcon iconLiteral="far-eye" />
+         </graphic>
       </Button>
    </children>
   </GridPane>

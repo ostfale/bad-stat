@@ -20,10 +20,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
 import org.controlsfx.control.CheckComboBox;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.CustomTextField;
+import org.controlsfx.control.textfield.TextFields;
 import org.jboss.logging.Logger;
 
+import java.util.Collection;
 import java.util.List;
 
 @Dependent
@@ -166,20 +170,37 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     void togglePlayerFavoriteStatus(ActionEvent event) {
         log.debug("Toggle player favorite status");
-        String playerName = ctfSearchPlayer.getText();
-      /*  Player foundPlayer = players.stream()
-                .filter(player -> player.getName().equalsIgnoreCase(playerName))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Player not found"));
+        var selectedPlayer = getSelectedPlayerByName(ctfSearchPlayer.getText());
+        if (selectedPlayer != null) {
+            playerInfoHandler.toggleAndSavePlayerAsFavorite(selectedPlayer);
+            dataModel.setItemList(playerInfoHandler.findAllFavoritePlayers());
+            cbPlayer.getSelectionModel().select(selectedPlayer);
+        }
+    }
 
-        foundPlayer.setFavorite(true);*/
-     /*   playerServiceProvider.updatePlayerAsFavorite(foundPlayer);
-        dataModel.setItemList(playerServiceProvider.findFavoritePlayers());*/
+    private PlayerInfoDTO getSelectedPlayerByName(String playerName) {
+        List<PlayerInfoDTO> selectedPlayer = playerInfoHandler.findPlayerByName(playerName);
+        if (selectedPlayer.isEmpty()) {
+            log.warnf("No player found with name %s", playerName);
+            return null;
+        } else if (selectedPlayer.size() > 1) {
+            // TODO handle multiple results
+            log.warnf("More than one player found with name %s", playerName);
+            return null;
+        } else {
+            return selectedPlayer.getFirst();
+        }
     }
 
     @FXML
     void viewPlayerInfo(ActionEvent event) {
         log.debugf("View player info");
+        PlayerInfoDTO player = getSelectedPlayerByName(ctfSearchPlayer.getText());
+        if (player != null) {
+            updatePlayerInfo(player);
+        } else {
+            log.warn("No player selected");
+        }
     }
 
     private void initFavPlayerComboboxModel() {
@@ -222,22 +243,16 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         txtTourURL.setText("");                                          // reset url since it is not saved in DB
     }
 
-
     // init text field to search player from all players list
     private void initSearchPlayerTextField() {
         ctfSearchPlayer.setPromptText("Spieler suchen");
 
-      /*  if (players.isEmpty()) {
-            players = playerInfoHandler.findAllPlayers();
-            log.infof("Initialized  %d players", players.size());
-        }
-
         Callback<AutoCompletionBinding.ISuggestionRequest, Collection<PlayerInfoDTO>> suggestionProvider =
-                request -> players.stream()
-                        .filter(suggestion -> suggestion.getName().toLowerCase().contains(request.getUserText().toLowerCase()))
-                        .toList();*/
+                request -> playerInfoHandler.getAllPlayer().stream()
+                        .filter(suggestion -> suggestion.getPlayerName().toLowerCase().contains(request.getUserText().toLowerCase()))
+                        .toList();
 
-        // TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
+         TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
     }
 
 

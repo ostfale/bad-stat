@@ -20,8 +20,13 @@ public class PlayerServiceProvider {
     PlayerRepository playerRepository;
 
     public List<Player> findPlayersByFullName(String fullName) {
-        log.infof("Find players by full name: %s", fullName);
+        log.debugf("Find players by full name: %s", fullName);
         return playerRepository.findPlayersByFullNameIgnoreCase(fullName);
+    }
+
+    public Player findPlayerById(String playerId) {
+        log.debugf("Find player by id: %s", playerId);
+        return playerRepository.findByPlayerId(playerId);
     }
 
     public void updatePlayerAsFavorite(Player player) {
@@ -47,7 +52,7 @@ public class PlayerServiceProvider {
 
     public List<Player> findFavoritePlayers() {
         var foundFavoritePlayers = playerRepository.findFavoritePlayers();
-        log.infof("Found %d favorite players", foundFavoritePlayers.size());
+        log.debugf("Found %d favorite players", foundFavoritePlayers.size());
         return foundFavoritePlayers;
     }
 
