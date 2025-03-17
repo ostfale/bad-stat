@@ -18,6 +18,11 @@ public class TournamentWebService extends BaseWebService {
     public Integer getNumberOfTournamentsForYearAndPlayer(Integer year, String player) {
         String playerTournamentsURI = preparePlayerTournamentsUrl(player);
         HtmlPage thisYearsTournament = cookieDialogHandler.loadWebsite(playerTournamentsURI);
+
+        if (year == 2025) {
+
+        }
+
         Integer nofTournaments = parser.parseNofTournaments("2025", thisYearsTournament.getActiveElement());
         log.debugf("Found %d tournaments for year %d and player %s", nofTournaments, year, player);
         return nofTournaments;

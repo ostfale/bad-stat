@@ -11,10 +11,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
 @Singleton
@@ -22,6 +24,9 @@ import org.jboss.logging.Logger;
 public class ApplicationController {
 
     private static final Logger log = Logger.getLogger(ApplicationController.class);
+
+    @ConfigProperty(name = "quarkus.application.version")
+    String version;
 
     @FXML
     Parent root;
@@ -50,6 +55,23 @@ public class ApplicationController {
         log.info("Dashboard stage successfully initialized and shown.");
         dashboardStage.show();
     }
+
+
+    // menu actions
+    @FXML
+    void closeAppByMenu(ActionEvent event) {
+        closeApplication(event);
+    }
+
+    @FXML
+    void showAboutDialog(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Bad-Stat Programm - Badminton Statistik");
+        alert.setHeaderText("Version: " + version);
+        alert.setContentText("Kontakt: badminton@uwe-sauerbrei.de");
+        alert.showAndWait();
+    }
+
 
     @FXML
     void showDashboardView(ActionEvent event) {

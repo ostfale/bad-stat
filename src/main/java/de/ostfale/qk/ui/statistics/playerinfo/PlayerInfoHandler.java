@@ -37,6 +37,12 @@ public class PlayerInfoHandler {
         return allPlayer;
     }
 
+    public void readPlayersTournamentsForLastFourYears(PlayerInfoDTO player) {
+        for (int year = 2025; year >= 2021; year--) {
+            Integer nofTournaments = webService.getNumberOfTournamentsForYearAndPlayer(year, player.getPlayerTournamentId());
+            log.debugf("Read tournaments for player %s in year %d: %d", player.getPlayerName(), year, nofTournaments);
+        }
+    }
 
 
     public Integer getSingleRankingForAgeClass(PlayerInfoDTO player) {

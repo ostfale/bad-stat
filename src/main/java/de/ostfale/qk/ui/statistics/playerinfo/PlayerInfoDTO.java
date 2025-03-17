@@ -28,7 +28,6 @@ public class PlayerInfoDTO {
     private DisciplineStatisticsDTO singleDisciplineStatistics;
     private DisciplineStatisticsDTO doubleDisciplineStatistics;
     private DisciplineStatisticsDTO mixedDisciplineStatistics;
-    private final List<TournamentsStatisticsDTO> tournamentsStatistics = new ArrayList<>(4);
 
     public PlayerInfoDTO(Player player) {
         this.playerName = player.getName();
@@ -53,11 +52,7 @@ public class PlayerInfoDTO {
     public String toString() {
         return playerName;
     }
-
-    public List<TournamentsStatisticsDTO> getTournamentsStatistics() {
-        return tournamentsStatistics;
-    }
-
+    
     public String getStateName() {
         return stateName;
     }

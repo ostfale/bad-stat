@@ -14,7 +14,7 @@
     <children>
         <BorderPane fx:id="bpApp" layoutX="29.0" layoutY="22.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <left>
-                <AnchorPane prefHeight="1000.0" prefWidth="100.0" styleClass="sidebar" BorderPane.alignment="CENTER">
+                <AnchorPane prefHeight="1000.0" prefWidth="100.0" styleClass="sidebar" stylesheets="@../static/css/app-view.css" BorderPane.alignment="CENTER">
                     <children>
                         <Button contentDisplay="BOTTOM" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#showDashboardView" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-btn" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="200.0">
                             <graphic>
@@ -53,7 +53,7 @@
                 </AnchorPane>
             </left>
             <center>
-                <AnchorPane fx:id="centerAnchorPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                <AnchorPane fx:id="centerAnchorPane" prefHeight="200.0" prefWidth="200.0" stylesheets="@../static/css/app-view.css" BorderPane.alignment="CENTER" />
             </center>
          <bottom>
             <StatusBar BorderPane.alignment="CENTER" />
@@ -63,7 +63,7 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Close" />
+                    <MenuItem mnemonicParsing="false" onAction="#closeAppByMenu" text="Close" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
@@ -73,7 +73,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
+                    <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="About" />
                   </items>
                 </Menu>
               </menus>
