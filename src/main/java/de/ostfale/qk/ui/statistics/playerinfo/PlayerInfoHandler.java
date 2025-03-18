@@ -2,17 +2,20 @@ package de.ostfale.qk.ui.statistics.playerinfo;
 
 import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.service.PlayerServiceProvider;
+import de.ostfale.qk.ui.app.RecentYears;
 import de.ostfale.qk.web.api.WebService;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.jboss.logging.Logger;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.ToIntFunction;
+import java.util.stream.Stream;
 
-@ApplicationScoped
+@Singleton
 public class PlayerInfoHandler {
 
     private static final Logger log = Logger.getLogger(PlayerInfoHandler.class);
@@ -36,14 +39,6 @@ public class PlayerInfoHandler {
         initPlayerList();
         return allPlayer;
     }
-
-    public void readPlayersTournamentsForLastFourYears(PlayerInfoDTO player) {
-        for (int year = 2025; year >= 2021; year--) {
-            Integer nofTournaments = webService.getNumberOfTournamentsForYearAndPlayer(year, player.getPlayerTournamentId());
-            log.debugf("Read tournaments for player %s in year %d: %d", player.getPlayerName(), year, nofTournaments);
-        }
-    }
-
 
     public Integer getSingleRankingForAgeClass(PlayerInfoDTO player) {
         return calculateRanking(player, PlayerInfoDTO::getSinglePoints, "single");
@@ -81,6 +76,17 @@ public class PlayerInfoHandler {
     public List<PlayerInfoDTO> findPlayerByName(String playerName) {
         log.debugf("PlayerInfoHandler :: Find player by name %s", playerName);
         return allPlayer.stream().filter(player -> player.getPlayerName().equalsIgnoreCase(playerName)).toList();
+    }
+
+    public List<TournamentsStatisticsDTO> readPlayersTournamentsForLastFourYears(PlayerInfoDTO player) {
+
+        List<TournamentsStatisticsDTO> tournamentsStatisticsDTOs = new ArrayList<>();
+        Stream.of(RecentYears.values()).forEach(recentYears -> {
+            Integer nofTournaments = webService.getNumberOfTournamentsForYearAndPlayer(recentYears.getValue(), player.getPlayerTournamentId());
+            tournamentsStatisticsDTOs.add(new TournamentsStatisticsDTO(recentYears.getValue(), nofTournaments, 0));
+            log.debugf("Read tournaments for player %s for year %d: %d", player.getPlayerName(), recentYears.getValue(), nofTournaments);
+        });
+        return tournamentsStatisticsDTOs;
     }
 
     private Integer calculateRanking(PlayerInfoDTO player, ToIntFunction<PlayerInfoDTO> pointsExtractor, String rankingType) {

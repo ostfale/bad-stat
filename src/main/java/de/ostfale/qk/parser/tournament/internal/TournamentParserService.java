@@ -11,7 +11,6 @@ import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlElement;
 import org.jboss.logging.Logger;
 
-
 import java.util.List;
 
 @Singleton
@@ -60,10 +59,8 @@ public class TournamentParserService implements TournamentParser {
     }
 
     @Override
-    public Integer parseNofTournaments(String year, HtmlElement content) {
+    public Integer parseNofTournaments(HtmlElement content) {
         List<HtmlElement> tournamentElements = htmlParser.getAllTournaments(content);
-        var tournaments =  tournamentElements.size();
-        log.debugf("Found %d tournaments for year %s", tournaments, year);
-        return tournaments;
+        return tournamentElements.size();
     }
 }

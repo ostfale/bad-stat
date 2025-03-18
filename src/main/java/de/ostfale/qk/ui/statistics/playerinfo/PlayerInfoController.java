@@ -2,6 +2,7 @@ package de.ostfale.qk.ui.statistics.playerinfo;
 
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
+import de.ostfale.qk.ui.app.RecentYears;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerChangeListener;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerStringConverter;
 import io.quarkiverse.fx.views.FxView;
@@ -124,6 +125,18 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     // tournaments per year
 
     @FXML
+    private Label lblDisplayCurrentYear;
+
+    @FXML
+    private Label lblDisplayCurrentYearMinusOne;
+
+    @FXML
+    private Label lblDisplayCurrentYearMinusThree;
+
+    @FXML
+    private Label lblDisplayCurrentYearMinusTwo;
+
+    @FXML
     private TextField txtTourURL;
 
     @FXML
@@ -143,6 +156,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         log.info("Initialize PlayerInfoStatisticsController");
         initFavPlayerComboboxModel();
         initSearchPlayerTextField();
+        initYearLabel();
     }
 
     @FXML
@@ -157,12 +171,34 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
                 return;
             }
             playerInfoHandler.updatePlayerTournamentId(currentSelectedPlayer, playerTourID);
-            lblIdTurnier.setText(playerTourID);
+            List<TournamentsStatisticsDTO> tournamentsStatisticsDTOs = playerInfoHandler.readPlayersTournamentsForLastFourYears(currentSelectedPlayer);
 
-            //   var result = webService.getNumberOfTournamentsForYearAndPlayer(2025, "bd337124-44d1-42c1-9c30-8bed91781a9b");
-            //  log.infof("Tournaments Found: %d", result);
+            updateTournamentInfosForPlayerAndYear(tournamentsStatisticsDTOs);
+            lblIdTurnier.setText(playerTourID);
         }
     }
+
+    private void updateTournamentInfosForPlayerAndYear(List<TournamentsStatisticsDTO> tournamentsStatisticsDTOs) {
+        final int CURRENT_YEAR_INDEX = 0;
+        final int YEAR_MINUS_ONE_INDEX = 1;
+        final int YEAR_MINUS_TWO_INDEX = 2;
+        final int YEAR_MINUS_THREE_INDEX = 3;
+
+        var currentYearStat = tournamentsStatisticsDTOs.get(CURRENT_YEAR_INDEX);
+        var yearMinusOneStat = tournamentsStatisticsDTOs.get(YEAR_MINUS_ONE_INDEX);
+        var yearMinusTwoStat = tournamentsStatisticsDTOs.get(YEAR_MINUS_TWO_INDEX);
+        var yearMinusThreeStat = tournamentsStatisticsDTOs.get(YEAR_MINUS_THREE_INDEX);
+
+        lblYear.setText(formatTournamentStats(currentYearStat));
+        lblYearMinusOne.setText(formatTournamentStats(yearMinusOneStat));
+        lblYearMinusTwo.setText(formatTournamentStats(yearMinusTwoStat));
+        lblYearMinusThree.setText(formatTournamentStats(yearMinusThreeStat));
+    }
+
+    private String formatTournamentStats(TournamentsStatisticsDTO stats) {
+        return stats.allTournaments() + " / " + stats.savedTournaments();
+    }
+
 
     // init button to toggle player as favorites
     @FXML
@@ -255,12 +291,18 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
     }
 
-
     private String extractLastPathSegment(String url) {
         if (url == null || !url.contains(PATH_SEPARATOR)) {
             return ""; // Return empty string if URL is null or doesn't contain slashes
         }
         int lastSeparatorIndex = url.lastIndexOf(PATH_SEPARATOR);
         return url.substring(lastSeparatorIndex + 1);
+    }
+
+    private void initYearLabel() {
+        lblDisplayCurrentYear.setText(RecentYears.CURRENT_YEAR.toString());
+        lblDisplayCurrentYearMinusOne.setText(RecentYears.YEAR_MINUS_1.toString());
+        lblDisplayCurrentYearMinusTwo.setText(RecentYears.YEAR_MINUS_2.toString());
+        lblDisplayCurrentYearMinusThree.setText(RecentYears.YEAR_MINUS_3.toString());
     }
 }

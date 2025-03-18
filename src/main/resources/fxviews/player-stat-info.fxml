@@ -267,22 +267,22 @@
             <Font name="System Italic" size="12.0" />
          </font>
       </Label>
-      <Label text="2025" GridPane.halignment="RIGHT" GridPane.rowIndex="17">
+      <Label fx:id="lblDisplayCurrentYear" text="2025" GridPane.halignment="RIGHT" GridPane.rowIndex="17">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label layoutX="73.0" layoutY="497.0" text="2024" GridPane.halignment="RIGHT" GridPane.rowIndex="18">
+      <Label fx:id="lblDisplayCurrentYearMinusOne" layoutX="73.0" layoutY="497.0" text="2024" GridPane.halignment="RIGHT" GridPane.rowIndex="18">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label layoutX="73.0" layoutY="527.0" text="2023" GridPane.halignment="RIGHT" GridPane.rowIndex="19">
+      <Label fx:id="lblDisplayCurrentYearMinusTwo" layoutX="73.0" layoutY="527.0" text="2023" GridPane.halignment="RIGHT" GridPane.rowIndex="19">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label layoutX="73.0" layoutY="557.0" text="2022" GridPane.halignment="RIGHT" GridPane.rowIndex="20">
+      <Label fx:id="lblDisplayCurrentYearMinusThree" layoutX="73.0" layoutY="557.0" text="2022" GridPane.halignment="RIGHT" GridPane.rowIndex="20">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>

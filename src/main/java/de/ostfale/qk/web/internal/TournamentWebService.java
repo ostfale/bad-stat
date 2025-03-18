@@ -6,6 +6,8 @@ import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlPage;
 import org.jboss.logging.Logger;
 
+import java.time.Year;
+
 @ApplicationScoped
 public class TournamentWebService extends BaseWebService {
 
@@ -15,20 +17,18 @@ public class TournamentWebService extends BaseWebService {
     TournamentParser parser;
 
     @Override
-    public Integer getNumberOfTournamentsForYearAndPlayer(Integer year, String player) {
-        String playerTournamentsURI = preparePlayerTournamentsUrl(player);
-        HtmlPage thisYearsTournament = cookieDialogHandler.loadWebsite(playerTournamentsURI);
+    public Integer getNumberOfTournamentsForYearAndPlayer(Integer year, String playerTournamentsId) {
+        log.debugf("Get number of tournaments for year %d and player tournament id %s", year, playerTournamentsId);
 
-        if (year == 2025) {
-
+        String tournamentsURI = null;
+        if (year == Year.now().getValue()) {
+            tournamentsURI = preparePlayerTournamentsUrl(playerTournamentsId);
+        } else {
+            tournamentsURI = preparePlayerTournamentsUrl(playerTournamentsId, year.toString());
         }
 
-        Integer nofTournaments = parser.parseNofTournaments("2025", thisYearsTournament.getActiveElement());
-        log.debugf("Found %d tournaments for year %d and player %s", nofTournaments, year, player);
-        return nofTournaments;
-    }
-
-    private String preparePlayerTournamentsURIForYear(String tournamentsPlayerID, Integer year) {
-        return String.format("/tournaments/%d/players", year);
+        log.debugf("Load tournaments page %s", tournamentsURI);
+        HtmlPage tournamentPage = cookieDialogHandler.loadWebsite(tournamentsURI);
+        return parser.parseNofTournaments(tournamentPage.getActiveElement());
     }
 }
