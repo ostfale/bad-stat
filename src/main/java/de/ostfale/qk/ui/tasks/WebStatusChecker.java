@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 @ApplicationScoped
 public class WebStatusChecker {
@@ -21,8 +22,8 @@ public class WebStatusChecker {
     @Inject
     StatusBarController statusBarController;
 
-    @Scheduled(every = "5m", delay = 5)
-    public void checkInternetConnection() {
+    @Scheduled(every = "300s",delay = 10, delayUnit = TimeUnit.SECONDS)
+    void checkInternetConnection() {
         log.info("Checking health status of the website...");
 
         try {
