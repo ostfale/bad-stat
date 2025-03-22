@@ -1,7 +1,9 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
+import de.ostfale.qk.db.internal.match.TournamentsStatistic;
 import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.service.PlayerServiceProvider;
+import de.ostfale.qk.db.service.TournamentsStatisticService;
 import de.ostfale.qk.ui.app.RecentYears;
 import de.ostfale.qk.web.api.WebService;
 import jakarta.inject.Inject;
@@ -22,6 +24,9 @@ public class PlayerInfoHandler {
 
     @Inject
     PlayerServiceProvider playerServiceProvider;
+
+    @Inject
+    TournamentsStatisticService tournamentsStatisticService;
 
     @Inject
     WebService webService;
@@ -52,12 +57,39 @@ public class PlayerInfoHandler {
         return calculateRanking(player, PlayerInfoDTO::getMixedPoints, "mixed");
     }
 
-    public void updatePlayerTournamentId(PlayerInfoDTO playerDTO, String playerTournamentId) {
+    public TournamentsStatistic updateOrCreatePlayerTournamentsStatistics(PlayerInfoDTO playerDTO) {
         Objects.requireNonNull(playerDTO, "Player name must not be null");
-        log.debugf("PlayerInfoHandler :: Updating player %s with tournament id %s", playerDTO.getPlayerName(), playerDTO.getPlayerTournamentId());
-        playerDTO.setPlayerTournamentId(playerTournamentId);
-        Player player = playerServiceProvider.findPlayerById(playerDTO.getPlayerId());
-        playerServiceProvider.updatePlayersTournamentId(player, playerDTO.getPlayerTournamentId());
+
+        // check if there is already a statistics entry in the database for this player
+        TournamentsStatistic statistic = tournamentsStatisticService.findByPlayerId(playerDTO.getPlayerId());
+        if (statistic.hasStatisticForPlayer()) {
+            log.debugf("PlayerInfoHandler :: Updating player %s with tournament statistics", playerDTO.getPlayerName());
+            return statistic;
+        } else {
+            log.debugf("PlayerInfoHandler :: Creating tournaments statistics overview for player %s ", playerDTO.getPlayerName());
+            List<TournamentsStatisticsDTO> tournamentsStatisticsDTOs = readPlayersTournamentsForLastFourYears(playerDTO);
+            TournamentsStatistic tournamentsStatistic = new TournamentsStatistic();
+            tournamentsStatistic.setPlayerId(playerDTO.getPlayerId());
+            tournamentsStatisticsDTOs.forEach(statisticsDTO -> {
+                RecentYears year = RecentYears.lookup(statisticsDTO.year());
+                switch (year) {
+                    case RecentYears.CURRENT_YEAR ->
+                            tournamentsStatistic.setYearPlayedTournaments(statisticsDTO.allTournaments());
+                    case YEAR_MINUS_1 ->
+                            tournamentsStatistic.setYearMinusOnePlayedTournaments(statisticsDTO.allTournaments());
+                    case YEAR_MINUS_2 ->
+                            tournamentsStatistic.setYearMinusTwoPlayedTournaments(statisticsDTO.allTournaments());
+                    case YEAR_MINUS_3 ->
+                            tournamentsStatistic.setYearMinusThreePlayedTournaments(statisticsDTO.allTournaments());
+                    default -> log.errorf("TournamentsStatistic Mapper :: Unknown year: %s", year);
+                }
+            });
+
+            tournamentsStatisticService.save(tournamentsStatistic);
+            Player player = playerServiceProvider.findPlayerById(playerDTO.getPlayerId());
+            playerServiceProvider.updatePlayersTournamentId(player, playerDTO.getPlayerTournamentId());
+            return tournamentsStatistic;
+        }
     }
 
     public void toggleAndSavePlayerAsFavorite(PlayerInfoDTO playerDTO) {

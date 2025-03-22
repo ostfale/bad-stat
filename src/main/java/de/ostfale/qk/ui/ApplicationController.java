@@ -1,5 +1,6 @@
 package de.ostfale.qk.ui;
 
+import de.ostfale.qk.ui.app.StatusBarController;
 import de.ostfale.qk.ui.statistics.PlayerStatisticsHandler;
 import de.ostfale.qk.ui.statistics.StatisticsController;
 import io.quarkiverse.fx.views.FxView;
@@ -49,10 +50,14 @@ public class ApplicationController {
     @Inject
     StatisticsController statisticsController;
 
+    @Inject
+    StatusBarController statusBarController;
+
     @FXML
     public void initialize() {
         Stage dashboardStage = createStageWithScene();
         log.info("Dashboard stage successfully initialized and shown.");
+        bpApp.setBottom(statusBarController);
         dashboardStage.show();
     }
 

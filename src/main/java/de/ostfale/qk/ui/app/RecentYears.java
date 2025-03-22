@@ -14,6 +14,15 @@ public enum RecentYears {
         this.value = value;
     }
 
+    public static RecentYears lookup(int value) {
+        for (RecentYears year : RecentYears.values()) {
+            if (year.getValue() == value) {
+                return year;
+            }
+        }
+        throw new IllegalArgumentException("Year " + value + " is not a recent year.");
+    }
+
     @Override
     public String toString() {
         return String.valueOf(value);

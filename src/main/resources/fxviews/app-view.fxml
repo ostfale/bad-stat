@@ -7,7 +7,6 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import org.controlsfx.control.StatusBar?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1100.0" prefWidth="1800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ostfale.qk.ui.ApplicationController">
@@ -55,9 +54,6 @@
             <center>
                 <AnchorPane fx:id="centerAnchorPane" prefHeight="200.0" prefWidth="200.0" stylesheets="@../static/css/app-view.css" BorderPane.alignment="CENTER" />
             </center>
-         <bottom>
-            <StatusBar BorderPane.alignment="CENTER" />
-         </bottom>
          <top>
             <MenuBar BorderPane.alignment="CENTER">
               <menus>

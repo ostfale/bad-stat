@@ -1,5 +1,6 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
+import de.ostfale.qk.db.internal.match.TournamentsStatistic;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
 import de.ostfale.qk.ui.app.RecentYears;
@@ -25,6 +26,7 @@ import org.jboss.logging.Logger;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Dependent
 @FxView("player-stat-info")
@@ -170,35 +172,21 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
                 log.warn("No player selected");
                 return;
             }
-            playerInfoHandler.updatePlayerTournamentId(currentSelectedPlayer, playerTourID);
-            List<TournamentsStatisticsDTO> tournamentsStatisticsDTOs = playerInfoHandler.readPlayersTournamentsForLastFourYears(currentSelectedPlayer);
-
-            updateTournamentInfosForPlayerAndYear(tournamentsStatisticsDTOs);
+            currentSelectedPlayer.setPlayerTournamentId(playerTourID);
+            TournamentsStatistic tournamentsStatistic = playerInfoHandler.updateOrCreatePlayerTournamentsStatistics(currentSelectedPlayer);
+            updateTournamentInfosForPlayerAndYear(tournamentsStatistic);
             lblIdTurnier.setText(playerTourID);
         }
     }
 
-    private void updateTournamentInfosForPlayerAndYear(List<TournamentsStatisticsDTO> tournamentsStatisticsDTOs) {
-        final int CURRENT_YEAR_INDEX = 0;
-        final int YEAR_MINUS_ONE_INDEX = 1;
-        final int YEAR_MINUS_TWO_INDEX = 2;
-        final int YEAR_MINUS_THREE_INDEX = 3;
-
-        var currentYearStat = tournamentsStatisticsDTOs.get(CURRENT_YEAR_INDEX);
-        var yearMinusOneStat = tournamentsStatisticsDTOs.get(YEAR_MINUS_ONE_INDEX);
-        var yearMinusTwoStat = tournamentsStatisticsDTOs.get(YEAR_MINUS_TWO_INDEX);
-        var yearMinusThreeStat = tournamentsStatisticsDTOs.get(YEAR_MINUS_THREE_INDEX);
-
-        lblYear.setText(formatTournamentStats(currentYearStat));
-        lblYearMinusOne.setText(formatTournamentStats(yearMinusOneStat));
-        lblYearMinusTwo.setText(formatTournamentStats(yearMinusTwoStat));
-        lblYearMinusThree.setText(formatTournamentStats(yearMinusThreeStat));
+    private void updateTournamentInfosForPlayerAndYear(TournamentsStatistic tournamentsStatistic) {
+        Objects.requireNonNull(tournamentsStatistic, "Tournaments statistic must not be null");
+        log.debugf("UI :: Update tournament infos for player %s ", tournamentsStatistic.getPlayerId());
+        lblYear.setText(tournamentsStatistic.getTournamentsStatisticAsString().getFirst());
+        lblYearMinusOne.setText(tournamentsStatistic.getTournamentsStatisticAsString().get(1));
+        lblYearMinusTwo.setText(tournamentsStatistic.getTournamentsStatisticAsString().get(2));
+        lblYearMinusThree.setText(tournamentsStatistic.getTournamentsStatisticAsString().get(3));
     }
-
-    private String formatTournamentStats(TournamentsStatisticsDTO stats) {
-        return stats.allTournaments() + " / " + stats.savedTournaments();
-    }
-
 
     // init button to toggle player as favorites
     @FXML
@@ -209,6 +197,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
             playerInfoHandler.toggleAndSavePlayerAsFavorite(selectedPlayer);
             dataModel.setItemList(playerInfoHandler.findAllFavoritePlayers());
             cbPlayer.getSelectionModel().select(selectedPlayer);
+            ctfSearchPlayer.setText("");
         }
     }
 
@@ -249,6 +238,10 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     public void updatePlayerInfo(PlayerInfoDTO player) {
         log.debugf("Update player info: %s", player.getPlayerName());
+        resetPlayerInfo();
+        TournamentsStatistic tournamentsStatistic = playerInfoHandler.updateOrCreatePlayerTournamentsStatistics(player);
+        updateTournamentInfosForPlayerAndYear(tournamentsStatistic);
+
         lblName.setText(player.getPlayerName());
         lblPlayerId.setText(player.getPlayerId());
         lblBirthYear.setText(player.getBirthYear());
@@ -305,4 +298,29 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         lblDisplayCurrentYearMinusTwo.setText(RecentYears.YEAR_MINUS_2.toString());
         lblDisplayCurrentYearMinusThree.setText(RecentYears.YEAR_MINUS_3.toString());
     }
+
+    private void resetPlayerInfo() {
+        // Group repetitive label components into one array for iteration
+        Label[] labels = {
+                lblName, lblPlayerId, lblBirthYear, lblAgeClass, lblClub, lblDistrict,
+                lblIdTurnier, lblGroup, lblState, lblGender, lblSTours, lblDTours,
+                lblMTours, lblSPoints, lblDPoints, lblMPoints, lblSRank, lblDRank,
+                lblMRank, lblSAKRank, lblDAKRank, lblMAKRank, lblYear, lblYearMinusOne,
+                lblYearMinusTwo, lblYearMinusThree
+        };
+
+        // Clear all labels using a helper method
+        for (Label label : labels) {
+            clearLabel(label);
+        }
+
+        // Handle remaining individual text components not part of same type
+        txtTourURL.setText("");
+    }
+
+    // Extracted method to encapsulate the repetitive label reset logic
+    private void clearLabel(Label label) {
+        label.setText("");
+    }
+
 }
