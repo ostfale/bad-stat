@@ -1,6 +1,7 @@
 package de.ostfale.qk.ui.tasks;
 
 import de.ostfale.qk.ui.app.StatusBarController;
+import de.ostfale.qk.web.HttpHandler;
 import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -9,8 +10,6 @@ import org.jboss.logging.Logger;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 @ApplicationScoped
@@ -22,39 +21,36 @@ public class WebStatusChecker {
     @Inject
     StatusBarController statusBarController;
 
-    @Scheduled(every = "300s",delay = 10, delayUnit = TimeUnit.SECONDS)
+    @Inject
+    HttpHandler httpHandler;
+
+    @Scheduled(every = "300s", delay = 10, delayUnit = TimeUnit.SECONDS)
     void checkInternetConnection() {
         log.info("Checking health status of the website...");
+        boolean isConnected = checkWebsiteHealth(WEB_STATUS_URL);
+        updateWSHealthStatus(isConnected);
+    }
 
+    private boolean checkWebsiteHealth(String websiteUrl) {
         try {
-            URI uri = URI.create(WEB_STATUS_URL); // Create and validate the URI.
-            URL url = uri.toURL();
-
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("HEAD");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
-
+            HttpURLConnection connection = httpHandler.openHttpConnection(websiteUrl);
             int responseCode = connection.getResponseCode();
 
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                log.tracef("Successfully reached %s with response code %d", WEB_STATUS_URL, responseCode);
-                updateWSHealthStatus(true);
+                log.tracef("Successfully reached %s with response code %d", websiteUrl, responseCode);
+                return true;
             } else {
-                log.warnf("Failed to reach %s with response code %d", WEB_STATUS_URL, responseCode);
-                updateWSHealthStatus(false);
-                statusBarController.setInternetStatus(false);
+                log.warnf("Failed to reach %s with response code %d", websiteUrl, responseCode);
+                return false;
             }
-
         } catch (IOException e) {
-            log.errorf("Error checking status for %s: %s", WEB_STATUS_URL, e.getMessage());
-            updateWSHealthStatus(false);
+            log.errorf("Error checking status for %s: %s", websiteUrl, e.getMessage());
+            return false;
         }
     }
 
     @RunOnFxThread
     void updateWSHealthStatus(Boolean status) {
         statusBarController.setInternetStatus(status);
-
     }
 }
