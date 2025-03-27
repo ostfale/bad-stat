@@ -7,9 +7,8 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jboss.logging.Logger;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,7 @@ public class ExcelRankingParser implements RankingParser {
     private static final Logger log = Logger.getLogger(ExcelRankingParser.class);
 
     @Override
-    public List<RankingPlayer> parseRankingFile(File rankingFile) {
+    public List<RankingPlayer> parseRankingFile(InputStream rankingFile) {
         final Map<String, RankingPlayer> playerMap = new HashMap<>();
         Sheet sheet = readFirstSheet(rankingFile);
         for (Row row : sheet) {
@@ -39,13 +38,12 @@ public class ExcelRankingParser implements RankingParser {
         return List.copyOf(playerMap.values());
     }
 
-    private Sheet readFirstSheet(File excelFile) {
+    private Sheet readFirstSheet(InputStream excelInputStream) {
         try {
-            FileInputStream file = new FileInputStream(excelFile);
-            Workbook workbook = new XSSFWorkbook(file);
+            Workbook workbook = new XSSFWorkbook(excelInputStream);
             return workbook.getSheetAt(0);
         } catch (IOException e) {
-            log.errorf("PARSER :: Player : could not parse file: {} because of: {}", excelFile.getName(), e.getMessage());
+            log.errorf("Excel PARSER :: Player : could not parse file because of: {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }

@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -24,7 +26,7 @@ class ExcelRankingParserTest extends BaseParserTest {
 
     @Test
     @DisplayName("Reading Excel File")
-    void readExcelFile() throws URISyntaxException {
+    void readExcelFile() throws URISyntaxException, FileNotFoundException {
         // given
         String fileName = "ranking/Ranking_2025_Part.xlsx";
         File file = readFile(fileName);
@@ -49,7 +51,7 @@ class ExcelRankingParserTest extends BaseParserTest {
         var expectedMixedRanking = 9;
 
         // when
-        List<RankingPlayer> rankingPlayers = parser.parseRankingFile(file);
+        List<RankingPlayer> rankingPlayers = parser.parseRankingFile(new FileInputStream(file));
 
         // then
         var playerOptional = rankingPlayers.stream().filter(player -> player.getPlayerId().equalsIgnoreCase("06-153539"))

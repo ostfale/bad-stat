@@ -68,8 +68,12 @@ public class DevSimulation {
     public void loadSimulationData() {
         log.info("Load simulation data");
 
-        Path path = Paths.get(PLAYER_RANKING_FILE);
-        List<RankingPlayer> rankingPlayerList = rankingParser.parseRankingFile(path.toFile());
+        String simResPath = "simulation/Ranking_2025_Full_Sim.xlsx";
+        ClassLoader classLoader = getClass().getClassLoader();
+        var inputStream = classLoader.getResourceAsStream(simResPath);
+        Objects.requireNonNull(inputStream, "file not found! " + simResPath);
+
+        List<RankingPlayer> rankingPlayerList = rankingParser.parseRankingFile(inputStream);
         log.infof("Loaded %d players", rankingPlayerList.size());
         savePlayer(rankingPlayerList);
 
