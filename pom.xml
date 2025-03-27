@@ -13,22 +13,24 @@
         <!-- quarkus -->
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.18.4</quarkus.platform.version>
+        <quarkus.platform.version>3.21.0</quarkus.platform.version>
         <skipITs>true</skipITs>
 
         <!-- maven -->
         <maven.compiler.release>22</maven.compiler.release>
-        <compiler-plugin.version>3.13.0</compiler-plugin.version>
-        <surefire-plugin.version>3.5.0</surefire-plugin.version>
+        <compiler-plugin.version>3.14.0</compiler-plugin.version>
+        <surefire-plugin.version>3.5.2</surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
+        <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
 
         <!-- libs -->
-        <htmlunit.version>4.10.0</htmlunit.version>
+        <htmlunit.version>4.11.1</htmlunit.version>
         <quarkus-fx.version>0.9.1</quarkus-fx.version>
         <quarkus-poi.version>2.1.1</quarkus-poi.version>
 
         <!-- ui -->
         <ikonli-javafx.version>12.3.1</ikonli-javafx.version>
-        <controlsfx.version>11.2.1</controlsfx.version>
+        <controlsfx.version>11.2.2</controlsfx.version>
     </properties>
 
     <dependencyManagement>
@@ -187,6 +189,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire-plugin.version}</version>
                 <configuration>
+                    <argLine>-XX:+EnableDynamicAgentLoading</argLine>
                     <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <maven.home>${maven.home}</maven.home>
@@ -195,7 +198,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${surefire-plugin.version}</version>
+                <version>${maven-failsafe-plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -212,6 +215,11 @@
                         <maven.home>${maven.home}</maven.home>
                     </systemPropertyVariables>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${versions-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
