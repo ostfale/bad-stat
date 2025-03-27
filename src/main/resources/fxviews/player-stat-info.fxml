@@ -287,10 +287,10 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Button mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="17" />
-      <Button layoutX="225.0" layoutY="493.0" mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="18" />
-      <Button layoutX="225.0" layoutY="523.0" mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="19" />
-      <Button layoutX="225.0" layoutY="553.0" mnemonicParsing="false" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="20" />
+      <Button mnemonicParsing="false" onAction="#downloadThisYearsTournaments" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="17" />
+      <Button layoutX="225.0" layoutY="493.0" mnemonicParsing="false" onAction="#downloadThisYearMinusOneTournaments" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="18" />
+      <Button layoutX="225.0" layoutY="523.0" mnemonicParsing="false" onAction="#downloadThisYearMinusTwoTournaments" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="19" />
+      <Button layoutX="225.0" layoutY="553.0" mnemonicParsing="false" onAction="#downloadThisYearMinusThreeTournaments" text="Download" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="20" />
       <Label fx:id="lblYear" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="17" />
       <Label fx:id="lblYearMinusOne" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="18" />
       <Label fx:id="lblYearMinusTwo" text="0/0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="19" />

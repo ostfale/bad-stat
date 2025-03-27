@@ -7,7 +7,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class TournamentsStatisticRepository implements PanacheRepository<TournamentsStatistic> {
 
-
     public TournamentsStatistic findByPlayerIdOrEmpty(String playerId) {
         return find("playerId", playerId).firstResultOptional().orElse(new TournamentsStatistic());
     }
