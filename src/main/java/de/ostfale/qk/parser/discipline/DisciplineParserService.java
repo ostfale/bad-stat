@@ -115,8 +115,17 @@ public class DisciplineParserService implements DisciplineParser {
 
     private DisciplineRawModel getDisciplineInfos(HtmlElement headerElement) {
         String[] disciplineAge = headerElement.asNormalizedText().split(" ");
-        var disciplineName = disciplineAge[1];
-        var disciplineAgeGroup = disciplineAge[2];
+
+        var disciplineName = "";
+        var disciplineAgeGroup = "";
+        if (disciplineAge[2].startsWith("U") || disciplineAge[2].startsWith("O")) {
+            disciplineName = disciplineAge[1];
+            disciplineAgeGroup = disciplineAge[2];
+        } else {
+            disciplineName = disciplineAge[2];
+            disciplineAgeGroup = disciplineAge[1];
+        }
+
         var disciplineInfo = new DisciplineRawModel(disciplineName, disciplineAgeGroup);
         log.debugf("Tournament discipline info: {}", disciplineInfo);
         return disciplineInfo;

@@ -180,35 +180,32 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         }
     }
 
-
-
     @FXML
     void downloadThisYearsTournaments(ActionEvent event) {
         Integer year = Year.now().getValue();
-        log.debugf("Download player tournaments for year %d", year);
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
+        playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
     }
 
     @FXML
     void downloadThisYearMinusOneTournaments(ActionEvent event) {
         Integer year = Year.now().minusYears(1).getValue();
-        log.debugf("Download player tournaments for year %d", year);
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-
+        playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
     }
 
     @FXML
     void downloadThisYearMinusTwoTournaments(ActionEvent event) {
         Integer year = Year.now().minusYears(2).getValue();
-        log.debugf("Download player tournaments for year %d", year);
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
+        playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
     }
 
     @FXML
     void downloadThisYearMinusThreeTournaments(ActionEvent event) {
         Integer year = Year.now().minusYears(3).getValue();
-        log.debugf("Download player tournaments for year %d", year);
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
+        playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
     }
 
 

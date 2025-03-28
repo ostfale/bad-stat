@@ -1,9 +1,12 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
+import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.db.internal.match.TournamentsStatistic;
 import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.service.PlayerServiceProvider;
 import de.ostfale.qk.db.service.TournamentsStatisticService;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentRawModel;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentYearRawModel;
 import de.ostfale.qk.ui.app.RecentYears;
 import de.ostfale.qk.web.api.WebService;
 import jakarta.inject.Inject;
@@ -110,8 +113,13 @@ public class PlayerInfoHandler {
         return allPlayer.stream().filter(player -> player.getPlayerName().equalsIgnoreCase(playerName)).toList();
     }
 
-    public List<TournamentsStatisticsDTO> readPlayersTournamentsForLastFourYears(PlayerInfoDTO player) {
+    public void updateAndSavePlayerTournamentsStatistics(PlayerInfoDTO playerDTO, Integer year) {
+        log.debugf("PlayerInfoHandler :: Update player %s statistics for year %d", playerDTO.getPlayerName(), year);
+        List<TournamentRawModel> tourPlayerList= webService.getTournamentsForYearAndPlayer(year, playerDTO.getPlayerTournamentId());
 
+    }
+
+    public List<TournamentsStatisticsDTO> readPlayersTournamentsForLastFourYears(PlayerInfoDTO player) {
         List<TournamentsStatisticsDTO> tournamentsStatisticsDTOs = new ArrayList<>();
         Stream.of(RecentYears.values()).forEach(recentYears -> {
             Integer nofTournaments = webService.getNumberOfTournamentsForYearAndPlayer(recentYears.getValue(), player.getPlayerTournamentId());
@@ -120,6 +128,8 @@ public class PlayerInfoHandler {
         });
         return tournamentsStatisticsDTOs;
     }
+
+
 
     private Integer calculateRanking(PlayerInfoDTO player, ToIntFunction<PlayerInfoDTO> pointsExtractor, String rankingType) {
         List<PlayerInfoDTO> filteredPlayers = filterByAgeClassAndGender(allPlayer, player.getAgeClass(), player.getGender());
@@ -141,5 +151,16 @@ public class PlayerInfoHandler {
         if (allPlayer == null) {
             allPlayer = playerServiceProvider.getAllPlayers().stream().map(PlayerInfoDTO::new).toList();
         }
+    }
+
+    // TODO - find better solution
+    private static Tournament getTournamentInfos(TournamentYearRawModel tournamentYearRawModel, TournamentRawModel tInfo) {
+        String tournamentId = tInfo.getTournamentId();
+        String tournamentName = tInfo.getTournamentName();
+        String tournamentOrganisation = tInfo.getTournamentOrganisation();
+        String tournamentLocation = tInfo.getTournamentLocation();
+        String tournamentDate = tInfo.getTournamentDate();
+        Integer year = Integer.parseInt(tournamentYearRawModel.year());
+        return new Tournament(tournamentId, tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate, year);
     }
 }
