@@ -7,10 +7,19 @@ quarkus:
   fx:
     views-root: fxviews
   log:
+    console:
+      format: '%d{dd-MM-yyyy HH:mm:ss} %-5p [%c] (%t) %s%e%n'
     level: INFO
     category:
       "de.ostfale.qk.ui":
         level: DEBUG
+    file:
+      enable: true
+      path: ${user.home}/.bad_stat/logs/bad-stat.log
+      rotation:
+        max-backup-index: 5
+        max-file-size: 10M
+        file-suffix: dd-MM-yyyy
 
 # To start the application using a H2 instance (./mvnw -Dquarkus-profile=prod quarkus:dev)
 "%prod":

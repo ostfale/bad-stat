@@ -18,7 +18,12 @@ public interface FileSystemFacade {
     String SEP = FileSystems.getDefault().getSeparator();
     String USER_HOME = "user.home";
 
-    String getHomeDir();
+    String getDownloadDirectory();
+
+    default String getHomeDir(){
+        return getUserHome();
+    }
+
 
     default List<File> readAllFiles(String dirPath) {
         log.debugf("Read all files from directory: {}", dirPath);
