@@ -81,6 +81,10 @@
             <artifactId>quarkus-fx</artifactId>
             <version>${quarkus-fx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jackson</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
@@ -145,6 +149,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
 
 
     </dependencies>
