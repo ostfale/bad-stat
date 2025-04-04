@@ -8,12 +8,16 @@ public class AppConfiguration {
 
     Logger log = Logger.getLogger(AppConfiguration.class);
 
-    private final LocalDateTime lastApplicationStart = LocalDateTime.now();
+    private LocalDateTime lastApplicationStart ;
     private LocalDateTime lastRankingDownload;
     private LocalDateTime lastTournamentDownload;
 
     public LocalDateTime getLastRankingDownload() {
         return lastRankingDownload;
+    }
+
+    public AppConfiguration() {
+        this.lastApplicationStart = LocalDateTime.now();
     }
 
     public void setLastRankingDownload(LocalDateTime lastRankingDownload) {
@@ -33,4 +37,9 @@ public class AppConfiguration {
     public LocalDateTime getLastApplicationStart() {
         return lastApplicationStart;
     }
+
+    public void setLastApplicationStart(LocalDateTime lastApplicationStart) {
+        this.lastApplicationStart = lastApplicationStart;
+    }
 }
+

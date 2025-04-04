@@ -14,11 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Test reading the mixed match information ")
 @Tag("unittest")
-@QuarkusTest
 public class MatchParserMixedTest extends BaseParserTest {
 
-    @Inject
-    MatchParserService parser;
+    MatchParserService parser = new MatchParserService();
 
     @Test
     @DisplayName("Parse mixed match information")

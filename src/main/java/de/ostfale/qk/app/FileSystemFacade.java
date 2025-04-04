@@ -79,8 +79,8 @@ public interface FileSystemFacade extends ApplicationFacade {
         return getUserHome() + SEP + APP_DIR_NAME;
     }
 
-    static Path writeToFile(String fileName, String content) throws IOException {
-        return Files.writeString(Paths.get(fileName), content);
+    static void writeToFile(String fileName, String content) throws IOException {
+        Files.writeString(Paths.get(fileName), content);
     }
 
 

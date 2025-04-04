@@ -1,9 +1,11 @@
 package de.ostfale.qk.app;
 
 import de.ostfale.qk.app.config.AppConfiguration;
-import de.ostfale.qk.app.config.JsonConfigPersistenceService;
+import de.ostfale.qk.app.config.ConfigPersistenceService;
+import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import io.quarkus.runtime.configuration.ConfigUtils;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
@@ -13,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @ApplicationScoped
@@ -24,7 +27,12 @@ public class ApplicationInitializer implements FileSystemFacade {
     DevSimulation devSimulation;
 
     @Inject
-    JsonConfigPersistenceService jsonConfigPersistenceService;
+    ConfigPersistenceService configPersistenceService;
+
+    void onShutdown(@Observes @Priority(1) ShutdownEvent ev) {
+        log.infof("Shutting down %s...", APP_NAME);
+        writeApplicationStartTimestampToConfiguration();
+    }
 
     void onStartup(@Observes StartupEvent ev) {
         log.infof("Starting %s...", APP_NAME);
@@ -34,8 +42,6 @@ public class ApplicationInitializer implements FileSystemFacade {
             ensureDirectoriesExist(applicationHomeDir);
             checkForDevProfileActions();
             ensureConfigurationFileExists(applicationHomeDir);
-            String configurationFilePath = applicationHomeDir + SEP + CONFIGURATION_DIR_NAME + SEP + CONFIGURATION_FILE_NAME;
-            jsonConfigPersistenceService.writeConfiguration(configurationFilePath, new AppConfiguration());
         } else {
             log.infof("Application home directory does not exist: %s -> is going to be created", applicationHomeDir);
         }
@@ -72,13 +78,20 @@ public class ApplicationInitializer implements FileSystemFacade {
             log.infof("Configuration file already exists: %s", configurationFilePath);
             return;
         }
-        try {
-            Files.createFile(path);
-            log.infof("Configuration file created: %s", configurationFilePath);
-        } catch (IOException e) {
-            log.errorf("Failed to create configuration file '%s': %s", configurationFilePath, e.getMessage());
-            throw new RuntimeException("Exception creating application configuration file!", e);
-        }
+        AppConfiguration appConfiguration = new AppConfiguration();
+        configPersistenceService.writeConfiguration(configurationFilePath, appConfiguration);
+        log.infof("Configuration file created: %s", configurationFilePath);
+    }
+
+    private void writeApplicationStartTimestampToConfiguration() {
+        String configurationFilePath = getApplicationHomeDir() + SEP + CONFIGURATION_DIR_NAME + SEP + CONFIGURATION_FILE_NAME;
+        var dd = configPersistenceService.readConfiguration(configurationFilePath);
+
+        configPersistenceService.readConfiguration(configurationFilePath).ifPresent(config -> {
+            log.infof("Write last application start time to configuration file: %s", configurationFilePath);
+            config.setLastApplicationStart(LocalDateTime.now());
+            configPersistenceService.writeConfiguration(configurationFilePath, config);
+        });
     }
 
     private void checkForDevProfileActions() {
