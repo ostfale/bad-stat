@@ -1,6 +1,7 @@
 package de.ostfale.qk.ui;
 
 import de.ostfale.qk.ui.app.StatusBarController;
+import de.ostfale.qk.ui.dashboard.DashboardHandler;
 import de.ostfale.qk.ui.statistics.PlayerStatisticsHandler;
 import de.ostfale.qk.ui.statistics.StatisticsController;
 import io.quarkiverse.fx.views.FxView;
@@ -42,6 +43,9 @@ public class ApplicationController {
     @Inject
     FxViewRepository fxViewRepository;
 
+    @Inject
+    DashboardHandler dashboardHandler;
+
 
     @Inject
     PlayerStatisticsHandler playerTourStatsHandler;
@@ -81,8 +85,7 @@ public class ApplicationController {
     @FXML
     void showDashboardView(ActionEvent event) {
         log.info("Show Dashboard View");
-        FxViewData playerGrid = fxViewRepository.getViewData("player-stat-info");
-        bpApp.setCenter(playerGrid.getRootNode());
+        bpApp.setCenter(dashboardHandler.getRootNode());
     }
 
     @FXML
