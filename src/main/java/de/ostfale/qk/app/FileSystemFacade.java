@@ -3,7 +3,13 @@ package de.ostfale.qk.app;
 import org.jboss.logging.Logger;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,7 +34,7 @@ public interface FileSystemFacade extends ApplicationFacade {
     }
 
     default String getHomeDir() {
-        var result =  System.getProperty(USER_HOME);
+        var result = System.getProperty(USER_HOME);
         log.debugf("User home directory: %s", result);
         return result;
     }
@@ -47,6 +53,27 @@ public interface FileSystemFacade extends ApplicationFacade {
                 .collect(Collectors.toList());
     }
 
+    default boolean downloadFile(String urlString, String fileName) {
+        try {
+            var url = URI.create(urlString).toURL();
+            return downloadFile(url, fileName);
+        } catch (MalformedURLException e) {
+            log.errorf("No valid URL String: %s", urlString);
+            return false;
+        }
+    }
+
+    default boolean downloadFile(URL url, String fileName) {
+        log.debugf("Download file from %s to %s", url, fileName);
+        try (ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+             FileOutputStream fos = new FileOutputStream(fileName);) {
+            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+            return true;
+        } catch (IOException e) {
+            log.errorf("Could not download URL: %s because of: $s", url, e.getMessage());
+            return false;
+        }
+    }
 
 
     default boolean deleteFile(String filePath) {
@@ -71,17 +98,8 @@ public interface FileSystemFacade extends ApplicationFacade {
         return files.stream().allMatch(File::delete);
     }
 
-    static String getUserHome() {
-        return System.getProperty(USER_HOME);
-    }
-
-    static String getApplicationHome() {
-        return getUserHome() + SEP + APP_DIR_NAME;
-    }
 
     static void writeToFile(String fileName, String content) throws IOException {
         Files.writeString(Paths.get(fileName), content);
     }
-
-
 }

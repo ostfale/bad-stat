@@ -30,3 +30,4 @@ public class DashboardController extends BaseController<DashboardUIModel> {
         log.info("Download Ranking File");
     }
 }
+

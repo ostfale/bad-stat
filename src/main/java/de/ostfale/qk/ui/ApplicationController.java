@@ -4,9 +4,13 @@ import de.ostfale.qk.ui.app.StatusBarController;
 import de.ostfale.qk.ui.dashboard.DashboardHandler;
 import de.ostfale.qk.ui.statistics.PlayerStatisticsHandler;
 import de.ostfale.qk.ui.statistics.StatisticsController;
+import io.quarkiverse.fx.FxPostStartupEvent;
+import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkiverse.fx.views.FxView;
 import io.quarkiverse.fx.views.FxViewData;
 import io.quarkiverse.fx.views.FxViewRepository;
+import io.quarkus.runtime.Startup;
+import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import javafx.event.ActionEvent;
@@ -66,6 +70,10 @@ public class ApplicationController {
     }
 
 
+    void onPostStartup(@Observes final FxPostStartupEvent event) {
+        bpApp.setCenter(dashboardHandler.getRootNode());
+    }
+
     // menu actions
     @FXML
     void closeAppByMenu(ActionEvent event) {
@@ -80,7 +88,6 @@ public class ApplicationController {
         alert.setContentText("Kontakt: badminton@uwe-sauerbrei.de");
         alert.showAndWait();
     }
-
 
     @FXML
     void showDashboardView(ActionEvent event) {
