@@ -4,6 +4,7 @@ package de.ostfale.qk.ui.dashboard;
 import de.ostfale.qk.ui.app.BaseController;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
@@ -14,6 +15,9 @@ import org.jboss.logging.Logger;
 public class DashboardController extends BaseController<DashboardUIModel> {
 
     private static final Logger log = Logger.getLogger(DashboardController.class);
+
+    @Inject
+    DashboardService dashboardService;
 
     @FXML
     AnchorPane apDashboard;
@@ -27,7 +31,8 @@ public class DashboardController extends BaseController<DashboardUIModel> {
 
     @FXML
     void downloadRankingFile(ActionEvent event) {
-        log.info("Download Ranking File");
+        log.info("DashboardController :: Download Ranking File");
+        boolean finishedSuccessfully = dashboardService.downloadRankingFile();
     }
 }
 

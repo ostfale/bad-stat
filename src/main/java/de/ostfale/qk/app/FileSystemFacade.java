@@ -45,6 +45,12 @@ public interface FileSystemFacade extends ApplicationFacade {
         return result;
     }
 
+    default String getApplicationRankingDir() {
+        var result = getApplicationHomeDir() + SEP + DirTypes.RANKING.displayName + SEP;
+        log.debugf("Ranking directory: %s", result);
+        return result;
+    }
+
     default List<File> readAllFiles(String dirPath) {
         log.debugf("Read all files from directory: {}", dirPath);
         return Stream.ofNullable(new File(dirPath).listFiles())
@@ -75,7 +81,6 @@ public interface FileSystemFacade extends ApplicationFacade {
         }
     }
 
-
     default boolean deleteFile(String filePath) {
         log.debugf("Delete file: {}", filePath);
         var fileToDelete = new File(filePath);
@@ -89,7 +94,7 @@ public interface FileSystemFacade extends ApplicationFacade {
 
     default boolean deleteAllFiles(String dirPath) {
         var filesToDelete = readAllFiles(dirPath);
-        log.debugf("Delete all files from directory: {} found: {}", dirPath, filesToDelete.size());
+        log.debugf("Delete all files from directory: %s found: %d", dirPath, filesToDelete.size());
         return filesToDelete.stream().allMatch(File::delete);
     }
 
