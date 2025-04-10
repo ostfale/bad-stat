@@ -85,7 +85,6 @@ public class ApplicationInitializer implements FileSystemFacade {
 
     private void writeApplicationStartTimestampToConfiguration() {
         String configurationFilePath = getApplicationHomeDir() + SEP + CONFIGURATION_DIR_NAME + SEP + CONFIGURATION_FILE_NAME;
-        var dd = configPersistenceService.readConfiguration(configurationFilePath);
 
         configPersistenceService.readConfiguration(configurationFilePath).ifPresent(config -> {
             log.infof("Write last application start time to configuration file: %s", configurationFilePath);

@@ -1,5 +1,15 @@
 package de.ostfale.qk.app;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlPage;
+import org.jboss.logging.Logger;
+
 import de.ostfale.qk.db.api.MatchRepository;
 import de.ostfale.qk.db.api.PlayerRepository;
 import de.ostfale.qk.db.api.TournamentRepository;
@@ -20,26 +30,12 @@ import de.ostfale.qk.web.ConfiguredWebClient;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
-import org.htmlunit.WebClient;
-import org.htmlunit.html.HtmlElement;
-import org.htmlunit.html.HtmlPage;
-import org.jboss.logging.Logger;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @Singleton
 public class DevSimulation {
 
     private static final Logger log = Logger.getLogger(DevSimulation.class);
 
-    private static final String PLAYER_RANKING_FILE = "src/main/resources/simulation/Ranking_2025_Full_Sim.xlsx";
     private static final String TOURNAMENTS_FILE = "simulation/Tournaments.html";
 
     protected final WebClient webClient = ConfiguredWebClient.getWebClient();
@@ -82,7 +78,7 @@ public class DevSimulation {
         saveTournament(tournamentYearRawModel);
 
         // find all tournaments for 2024 and Louis Sauerbrei
-        var result = tournamentServiceProvider.getAllTournamentsForYearAndPlayer(2024, "Louis Sauerbrei");
+        tournamentServiceProvider.getAllTournamentsForYearAndPlayer(2024, "Louis Sauerbrei");
     }
 
     @Transactional
@@ -195,12 +191,5 @@ public class DevSimulation {
         var inputStream = classLoader.getResourceAsStream(fileName);
         Objects.requireNonNull(inputStream, "file not found! " + fileName);
         return new String(inputStream.readAllBytes());
-    }
-
-    private String readFile(String fileName) throws IOException, URISyntaxException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = Objects.requireNonNull(classLoader.getResource(fileName), "file not found! " + fileName);
-        var file = new File(resource.toURI());
-        return Files.readString(file.toPath());
     }
 }

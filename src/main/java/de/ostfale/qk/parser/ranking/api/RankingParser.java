@@ -1,10 +1,9 @@
 package de.ostfale.qk.parser.ranking.api;
 
-import de.ostfale.qk.parser.ranking.internal.RankingPlayer;
-
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
+
+import de.ostfale.qk.parser.ranking.internal.RankingPlayer;
 
 public interface RankingParser {
 

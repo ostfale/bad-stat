@@ -42,22 +42,22 @@
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
-                <Label layoutX="20.0" layoutY="146.0" text="Anzahl der Spieler:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="150.0">
+                <Label layoutX="20.0" layoutY="146.0" text="Anzahl der Spieler:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="170.0">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
-                <Label layoutX="14.0" layoutY="193.0" text="Frauen:" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="180.0">
+                <Label layoutX="14.0" layoutY="193.0" text="Frauen:" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="200.0">
                     <font>
                         <Font name="System Bold" size="13.0" />
                     </font>
                 </Label>
-                <Label layoutX="50.0" layoutY="190.0" text="Männer:" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="210.0">
+                <Label layoutX="50.0" layoutY="190.0" text="Männer:" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="230.0">
                     <font>
                         <Font name="System Bold" size="13.0" />
                     </font>
                 </Label>
-                <Label layoutX="163.0" layoutY="101.0" text="05.04. 2025 23:23" AnchorPane.leftAnchor="160.0" AnchorPane.topAnchor="100.0">
+                <Label fx:id="lblLastDownload" layoutX="163.0" layoutY="101.0" text="-" AnchorPane.leftAnchor="160.0" AnchorPane.topAnchor="100.0">
                     <font>
                         <Font size="14.0" />
                     </font>
@@ -67,6 +67,15 @@
                         <FontIcon iconColor="#ae1732" iconLiteral="fas-cloud-download-alt" iconSize="18" />
                     </graphic>
                 </Button>
+            <Label layoutX="40.0" layoutY="113.0" text="Ranglistenfile:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="130.0">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblLastFile" layoutX="149.0" layoutY="132.0" text="-" AnchorPane.leftAnchor="160.0" AnchorPane.topAnchor="130.0" />
+            <Label fx:id="lblAllPlayers" layoutX="160.0" layoutY="172.0" text="-" AnchorPane.leftAnchor="160.0" AnchorPane.topAnchor="170.0" />
+            <Label fx:id="lblFemalePlayers" layoutX="149.0" layoutY="201.0" text="-" AnchorPane.leftAnchor="160.0" AnchorPane.topAnchor="200.0" />
+            <Label fx:id="lblMalePlayers" layoutX="152.0" layoutY="222.0" text="-" AnchorPane.leftAnchor="160.0" AnchorPane.topAnchor="230.0" />
             </children>
         </AnchorPane>
     </children>

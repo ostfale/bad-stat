@@ -24,7 +24,7 @@ public class WebStatusChecker {
     @Inject
     HttpHandler httpHandler;
 
-    @Scheduled(every = "300s", delay = 10, delayUnit = TimeUnit.SECONDS)
+   @Scheduled(every = "300s", delay = 10, delayUnit = TimeUnit.SECONDS)
     void checkInternetConnection() {
         log.info("Checking health status of the website...");
         boolean isConnected = checkWebsiteHealth(WEB_STATUS_URL);

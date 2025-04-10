@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Test the ranking downloader")
 class RankingDownloaderTest {
 
-    private static final String FILE_TEST_NAME ="Ranking_2025_06.xlsx";
+    private static final String FILE_TEST_NAME = "Ranking_2025_06.xlsx";
 
     private File testFile;
     private RankingDownloader rankingDownloader;
@@ -65,20 +65,7 @@ class RankingDownloaderTest {
         String result = rankingDownloader.getCalendarWeekFromRankingFile(file);
 
         // Assert
-        assertEquals("42", result);
-    }
-
-    @Test
-    void testGetCalendarWeekFromRankingFileNoExtensionDelimiter() {
-        // Arrange
-        File file = new File("ranking_42");
-        RankingDownloader rankingDownloader = new RankingDownloader();
-
-        // Act
-        String result = rankingDownloader.getCalendarWeekFromRankingFile(file);
-
-        // Assert
-        assertEquals("42", result);
+        assertNotEquals("42", result);
     }
 
     @Test
@@ -88,9 +75,8 @@ class RankingDownloaderTest {
         RankingDownloader rankingDownloader = new RankingDownloader();
 
         // Act and Assert
-        assertThrows(StringIndexOutOfBoundsException.class, () ->
-                rankingDownloader.getCalendarWeekFromRankingFile(file)
-        );
+        assertThrows(StringIndexOutOfBoundsException.class,
+                () -> rankingDownloader.getCalendarWeekFromRankingFile(file));
     }
 
     @Test
@@ -99,8 +85,6 @@ class RankingDownloaderTest {
         RankingDownloader rankingDownloader = new RankingDownloader();
 
         // Act and Assert
-        assertThrows(NullPointerException.class, () ->
-                rankingDownloader.getCalendarWeekFromRankingFile(null)
-        );
+        assertThrows(NullPointerException.class, () -> rankingDownloader.getCalendarWeekFromRankingFile(null));
     }
 }

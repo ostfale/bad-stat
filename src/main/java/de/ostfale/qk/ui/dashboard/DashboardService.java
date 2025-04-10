@@ -1,6 +1,7 @@
 package de.ostfale.qk.ui.dashboard;
 
 import de.ostfale.qk.app.downloader.ranking.RankingDownloader;
+import de.ostfale.qk.ui.dashboard.model.DashboardUIModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
@@ -19,4 +20,8 @@ public class DashboardService {
         return true;
     }
 
+    public DashboardUIModel getDashboardUIModel(){
+        log.debug("DashboardService :: retrieve DashboardUIModel");
+        return null;
+    }
 }

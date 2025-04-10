@@ -1,15 +1,15 @@
 package de.ostfale.qk.ui;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
+
 import de.ostfale.qk.ui.app.StatusBarController;
 import de.ostfale.qk.ui.dashboard.DashboardHandler;
 import de.ostfale.qk.ui.statistics.PlayerStatisticsHandler;
 import de.ostfale.qk.ui.statistics.StatisticsController;
 import io.quarkiverse.fx.FxPostStartupEvent;
-import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkiverse.fx.views.FxView;
-import io.quarkiverse.fx.views.FxViewData;
 import io.quarkiverse.fx.views.FxViewRepository;
-import io.quarkus.runtime.Startup;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -22,8 +22,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.logging.Logger;
 
 @Singleton
 @FxView("app-view")
