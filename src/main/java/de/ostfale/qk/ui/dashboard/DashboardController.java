@@ -49,7 +49,7 @@ public class DashboardController extends BaseController<DashboardUIModel> {
         log.info("DashboardController :: Download Ranking File");
         boolean finishedSuccessfully = dashboardService.downloadRankingFile();
         if (finishedSuccessfully) {
-            log.debug("Download finished successfully -> update ranking file display")
+            log.debug("Download finished successfully -> update ranking file display");
         }
     }
 

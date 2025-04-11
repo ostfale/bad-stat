@@ -39,6 +39,7 @@ public class PlayerStatisticsController {
         initTreeTableView();
     }
 
+    @SuppressWarnings("unchecked")
     private void initTreeTableView() {
         colTournamentDate = new TreeTableColumn<>("Datum");
         colTournamentDate.setSortable(false);

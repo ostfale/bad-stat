@@ -1,10 +1,8 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
-import de.ostfale.qk.db.internal.player.Player;
 import org.jboss.logging.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import de.ostfale.qk.db.internal.player.Player;
 
 public class PlayerInfoDTO {
 
@@ -30,6 +28,7 @@ public class PlayerInfoDTO {
     private DisciplineStatisticsDTO mixedDisciplineStatistics;
 
     public PlayerInfoDTO(Player player) {
+        log.tracef("PlayerInfoDTO :: init from player %d",player.getPlayerId());
         this.playerName = player.getName();
         this.gender = player.getGender().toString();
         this.playerId = player.getPlayerId();

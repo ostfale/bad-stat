@@ -28,7 +28,7 @@ public class PlayerRepository implements PanacheRepository<Player> {
     }
 
     public Player findByPlayerId(String playerId) {
-        log.debugf("PlayerRepository :: findByPlayerId(%s)", playerId);
+        log.tracef("PlayerRepository :: findByPlayerId(%s)", playerId);
         return find("playerId = ?1", playerId).firstResult();
     }
 }

@@ -41,7 +41,9 @@ public class ExcelRankingParser implements RankingParser {
     private Sheet readFirstSheet(InputStream excelInputStream) {
         try {
             Workbook workbook = new XSSFWorkbook(excelInputStream);
-            return workbook.getSheetAt(0);
+            var sheet = workbook.getSheetAt(0);
+            workbook.close();
+            return sheet;
         } catch (IOException e) {
             log.errorf("Excel PARSER :: Player : could not parse file because of: {}", e.getMessage());
             throw new RuntimeException(e);

@@ -19,6 +19,25 @@ public class PlayerServiceProvider {
     @Inject
     PlayerRepository playerRepository;
 
+    public boolean savePlayerIfNotExistsOrHasChanged(Player player) {
+        log.tracef("Save Player :: Check player %s to be saved", player.getName());
+        Player searchedPlayer = playerRepository.findByPlayerId(player.getPlayerId());
+        if (searchedPlayer != null) {
+            log.trace("Save Player :: Player has been found!");
+            if (player.equals(searchedPlayer)) {
+                log.tracef("Save Player :: Found player and given player are identical -> not saved");
+                return false;
+            }
+            log.tracef("Save Player :: Searched player and given player are different -> player updated");
+            searchedPlayer.updatePlayer(player);
+            playerRepository.persist(searchedPlayer);
+            return true;
+        }
+        log.tracef("Save Player :: Player not found -> will be saved!");
+        playerRepository.persist(player);
+        return true;
+    }
+
     public List<Player> findPlayersByFullName(String fullName) {
         log.debugf("Find players by full name: %s", fullName);
         return playerRepository.findPlayersByFullNameIgnoreCase(fullName);
