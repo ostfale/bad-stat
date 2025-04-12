@@ -97,15 +97,7 @@ public class PlayerInfoHandler {
 
     public void toggleAndSavePlayerAsFavorite(PlayerInfoDTO playerDTO) {
         Objects.requireNonNull(playerDTO, "Player name must not be null");
-        if (playerDTO.getFavorite()) {
-            playerDTO.setFavorite(false);
-            log.infof("PlayerInfoHandler :: Player %s is not a favorite anymore", playerDTO.getPlayerName());
-        } else {
-            playerDTO.setFavorite(true);
-            log.infof("PlayerInfoHandler :: Player %s is now a favorite", playerDTO.getPlayerName());
-        }
-        Player player = playerServiceProvider.findPlayerById(playerDTO.getPlayerId());
-        playerServiceProvider.updatePlayerAsFavorite(player);
+        playerServiceProvider.updatePlayerAsFavorite(playerDTO.getPlayerId(),true);
     }
 
     public List<PlayerInfoDTO> findPlayerByName(String playerName) {

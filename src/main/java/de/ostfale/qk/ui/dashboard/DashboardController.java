@@ -10,6 +10,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.jboss.logging.Logger;
 
 @Dependent
@@ -47,9 +51,13 @@ public class DashboardController extends BaseController<DashboardUIModel> {
     @FXML
     void downloadRankingFile(ActionEvent event) {
         log.info("DashboardController :: Download Ranking File");
-        boolean finishedSuccessfully = dashboardService.downloadRankingFile();
-        if (finishedSuccessfully) {
+        String rankingFileName = dashboardService.downloadRankingFile();
+        if (!rankingFileName.isEmpty()) {
             log.debug("Download finished successfully -> update ranking file display");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+            String formattedDateTime = LocalDateTime.now().format(formatter);
+            this.lblLastDownload.setText(formattedDateTime);
+            this.lblLastFile.setText(rankingFileName);
         }
     }
 

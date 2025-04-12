@@ -36,6 +36,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     private static final Logger log = Logger.getLogger(PlayerInfoController.class);
 
     private static final String PATH_SEPARATOR = "/";
+    private static final String INITIAL_TOURNAMENT_RESULT = "0/0";
 
     @Inject
     PlayerInfoHandler playerInfoHandler;
@@ -208,7 +209,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
     }
 
-
     private void updateTournamentInfosForPlayerAndYear(TournamentsStatistic tournamentsStatistic) {
         Objects.requireNonNull(tournamentsStatistic, "Tournaments statistic must not be null");
         log.debugf("UI :: Update tournament infos for player %s ", tournamentsStatistic.getPlayerId());
@@ -259,7 +259,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     private void initFavPlayerComboboxModel() {
         log.debug("Initialize DataModel for player combobox");
         List<PlayerInfoDTO> favPlayers = playerInfoHandler.findAllFavoritePlayers();
-
         dataModel = new DataModel<>();
         dataModel.setStringConverter(new FavPlayerStringConverter());
         dataModel.setChangeListener(new FavPlayerChangeListener(this));
@@ -269,8 +268,10 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     public void updatePlayerInfo(PlayerInfoDTO player) {
         log.debugf("Update player info: %s", player.getPlayerName());
         resetPlayerInfo();
-        TournamentsStatistic tournamentsStatistic = playerInfoHandler.updateOrCreatePlayerTournamentsStatistics(player);
-        updateTournamentInfosForPlayerAndYear(tournamentsStatistic);
+        if (player.getPlayerTournamentId() != null && !player.getPlayerTournamentId().isEmpty()) {
+            TournamentsStatistic tournamentsStatistic = playerInfoHandler.updateOrCreatePlayerTournamentsStatistics(player);
+            updateTournamentInfosForPlayerAndYear(tournamentsStatistic);
+        }
 
         lblName.setText(player.getPlayerName());
         lblPlayerId.setText(player.getPlayerId());
@@ -299,17 +300,15 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         lblDAKRank.setText(playerInfoHandler.getDoubleRankingForAgeClass(player).toString());
         lblMAKRank.setText(playerInfoHandler.getMixedRankingForAgeClass(player).toString());
 
-        txtTourURL.setText("");                                          // reset url since it is not saved in DB
+        txtTourURL.setText(""); // reset url since it is not saved in DB
     }
 
     // init text field to search player from all players list
     private void initSearchPlayerTextField() {
         ctfSearchPlayer.setPromptText("Spieler suchen");
 
-        Callback<AutoCompletionBinding.ISuggestionRequest, Collection<PlayerInfoDTO>> suggestionProvider =
-                request -> playerInfoHandler.getAllPlayer().stream()
-                        .filter(suggestion -> suggestion.getPlayerName().toLowerCase().contains(request.getUserText().toLowerCase()))
-                        .toList();
+        Callback<AutoCompletionBinding.ISuggestionRequest, Collection<PlayerInfoDTO>> suggestionProvider = request -> playerInfoHandler.getAllPlayer().stream()
+                .filter(suggestion -> suggestion.getPlayerName().toLowerCase().contains(request.getUserText().toLowerCase())).toList();
 
         TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
     }
@@ -331,13 +330,9 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     private void resetPlayerInfo() {
         // Group repetitive label components into one array for iteration
-        Label[] labels = {
-                lblName, lblPlayerId, lblBirthYear, lblAgeClass, lblClub, lblDistrict,
-                lblIdTurnier, lblGroup, lblState, lblGender, lblSTours, lblDTours,
-                lblMTours, lblSPoints, lblDPoints, lblMPoints, lblSRank, lblDRank,
-                lblMRank, lblSAKRank, lblDAKRank, lblMAKRank, lblYear, lblYearMinusOne,
-                lblYearMinusTwo, lblYearMinusThree
-        };
+        Label[] labels = { lblName, lblPlayerId, lblBirthYear, lblAgeClass, lblClub, lblDistrict, lblIdTurnier, lblGroup, lblState, lblGender, lblSTours,
+                lblDTours, lblMTours, lblSPoints, lblDPoints, lblMPoints, lblSRank, lblDRank, lblMRank, lblSAKRank, lblDAKRank, lblMAKRank, lblYear,
+                lblYearMinusOne, lblYearMinusTwo, lblYearMinusThree };
 
         // Clear all labels using a helper method
         for (Label label : labels) {
@@ -345,6 +340,10 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         }
 
         // Handle remaining individual text components not part of same type
+        lblYear.setText(INITIAL_TOURNAMENT_RESULT);
+        lblYearMinusOne.setText(INITIAL_TOURNAMENT_RESULT);
+        lblYearMinusTwo.setText(INITIAL_TOURNAMENT_RESULT);
+        lblYearMinusThree.setText(INITIAL_TOURNAMENT_RESULT);
         txtTourURL.setText("");
     }
 
@@ -352,5 +351,4 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     private void clearLabel(Label label) {
         label.setText("");
     }
-
 }

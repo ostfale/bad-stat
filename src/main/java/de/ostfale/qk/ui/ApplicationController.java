@@ -13,6 +13,7 @@ import io.quarkiverse.fx.views.FxViewRepository;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -41,17 +42,14 @@ public class ApplicationController {
     @FXML
     AnchorPane centerAnchorPane;
 
-
     @Inject
     FxViewRepository fxViewRepository;
 
     @Inject
     DashboardHandler dashboardHandler;
 
-
     @Inject
     PlayerStatisticsHandler playerTourStatsHandler;
-
 
     @Inject
     StatisticsController statisticsController;
@@ -66,7 +64,6 @@ public class ApplicationController {
         bpApp.setBottom(statusBarController);
         dashboardStage.show();
     }
-
 
     void onPostStartup(@Observes final FxPostStartupEvent event) {
         bpApp.setCenter(dashboardHandler.getRootNode());

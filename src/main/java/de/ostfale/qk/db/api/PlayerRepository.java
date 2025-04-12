@@ -24,7 +24,7 @@ public class PlayerRepository implements PanacheRepository<Player> {
 
     public List<Player> findFavoritePlayers() {
         log.debugf("PlayerRepository :: findFavoritePlayers()");
-        return list("favorite = true");
+        return list("favorite", true);
     }
 
     public Player findByPlayerId(String playerId) {

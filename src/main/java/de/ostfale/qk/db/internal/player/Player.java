@@ -55,29 +55,26 @@ public class Player {
     @Enumerated(EnumType.STRING)
     private GenderType gender;
 
-    public void updatePlayer(Player rankingPlayer){
-        this.firstName = rankingPlayer.getFirstName();
-        this.lastName = rankingPlayer.getLastName();
-        // this.fullName = rankingPlayer.getName();
-        // this.singlePoints = rankingPlayer.getSinglePoints();
-        // this.singleRanking = rankingPlayer.getSingleRanking();
-        // this.singleAgeRanking = rankingPlayer.getSingleAgeRanking();
-        // this.singleTournaments = rankingPlayer.getSingleTournaments();
-        // this.doublePoints = rankingPlayer.getDoublePoints();
-        // this.doubleRanking = rankingPlayer.getDoubleRanking();
-        // this.doubleAgeRanking = rankingPlayer.getDoubleAgeRanking();
-        // this.doubleTournaments = rankingPlayer.getDoubleTournaments();
-        // this.mixedPoints = rankingPlayer.getMixedPoints();
-        // this.mixedRanking = rankingPlayer.getMixedRanking();
-        // this.mixedAgeRanking = rankingPlayer.getMixedAgeRanking();
-        // this.mixedTournaments = rankingPlayer.getMixedTournaments();
-        // this.clubName = rankingPlayer.getClubName();
-        // this.districtName = rankingPlayer.getDistrictName();
-        // this.stateName = rankingPlayer.getStateName();
-        // this.stateGroup = rankingPlayer.getStateGroup();
-        // this.ageClassGeneral = rankingPlayer.getAgeClassGeneral();
-        // this.ageClassDetail = rankingPlayer.getAgeClassDetail();
-        // this.favorite = rankingPlayer.getFavorite();
+    public void updatePlayer(Player rankingPlayer) {
+        this.singlePoints = rankingPlayer.getSinglePoints();
+        this.singleRanking = rankingPlayer.getSingleRanking();
+        this.singleAgeRanking = rankingPlayer.getSingleAgeRanking();
+        this.singleTournaments = rankingPlayer.getSingleTournaments();
+        this.doublePoints = rankingPlayer.getDoublePoints();
+        this.doubleRanking = rankingPlayer.getDoubleRanking();
+        this.doubleAgeRanking = rankingPlayer.getDoubleAgeRanking();
+        this.doubleTournaments = rankingPlayer.getDoubleTournaments();
+        this.mixedPoints = rankingPlayer.getMixedPoints();
+        this.mixedRanking = rankingPlayer.getMixedRanking();
+        this.mixedAgeRanking = rankingPlayer.getMixedAgeRanking();
+        this.mixedTournaments = rankingPlayer.getMixedTournaments();
+        this.clubName = rankingPlayer.getClubName();
+        this.districtName = rankingPlayer.getDistrictName();
+        this.stateName = rankingPlayer.getStateName();
+        this.stateGroup = rankingPlayer.getStateGroup();
+        this.ageClassGeneral = rankingPlayer.getAgeClassGeneral();
+        this.ageClassDetail = rankingPlayer.getAgeClassDetail();
+        this.favorite = rankingPlayer.getFavorite();
     }
 
     public Player(RankingPlayer rankingPlayer) {
@@ -132,33 +129,11 @@ public class Player {
             log.debug("diff player-id");
             return false;
         }
-        if ((firstName == null && (other.firstName != null)) || ((!firstName.equals(other.firstName)))) {
-            log.debug("diff first name");
-            return false;
-        }
-        if ((lastName == null && other.lastName != null) || (!lastName.equals(other.lastName))) {
-            log.debug("diff last name");
-            return false;
-        }
-        if (fullName == null) {
-            if (other.fullName != null)
-                return false;
-        } else if (!fullName.equals(other.fullName))
-            return false;
-        if (yearOfBirth == null) {
-            if (other.yearOfBirth != null)
-                return false;
-        } else if (!yearOfBirth.equals(other.yearOfBirth))
-            return false;
+
         if (favorite == null) {
             if (other.favorite != null)
                 return false;
         } else if (!favorite.equals(other.favorite))
-            return false;
-        if (playerTournamentId == null) {
-            if (other.playerTournamentId != null)
-                return false;
-        } else if (!playerTournamentId.equals(other.playerTournamentId))
             return false;
         if (clubName == null) {
             if (other.clubName != null)
@@ -232,23 +207,16 @@ public class Player {
                 return false;
         } else if (!mixedPoints.equals(other.mixedPoints))
             return false;
-        if (mixedRanking == null) {
-            if (other.mixedRanking != null)
-                return false;
-        } else if (!mixedRanking.equals(other.mixedRanking))
+
+        if (((mixedRanking == null) && (other.mixedRanking != null)) || (!mixedRanking.equals(other.mixedRanking))) {
             return false;
-        if (mixedAgeRanking == null) {
-            if (other.mixedAgeRanking != null)
-                return false;
-        } else if (!mixedAgeRanking.equals(other.mixedAgeRanking))
+        }
+        if (((mixedAgeRanking == null) && (other.mixedAgeRanking != null)) || (!mixedAgeRanking.equals(other.mixedAgeRanking))) {
             return false;
-        if (mixedTournaments == null) {
-            if (other.mixedTournaments != null)
-                return false;
-        } else if (!mixedTournaments.equals(other.mixedTournaments))
+        }
+        if (((mixedTournaments == null) && (other.mixedTournaments != null)) || (!mixedTournaments.equals(other.mixedTournaments))) {
             return false;
-        if (gender != other.gender)
-            return false;
+        }
         return true;
     }
 

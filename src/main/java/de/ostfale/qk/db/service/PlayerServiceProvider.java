@@ -48,6 +48,15 @@ public class PlayerServiceProvider {
         return playerRepository.findByPlayerId(playerId);
     }
 
+    public void updatePlayerAsFavorite(String playerId, boolean isFavorite){
+        Player existingPlayer = playerRepository.findByPlayerId(playerId);
+        if (existingPlayer != null){
+            log.infof("Updating player %s as favorite : %s", existingPlayer.getName(), isFavorite);
+            existingPlayer.setFavorite(isFavorite);
+            playerRepository.persist(existingPlayer);
+        }
+    }
+
     public void updatePlayerAsFavorite(Player player) {
         Player existingPlayer = playerRepository.findByPlayerId(player.getPlayerId());
         if (existingPlayer != null) {

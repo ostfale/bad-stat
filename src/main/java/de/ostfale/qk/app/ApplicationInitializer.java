@@ -59,7 +59,7 @@ public class ApplicationInitializer implements FileSystemFacade {
             ensureDirectoriesExist(applicationHomeDir);
          //   checkForDevProfileActions();
             ensureConfigurationFileExists(applicationHomeDir);
-            readRankingFileIfExists();
+        //    readRankingFileIfExists();
         } else {
             log.infof("Application home directory does not exist: %s -> is going to be created", applicationHomeDir);
         }
@@ -71,7 +71,7 @@ public class ApplicationInitializer implements FileSystemFacade {
         if (excelRankingFiles.size() == 1) {
             try {
                 List<RankingPlayer> allPlayers = rankingParser.parseRankingFile(new FileInputStream(excelRankingFiles.getFirst()));
-                allPlayers.stream().forEach(rankingPlayer -> {
+                allPlayers.parallelStream().forEach(rankingPlayer -> {
                     var player = new Player(rankingPlayer);
                     if (playerService.savePlayerIfNotExistsOrHasChanged(player)) {
                         savedPlayers.incrementAndGet();

@@ -74,6 +74,7 @@ public interface FileSystemFacade extends ApplicationFacade {
         try (ReadableByteChannel rbc = Channels.newChannel(url.openStream());
              FileOutputStream fos = new FileOutputStream(fileName);) {
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+            fos.close();
             return true;
         } catch (IOException e) {
             log.errorf("Could not download URL: %s because of: $s", url, e.getMessage());

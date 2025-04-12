@@ -4,6 +4,10 @@ import de.ostfale.qk.app.downloader.ranking.RankingDownloader;
 import de.ostfale.qk.ui.dashboard.model.DashboardUIModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
+import java.io.File;
+import java.util.List;
+
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
@@ -14,13 +18,17 @@ public class DashboardService {
     @Inject
     RankingDownloader rankingDownloader;
 
-    public boolean downloadRankingFile() {
+    public String downloadRankingFile() {
         log.info("Downloading ranking file");
         rankingDownloader.downloadRankingFile();
-        return true;
+        List<File> rankingFiles = rankingDownloader.getRankingFiles();
+        if (rankingFiles.size() == 1) {
+            return rankingFiles.getFirst().getName();
+        }
+        return "";
     }
 
-    public DashboardUIModel getDashboardUIModel(){
+    public DashboardUIModel getDashboardUIModel() {
         log.debug("DashboardService :: retrieve DashboardUIModel");
         return null;
     }

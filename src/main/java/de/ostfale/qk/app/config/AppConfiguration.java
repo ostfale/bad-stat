@@ -11,6 +11,15 @@ public class AppConfiguration {
     private LocalDateTime lastApplicationStart ;
     private LocalDateTime lastRankingDownload;
     private LocalDateTime lastTournamentDownload;
+    private String lastRankingFileName;
+
+    public String getLastRankingFileName() {
+        return lastRankingFileName;
+    }
+
+    public void setLastRankingFileName(String lastRankingFileName) {
+        this.lastRankingFileName = lastRankingFileName;
+    }
 
     public LocalDateTime getLastRankingDownload() {
         return lastRankingDownload;

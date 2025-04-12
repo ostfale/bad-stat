@@ -76,7 +76,8 @@ public class RankingDownloader implements FileSystemFacade, TimeHandlerFacade {
         var lastCalendarWeek = getLastCalendarWeek();
         var yearFromLastCalendarWeek = getCalendarYearFromLastWeek();
         String targetURL = createURLForCalendarWeek(lastCalendarWeek, yearFromLastCalendarWeek);
-        String targetFilePath = getApplicationRankingDir() + SEP + RankingFileModel.prepareFileNameForThisCalendarWeek(lastCalendarWeek, yearFromLastCalendarWeek);
+        String rankingFileName = RankingFileModel.prepareFileNameForThisCalendarWeek(lastCalendarWeek, yearFromLastCalendarWeek);
+        String targetFilePath = getApplicationRankingDir() + SEP + rankingFileName;
         if (downloadFile(targetURL, targetFilePath)) {
             log.infof("RankingDownloader :: Download of ranking file for KW %d was successful!", lastCalendarWeek);
         } else {
@@ -94,6 +95,15 @@ public class RankingDownloader implements FileSystemFacade, TimeHandlerFacade {
         if (!deletionSuccess) {
             log.error("RankingDownloader :: Failed to delete ranking files");
         }
+        var actualYear = getActualCalendarYear();
+        String targetURL = createURLForCalendarWeek(currentCalendarWeek, actualYear);
+        String rankingFileName = RankingFileModel.prepareFileNameForThisCalendarWeek(currentCalendarWeek ,actualYear);
+        String targetFilePath = getApplicationRankingDir() + SEP + rankingFileName;
+        if (downloadFile(targetURL, targetFilePath)) {
+            log.infof("RankingDownloader :: Download of ranking file for KW %d was successful!", currentCalendarWeek);
+        } else {
+            log.errorf("RankingDownloader :: Download of ranking file for KW %d failed!", currentCalendarWeek);
+        }
     }
 
     public String getCalendarWeekFromRankingFile(File aFile) {
@@ -106,6 +116,12 @@ public class RankingDownloader implements FileSystemFacade, TimeHandlerFacade {
         return fileName.substring(startOfCalendarWeek, endOfCalendarWeek);
     }
 
+    public List<File> getRankingFiles() {
+        var rankingDir = getApplicationRankingDir();
+        log.debugf("RankingFile Download :: ranking dir: %s", rankingDir);
+        return readAllFiles(rankingDir);
+    }
+
     private String handleRankingFiles(List<File> existingRankingFiles) {
         if (existingRankingFiles.isEmpty()) {
             return "";
@@ -115,12 +131,6 @@ public class RankingDownloader implements FileSystemFacade, TimeHandlerFacade {
             log.errorf("More than one ranking file found -> %d", existingRankingFiles.size());
             return "";
         }
-    }
-
-    private List<File> getRankingFiles() {
-        var rankingDir = getApplicationRankingDir();
-        log.debugf("RankingFile Download :: ranking dir: %s", rankingDir);
-        return readAllFiles(rankingDir);
     }
 
     private String createURLForCalendarWeek(int calendarWeek, int calendarYear) {

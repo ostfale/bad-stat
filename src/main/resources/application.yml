@@ -47,4 +47,4 @@ quarkus:
       password:
     hibernate-orm:
       database:
-        generation: drop-and-create
+        generation: update
