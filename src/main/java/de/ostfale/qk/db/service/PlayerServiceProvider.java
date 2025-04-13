@@ -2,6 +2,8 @@ package de.ostfale.qk.db.service;
 
 import de.ostfale.qk.db.api.PlayerRepository;
 import de.ostfale.qk.db.internal.player.Player;
+import de.ostfale.qk.db.internal.player.PlayerOverview;
+import de.ostfale.qk.parser.ranking.internal.GenderType;
 import de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoDTO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -18,6 +20,15 @@ public class PlayerServiceProvider {
 
     @Inject
     PlayerRepository playerRepository;
+
+    public PlayerOverview getPlayerOverview() {
+        Long nofPlayer = playerRepository.count();
+        Long nofMalePlayer = playerRepository.countPlayerByGender(GenderType.MALE);
+        Long nofFemalePlayer = playerRepository.countPlayerByGender(GenderType.FEMALE);
+        var playerOverview = new PlayerOverview(nofPlayer, nofMalePlayer, nofFemalePlayer);
+        log.infof("PlayerServiceProvider :: %s", playerOverview.toString());
+        return playerOverview;
+    }
 
     public boolean savePlayerIfNotExistsOrHasChanged(Player player) {
         log.tracef("Save Player :: Check player %s to be saved", player.getName());
@@ -48,9 +59,9 @@ public class PlayerServiceProvider {
         return playerRepository.findByPlayerId(playerId);
     }
 
-    public void updatePlayerAsFavorite(String playerId, boolean isFavorite){
+    public void updatePlayerAsFavorite(String playerId, boolean isFavorite) {
         Player existingPlayer = playerRepository.findByPlayerId(playerId);
-        if (existingPlayer != null){
+        if (existingPlayer != null) {
             log.infof("Updating player %s as favorite : %s", existingPlayer.getName(), isFavorite);
             existingPlayer.setFavorite(isFavorite);
             playerRepository.persist(existingPlayer);

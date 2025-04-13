@@ -8,10 +8,18 @@ public class AppConfiguration {
 
     Logger log = Logger.getLogger(AppConfiguration.class);
 
-    private LocalDateTime lastApplicationStart ;
     private LocalDateTime lastRankingDownload;
     private LocalDateTime lastTournamentDownload;
     private String lastRankingFileName;
+    private String lastTournamentsFileName;
+
+    public String getLastTournamentsFileName() {
+        return lastTournamentsFileName;
+    }
+
+    public void setLastTournamentsFileName(String lastTournamentsFileName) {
+        this.lastTournamentsFileName = lastTournamentsFileName;
+    }
 
     public String getLastRankingFileName() {
         return lastRankingFileName;
@@ -23,10 +31,6 @@ public class AppConfiguration {
 
     public LocalDateTime getLastRankingDownload() {
         return lastRankingDownload;
-    }
-
-    public AppConfiguration() {
-        this.lastApplicationStart = LocalDateTime.now();
     }
 
     public void setLastRankingDownload(LocalDateTime lastRankingDownload) {
@@ -41,14 +45,6 @@ public class AppConfiguration {
     public void setLastTournamentDownload(LocalDateTime lastTournamentDownload) {
         log.debugf("Set last tournament download to %s", lastTournamentDownload);
         this.lastTournamentDownload = lastTournamentDownload;
-    }
-
-    public LocalDateTime getLastApplicationStart() {
-        return lastApplicationStart;
-    }
-
-    public void setLastApplicationStart(LocalDateTime lastApplicationStart) {
-        this.lastApplicationStart = lastApplicationStart;
     }
 }
 

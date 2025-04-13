@@ -124,90 +124,58 @@ public class Player {
             return false;
         if (getClass() != obj.getClass())
             return false;
+
         Player other = (Player) obj;
         if ((playerId == null && other.playerId != null) || (!playerId.equals(other.playerId))) {
             log.debug("diff player-id");
             return false;
         }
 
-        if (favorite == null) {
-            if (other.favorite != null)
-                return false;
-        } else if (!favorite.equals(other.favorite))
+        if (((stateGroup == null) && (other.stateGroup != null)) || (!stateGroup.equals(other.stateGroup))) {
             return false;
-        if (clubName == null) {
-            if (other.clubName != null)
-                return false;
-        } else if (!clubName.equals(other.clubName))
+        }
+        if (((stateName == null) && (other.stateName != null)) || (!stateName.equalsIgnoreCase(other.stateName))) {
             return false;
-        if (districtName == null) {
-            if (other.districtName != null)
-                return false;
-        } else if (!districtName.equals(other.districtName))
+        }
+        if (((clubName == null) && (other.clubName != null)) || (!clubName.equalsIgnoreCase(other.clubName))) {
             return false;
-        if (stateName == null) {
-            if (other.stateName != null)
-                return false;
-        } else if (!stateName.equals(other.stateName))
+        }
+        if (((districtName == null) && (other.districtName != null)) || (!districtName.equalsIgnoreCase(other.districtName))) {
             return false;
-        if (ageClassGeneral == null) {
-            if (other.ageClassGeneral != null)
-                return false;
-        } else if (!ageClassGeneral.equals(other.ageClassGeneral))
+        }
+        if (((ageClassGeneral == null) && (other.ageClassGeneral != null)) || (!ageClassGeneral.equalsIgnoreCase(other.ageClassGeneral))) {
             return false;
-        if (ageClassDetail == null) {
-            if (other.ageClassDetail != null)
-                return false;
-        } else if (!ageClassDetail.equals(other.ageClassDetail))
+        }
+        if (((ageClassDetail == null) && (other.ageClassDetail != null)) || (!ageClassDetail.equalsIgnoreCase(other.ageClassDetail))) {
             return false;
-        if (stateGroup != other.stateGroup)
+        }
+        if (((singlePoints == null) && (other.singlePoints != null)) || (!singlePoints.equals(other.singlePoints))) {
             return false;
-        if (singlePoints == null) {
-            if (other.singlePoints != null)
-                return false;
-        } else if (!singlePoints.equals(other.singlePoints))
+        }
+        if (((singleRanking == null) && (other.singleRanking != null)) || (!singleRanking.equals(other.singleRanking))) {
             return false;
-        if (singleRanking == null) {
-            if (other.singleRanking != null)
-                return false;
-        } else if (!singleRanking.equals(other.singleRanking))
+        }
+        if (((singleAgeRanking == null) && (other.singleAgeRanking != null)) || (!singleAgeRanking.equals(other.singleAgeRanking))) {
             return false;
-        if (singleAgeRanking == null) {
-            if (other.singleAgeRanking != null)
-                return false;
-        } else if (!singleAgeRanking.equals(other.singleAgeRanking))
+        }
+        if (((singleTournaments == null) && (other.singleTournaments != null)) || (!singleTournaments.equals(other.singleTournaments))) {
             return false;
-        if (singleTournaments == null) {
-            if (other.singleTournaments != null)
-                return false;
-        } else if (!singleTournaments.equals(other.singleTournaments))
+        }
+        if (((doublePoints == null) && (other.doublePoints != null)) || (!doublePoints.equals(other.doublePoints))) {
             return false;
-        if (doublePoints == null) {
-            if (other.doublePoints != null)
-                return false;
-        } else if (!doublePoints.equals(other.doublePoints))
+        }
+        if (((doubleRanking == null) && (other.doubleRanking != null)) || (!doubleRanking.equals(other.doubleRanking))) {
             return false;
-        if (doubleRanking == null) {
-            if (other.doubleRanking != null)
-                return false;
-        } else if (!doubleRanking.equals(other.doubleRanking))
+        }
+        if (((doubleAgeRanking == null) && (other.doubleAgeRanking != null)) || (!doubleAgeRanking.equals(other.doubleAgeRanking))) {
             return false;
-        if (doubleAgeRanking == null) {
-            if (other.doubleAgeRanking != null)
-                return false;
-        } else if (!doubleAgeRanking.equals(other.doubleAgeRanking))
+        }
+        if (((doubleTournaments == null) && (other.doubleTournaments != null)) || (!doubleTournaments.equals(other.doubleTournaments))) {
             return false;
-        if (doubleTournaments == null) {
-            if (other.doubleTournaments != null)
-                return false;
-        } else if (!doubleTournaments.equals(other.doubleTournaments))
+        }
+        if (((mixedPoints == null) && (other.mixedPoints != null)) || (!mixedPoints.equals(other.mixedPoints))) {
             return false;
-        if (mixedPoints == null) {
-            if (other.mixedPoints != null)
-                return false;
-        } else if (!mixedPoints.equals(other.mixedPoints))
-            return false;
-
+        }
         if (((mixedRanking == null) && (other.mixedRanking != null)) || (!mixedRanking.equals(other.mixedRanking))) {
             return false;
         }

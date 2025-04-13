@@ -23,7 +23,6 @@ public enum GenderType {
         return displayName;
     }
 
-
     @Override
     public String toString() {
         return displayName;

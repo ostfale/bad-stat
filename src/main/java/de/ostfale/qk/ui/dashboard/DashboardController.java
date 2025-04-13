@@ -1,5 +1,7 @@
 package de.ostfale.qk.ui.dashboard;
 
+import org.jboss.logging.Logger;
+
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.dashboard.model.DashboardRankingUIModel;
 import de.ostfale.qk.ui.dashboard.model.DashboardUIModel;
@@ -10,11 +12,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import org.jboss.logging.Logger;
 
 @Dependent
 @FxView("dashboard-view")
@@ -46,24 +43,19 @@ public class DashboardController extends BaseController<DashboardUIModel> {
     @FXML
     public void initialize() {
         log.info("DashboardController initialized");
+        var dashboardRankingUIModel=dashboardService.updateCurrentRankingStatus();
+        updateRankingDisplay(dashboardRankingUIModel);
     }
 
     @FXML
     void downloadRankingFile(ActionEvent event) {
         log.info("DashboardController :: Download Ranking File");
-        String rankingFileName = dashboardService.downloadRankingFile();
-        if (!rankingFileName.isEmpty()) {
-            log.debug("Download finished successfully -> update ranking file display");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-            String formattedDateTime = LocalDateTime.now().format(formatter);
-            this.lblLastDownload.setText(formattedDateTime);
-            this.lblLastFile.setText(rankingFileName);
-        }
+        DashboardRankingUIModel updateModel = dashboardService.handleDownloadRankingFileActions();
+        updateRankingDisplay(updateModel);
     }
 
-    private void updateRankintDisplay(DashboardRankingUIModel model) {
+    private void updateRankingDisplay(DashboardRankingUIModel model) {
         log.debug("DashBoardController :: Update ranking information");
-
         this.lblLastDownload.setText(model.getFileDownloadTimestamp());
         this.lblLastFile.setText(model.getDownloadFileName());
         this.lblAllPlayers.setText(String.valueOf(model.getNofPlayers()));

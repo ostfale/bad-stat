@@ -1,16 +1,17 @@
 package de.ostfale.qk.parser.match.internal;
 
-import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.match.internal.model.MixedMatchRawModel;
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import org.htmlunit.html.HtmlDivision;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import de.ostfale.qk.parser.BaseParserTest;
+import de.ostfale.qk.parser.match.internal.model.MixedMatchRawModel;
 
 @DisplayName("Test reading the mixed match information ")
 @Tag("unittest")

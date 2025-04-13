@@ -1,26 +1,9 @@
 package de.ostfale.qk.app;
 
-import de.ostfale.qk.app.config.AppConfiguration;
-import de.ostfale.qk.app.config.ConfigPersistenceService;
-import de.ostfale.qk.db.internal.player.Player;
-import de.ostfale.qk.db.service.PlayerServiceProvider;
-import de.ostfale.qk.parser.ranking.api.RankingParser;
-import de.ostfale.qk.parser.ranking.internal.RankingPlayer;
-import io.quarkus.runtime.ShutdownEvent;
-import io.quarkus.runtime.StartupEvent;
-import io.quarkus.runtime.configuration.ConfigUtils;
-import jakarta.annotation.Priority;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
-
-import org.jboss.logging.Logger;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,6 +11,23 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.jboss.logging.Logger;
+
+import de.ostfale.qk.app.config.AppConfiguration;
+import de.ostfale.qk.app.config.ConfigPersistenceService;
+import de.ostfale.qk.db.internal.player.Player;
+import de.ostfale.qk.db.service.PlayerServiceProvider;
+import de.ostfale.qk.parser.ranking.api.RankingParser;
+import de.ostfale.qk.parser.ranking.internal.RankingPlayer;
+import de.ostfale.qk.ui.dashboard.DashboardService;
+import io.quarkus.runtime.ShutdownEvent;
+import io.quarkus.runtime.StartupEvent;
+import io.quarkus.runtime.configuration.ConfigUtils;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class ApplicationInitializer implements FileSystemFacade {
@@ -46,6 +46,9 @@ public class ApplicationInitializer implements FileSystemFacade {
     @Inject
     ConfigPersistenceService configPersistenceService;
 
+    @Inject
+    DashboardService dashboardService;
+
     void onShutdown(@Observes @Priority(1) ShutdownEvent ev) {
         log.infof("Shutting down %s...", APP_NAME);
         writeApplicationStartTimestampToConfiguration();
@@ -59,6 +62,7 @@ public class ApplicationInitializer implements FileSystemFacade {
             ensureDirectoriesExist(applicationHomeDir);
          //   checkForDevProfileActions();
             ensureConfigurationFileExists(applicationHomeDir);
+            dashboardService.updateCurrentRankingStatus();
         //    readRankingFileIfExists();
         } else {
             log.infof("Application home directory does not exist: %s -> is going to be created", applicationHomeDir);
@@ -130,7 +134,7 @@ public class ApplicationInitializer implements FileSystemFacade {
 
         configPersistenceService.readConfiguration(configurationFilePath).ifPresent(config -> {
             log.infof("Write last application start time to configuration file: %s", configurationFilePath);
-            config.setLastApplicationStart(LocalDateTime.now());
+          //  config.setLastApplicationStart(LocalDateTime.now());
             configPersistenceService.writeConfiguration(configurationFilePath, config);
         });
     }

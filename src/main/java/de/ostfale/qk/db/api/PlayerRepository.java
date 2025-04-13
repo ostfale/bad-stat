@@ -1,6 +1,7 @@
 package de.ostfale.qk.db.api;
 
 import de.ostfale.qk.db.internal.player.Player;
+import de.ostfale.qk.parser.ranking.internal.GenderType;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
@@ -25,6 +26,12 @@ public class PlayerRepository implements PanacheRepository<Player> {
     public List<Player> findFavoritePlayers() {
         log.debugf("PlayerRepository :: findFavoritePlayers()");
         return list("favorite", true);
+    }
+
+    public Long countPlayerByGender(GenderType genderType) {
+        List<Player> playerList = list("gender", genderType);
+        log.debugf("PlayerRepository :: Searched for all %s player and found: %d", genderType, playerList.size());
+        return Long.valueOf(playerList.size());
     }
 
     public Player findByPlayerId(String playerId) {
