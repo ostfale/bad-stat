@@ -43,6 +43,9 @@ The application, packaged as an _über-jar_, is now runnable using `java -jar ta
 
 
 ## Monitoring
+### H2 Console
+    + url:  `http://localhost:8181/h2` 
+
 ### Health 
 + url: `http://localhost:8181/q/health/live` - use port defined in application properties
 
