@@ -125,7 +125,6 @@
             <version>${controlsfx.version}</version>
         </dependency>
 
-
         <!-- db -->
         <dependency>
             <groupId>io.quarkus</groupId>
