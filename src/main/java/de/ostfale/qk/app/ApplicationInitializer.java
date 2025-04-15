@@ -69,12 +69,4 @@ public class ApplicationInitializer implements FileSystemFacade {
             throw new RuntimeException("Exception creating application directory!", e);
         }
     }
-
-    private void checkForDevProfileActions() {
-        var profile = ConfigUtils.isProfileActive("dev");
-        if (profile) {
-            log.info("Running Application in DEV mode. Load Simulation!");
-            devSimulation.loadSimulationData();
-        }
-    }
 }

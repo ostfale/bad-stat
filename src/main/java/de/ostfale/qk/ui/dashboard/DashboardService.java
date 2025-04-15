@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.jboss.logging.Logger;
 
 import de.ostfale.qk.app.downloader.ranking.RankingDownloader;
+import de.ostfale.qk.db.app.BadStatConfigService;
 import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.internal.player.PlayerOverview;
 import de.ostfale.qk.db.service.PlayerServiceProvider;
@@ -32,10 +33,14 @@ public class DashboardService {
     @Inject
     PlayerServiceProvider playerService;
 
+    @Inject
+    BadStatConfigService badStatConfigService;
+
     public DashboardRankingUIModel updateCurrentRankingStatus() {
         log.info("DashboardService :: prepare current status of ranking information");
         PlayerOverview playerOverview = playerService.getPlayerOverview();
         DashboardRankingUIModel model = new DashboardRankingUIModel(playerOverview);
+        model.setLastRankingFileDownload(badStatConfigService.readConfiguration().getLastRankingFileDownload());
         getRankingFile().ifPresent(rFile -> model.setDownloadFileName(rFile.getName()));
         return model;
     }

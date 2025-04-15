@@ -1,6 +1,7 @@
 package de.ostfale.qk.app.downloader.ranking;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -86,6 +87,10 @@ public class RankingDownloader implements FileSystemFacade, TimeHandlerFacade {
         String targetFilePath = getApplicationRankingDir() + SEP + RankingFileModel.prepareFileNameForThisCalendarWeek(calendarWeek, calendarYear);
         if (downloadFile(targetURL, targetFilePath)) {
             log.infof("RankingDownloader :: Download of ranking file for KW %d was successful!", calendarWeek);
+            var badStatConfig=badStatConfigService.readConfiguration();
+            badStatConfig.setLastRankingFileDownload(LocalDateTime.now());
+            badStatConfig.setRankingFileName(getRankingFiles().getFirst().getName());
+            badStatConfigService.saveConfiguration(badStatConfig);
         } else {
             log.errorf("RankingDownloader :: Download of ranking file for KW %d failed!", calendarWeek);
         }

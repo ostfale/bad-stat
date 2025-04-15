@@ -9,6 +9,7 @@ public class DashboardRankingUIModel {
 
     private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
 
+    private LocalDateTime lastRankingFileDownload;
     private String downloadFileName;
     private Long nofPlayers;
     private Long nofMalePlayers;
@@ -25,6 +26,14 @@ public class DashboardRankingUIModel {
         this.nofPlayers = playerOverview.numberOfPlayer();
         this.nofMalePlayers = playerOverview.numberOfMalePlayer();
         this.nofFemalePlayers = playerOverview.numberOfFemalePlayer();
+    }
+
+    public LocalDateTime getLastRankingFileDownload() {
+        return lastRankingFileDownload;
+    }
+
+    public void setLastRankingFileDownload(LocalDateTime lastRankingFileDownload) {
+        this.lastRankingFileDownload = lastRankingFileDownload;
     }
 
     public DashboardRankingUIModel() {
@@ -56,7 +65,10 @@ public class DashboardRankingUIModel {
 
     public String getFileDownloadTimestamp() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
-        return LocalDateTime.now().format(formatter);
+        if (lastRankingFileDownload != null) {
+            return lastRankingFileDownload.format(formatter);
+        }
+        return "";
     }
 
     public void setDownloadFileName(String downloadFileName) {
