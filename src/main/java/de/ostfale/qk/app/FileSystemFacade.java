@@ -25,7 +25,6 @@ public interface FileSystemFacade extends ApplicationFacade {
     String SEP = FileSystems.getDefault().getSeparator();
     String USER_HOME = "user.home";
 
-
     default boolean directoryExists(String dirPath) {
         Path path = Paths.get(dirPath);
         var result = Files.exists(path) && java.nio.file.Files.isDirectory(path);
@@ -53,10 +52,7 @@ public interface FileSystemFacade extends ApplicationFacade {
 
     default List<File> readAllFiles(String dirPath) {
         log.debugf("Read all files from directory: {}", dirPath);
-        return Stream.ofNullable(new File(dirPath).listFiles())
-                .flatMap(Stream::of)
-                .filter(File::isFile)
-                .collect(Collectors.toList());
+        return Stream.ofNullable(new File(dirPath).listFiles()).flatMap(Stream::of).filter(File::isFile).collect(Collectors.toList());
     }
 
     default boolean downloadFile(String urlString, String fileName) {
@@ -71,8 +67,7 @@ public interface FileSystemFacade extends ApplicationFacade {
 
     default boolean downloadFile(URL url, String fileName) {
         log.debugf("Download file from %s to %s", url, fileName);
-        try (ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-             FileOutputStream fos = new FileOutputStream(fileName);) {
+        try (ReadableByteChannel rbc = Channels.newChannel(url.openStream()); FileOutputStream fos = new FileOutputStream(fileName);) {
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
             fos.close();
             return true;
@@ -95,6 +90,10 @@ public interface FileSystemFacade extends ApplicationFacade {
 
     default boolean deleteAllFiles(String dirPath) {
         var filesToDelete = readAllFiles(dirPath);
+        if (filesToDelete.isEmpty()) {
+            log.debug("No files found to be deleted -> return");
+            return true;
+        }
         log.debugf("Delete all files from directory: %s found: %d", dirPath, filesToDelete.size());
         return filesToDelete.stream().allMatch(File::delete);
     }
@@ -103,7 +102,6 @@ public interface FileSystemFacade extends ApplicationFacade {
         log.debugf("Delete {} files", files.size());
         return files.stream().allMatch(File::delete);
     }
-
 
     static void writeToFile(String fileName, String content) throws IOException {
         Files.writeString(Paths.get(fileName), content);

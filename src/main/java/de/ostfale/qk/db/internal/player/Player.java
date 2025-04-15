@@ -55,7 +55,7 @@ public class Player {
     @Enumerated(EnumType.STRING)
     private GenderType gender;
 
-    public void updatePlayer(Player rankingPlayer) {
+    public void updatePlayer(RankingPlayer rankingPlayer) {
         this.singlePoints = rankingPlayer.getSinglePoints();
         this.singleRanking = rankingPlayer.getSingleRanking();
         this.singleAgeRanking = rankingPlayer.getSingleAgeRanking();

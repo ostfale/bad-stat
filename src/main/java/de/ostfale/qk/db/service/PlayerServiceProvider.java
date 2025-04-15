@@ -1,16 +1,18 @@
 package de.ostfale.qk.db.service;
 
+import java.util.List;
+
+import org.jboss.logging.Logger;
+
 import de.ostfale.qk.db.api.PlayerRepository;
 import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.internal.player.PlayerOverview;
 import de.ostfale.qk.parser.ranking.internal.GenderType;
+import de.ostfale.qk.parser.ranking.internal.RankingPlayer;
 import de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoDTO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.jboss.logging.Logger;
-
-import java.util.List;
 
 @ApplicationScoped
 @Transactional
@@ -30,22 +32,18 @@ public class PlayerServiceProvider {
         return playerOverview;
     }
 
-    public boolean savePlayerIfNotExistsOrHasChanged(Player player) {
-        log.tracef("Save Player :: Check player %s to be saved", player.getName());
-        Player searchedPlayer = playerRepository.findByPlayerId(player.getPlayerId());
+    public Long getNofPlayers() {
+        return playerRepository.count();
+    }
+
+    public boolean savePlayerIfNotExistsOrHasChanged(RankingPlayer rankingPlayer) {
+        Player searchedPlayer = playerRepository.findByPlayerId(rankingPlayer.getPlayerId());
         if (searchedPlayer != null) {
-            log.trace("Save Player :: Player has been found!");
-            if (player.equals(searchedPlayer)) {
-                log.tracef("Save Player :: Found player and given player are identical -> not saved");
-                return false;
-            }
-            log.tracef("Save Player :: Searched player and given player are different -> player updated");
-            searchedPlayer.updatePlayer(player);
+            searchedPlayer.updatePlayer(rankingPlayer);
             playerRepository.persist(searchedPlayer);
             return true;
         }
-        log.tracef("Save Player :: Player not found -> will be saved!");
-        playerRepository.persist(player);
+        playerRepository.persist(new Player(rankingPlayer));
         return true;
     }
 
@@ -97,5 +95,10 @@ public class PlayerServiceProvider {
 
     public List<Player> getAllPlayers() {
         return playerRepository.listAll();
+    }
+
+    public void save(List<Player> playerList) {
+        playerRepository.persist(playerList);
+        log.infof("PlayerServiceProvider :: Saved %d players", playerList.size());
     }
 }

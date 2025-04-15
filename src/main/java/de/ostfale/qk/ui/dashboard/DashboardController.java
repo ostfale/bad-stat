@@ -43,18 +43,19 @@ public class DashboardController extends BaseController<DashboardUIModel> {
     @FXML
     public void initialize() {
         log.info("DashboardController initialized");
-        var dashboardRankingUIModel=dashboardService.updateCurrentRankingStatus();
+        var dashboardRankingUIModel = dashboardService.updateCurrentRankingStatus();
         updateRankingDisplay(dashboardRankingUIModel);
     }
 
     @FXML
     void downloadRankingFile(ActionEvent event) {
         log.info("DashboardController :: Download Ranking File");
-        DashboardRankingUIModel updateModel = dashboardService.handleDownloadRankingFileActions();
-        updateRankingDisplay(updateModel);
+        dashboardService.updateCurrentRankingFile();
+        var dashboardRankingUIModel = dashboardService.updateCurrentRankingStatus();
+        updateRankingDisplay(dashboardRankingUIModel);
     }
 
-    private void updateRankingDisplay(DashboardRankingUIModel model) {
+     private void updateRankingDisplay(DashboardRankingUIModel model) {
         log.debug("DashBoardController :: Update ranking information");
         this.lblLastDownload.setText(model.getFileDownloadTimestamp());
         this.lblLastFile.setText(model.getDownloadFileName());

@@ -1,16 +1,20 @@
 package de.ostfale.qk.app.downloader.ranking;
 
-import de.ostfale.qk.app.DirTypes;
-import de.ostfale.qk.app.FileSystemFacade;
-import de.ostfale.qk.app.TimeHandlerFacade;
-import de.ostfale.qk.web.internal.RankingWebService;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-import org.jboss.logging.Logger;
-
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+
+import org.jboss.logging.Logger;
+
+import de.ostfale.qk.app.FileSystemFacade;
+import de.ostfale.qk.app.TimeHandlerFacade;
+import de.ostfale.qk.db.app.BadStatConfigService;
+import de.ostfale.qk.web.internal.RankingWebService;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 @Singleton
 public class RankingDownloader implements FileSystemFacade, TimeHandlerFacade {
@@ -20,6 +24,9 @@ public class RankingDownloader implements FileSystemFacade, TimeHandlerFacade {
     @Inject
     RankingWebService rankingWebService;
 
+    @Inject
+    BadStatConfigService badStatConfigService;
+
     private static final String FILENAME_PREFIX_DELIMITER = "_";
     private static final String FILENAME_EXTENSION_DELIMITER = ".";
     private static final String FILE_NAME = "Ranking_";
@@ -28,81 +35,59 @@ public class RankingDownloader implements FileSystemFacade, TimeHandlerFacade {
 
     private static final String RANKING_URL = "https://turniere.badminton.de/uploads/ranking/";
 
-    public void downloadRankingFile() {
-        int currentCalendarWeek = getActualCalendarWeek();
+    public boolean downloadRankingFileDialog() {
+        String currentCalendarWeek = String.valueOf(getActualCalendarWeek());
         String onlineCalendarWeek = rankingWebService.getCalendarWeekForLastUpdate();
         String localCalendarWeek = handleRankingFiles(getRankingFiles());
 
-        log.debugf("""
-                RankingDownloader ::
-                    current calendar week: %s,
-                    online calendar week: %s,
-                    local calendar week %s""", currentCalendarWeek, onlineCalendarWeek, localCalendarWeek);
-
-        // if online calendar week is up to date -> check if download already happened, otherwise download ranking file for this week
-        if (currentCalendarWeek == Integer.parseInt(onlineCalendarWeek)) {
-            log.debug("RankingDownloader :: Current calendar week is equal to online calendar week ");
-            ensureRankingFileForThisCalendarWeekIsDownloaded(currentCalendarWeek, localCalendarWeek);
-            return;
+        String cwOverview = "Aktuelle KW : \t" + currentCalendarWeek + "\nGeladene KW: \t" + localCalendarWeek + "\nOnline KW: \t" + onlineCalendarWeek;
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Aktualisierung der Rangliste");
+        alert.setHeaderText("Soll die Rangliste heruntergeladen werden?");
+        alert.setContentText(cwOverview);
+        Optional<ButtonType> buttonType = alert.showAndWait();
+        if (buttonType.isPresent() && buttonType.get().equals(ButtonType.OK)) {
+            updateRankingFileFromWeb();
+            return true;
         }
+        log.debug("RankingDownloader :: no update selected!");
+        return false;
+    }
 
-        if (currentCalendarWeek > Integer.parseInt(onlineCalendarWeek)) {
-            log.debug("RankingDownloader :: Current calender week is greater than online calendar week");
+    private void updateRankingFileFromWeb() {
+        if (deleteAllFiles(getApplicationRankingDir())) {
+            log.debug("RankingDownloader :: existing files deleted!");
+            downloadMostCurrentRankingFile();
+        }
+    }
 
-            if (localCalendarWeek.isEmpty()) {
-                ensureRankingFileForLastCalendarWeekIsDownloaded();
-                return;
-            }
-            
-            log.debugf("RankingDownloader :: Local calendar week is not empty: %s", localCalendarWeek);
-            if (Integer.parseInt(localCalendarWeek) < Integer.parseInt(onlineCalendarWeek)) {
-                deleteAllFiles(getApplicationRankingDir());
-                ensureRankingFileForGivenCalendarWeekAndYearIsDownloaded(Integer.parseInt(onlineCalendarWeek),getActualCalendarYear());
+    private void downloadMostCurrentRankingFile() {
+        int currCW = getActualCalendarWeek();
+        int currCWYear = getActualCalendarYear();
+        int lastCW = getLastCalendarWeek();
+        int lastCWYear = getCalendarYearFromLastWeek();
+
+        int onlineCW = Integer.parseInt(rankingWebService.getCalendarWeekForLastUpdate());
+
+        if (currCWYear == lastCWYear) {
+            if (currCW == onlineCW || currCW < onlineCW) {
+                log.infof("RankingDownloader :: Load ranking file for last available online CW: %d", onlineCW);
+                downloadRankingFile(onlineCW, currCWYear);
+
+            } else if (currCW > onlineCW) {
+                log.infof("RankingDownloader :: Load ranking file for last CW: %d", lastCW);
+                downloadRankingFile(lastCW, currCWYear);
             }
         }
     }
 
-    private void ensureRankingFileForGivenCalendarWeekAndYearIsDownloaded(int calendarWeek, int calendarYear) {
+    private void downloadRankingFile(int calendarWeek, int calendarYear) {
         String targetURL = createURLForCalendarWeek(calendarWeek, calendarYear);
         String targetFilePath = getApplicationRankingDir() + SEP + RankingFileModel.prepareFileNameForThisCalendarWeek(calendarWeek, calendarYear);
         if (downloadFile(targetURL, targetFilePath)) {
             log.infof("RankingDownloader :: Download of ranking file for KW %d was successful!", calendarWeek);
         } else {
             log.errorf("RankingDownloader :: Download of ranking file for KW %d failed!", calendarWeek);
-        }
-    }
-    
-    private void ensureRankingFileForLastCalendarWeekIsDownloaded() {
-        var lastCalendarWeek = getLastCalendarWeek();
-        var yearFromLastCalendarWeek = getCalendarYearFromLastWeek();
-        String targetURL = createURLForCalendarWeek(lastCalendarWeek, yearFromLastCalendarWeek);
-        String rankingFileName = RankingFileModel.prepareFileNameForThisCalendarWeek(lastCalendarWeek, yearFromLastCalendarWeek);
-        String targetFilePath = getApplicationRankingDir() + SEP + rankingFileName;
-        if (downloadFile(targetURL, targetFilePath)) {
-            log.infof("RankingDownloader :: Download of ranking file for KW %d was successful!", lastCalendarWeek);
-        } else {
-            log.errorf("RankingDownloader :: Download of ranking file for KW %d failed!", lastCalendarWeek);
-        }
-    }
-
-    private void ensureRankingFileForThisCalendarWeekIsDownloaded(Integer currentCalendarWeek, String localCalendarWeek) {
-        if (!localCalendarWeek.isEmpty() && currentCalendarWeek == Integer.parseInt(localCalendarWeek)) {
-            log.debug("RankingDownloader :: Ranking file for this calendar has already been downloaded");
-            return;
-        }
-
-        var deletionSuccess = deleteAllFiles(getApplicationHomeDir() + SEP + DirTypes.RANKING.displayName);
-        if (!deletionSuccess) {
-            log.error("RankingDownloader :: Failed to delete ranking files");
-        }
-        var actualYear = getActualCalendarYear();
-        String targetURL = createURLForCalendarWeek(currentCalendarWeek, actualYear);
-        String rankingFileName = RankingFileModel.prepareFileNameForThisCalendarWeek(currentCalendarWeek ,actualYear);
-        String targetFilePath = getApplicationRankingDir() + SEP + rankingFileName;
-        if (downloadFile(targetURL, targetFilePath)) {
-            log.infof("RankingDownloader :: Download of ranking file for KW %d was successful!", currentCalendarWeek);
-        } else {
-            log.errorf("RankingDownloader :: Download of ranking file for KW %d failed!", currentCalendarWeek);
         }
     }
 
@@ -138,12 +123,4 @@ public class RankingDownloader implements FileSystemFacade, TimeHandlerFacade {
         log.debugf("RankingFile Download :: Created URL: %s", targetURL);
         return targetURL;
     }
-
-    private String createTargetFilePath(int calendarWeek, int calendarYear) {
-        String targetFilePath = getApplicationHomeDir() + SEP + DirTypes.RANKING.displayName + SEP + RankingFileModel.prepareFileNameForThisCalendarWeek(calendarWeek, calendarYear);
-        log.debugf("RankingFile Download :: Created target file path: %s", targetFilePath);
-        return targetFilePath;
-    }
 }
-
-
