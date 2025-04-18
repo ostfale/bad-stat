@@ -1,12 +1,11 @@
 package de.ostfale.qk.db.app;
 
-import java.util.List;
-
-import org.jboss.logging.Logger;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.jboss.logging.Logger;
+
+import java.util.List;
 
 @ApplicationScoped
 @Transactional
@@ -28,8 +27,16 @@ public class BadStatConfigService {
         return new BadStatConfig();
     }
 
-    public void saveConfiguration(BadStatConfig badStatConfig) {
-        log.debug("BadStatConfigService :: save configuration");
-        repository.persist(badStatConfig);
+    public void saveConfig(BadStatConfig badStatConfig) {
+        if (badStatConfig.getId() == null) {
+            log.debug("BadStatConfigService :: save new config");
+            repository.persist(badStatConfig);
+        } else {
+            log.debug("BadStatConfigService :: update existing config");
+            var foundEntity = repository.findById(badStatConfig.getId());
+            foundEntity.update(badStatConfig);
+            repository.persist(foundEntity);
+            log.debug("BadStatConfigService :: updated existing config");
+        }
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -40,13 +41,18 @@
                                 <FontIcon iconColor="#fdfdfd" iconLiteral="fa-heartbeat" iconSize="24" />
                             </graphic>
                         </Button>
-                        <Button contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#closeApplication" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-btn-exit" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="25.0">
+                        <Button contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#closeApplication" prefHeight="50.0" prefWidth="50.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="25.0">
                             <graphic>
-                                <FontIcon iconColor="#363840" iconLiteral="fa-sign-out" iconSize="24" />
+                                <FontIcon iconColor="WHITE" iconLiteral="fa-sign-out" iconSize="24" />
                             </graphic>
                             <tooltip>
                                 <Tooltip text="Exit Application" />
                             </tooltip>
+                     <styleClass>
+                        <String fx:value="sidebar-btn" />
+                        <String fx:value="sidebar-btn" />
+                        <String fx:value="sidebar-btn" />
+                     </styleClass>
                         </Button>
                     </children>
                 </AnchorPane>

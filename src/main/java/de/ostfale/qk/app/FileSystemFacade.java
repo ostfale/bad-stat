@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -65,6 +66,14 @@ public interface FileSystemFacade extends ApplicationFacade {
         }
     }
 
+    default void downloadIntoFile(URL url, String fileName) throws IOException {
+        ReadableByteChannel readableByteChannel = Channels.newChannel(url.openStream());
+        try (FileOutputStream fileOutputStream = new FileOutputStream(fileName);) {
+            FileChannel fileChannel = fileOutputStream.getChannel();
+            fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+        }
+    }
+
     default boolean downloadFile(URL url, String fileName) {
         log.debugf("Download file from %s to %s", url, fileName);
         try (ReadableByteChannel rbc = Channels.newChannel(url.openStream()); FileOutputStream fos = new FileOutputStream(fileName);) {
@@ -75,6 +84,11 @@ public interface FileSystemFacade extends ApplicationFacade {
             log.errorf("Could not download URL: %s because of: $s", url, e.getMessage());
             return false;
         }
+    }
+
+    default URL getURL(String urlString) throws MalformedURLException {
+        URI uri = URI.create(urlString);
+        return uri.toURL();
     }
 
     default boolean deleteFile(String filePath) {

@@ -1,9 +1,9 @@
 package de.ostfale.qk.ui.dashboard.model;
 
+import de.ostfale.qk.db.internal.player.PlayerOverview;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import de.ostfale.qk.db.internal.player.PlayerOverview;
 
 public class DashboardRankingUIModel {
 
@@ -14,6 +14,8 @@ public class DashboardRankingUIModel {
     private Long nofPlayers;
     private Long nofMalePlayers;
     private Long nofFemalePlayers;
+
+    private String dbUpdateInCW;
 
     public DashboardRankingUIModel(String rankingFileName, int nofPlayers, int nofMalePlayers, int nofFemalePlayers) {
         this.downloadFileName = rankingFileName;
@@ -26,6 +28,14 @@ public class DashboardRankingUIModel {
         this.nofPlayers = playerOverview.numberOfPlayer();
         this.nofMalePlayers = playerOverview.numberOfMalePlayer();
         this.nofFemalePlayers = playerOverview.numberOfFemalePlayer();
+    }
+
+    public String getDbUpdateInCW() {
+        return dbUpdateInCW;
+    }
+
+    public void setDbUpdateInCW(String dbUpdateInCW) {
+        this.dbUpdateInCW = dbUpdateInCW;
     }
 
     public LocalDateTime getLastRankingFileDownload() {

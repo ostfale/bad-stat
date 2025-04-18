@@ -1,18 +1,16 @@
 package de.ostfale.qk.db.service;
 
-import java.util.List;
-
-import org.jboss.logging.Logger;
-
 import de.ostfale.qk.db.api.PlayerRepository;
 import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.internal.player.PlayerOverview;
 import de.ostfale.qk.parser.ranking.internal.GenderType;
-import de.ostfale.qk.parser.ranking.internal.RankingPlayer;
 import de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoDTO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.jboss.logging.Logger;
+
+import java.util.List;
 
 @ApplicationScoped
 @Transactional
@@ -36,24 +34,13 @@ public class PlayerServiceProvider {
         return playerRepository.count();
     }
 
-    public boolean savePlayerIfNotExistsOrHasChanged(RankingPlayer rankingPlayer) {
-        Player searchedPlayer = playerRepository.findByPlayerId(rankingPlayer.getPlayerId());
-        if (searchedPlayer != null) {
-            searchedPlayer.updatePlayer(rankingPlayer);
-            playerRepository.persist(searchedPlayer);
-            return true;
-        }
-        playerRepository.persist(new Player(rankingPlayer));
-        return true;
-    }
-
     public List<Player> findPlayersByFullName(String fullName) {
         log.debugf("Find players by full name: %s", fullName);
         return playerRepository.findPlayersByFullNameIgnoreCase(fullName);
     }
 
     public Player findPlayerById(String playerId) {
-        log.debugf("Find player by id: %s", playerId);
+        log.tracef("Find player by id: %s", playerId);
         return playerRepository.findByPlayerId(playerId);
     }
 
@@ -100,5 +87,18 @@ public class PlayerServiceProvider {
     public void save(List<Player> playerList) {
         playerRepository.persist(playerList);
         log.infof("PlayerServiceProvider :: Saved %d players", playerList.size());
+    }
+
+    public void updatePlayer(Player player) {
+        Player existingPlayer = playerRepository.findByPlayerId(player.getPlayerId());
+        if (existingPlayer == null) {
+            log.debug("PlayerServiceProvider :: save new player");
+            playerRepository.persist(player);
+        }
+        else {
+            log.debugf("PlayerServiceProvider :: update existing player %s ", player.getName());
+            existingPlayer.updatePlayer(player);
+            playerRepository.persist(existingPlayer);
+        }
     }
 }

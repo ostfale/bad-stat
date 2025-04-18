@@ -1,15 +1,15 @@
 package de.ostfale.qk.db.internal.player;
 
-import org.jboss.logging.Logger;
-
 import de.ostfale.qk.parser.ranking.internal.GenderType;
 import de.ostfale.qk.parser.ranking.internal.Group;
 import de.ostfale.qk.parser.ranking.internal.RankingPlayer;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.jboss.logging.Logger;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class Player {
@@ -19,6 +19,14 @@ public class Player {
     @Id
     @GeneratedValue
     private Long id;
+
+    @CreationTimestamp
+    @Column(updatable = false, nullable = false)
+    public LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(nullable = false)
+    public LocalDateTime updatedAt;
 
     private String playerId;
     private String firstName;
@@ -55,7 +63,7 @@ public class Player {
     @Enumerated(EnumType.STRING)
     private GenderType gender;
 
-    public void updatePlayer(RankingPlayer rankingPlayer) {
+    public void updatePlayer(Player rankingPlayer) {
         this.singlePoints = rankingPlayer.getSinglePoints();
         this.singleRanking = rankingPlayer.getSingleRanking();
         this.singleAgeRanking = rankingPlayer.getSingleAgeRanking();
@@ -126,63 +134,81 @@ public class Player {
             return false;
 
         Player other = (Player) obj;
-        if ((playerId == null && other.playerId != null) || (!playerId.equals(other.playerId))) {
+        if ((playerId == null && other.playerId != null) || (!Objects.equals(playerId, other.playerId))) {
             log.debug("diff player-id");
             return false;
         }
 
-        if (((stateGroup == null) && (other.stateGroup != null)) || (!stateGroup.equals(other.stateGroup))) {
+        if (((stateGroup == null) && (other.stateGroup != null)) || (!Objects.equals(stateGroup, other.stateGroup))) {
+            log.debug("diff state-group");
             return false;
         }
-        if (((stateName == null) && (other.stateName != null)) || (!stateName.equalsIgnoreCase(other.stateName))) {
+        if (((stateName == null) && (other.stateName != null)) || (!Objects.requireNonNull(stateName).equalsIgnoreCase(other.stateName))) {
+            log.debug("diff state-name");
             return false;
         }
-        if (((clubName == null) && (other.clubName != null)) || (!clubName.equalsIgnoreCase(other.clubName))) {
+        if (((clubName == null) && (other.clubName != null)) || (!Objects.requireNonNull(clubName).equalsIgnoreCase(other.clubName))) {
+            log.debug("diff club-name");
             return false;
         }
-        if (((districtName == null) && (other.districtName != null)) || (!districtName.equalsIgnoreCase(other.districtName))) {
+        if (((districtName == null) && (other.districtName != null)) || (!Objects.requireNonNull(districtName).equalsIgnoreCase(other.districtName))) {
+            log.debug("diff district-name");
             return false;
         }
-        if (((ageClassGeneral == null) && (other.ageClassGeneral != null)) || (!ageClassGeneral.equalsIgnoreCase(other.ageClassGeneral))) {
+        if (((ageClassGeneral == null) && (other.ageClassGeneral != null)) || (!Objects.requireNonNull(ageClassGeneral).equalsIgnoreCase(other.ageClassGeneral))) {
+            log.debug("diff age-class-general");
             return false;
         }
-        if (((ageClassDetail == null) && (other.ageClassDetail != null)) || (!ageClassDetail.equalsIgnoreCase(other.ageClassDetail))) {
+        if (((ageClassDetail == null) && (other.ageClassDetail != null)) || (!Objects.requireNonNull(ageClassDetail).equalsIgnoreCase(other.ageClassDetail))) {
+            log.debug("diff age-class-detail");
             return false;
         }
-        if (((singlePoints == null) && (other.singlePoints != null)) || (!singlePoints.equals(other.singlePoints))) {
+        if (((singlePoints == null) && (other.singlePoints != null)) || (!Objects.equals(singlePoints, other.singlePoints))) {
+            log.debug("diff single-points");
             return false;
         }
-        if (((singleRanking == null) && (other.singleRanking != null)) || (!singleRanking.equals(other.singleRanking))) {
+        if (((singleRanking == null) && (other.singleRanking != null)) || (!Objects.equals(singleRanking, other.singleRanking))) {
+            log.debug("diff single-ranking");
             return false;
         }
-        if (((singleAgeRanking == null) && (other.singleAgeRanking != null)) || (!singleAgeRanking.equals(other.singleAgeRanking))) {
+        if (((singleAgeRanking == null) && (other.singleAgeRanking != null)) || (!Objects.equals(singleAgeRanking, other.singleAgeRanking))) {
+            log.debug("diff single-age-ranking");
             return false;
         }
-        if (((singleTournaments == null) && (other.singleTournaments != null)) || (!singleTournaments.equals(other.singleTournaments))) {
+        if (((singleTournaments == null) && (other.singleTournaments != null)) || (!Objects.equals(singleTournaments, other.singleTournaments))) {
+            log.debug("diff single-tournaments");
             return false;
         }
-        if (((doublePoints == null) && (other.doublePoints != null)) || (!doublePoints.equals(other.doublePoints))) {
+        if (((doublePoints == null) && (other.doublePoints != null)) || (!Objects.equals(doublePoints, other.doublePoints))) {
+            log.debug("diff double-points");
             return false;
         }
-        if (((doubleRanking == null) && (other.doubleRanking != null)) || (!doubleRanking.equals(other.doubleRanking))) {
+        if (((doubleRanking == null) && (other.doubleRanking != null)) || (!Objects.equals(doubleRanking, other.doubleRanking))) {
+            log.debug("diff double-ranking");
             return false;
         }
-        if (((doubleAgeRanking == null) && (other.doubleAgeRanking != null)) || (!doubleAgeRanking.equals(other.doubleAgeRanking))) {
+        if (((doubleAgeRanking == null) && (other.doubleAgeRanking != null)) || (!Objects.equals(doubleAgeRanking, other.doubleAgeRanking))) {
+            log.debug("diff double-age-ranking");
             return false;
         }
-        if (((doubleTournaments == null) && (other.doubleTournaments != null)) || (!doubleTournaments.equals(other.doubleTournaments))) {
+        if (((doubleTournaments == null) && (other.doubleTournaments != null)) || (!Objects.equals(doubleTournaments, other.doubleTournaments))) {
+            log.debug("diff double-tournaments");
             return false;
         }
-        if (((mixedPoints == null) && (other.mixedPoints != null)) || (!mixedPoints.equals(other.mixedPoints))) {
+        if (((mixedPoints == null) && (other.mixedPoints != null)) || (!Objects.equals(mixedPoints, other.mixedPoints))) {
+            log.debug("diff mixed-points");
             return false;
         }
-        if (((mixedRanking == null) && (other.mixedRanking != null)) || (!mixedRanking.equals(other.mixedRanking))) {
+        if (((mixedRanking == null) && (other.mixedRanking != null)) || (!Objects.equals(mixedRanking, other.mixedRanking))) {
+            log.debug("diff mixed-ranking");
             return false;
         }
-        if (((mixedAgeRanking == null) && (other.mixedAgeRanking != null)) || (!mixedAgeRanking.equals(other.mixedAgeRanking))) {
+        if (((mixedAgeRanking == null) && (other.mixedAgeRanking != null)) || (!Objects.equals(mixedAgeRanking, other.mixedAgeRanking))) {
+            log.debug("diff mixed-age-ranking");
             return false;
         }
-        if (((mixedTournaments == null) && (other.mixedTournaments != null)) || (!mixedTournaments.equals(other.mixedTournaments))) {
+        if (((mixedTournaments == null) && (other.mixedTournaments != null)) || (!Objects.equals(mixedTournaments, other.mixedTournaments))) {
+            log.debug("diff mixed-tournaments");
             return false;
         }
         return true;
