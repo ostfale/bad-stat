@@ -92,11 +92,11 @@ public class PlayerServiceProvider {
     public void updatePlayer(Player player) {
         Player existingPlayer = playerRepository.findByPlayerId(player.getPlayerId());
         if (existingPlayer == null) {
-            log.debug("PlayerServiceProvider :: save new player");
+            log.debugf("PlayerServiceProvider :: save new player: %s",player.getName());
             playerRepository.persist(player);
         }
         else {
-            log.debugf("PlayerServiceProvider :: update existing player %s ", player.getName());
+            log.tracef("PlayerServiceProvider :: update existing player %s ", player.getName());
             existingPlayer.updatePlayer(player);
             playerRepository.persist(existingPlayer);
         }

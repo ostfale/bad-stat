@@ -88,6 +88,7 @@ public class DashboardService implements TimeHandlerFacade {
         Optional<File> rankingFile = getRankingFile();
         if (rankingFile.isPresent()) {
             File rFile = rankingFile.get();
+                updateDBSourceCW(rFile);
             try {
                 List<RankingPlayer> allPlayers = rankingParser.parseRankingFile(new FileInputStream(rFile));
                 List<Player> playerList = allPlayers.stream().map(Player::new).toList();
@@ -103,7 +104,6 @@ public class DashboardService implements TimeHandlerFacade {
                         }
                     });
                 }
-                updateDBSourceCW(rFile);
             } catch (FileNotFoundException e) {
                 log.errorf("DashboardService :: Failed parsing excel ranking file: %s", e.getMessage());
             }

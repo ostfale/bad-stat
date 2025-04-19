@@ -57,6 +57,10 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     private Button btnFavorite;
 
+
+    @FXML
+    private Label lblLastUpdate;
+
     // player general info
     @FXML
     private Label lblName;
@@ -273,6 +277,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
             updateTournamentInfosForPlayerAndYear(tournamentsStatistic);
         }
 
+        lblLastUpdate.setText(player.getLastUpdate());
         lblName.setText(player.getPlayerName());
         lblPlayerId.setText(player.getPlayerId());
         lblBirthYear.setText(player.getBirthYear());

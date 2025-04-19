@@ -21,14 +21,12 @@ public class BadStatConfig {
     private LocalDateTime lastRankingFileDownload;
     private LocalDateTime lastTournamentFileDownload;
 
-    public BadStatConfig() {
-    }
-
     public void update(BadStatConfig badStatConfig) {
         this.rankingFileName = badStatConfig.getRankingFileName();
         this.tournamentFileName = badStatConfig.getTournamentFileName();
         this.lastRankingFileDownload = badStatConfig.getLastRankingFileDownload();
         this.lastTournamentFileDownload = badStatConfig.getLastTournamentFileDownload();
+        this.databaseCW = badStatConfig.getDatabaseCW();
     }
 
     public Long getId() {

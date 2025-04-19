@@ -135,80 +135,80 @@ public class Player {
 
         Player other = (Player) obj;
         if ((playerId == null && other.playerId != null) || (!Objects.equals(playerId, other.playerId))) {
-            log.debug("diff player-id");
+            log.trace("diff player-id");
             return false;
         }
 
         if (((stateGroup == null) && (other.stateGroup != null)) || (!Objects.equals(stateGroup, other.stateGroup))) {
-            log.debug("diff state-group");
+            log.trace("diff state-group");
             return false;
         }
         if (((stateName == null) && (other.stateName != null)) || (!Objects.requireNonNull(stateName).equalsIgnoreCase(other.stateName))) {
-            log.debug("diff state-name");
+            log.trace("diff state-name");
             return false;
         }
         if (((clubName == null) && (other.clubName != null)) || (!Objects.requireNonNull(clubName).equalsIgnoreCase(other.clubName))) {
-            log.debug("diff club-name");
+            log.trace("diff club-name");
             return false;
         }
         if (((districtName == null) && (other.districtName != null)) || (!Objects.requireNonNull(districtName).equalsIgnoreCase(other.districtName))) {
-            log.debug("diff district-name");
+            log.trace("diff district-name");
             return false;
         }
         if (((ageClassGeneral == null) && (other.ageClassGeneral != null)) || (!Objects.requireNonNull(ageClassGeneral).equalsIgnoreCase(other.ageClassGeneral))) {
-            log.debug("diff age-class-general");
+            log.trace("diff age-class-general");
             return false;
         }
         if (((ageClassDetail == null) && (other.ageClassDetail != null)) || (!Objects.requireNonNull(ageClassDetail).equalsIgnoreCase(other.ageClassDetail))) {
-            log.debug("diff age-class-detail");
+            log.trace("diff age-class-detail");
             return false;
         }
         if (((singlePoints == null) && (other.singlePoints != null)) || (!Objects.equals(singlePoints, other.singlePoints))) {
-            log.debug("diff single-points");
+            log.trace("diff single-points");
             return false;
         }
         if (((singleRanking == null) && (other.singleRanking != null)) || (!Objects.equals(singleRanking, other.singleRanking))) {
-            log.debug("diff single-ranking");
+            log.trace("diff single-ranking");
             return false;
         }
         if (((singleAgeRanking == null) && (other.singleAgeRanking != null)) || (!Objects.equals(singleAgeRanking, other.singleAgeRanking))) {
-            log.debug("diff single-age-ranking");
+            log.trace("diff single-age-ranking");
             return false;
         }
         if (((singleTournaments == null) && (other.singleTournaments != null)) || (!Objects.equals(singleTournaments, other.singleTournaments))) {
-            log.debug("diff single-tournaments");
+            log.trace("diff single-tournaments");
             return false;
         }
         if (((doublePoints == null) && (other.doublePoints != null)) || (!Objects.equals(doublePoints, other.doublePoints))) {
-            log.debug("diff double-points");
+            log.trace("diff double-points");
             return false;
         }
         if (((doubleRanking == null) && (other.doubleRanking != null)) || (!Objects.equals(doubleRanking, other.doubleRanking))) {
-            log.debug("diff double-ranking");
+            log.trace("diff double-ranking");
             return false;
         }
         if (((doubleAgeRanking == null) && (other.doubleAgeRanking != null)) || (!Objects.equals(doubleAgeRanking, other.doubleAgeRanking))) {
-            log.debug("diff double-age-ranking");
+            log.trace("diff double-age-ranking");
             return false;
         }
         if (((doubleTournaments == null) && (other.doubleTournaments != null)) || (!Objects.equals(doubleTournaments, other.doubleTournaments))) {
-            log.debug("diff double-tournaments");
+            log.trace("diff double-tournaments");
             return false;
         }
         if (((mixedPoints == null) && (other.mixedPoints != null)) || (!Objects.equals(mixedPoints, other.mixedPoints))) {
-            log.debug("diff mixed-points");
+            log.trace("diff mixed-points");
             return false;
         }
         if (((mixedRanking == null) && (other.mixedRanking != null)) || (!Objects.equals(mixedRanking, other.mixedRanking))) {
-            log.debug("diff mixed-ranking");
+            log.trace("diff mixed-ranking");
             return false;
         }
         if (((mixedAgeRanking == null) && (other.mixedAgeRanking != null)) || (!Objects.equals(mixedAgeRanking, other.mixedAgeRanking))) {
-            log.debug("diff mixed-age-ranking");
+            log.trace("diff mixed-age-ranking");
             return false;
         }
         if (((mixedTournaments == null) && (other.mixedTournaments != null)) || (!Objects.equals(mixedTournaments, other.mixedTournaments))) {
-            log.debug("diff mixed-tournaments");
+            log.trace("diff mixed-tournaments");
             return false;
         }
         return true;

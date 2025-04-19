@@ -356,5 +356,15 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </Label>
+      <Label text="Letzte Änderung" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLastUpdate" GridPane.columnIndex="8" GridPane.columnSpan="2" GridPane.rowIndex="2">
+         <GridPane.margin>
+            <Insets left="10.0" />
+         </GridPane.margin>
+      </Label>
    </children>
   </GridPane>

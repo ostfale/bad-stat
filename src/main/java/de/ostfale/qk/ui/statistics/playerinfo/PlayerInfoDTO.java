@@ -1,12 +1,16 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
+import de.ostfale.qk.db.internal.player.Player;
 import org.jboss.logging.Logger;
 
-import de.ostfale.qk.db.internal.player.Player;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class PlayerInfoDTO {
 
     private static final Logger log = Logger.getLogger(PlayerInfoDTO.class);
+
+    private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
 
     private final String playerName;
     private final String gender;
@@ -18,6 +22,7 @@ public class PlayerInfoDTO {
     private final String stateName;
     private final String stateGroup;
     private final String playerId;
+    private final LocalDateTime lastUpdate;
 
     private String playerTournamentId;
     private Boolean favorite;
@@ -28,7 +33,7 @@ public class PlayerInfoDTO {
     private DisciplineStatisticsDTO mixedDisciplineStatistics;
 
     public PlayerInfoDTO(Player player) {
-        log.tracef("PlayerInfoDTO :: init from player %d",player.getPlayerId());
+        log.tracef("PlayerInfoDTO :: init from player %d", player.getPlayerId());
         this.playerName = player.getName();
         this.gender = player.getGender().toString();
         this.playerId = player.getPlayerId();
@@ -41,6 +46,7 @@ public class PlayerInfoDTO {
         this.districtName = player.getDistrictName();
         this.stateName = player.getStateName();
         this.stateGroup = player.getStateGroup() == null ? "" : player.getStateGroup().toString();
+        this.lastUpdate = player.updatedAt;
 
         this.singleDisciplineStatistics = mapSingleDisciplineStatistics(player);
         this.doubleDisciplineStatistics = mapDoubleDisciplineStatistics(player);
@@ -51,7 +57,15 @@ public class PlayerInfoDTO {
     public String toString() {
         return playerName;
     }
-    
+
+    public String getLastUpdate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+        if (lastUpdate != null) {
+            return lastUpdate.format(formatter);
+        }
+        return "";
+    }
+
     public String getStateName() {
         return stateName;
     }
