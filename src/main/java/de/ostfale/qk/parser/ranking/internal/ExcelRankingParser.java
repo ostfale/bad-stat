@@ -1,5 +1,8 @@
 package de.ostfale.qk.parser.ranking.internal;
 
+import de.ostfale.qk.domain.player.GenderType;
+import de.ostfale.qk.domain.player.Group;
+import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.ranking.api.RankingParser;
 import jakarta.inject.Singleton;
@@ -38,52 +41,59 @@ public class ExcelRankingParser implements RankingParser {
         return List.copyOf(playerMap.values());
     }
 
+    @Override
+    public List<Player> parseRankingFileToPlayers(InputStream rankingFile) {
+        return List.of();
+    }
+
     private Sheet readFirstSheet(InputStream excelInputStream) {
-        try {
-            Workbook workbook = new XSSFWorkbook(excelInputStream);
-            var sheet = workbook.getSheetAt(0);
-            workbook.close();
-            return sheet;
+        final int FIRST_SHEET_INDEX = 0;
+        try (Workbook workbook = createWorkbook(excelInputStream)) {
+            return workbook.getSheetAt(FIRST_SHEET_INDEX);
         } catch (IOException e) {
-            log.errorf("Excel PARSER :: Player : could not parse file because of: {}", e.getMessage());
-            throw new RuntimeException(e);
+            log.errorf("Excel PARSER :: Player : could not parse file. Reason: %s", e.getMessage());
+            throw new RuntimeException("Failed to read the first sheet from Excel file", e);
         }
+    }
+
+    private Workbook createWorkbook(InputStream excelInputStream) throws IOException {
+        return new XSSFWorkbook(excelInputStream);
     }
 
     private void parseRow(Row row, Map<String, RankingPlayer> playerMap) {
         try {
-            String playerId = getCellValue(row, RankingFileColIndex.PLAYER_ID_INDEX);
-            String firstName = getCellValue(row, RankingFileColIndex.FIRST_NAME_INDEX);
-            String lastName = getCellValue(row, RankingFileColIndex.LAST_NAME_INDEX);
+            String playerId = extractCellValue(row, RankingFileColIndex.PLAYER_ID_INDEX);
+            String firstName = extractCellValue(row, RankingFileColIndex.FIRST_NAME_INDEX);
+            String lastName = extractCellValue(row, RankingFileColIndex.LAST_NAME_INDEX);
 
-            String gender = getCellValue(row, RankingFileColIndex.GENDER_INDEX);
+            String gender = extractCellValue(row, RankingFileColIndex.GENDER_INDEX);
             GenderType genderType = GenderType.lookup(gender);
 
-            String birthYearString = getCellValue(row, RankingFileColIndex.BIRTH_YEAR_INDEX);
+            String birthYearString = extractCellValue(row, RankingFileColIndex.BIRTH_YEAR_INDEX);
             Integer birthYear = Integer.parseInt(birthYearString);
 
-            String ageClassGeneral = getCellValue(row, RankingFileColIndex.AGE_CLASS_GENERAL_INDEX);
-            String ageClassDetail = getCellValue(row, RankingFileColIndex.AGE_CLASS_DETAIL_INDEX);
-            String clubName = getCellValue(row, RankingFileColIndex.CLUB_NAME_INDEX);
-            String districtName = getCellValue(row, RankingFileColIndex.DISTRICT_NAME_INDEX);
-            String stateName = getCellValue(row, RankingFileColIndex.STATE_NAME_INDEX);
+            String ageClassGeneral = extractCellValue(row, RankingFileColIndex.AGE_CLASS_GENERAL_INDEX);
+            String ageClassDetail = extractCellValue(row, RankingFileColIndex.AGE_CLASS_DETAIL_INDEX);
+            String clubName = extractCellValue(row, RankingFileColIndex.CLUB_NAME_INDEX);
+            String districtName = extractCellValue(row, RankingFileColIndex.DISTRICT_NAME_INDEX);
+            String stateName = extractCellValue(row, RankingFileColIndex.STATE_NAME_INDEX);
 
-            String stateGroup = getCellValue(row, RankingFileColIndex.STATE_GROUP_INDEX);
+            String stateGroup = extractCellValue(row, RankingFileColIndex.STATE_GROUP_INDEX);
             Group group = Group.lookup(stateGroup);
 
-            String disciplineString = getCellValue(row, RankingFileColIndex.DISCIPLINE_INDEX);
+            String disciplineString = extractCellValue(row, RankingFileColIndex.DISCIPLINE_INDEX);
             Discipline discipline = Discipline.lookup(disciplineString);
 
-            String ranking = getCellValue(row, RankingFileColIndex.RANKING_INDEX);
+            String ranking = extractCellValue(row, RankingFileColIndex.RANKING_INDEX);
             Integer rankingInt = Integer.parseInt(ranking);
 
-            String ageRanking = getCellValue(row, RankingFileColIndex.AGE_RANKING_INDEX);
+            String ageRanking = extractCellValue(row, RankingFileColIndex.AGE_RANKING_INDEX);
             Integer ageRankingInt = Integer.parseInt(ageRanking);
 
-            String validPoints = getCellValue(row, RankingFileColIndex.VALID_POINTS_INDEX);
+            String validPoints = extractCellValue(row, RankingFileColIndex.VALID_POINTS_INDEX);
             Integer points = Integer.parseInt(validPoints);
 
-            String tournaments = getCellValue(row, RankingFileColIndex.TOURNAMENTS_INDEX);
+            String tournaments = extractCellValue(row, RankingFileColIndex.TOURNAMENTS_INDEX);
             Integer noOfTournaments = Integer.parseInt(tournaments);
 
             RankingPlayer existingOrNewRankingPlayer = getOrCreatePlayer(playerId, firstName, lastName, genderType, birthYear, ageClassGeneral,
@@ -110,38 +120,54 @@ public class ExcelRankingParser implements RankingParser {
                 new RankingPlayer(id, firstName, lastName, genderType, birthYear, ageClassGeneral, ageClassDetail, clubName, districtName, stateName, group));
     }
 
-    private String getCellValue(Row row, RankingFileColIndex colIndex) {
-        log.tracef("Parse row for column index  {}", colIndex.name());
+    private String extractCellValue(Row row, RankingFileColIndex colIndex) {
+        log.tracef("Extracting value from row %d for column index %s", row.getRowNum(), colIndex.name());
         Cell cell = row.getCell(colIndex.getIndex());
+
         if (cell == null) {
             return "";
         }
 
-        switch (cell.getCellType()) {
-            case STRING:
-                return cell.getStringCellValue();
-            case NUMERIC:
-                if (DateUtil.isCellDateFormatted(cell)) {
-                    return cell.getDateCellValue().toString();
-                } else {
-                    return String.valueOf((int) cell.getNumericCellValue());
-                }
-            case BOOLEAN:
-                return String.valueOf(cell.getBooleanCellValue());
-            case FORMULA:
-                log.warn("Found a cell formula!!");
-                return cell.getCellFormula();
-            default:
-                return "";
+        CellType cellType = cell.getCellType();
+        return switch (cellType) {
+            case STRING -> getStringCellValue(cell);
+            case NUMERIC -> getNumericCellValue(cell);
+            case BOOLEAN -> String.valueOf(cell.getBooleanCellValue());
+            case FORMULA -> handleFormulaCell(cell);
+            default -> "";
+        };
+    }
+    
+    private String getStringCellValue(Cell cell) {
+        return cell.getStringCellValue();
+    }
+
+    private String getNumericCellValue(Cell cell) {
+        if (DateUtil.isCellDateFormatted(cell)) {
+            return cell.getDateCellValue().toString();
+        } else {
+            return String.valueOf((int) cell.getNumericCellValue());
         }
     }
 
+    private String handleFormulaCell(Cell cell) {
+        log.warn("Found a cell with a formula!");
+        return cell.getCellFormula();
+    }
+
+
     private boolean isRowEmpty(Row row) {
         for (Cell cell : row) {
-            if (cell != null && cell.getCellType() != CellType.BLANK) {
+            if (isCellNonEmpty(cell)) {
                 return false;
             }
         }
         return true;
     }
+
+
+    private boolean isCellNonEmpty(Cell cell) {
+        return cell != null && cell.getCellType() != CellType.BLANK;
+    }
+
 }

@@ -1,4 +1,4 @@
-package de.ostfale.qk.parser.ranking.internal;
+package de.ostfale.qk.domain.player;
 
 public enum GenderType {
     MALE("M"),

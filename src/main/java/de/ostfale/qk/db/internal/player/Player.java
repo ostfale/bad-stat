@@ -1,7 +1,7 @@
 package de.ostfale.qk.db.internal.player;
 
-import de.ostfale.qk.parser.ranking.internal.GenderType;
-import de.ostfale.qk.parser.ranking.internal.Group;
+import de.ostfale.qk.domain.player.GenderType;
+import de.ostfale.qk.domain.player.Group;
 import de.ostfale.qk.parser.ranking.internal.RankingPlayer;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;

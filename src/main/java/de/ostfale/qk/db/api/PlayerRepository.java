@@ -1,7 +1,7 @@
 package de.ostfale.qk.db.api;
 
 import de.ostfale.qk.db.internal.player.Player;
-import de.ostfale.qk.parser.ranking.internal.GenderType;
+import de.ostfale.qk.domain.player.GenderType;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;

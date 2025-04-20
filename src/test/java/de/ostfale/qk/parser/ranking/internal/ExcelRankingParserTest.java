@@ -1,5 +1,6 @@
 package de.ostfale.qk.parser.ranking.internal;
 
+import de.ostfale.qk.domain.player.Group;
 import de.ostfale.qk.parser.BaseParserTest;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;

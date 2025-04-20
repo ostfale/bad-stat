@@ -28,12 +28,17 @@ quarkus:
       db-kind: h2
       jdbc:
         driver: org.h2.Driver
-        url:  jdbc:h2:file:~/.bad_stat/data/bad-db
+        url: jdbc:h2:file:~/.bad_stat/data/bad-db
       username: sa
       password:
+      devservices:
+        init-script-path: scripts/load-data.sql
     hibernate-orm:
       database:
-        generation: drop-and-create
+        generation:
+          create-schemas: false
+      log:
+        sql: true
     log:
       console:
         level: WARN
@@ -46,7 +51,7 @@ quarkus:
       db-kind: h2
       jdbc:
         driver: org.h2.Driver
-        url:  jdbc:h2:file:~/.bad_stat/data/bad-db
+        url: jdbc:h2:file:~/.bad_stat/data/bad-db
       username: sa
       password:
     hibernate-orm:

@@ -1,5 +1,8 @@
 package de.ostfale.qk.parser.ranking.internal;
 
+import de.ostfale.qk.domain.player.GenderType;
+import de.ostfale.qk.domain.player.Group;
+
 public class RankingPlayer {
 
     private final String playerId;

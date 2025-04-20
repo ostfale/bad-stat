@@ -3,10 +3,12 @@ package de.ostfale.qk.db.app;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "bad_stat_config")
 public class BadStatConfig {
 
     @Id

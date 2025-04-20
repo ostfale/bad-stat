@@ -3,8 +3,7 @@ package de.ostfale.qk.db.service;
 import de.ostfale.qk.db.api.PlayerRepository;
 import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.internal.player.PlayerOverview;
-import de.ostfale.qk.parser.ranking.internal.GenderType;
-import de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoDTO;
+import de.ostfale.qk.domain.player.GenderType;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -13,14 +12,14 @@ import org.jboss.logging.Logger;
 import java.util.List;
 
 @ApplicationScoped
-@Transactional
 public class PlayerServiceProvider {
 
-    private static final Logger log = Logger.getLogger(PlayerInfoDTO.class);
+    private static final Logger log = Logger.getLogger(PlayerServiceProvider.class);
 
     @Inject
     PlayerRepository playerRepository;
 
+    @Transactional
     public PlayerOverview getPlayerOverview() {
         Long nofPlayer = playerRepository.count();
         Long nofMalePlayer = playerRepository.countPlayerByGender(GenderType.MALE);
@@ -56,7 +55,7 @@ public class PlayerServiceProvider {
     public void updatePlayerAsFavorite(Player player) {
         Player existingPlayer = playerRepository.findByPlayerId(player.getPlayerId());
         if (existingPlayer != null) {
-            log.infof("Updating player %s as favorite : %S", player.getName(), player.getFavorite());
+            log.infof("Updating player %s as favorite : %s", player.getName(), player.getFavorite());
             existingPlayer.setFavorite(player.getFavorite());
             playerRepository.persist(existingPlayer);
         }
@@ -89,6 +88,7 @@ public class PlayerServiceProvider {
         log.infof("PlayerServiceProvider :: Saved %d players", playerList.size());
     }
 
+    @Transactional
     public void updatePlayer(Player player) {
         Player existingPlayer = playerRepository.findByPlayerId(player.getPlayerId());
         if (existingPlayer == null) {
