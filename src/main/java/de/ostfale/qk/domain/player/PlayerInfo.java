@@ -9,6 +9,18 @@ public class PlayerInfo {
     private String stateName;
     private Group  groupName;
 
+    public PlayerInfo(String ageClassGeneral, String ageClassSpecific, String clubName, String districtName, String stateName, Group groupName) {
+        this.ageClassGeneral = ageClassGeneral;
+        this.ageClassSpecific = ageClassSpecific;
+        this.clubName = clubName;
+        this.districtName = districtName;
+        this.stateName = stateName;
+        this.groupName = groupName;
+    }
+
+    public PlayerInfo() {
+    }
+
     public String getAgeClassGeneral() {
         return ageClassGeneral;
     }

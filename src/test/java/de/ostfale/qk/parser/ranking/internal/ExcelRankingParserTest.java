@@ -1,6 +1,7 @@
 package de.ostfale.qk.parser.ranking.internal;
 
 import de.ostfale.qk.domain.player.Group;
+import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.parser.BaseParserTest;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -52,34 +53,36 @@ class ExcelRankingParserTest extends BaseParserTest {
         var expectedMixedRanking = 9;
 
         // when
-        List<RankingPlayer> rankingPlayers = parser.parseRankingFile(new FileInputStream(file));
+        List<Player> rankingPlayers = parser.parseRankingFileToPlayers(new FileInputStream(file));
 
         // then
-        var playerOptional = rankingPlayers.stream().filter(player -> player.getPlayerId().equalsIgnoreCase("06-153539"))
+        var playerOptional = rankingPlayers
+                .stream()
+                .filter(player -> player.getPlayerId().playerId().equalsIgnoreCase("06-153539"))
                 .findFirst();
 
         assertAll("Test reading an excel ranking file",
                 () -> assertNotNull(rankingPlayers),
-                () -> assertEquals(37, rankingPlayers.size()),
+                () -> assertEquals(38, rankingPlayers.size()),
                 () -> assertTrue(playerOptional.isPresent()),
                 () -> assertEquals(expectedFirstName, playerOptional.orElseThrow().getFirstName()),
                 () -> assertEquals(expectedLastName, playerOptional.orElseThrow().getLastName()),
                 () -> assertEquals(expectedBirthYear, playerOptional.orElseThrow().getYearOfBirth()),
-                () -> assertEquals(expectedGeneralAgeClass, playerOptional.orElseThrow().getAgeClassGeneral()),
-                () -> assertEquals(expectedDetailedAgeClass, playerOptional.orElseThrow().getAgeClassDetail()),
-                () -> assertEquals(expectedClub, playerOptional.orElseThrow().getClubName()),
-                () -> assertEquals(expectedDistrict, playerOptional.orElseThrow().getDistrictName()),
-                () -> assertEquals(expectedState, playerOptional.orElseThrow().getStateName()),
-                () -> assertEquals(expectedStateGroup, playerOptional.orElseThrow().getStateGroup()),
-                () -> assertEquals(expectedSinglePoints, playerOptional.orElseThrow().getSinglePoints()),
-                () -> assertEquals(expectedSingleRanking, playerOptional.orElseThrow().getSingleRanking()),
-                () -> assertEquals(expectedSingleTournaments, playerOptional.orElseThrow().getSingleTournaments()),
-                () -> assertEquals(expectedDoublePoints, playerOptional.orElseThrow().getDoublePoints()),
-                () -> assertEquals(expectedDoubleRanking, playerOptional.orElseThrow().getDoubleRanking()),
-                () -> assertEquals(expectedDoubleTournaments, playerOptional.orElseThrow().getDoubleTournaments()),
-                () -> assertEquals(expectedMixedPoints, playerOptional.orElseThrow().getMixedPoints()),
-                () -> assertEquals(expectedMixedRanking, playerOptional.orElseThrow().getMixedRanking()),
-                () -> assertEquals(expectedMixedTournaments, playerOptional.orElseThrow().getMixedTournaments())
+                () -> assertEquals(expectedGeneralAgeClass, playerOptional.orElseThrow().getPlayerInfo().getAgeClassGeneral()),
+                () -> assertEquals(expectedDetailedAgeClass, playerOptional.orElseThrow().getPlayerInfo().getAgeClassSpecific()),
+                () -> assertEquals(expectedClub, playerOptional.orElseThrow().getPlayerInfo().getClubName()),
+                () -> assertEquals(expectedDistrict, playerOptional.orElseThrow().getPlayerInfo().getDistrictName()),
+                () -> assertEquals(expectedState, playerOptional.orElseThrow().getPlayerInfo().getStateName()),
+                () -> assertEquals(expectedStateGroup, playerOptional.orElseThrow().getPlayerInfo().getGroupName()),
+                () -> assertEquals(expectedSinglePoints, playerOptional.orElseThrow().getSingleRankingInformation().rankingPoints()),
+                () -> assertEquals(expectedSingleRanking, playerOptional.orElseThrow().getSingleRankingInformation().rankingPosition()),
+                () -> assertEquals(expectedSingleTournaments, playerOptional.orElseThrow().getSingleRankingInformation().tournaments()),
+                () -> assertEquals(expectedDoublePoints, playerOptional.orElseThrow().getDoubleRankingInformation().rankingPoints()),
+                () -> assertEquals(expectedDoubleRanking, playerOptional.orElseThrow().getDoubleRankingInformation().rankingPosition()),
+                () -> assertEquals(expectedDoubleTournaments, playerOptional.orElseThrow().getDoubleRankingInformation().tournaments()),
+                () -> assertEquals(expectedMixedPoints, playerOptional.orElseThrow().getMixedRankingInformation().rankingPoints()),
+                () -> assertEquals(expectedMixedRanking, playerOptional.orElseThrow().getMixedRankingInformation().rankingPosition()),
+                () -> assertEquals(expectedMixedTournaments, playerOptional.orElseThrow().getMixedRankingInformation().tournaments())
         );
     }
 }

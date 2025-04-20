@@ -1,8 +1,6 @@
 package de.ostfale.qk.parser.ranking.internal;
 
-import de.ostfale.qk.domain.player.GenderType;
-import de.ostfale.qk.domain.player.Group;
-import de.ostfale.qk.domain.player.Player;
+import de.ostfale.qk.domain.player.*;
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.ranking.api.RankingParser;
 import jakarta.inject.Singleton;
@@ -43,8 +41,16 @@ public class ExcelRankingParser implements RankingParser {
 
     @Override
     public List<Player> parseRankingFileToPlayers(InputStream rankingFile) {
-        return List.of();
+        final Map<String, Player> playersByUniqueId = new HashMap<>();
+        Sheet sheet = readFirstSheet(rankingFile);
+
+        processPlayerRows(sheet, playersByUniqueId);
+
+        List<Player> players = createImmutablePlayerList(playersByUniqueId);
+        log.debugf("ExcelRankingParser :: Found %d players in ranking file", players.size());
+        return players;
     }
+
 
     private Sheet readFirstSheet(InputStream excelInputStream) {
         final int FIRST_SHEET_INDEX = 0;
@@ -54,6 +60,90 @@ public class ExcelRankingParser implements RankingParser {
             log.errorf("Excel PARSER :: Player : could not parse file. Reason: %s", e.getMessage());
             throw new RuntimeException("Failed to read the first sheet from Excel file", e);
         }
+    }
+
+    private void processPlayerRows(Sheet sheet, Map<String, Player> playerMap) {
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0) {            // Skip first row if it contains headers
+                continue;
+            }
+            if (isRowEmpty(row)) {                 // Stop processing if the row is empty
+                break;
+            }
+            parsePlayerRow(row, playerMap);
+        }
+    }
+
+    private void parsePlayerRow(Row row, Map<String, Player> playerMap) {
+        try {
+            String playerId = extractCellValue(row, RankingFileColIndex.PLAYER_ID_INDEX);
+            Player currentPlayer = getOrCreatePlayer(row, playerId, playerMap);
+            updatePlayerRankingInformation(row, currentPlayer);
+        } catch (Exception e) {
+            log.errorf("ExcelRankingParser :: Failed to parse row %d because of: %s", row.getRowNum(), e.getMessage());
+        }
+    }
+
+
+    private Player getOrCreatePlayer(Row row, String playerId, Map<String, Player> playerMap) {
+        return playerMap.computeIfAbsent(playerId, _ -> {
+            String firstName = extractCellValue(row, RankingFileColIndex.FIRST_NAME_INDEX);
+            String lastName = extractCellValue(row, RankingFileColIndex.LAST_NAME_INDEX);
+            String gender = extractCellValue(row, RankingFileColIndex.GENDER_INDEX);
+            GenderType genderType = GenderType.lookup(gender);
+            int birthYear = parseIntValue(row, RankingFileColIndex.BIRTH_YEAR_INDEX);
+
+            Player player = new Player(playerId, firstName, lastName, genderType, birthYear);
+            player.setPlayerInfo(createPlayerInfo(row));
+            return player;
+        });
+    }
+
+
+    private PlayerInfo createPlayerInfo(Row row) {
+        String ageClassGeneral = extractCellValue(row, RankingFileColIndex.AGE_CLASS_GENERAL_INDEX);
+        String ageClassDetail = extractCellValue(row, RankingFileColIndex.AGE_CLASS_DETAIL_INDEX);
+        String clubName = extractCellValue(row, RankingFileColIndex.CLUB_NAME_INDEX);
+        String districtName = extractCellValue(row, RankingFileColIndex.DISTRICT_NAME_INDEX);
+        String stateName = extractCellValue(row, RankingFileColIndex.STATE_NAME_INDEX);
+        String stateGroup = extractCellValue(row, RankingFileColIndex.STATE_GROUP_INDEX);
+        Group group = Group.lookup(stateGroup);
+
+        return new PlayerInfo(ageClassGeneral, ageClassDetail, clubName, districtName, stateName, group);
+    }
+
+
+    private void updatePlayerRankingInformation(Row row, Player player) {
+        String disciplineString = extractCellValue(row, RankingFileColIndex.DISCIPLINE_INDEX);
+        Discipline discipline = Discipline.lookup(disciplineString);
+
+        RankingInformation rankingInfo = createRankingInformation(row);
+
+        switch (discipline) {
+            case SINGLE -> player.setSingleRankingInformation(rankingInfo);
+            case DOUBLE -> player.setDoubleRankingInformation(rankingInfo);
+            case MIXED -> player.setMixedRankingInformation(rankingInfo);
+        }
+    }
+
+
+    private RankingInformation createRankingInformation(Row row) {
+        int points = parseIntValue(row, RankingFileColIndex.VALID_POINTS_INDEX);
+        int rankingInt = parseIntValue(row, RankingFileColIndex.RANKING_INDEX);
+        int ageRankingInt = parseIntValue(row, RankingFileColIndex.AGE_RANKING_INDEX);
+        int noOfTournaments = parseIntValue(row, RankingFileColIndex.TOURNAMENTS_INDEX);
+
+        return new RankingInformation(points, rankingInt, ageRankingInt, noOfTournaments);
+    }
+
+    private int parseIntValue(Row row, RankingFileColIndex colIndex) {
+        String value = extractCellValue(row, colIndex);
+        return Integer.parseInt(value);
+    }
+
+
+    private List<Player> createImmutablePlayerList(Map<String, Player> playerMap) {
+        return List.copyOf(playerMap.values());
     }
 
     private Workbook createWorkbook(InputStream excelInputStream) throws IOException {
@@ -137,7 +227,7 @@ public class ExcelRankingParser implements RankingParser {
             default -> "";
         };
     }
-    
+
     private String getStringCellValue(Cell cell) {
         return cell.getStringCellValue();
     }

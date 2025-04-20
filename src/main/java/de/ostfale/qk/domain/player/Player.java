@@ -15,7 +15,7 @@ public class Player {
 
     private RankingInformation singleRankingInformation;
     private RankingInformation doubleRankingInformation;
-    private RankingInformation tripleRankingInformation;
+    private RankingInformation mixedRankingInformation;
 
     public Player(String playerId, String firstName, String lastName, GenderType gender, int yearOfBirth) {
         setPlayerId(playerId);
@@ -96,11 +96,11 @@ public class Player {
         this.doubleRankingInformation = doubleRankingInformation;
     }
 
-    public RankingInformation getTripleRankingInformation() {
-        return tripleRankingInformation;
+    public RankingInformation getMixedRankingInformation() {
+        return mixedRankingInformation;
     }
 
-    public void setTripleRankingInformation(RankingInformation tripleRankingInformation) {
-        this.tripleRankingInformation = tripleRankingInformation;
+    public void setMixedRankingInformation(RankingInformation mixedRankingInformation) {
+        this.mixedRankingInformation = mixedRankingInformation;
     }
 }
