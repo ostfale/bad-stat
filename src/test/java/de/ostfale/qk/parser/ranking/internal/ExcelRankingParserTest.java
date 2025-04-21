@@ -3,9 +3,6 @@ package de.ostfale.qk.parser.ranking.internal;
 import de.ostfale.qk.domain.player.Group;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.parser.BaseParserTest;
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -18,13 +15,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled("Test parsing a 2025 ranking file")
+@DisplayName("Test parsing a 2025 ranking file")
 @Tag("unittest")
-@QuarkusTest
 class ExcelRankingParserTest extends BaseParserTest {
 
-    @Inject
-    ExcelRankingParser parser;
+    private final ExcelRankingParser parser = new ExcelRankingParser();
 
     @Test
     @DisplayName("Reading Excel File")

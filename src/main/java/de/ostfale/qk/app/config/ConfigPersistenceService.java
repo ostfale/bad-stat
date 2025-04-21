@@ -1,6 +1,7 @@
 package de.ostfale.qk.app.config;
 
 import de.ostfale.qk.app.FileSystemFacade;
+import de.ostfale.qk.db.json.ConfiguredObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jboss.logging.Logger;

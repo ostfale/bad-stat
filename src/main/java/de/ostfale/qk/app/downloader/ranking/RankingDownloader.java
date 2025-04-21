@@ -1,6 +1,7 @@
 package de.ostfale.qk.app.downloader.ranking;
 
-import de.ostfale.qk.db.app.BadStatConfigService;
+import de.ostfale.qk.db.dashboard.DashboardRankingData;
+import de.ostfale.qk.db.dashboard.DashboardRankingDataJsonHandler;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jboss.logging.Logger;
@@ -18,7 +19,7 @@ public class RankingDownloader implements RankingFacade {
     private static final Logger log = Logger.getLogger(RankingDownloader.class);
 
     @Inject
-    BadStatConfigService badStatConfigService;
+    DashboardRankingDataJsonHandler dashboardRankingDataJsonHandler;
 
     public boolean downloadLastCWRankingFile() {
         log.info("RankingDownloader :: download last CW ranking file");
@@ -57,18 +58,18 @@ public class RankingDownloader implements RankingFacade {
 
     private void resetConfigurationInfo() {
         log.info("RankingDownloader :: reset configuration info");
-        var badStatConfig = badStatConfigService.readConfiguration();
-        badStatConfig.setLastRankingFileDownload(null);
-        badStatConfig.setRankingFileName(null);
-        badStatConfigService.saveConfig(badStatConfig);
+        DashboardRankingData dashboardRankingData = dashboardRankingDataJsonHandler.readDashboardRankingData();
+        dashboardRankingData.setLastRankingFileDownload(null);
+        dashboardRankingData.setRankingFileName(null);
+        dashboardRankingDataJsonHandler.saveDashboardRankingData(dashboardRankingData);
     }
 
     private void updateConfigurationInfo() {
         log.info("RankingDownloader :: update configuration info");
-        var badStatConfig = badStatConfigService.readConfiguration();
-        badStatConfig.setLastRankingFileDownload(LocalDateTime.now());
-        badStatConfig.setRankingFileName(getRankingFiles().getFirst().getName());
-        badStatConfigService.saveConfig(badStatConfig);
+        DashboardRankingData dashboardRankingData = dashboardRankingDataJsonHandler.readDashboardRankingData();
+        dashboardRankingData.setLastRankingFileDownload(LocalDateTime.now());
+        dashboardRankingData.setRankingFileName(getRankingFiles().getFirst().getName());
+        dashboardRankingDataJsonHandler.saveDashboardRankingData(dashboardRankingData);
     }
 
     public String getCalendarWeekFromRankingFile(File aFile) {

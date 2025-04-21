@@ -1,26 +1,28 @@
 package de.ostfale.qk.app;
 
+import de.ostfale.qk.db.service.PlayerServiceProvider;
+import de.ostfale.qk.parser.ranking.api.RankingParser;
+import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
+import de.ostfale.qk.ui.dashboard.DashboardService;
+import io.quarkus.runtime.StartupEvent;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import org.jboss.logging.Logger;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import org.jboss.logging.Logger;
-
-import de.ostfale.qk.db.service.PlayerServiceProvider;
-import de.ostfale.qk.parser.ranking.api.RankingParser;
-import de.ostfale.qk.ui.dashboard.DashboardService;
-import io.quarkus.runtime.StartupEvent;
-import io.quarkus.runtime.configuration.ConfigUtils;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
-
 @ApplicationScoped
 public class ApplicationInitializer implements FileSystemFacade {
 
     private static final Logger log = Logger.getLogger(ApplicationInitializer.class);
+
+    @Inject
+    RankingPlayerCacheHandler rankingPlayerCacheHandler;
 
     @Inject
     DevSimulation devSimulation;
@@ -40,9 +42,17 @@ public class ApplicationInitializer implements FileSystemFacade {
         if (directoryExists(applicationHomeDir)) {
             log.infof("Application home directory exists: %s", applicationHomeDir);
             ensureDirectoriesExist(applicationHomeDir);
+            loadExistingRankingFileIntoCache();
             dashboardService.updateCurrentRankingStatus();
         } else {
             log.infof("Application home directory does not exist: %s -> is going to be created", applicationHomeDir);
+        }
+    }
+
+    private void loadExistingRankingFileIntoCache() {
+        log.info("Load existing ranking file");
+        if(!rankingPlayerCacheHandler.loadExistingRankingFileIntoCache()){
+            log.info("No existing ranking file found -> no player data at startup");
         }
     }
 

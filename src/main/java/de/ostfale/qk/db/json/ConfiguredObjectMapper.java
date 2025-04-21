@@ -1,4 +1,4 @@
-package de.ostfale.qk.app.config;
+package de.ostfale.qk.db.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.inject.Singleton;
 import org.jboss.logging.Logger;
 
+import java.util.List;
 import java.util.Optional;
 
 @Singleton
@@ -31,11 +32,6 @@ public class ConfiguredObjectMapper {
         mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
     }
 
-
-    public ObjectMapper getMapper() {
-        return objectMapper;
-    }
-
     public <T> Optional<T> mapToClass(String jsonString, Class<T> target) {
         try {
             return Optional.of(objectMapper.readValue(jsonString, target));
@@ -54,4 +50,18 @@ public class ConfiguredObjectMapper {
         }
     }
 
+    public <T> Optional<List<T>> mapToList(String jsonString, Class<T> elementType) {
+        try {
+            var collectionType = objectMapper.getTypeFactory().constructCollectionType(List.class, elementType);
+            List<T> list = objectMapper.readValue(jsonString, collectionType);
+            return Optional.of(list);
+        } catch (JsonProcessingException e) {
+            log.errorf("Could not map json string to list of %s", elementType.getName(), e);
+            return Optional.empty();
+        }
+    }
+
+    public Object getObjectMapper() {
+        return objectMapper;
+    }
 }

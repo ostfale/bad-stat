@@ -109,6 +109,10 @@ public class DashboardController extends BaseController<DashboardUIModel> {
     }
 
     private void updateRankingDisplay(DashboardRankingUIModel model) {
+        if (model == null) {
+            log.warn("DashBoardController :: Update ranking information failed. Model is null");
+            return;
+        }
         log.debug("DashBoardController :: Update ranking information");
         this.lblLastDownload.setText(model.getFileDownloadTimestamp());
         this.lblLastFile.setText(model.getDownloadFileName());

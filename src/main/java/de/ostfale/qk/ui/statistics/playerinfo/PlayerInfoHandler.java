@@ -7,6 +7,7 @@ import de.ostfale.qk.db.service.PlayerServiceProvider;
 import de.ostfale.qk.db.service.TournamentsStatisticService;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentRawModel;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentYearRawModel;
+import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.app.RecentYears;
 import de.ostfale.qk.web.api.WebService;
 import jakarta.inject.Inject;
@@ -24,6 +25,9 @@ import java.util.stream.Stream;
 public class PlayerInfoHandler {
 
     private static final Logger log = Logger.getLogger(PlayerInfoHandler.class);
+
+    @Inject
+    RankingPlayerCacheHandler rankingPlayerCacheHandler;
 
     @Inject
     PlayerServiceProvider playerServiceProvider;
