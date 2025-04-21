@@ -1,10 +1,9 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
-import de.ostfale.qk.db.internal.player.Player;
+import de.ostfale.qk.domain.player.Player;
 import org.jboss.logging.Logger;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 public class PlayerInfoDTO {
 
@@ -22,7 +21,6 @@ public class PlayerInfoDTO {
     private final String stateName;
     private final String stateGroup;
     private final String playerId;
-    private final LocalDateTime lastUpdate;
 
     private String playerTournamentId;
     private Boolean favorite;
@@ -34,19 +32,18 @@ public class PlayerInfoDTO {
 
     public PlayerInfoDTO(Player player) {
         log.tracef("PlayerInfoDTO :: init from player %d", player.getPlayerId());
-        this.playerName = player.getName();
+        this.playerName = player.getFullName();
         this.gender = player.getGender().toString();
-        this.playerId = player.getPlayerId();
-        this.playerTournamentId = player.getPlayerTournamentId();
-        this.favorite = player.getFavorite();
-        this.birthYear = player.getYearOfBirth().toString();
-        this.ageClass = player.getAgeClassGeneral();
-        this.ageClassDetail = player.getAgeClassDetail();
-        this.clubName = player.getClubName();
-        this.districtName = player.getDistrictName();
-        this.stateName = player.getStateName();
-        this.stateGroup = player.getStateGroup() == null ? "" : player.getStateGroup().toString();
-        this.lastUpdate = player.updatedAt;
+        this.playerId = player.getPlayerId().toString() + "";
+        //   this.playerTournamentId = player.getPlayerTournamentId();
+        //    this.favorite = player.getFavorite();
+        this.birthYear = String.valueOf(player.getYearOfBirth());
+        this.ageClass = player.getPlayerInfo().getAgeClassGeneral();
+        this.ageClassDetail = player.getPlayerInfo().getAgeClassSpecific();
+        this.clubName = player.getPlayerInfo().getClubName() == null ? "" : player.getPlayerInfo().getClubName();
+        this.districtName = player.getPlayerInfo().getDistrictName() == null ? "" : player.getPlayerInfo().getDistrictName();
+        this.stateName = player.getPlayerInfo().getStateName();
+        this.stateGroup = player.getPlayerInfo().getGroupName() == null ? "" : player.getPlayerInfo().getGroupName().getDisplayName();
 
         this.singleDisciplineStatistics = mapSingleDisciplineStatistics(player);
         this.doubleDisciplineStatistics = mapDoubleDisciplineStatistics(player);
@@ -56,14 +53,6 @@ public class PlayerInfoDTO {
     @Override
     public String toString() {
         return playerName;
-    }
-
-    public String getLastUpdate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
-        if (lastUpdate != null) {
-            return lastUpdate.format(formatter);
-        }
-        return "";
     }
 
     public String getStateName() {
@@ -159,26 +148,32 @@ public class PlayerInfoDTO {
     }
 
     private DisciplineStatisticsDTO mapSingleDisciplineStatistics(Player player) {
-        var singlePoints = player.getSinglePoints();
-        var singleRanking = player.getSingleRanking();
-        var singleAgeRanking = player.getSingleAgeRanking();
-        var singleTournaments = player.getSingleTournaments();
-        return new DisciplineStatisticsDTO(singleTournaments, singlePoints, singleRanking, singleAgeRanking);
+        return Optional.ofNullable(player.getSingleRankingInformation())
+                .map(info -> new DisciplineStatisticsDTO(
+                        info.tournaments(),
+                        info.rankingPoints(),
+                        info.rankingPosition(),
+                        info.ageRankingPoints()))
+                .orElse(new DisciplineStatisticsDTO(0, 0, 0, 0));
     }
 
     private DisciplineStatisticsDTO mapDoubleDisciplineStatistics(Player player) {
-        var doublePoints = player.getDoublePoints();
-        var doubleRanking = player.getDoubleRanking();
-        var doubleAgeRanking = player.getDoubleAgeRanking();
-        var doubleTournaments = player.getDoubleTournaments();
-        return new DisciplineStatisticsDTO(doubleTournaments, doublePoints, doubleRanking, doubleAgeRanking);
+        return Optional.ofNullable(player.getDoubleRankingInformation())
+                .map(info -> new DisciplineStatisticsDTO(
+                        info.tournaments(),
+                        info.rankingPoints(),
+                        info.rankingPosition(),
+                        info.ageRankingPoints()))
+                .orElse(new DisciplineStatisticsDTO(0, 0, 0, 0));
     }
 
     private DisciplineStatisticsDTO mapMixedDisciplineStatistics(Player player) {
-        var mixedPoints = player.getMixedPoints();
-        var mixedRanking = player.getMixedRanking();
-        var mixedAgeRanking = player.getMixedAgeRanking();
-        var mixedTournaments = player.getMixedTournaments();
-        return new DisciplineStatisticsDTO(mixedTournaments, mixedPoints, mixedRanking, mixedAgeRanking);
+        return Optional.ofNullable(player.getMixedRankingInformation())
+                .map(info -> new DisciplineStatisticsDTO(
+                        info.tournaments(),
+                        info.rankingPoints(),
+                        info.rankingPosition(),
+                        info.ageRankingPoints()))
+                .orElse(new DisciplineStatisticsDTO(0, 0, 0, 0));
     }
 }

@@ -51,6 +51,27 @@ public class DashboardService implements TimeHandlerFacade {
         return model;
     }
 
+    public DashboardRankingUIModel updateCurrentRankingFile() {
+        log.info("DashboardService :: use current ranking file to update database");
+        updatePlayersInCache();
+        return updateCurrentRankingStatus();
+    }
+
+    public int getCurrentCW() {
+        log.debug("DashboardService :: retrieve current calendar week");
+        return getActualCalendarWeek();
+    }
+
+    public int getLastCW() {
+        log.debug("DashboardService :: retrieve last calendar week");
+        return getLastCalendarWeek();
+    }
+
+    public String getOnlineCW() {
+        log.debug("DashboardService :: retrieve online calendar week");
+        return rankingWebService.getCalendarWeekForLastUpdate();
+    }
+
     private DashboardRankingUIModel createModelFromRankingData(DashboardRankingData rankingData) {
         DashboardRankingUIModel model = new DashboardRankingUIModel();
         model.setDownloadFileName(rankingData.getRankingFileName());
@@ -74,28 +95,6 @@ public class DashboardService implements TimeHandlerFacade {
             getRankingFile().ifPresent(rankingFile ->
                     model.setDownloadFileName(rankingFile.getName()));
         }
-    }
-
-
-    public DashboardRankingUIModel updateCurrentRankingFile() {
-        log.info("DashboardService :: use current ranking file to update database");
-        updatePlayersInCache();
-        return updateCurrentRankingStatus();
-    }
-
-    public int getCurrentCW() {
-        log.debug("DashboardService :: retrieve current calendar week");
-        return getActualCalendarWeek();
-    }
-
-    public int getLastCW() {
-        log.debug("DashboardService :: retrieve last calendar week");
-        return getLastCalendarWeek();
-    }
-
-    public String getOnlineCW() {
-        log.debug("DashboardService :: retrieve online calendar week");
-        return rankingWebService.getCalendarWeekForLastUpdate();
     }
 
     private void updatePlayersInCache() {

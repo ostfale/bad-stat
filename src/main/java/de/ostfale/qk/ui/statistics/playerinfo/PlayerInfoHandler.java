@@ -41,15 +41,11 @@ public class PlayerInfoHandler {
     private List<PlayerInfoDTO> allPlayer;
 
     public List<PlayerInfoDTO> findAllFavoritePlayers() {
-        initPlayerList();
-        var favPlayers = allPlayer.stream().filter(PlayerInfoDTO::getFavorite).toList();
+      //  initPlayerList();
+      /*  var favPlayers = allPlayer.stream().filter(PlayerInfoDTO::getFavorite).toList();
         log.debugf("PlayerInfoHandler :: Read all favorite players  %d players", favPlayers.size());
-        return favPlayers;
-    }
-
-    public List<PlayerInfoDTO> getAllPlayer() {
-        initPlayerList();
-        return allPlayer;
+        return favPlayers;*/
+        return List.of();
     }
 
     public Integer getSingleRankingForAgeClass(PlayerInfoDTO player) {
@@ -143,11 +139,11 @@ public class PlayerInfoHandler {
                 .toList();
     }
 
-    private void initPlayerList() {
+/*    private void initPlayerList() {
         if (allPlayer == null) {
             allPlayer = playerServiceProvider.getAllPlayers().stream().map(PlayerInfoDTO::new).toList();
         }
-    }
+    }*/
 
     // TODO - find better solution
     private static Tournament getTournamentInfos(TournamentYearRawModel tournamentYearRawModel, TournamentRawModel tInfo) {

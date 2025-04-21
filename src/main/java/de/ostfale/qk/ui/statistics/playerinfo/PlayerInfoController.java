@@ -41,6 +41,9 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     private static final String INITIAL_TOURNAMENT_RESULT = "0/0";
 
     @Inject
+    PlayerInfoService playerInfoService;
+
+    @Inject
     PlayerInfoHandler playerInfoHandler;
 
     @Inject
@@ -316,11 +319,10 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     // init text field to search player from all players list
     private void initSearchPlayerTextField() {
         ctfSearchPlayer.setPromptText("Spieler suchen");
-       // List<Player> allPlayers = rankingPlayerCacheHandler.getRankingPlayerCache().players();
-        List<Player> allPlayers = List.of();
+        var playerInfoList = playerInfoService.getPlayerInfoList();
 
-        Callback<AutoCompletionBinding.ISuggestionRequest, Collection<Player>> suggestionProvider = request -> allPlayers.stream()
-                .filter(suggestion -> suggestion.getFullName().toLowerCase().contains(request.getUserText().toLowerCase())).toList();
+        Callback<AutoCompletionBinding.ISuggestionRequest, Collection<PlayerInfoDTO>> suggestionProvider = request -> playerInfoList.stream()
+                .filter(suggestion -> suggestion.getPlayerName().toLowerCase().contains(request.getUserText().toLowerCase())).toList();
 
         TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
     }
