@@ -51,7 +51,7 @@ public class ApplicationInitializer implements FileSystemFacade {
 
     private void loadExistingRankingFileIntoCache() {
         log.info("Load existing ranking file");
-        if(!rankingPlayerCacheHandler.loadExistingRankingFileIntoCache()){
+        if(rankingPlayerCacheHandler.loadLocalRankingFileIntoCache()){
             log.info("No existing ranking file found -> no player data at startup");
         }
     }

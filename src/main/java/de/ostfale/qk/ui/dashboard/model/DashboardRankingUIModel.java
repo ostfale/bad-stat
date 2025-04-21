@@ -11,17 +11,17 @@ public class DashboardRankingUIModel {
 
     private LocalDateTime lastRankingFileDownload;
     private String downloadFileName;
-    private Long nofPlayers;
-    private Long nofMalePlayers;
-    private Long nofFemalePlayers;
+    private Long nofPlayers = 0L;
+    private Long nofMalePlayers = 0L;
+    private Long nofFemalePlayers = 0L;
 
     private String dbUpdateInCW;
 
     public DashboardRankingUIModel(String rankingFileName, int nofPlayers, int nofMalePlayers, int nofFemalePlayers) {
         this.downloadFileName = rankingFileName;
-        this.nofPlayers = Long.valueOf(nofPlayers);
-        this.nofMalePlayers = Long.valueOf(nofMalePlayers);
-        this.nofFemalePlayers = Long.valueOf(nofFemalePlayers);
+        this.nofPlayers = (long) nofPlayers;
+        this.nofMalePlayers = (long) nofMalePlayers;
+        this.nofFemalePlayers = (long) nofFemalePlayers;
     }
 
     public DashboardRankingUIModel(PlayerOverview playerOverview) {

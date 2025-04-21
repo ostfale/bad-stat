@@ -45,18 +45,37 @@ public class DashboardService implements TimeHandlerFacade {
 
     public DashboardRankingUIModel updateCurrentRankingStatus() {
         log.info("DashboardService :: prepare current status of ranking information");
-        var playerCache = rankingPlayerCacheHandler.getRankingPlayerCache();
-        if (playerCache != null) {
-            DashboardRankingData dashboardRankingData = dashboardRankingDataJsonHandler.readDashboardRankingData();
-            PlayerOverview playerOverview = new PlayerOverview(playerCache.getNumberOfPlayers(), playerCache.getNumberOfMalePlayers(), playerCache.getNumberOfFemalePlayers());
-            DashboardRankingUIModel model = new DashboardRankingUIModel(playerOverview);
-            model.setLastRankingFileDownload(dashboardRankingData.getLastRankingFileDownload());
-            model.setDbUpdateInCW(dashboardRankingData.getPlayerCacheLoadedForCW());
-            getRankingFile().ifPresent(rFile -> model.setDownloadFileName(rFile.getName()));
-            return model;
-        }
-        return null;
+        DashboardRankingData rankingData = dashboardRankingDataJsonHandler.readDashboardRankingData();
+        DashboardRankingUIModel model = createModelFromRankingData(rankingData);
+        populatePlayerStatistics(model);
+        return model;
     }
+
+    private DashboardRankingUIModel createModelFromRankingData(DashboardRankingData rankingData) {
+        DashboardRankingUIModel model = new DashboardRankingUIModel();
+        model.setDownloadFileName(rankingData.getRankingFileName());
+        model.setLastRankingFileDownload(rankingData.getLastRankingFileDownload());
+        model.setDbUpdateInCW(rankingData.getPlayerCacheLoadedForCW());
+        return model;
+    }
+
+    private void populatePlayerStatistics(DashboardRankingUIModel model) {
+        var playerRepository = rankingPlayerCacheHandler.getRankingPlayerCache();
+        if (playerRepository != null) {
+            PlayerOverview playerOverview = new PlayerOverview(
+                    playerRepository.getNumberOfPlayers(),
+                    playerRepository.getNumberOfMalePlayers(),
+                    playerRepository.getNumberOfFemalePlayers());
+
+            model.setNofPlayers(playerOverview.numberOfPlayer());
+            model.setNofMalePlayers(playerOverview.numberOfMalePlayer());
+            model.setNofFemalePlayers(playerOverview.numberOfFemalePlayer());
+
+            getRankingFile().ifPresent(rankingFile ->
+                    model.setDownloadFileName(rankingFile.getName()));
+        }
+    }
+
 
     public DashboardRankingUIModel updateCurrentRankingFile() {
         log.info("DashboardService :: use current ranking file to update database");
@@ -81,7 +100,7 @@ public class DashboardService implements TimeHandlerFacade {
 
     private void updatePlayersInCache() {
         log.info("DashboardService :: read ranking file and update cache");
-        if (!rankingPlayerCacheHandler.loadExistingRankingFileIntoCache()) {
+        if (rankingPlayerCacheHandler.loadLocalRankingFileIntoCache()) {
             log.info("Failed to load existing ranking file into cache ");
         }
     }
