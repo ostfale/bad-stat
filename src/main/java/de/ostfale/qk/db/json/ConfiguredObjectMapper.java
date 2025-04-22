@@ -9,6 +9,7 @@ import jakarta.inject.Singleton;
 import org.jboss.logging.Logger;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Singleton
@@ -60,6 +61,18 @@ public class ConfiguredObjectMapper {
             return Optional.empty();
         }
     }
+
+    public <T> Optional<Map<String, T>> mapToStringMap(String jsonString, Class<T> valueType) {
+        try {
+            var mapType = objectMapper.getTypeFactory().constructMapType(Map.class, String.class, valueType);
+            Map<String, T> map = objectMapper.readValue(jsonString, mapType);
+            return Optional.of(map);
+        } catch (JsonProcessingException e) {
+            log.errorf("Could not map json string to map with value type %s", valueType.getName(), e);
+            return Optional.empty();
+        }
+    }
+
 
     public Object getObjectMapper() {
         return objectMapper;

@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Dependent
@@ -60,6 +61,29 @@ public class DefaultJsonFileReader<T> implements JsonFileReader<T> {
             return configuredObjectMapper.mapToList(jsonContent, elementClass);
         } catch (IOException e) {
             log.errorf("Failed to read list from file: %s", path, e);
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Map<String, T>> readJsonFileToMap(String filePath, Class<T> valueType) {
+        try {
+            String jsonContent = Files.readString(Path.of(filePath));
+            return getObjectMapper().mapToStringMap(jsonContent, valueType);
+        } catch (IOException e) {
+            log.errorf("Error reading JSON file: %s", filePath, e);
+            return Optional.empty();
+        }
+    }
+
+
+    @Override
+    public Optional<Map<String, T>> readJsonFileToMap(Path path, Class<T> valueType) {
+        try {
+            String jsonContent = Files.readString(path);
+            return getObjectMapper().mapToStringMap(jsonContent, valueType);
+        } catch (IOException e) {
+            log.errorf("Error reading JSON file: %s", path, e);
             return Optional.empty();
         }
     }

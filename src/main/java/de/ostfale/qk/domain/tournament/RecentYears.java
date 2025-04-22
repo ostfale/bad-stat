@@ -1,4 +1,4 @@
-package de.ostfale.qk.ui.app;
+package de.ostfale.qk.domain.tournament;
 
 import java.time.Year;
 
@@ -9,9 +9,11 @@ public enum RecentYears {
     YEAR_MINUS_3(Year.now().getValue() - 3);
 
     private final int value;
+    private final String displayValue;
 
     RecentYears(int value) {
         this.value = value;
+        this.displayValue = String.valueOf(value);
     }
 
     public static RecentYears lookup(int value) {
@@ -30,5 +32,9 @@ public enum RecentYears {
 
     public int getValue() {
         return value;
+    }
+
+    public String getDisplayValue() {
+        return displayValue;
     }
 }

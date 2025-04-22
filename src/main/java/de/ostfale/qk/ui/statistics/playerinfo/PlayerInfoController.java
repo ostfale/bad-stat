@@ -5,7 +5,7 @@ import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
-import de.ostfale.qk.ui.app.RecentYears;
+import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerChangeListener;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerStringConverter;
 import io.quarkiverse.fx.views.FxView;
