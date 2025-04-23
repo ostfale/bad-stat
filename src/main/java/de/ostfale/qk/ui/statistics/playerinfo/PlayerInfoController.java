@@ -1,11 +1,10 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
 import de.ostfale.qk.db.internal.match.TournamentsStatistic;
-import de.ostfale.qk.domain.player.Player;
+import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
-import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerChangeListener;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerStringConverter;
 import io.quarkiverse.fx.views.FxView;
@@ -37,7 +36,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     private static final Logger log = Logger.getLogger(PlayerInfoController.class);
 
-    private static final String PATH_SEPARATOR = "/";
     private static final String INITIAL_TOURNAMENT_RESULT = "0/0";
 
     @Inject
@@ -64,10 +62,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @FXML
     private Button btnFavorite;
-
-
-    @FXML
-    private Label lblLastUpdate;
 
     // player general info
     @FXML
@@ -179,7 +173,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     void onEnterKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             var enteredUrl = txtTourURL.getText();
-            String playerTourID = extractLastPathSegment(enteredUrl);
+            String playerTourID = playerInfoService.extractPlayerTournamentIdFromUrl(enteredUrl);
             log.infof("Enter key pressed with text: %s and extracted player tournament ID: %s", enteredUrl, playerTourID);
             PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
             if (currentSelectedPlayer == null) {
@@ -260,9 +254,9 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     void viewPlayerInfo(ActionEvent event) {
         log.debugf("View player info");
-        PlayerInfoDTO player = getSelectedPlayerByName(ctfSearchPlayer.getText());
-        if (player != null) {
-      //      updatePlayerInfo(player);
+        PlayerInfoDTO playerInfo = playerInfoService.getPlayerByName(ctfSearchPlayer.getText());
+        if (playerInfo != null) {
+            updatePlayerInfo(playerInfo);
         } else {
             log.warn("No player selected");
         }
@@ -277,31 +271,30 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         dataModel.updateModel(favPlayers, cbPlayer);
     }
 
-    public void updatePlayerInfo(Player player) {
-        log.debugf("Update player info: %s", player.getFullName());
+    public void updatePlayerInfo(PlayerInfoDTO player) {
+        log.debugf("Update player info: %s", player.getPlayerName());
         resetPlayerInfo();
        /* if (player.getPlayerId() != null && !player.getPlayerTournamentId().isEmpty()) {
             TournamentsStatistic tournamentsStatistic = playerInfoHandler.updateOrCreatePlayerTournamentsStatistics(player);
             updateTournamentInfosForPlayerAndYear(tournamentsStatistic);
         }*/
 
-     //   lblLastUpdate.setText(player.getLastUpdate());
-        lblName.setText(player.getFullName());
-        lblPlayerId.setText(player.getPlayerId().toString());
-        lblBirthYear.setText(String.valueOf(player.getYearOfBirth()));
-        lblAgeClass.setText(player.getPlayerInfo().getAgeClassGeneral());
-        lblClub.setText(player.getPlayerInfo().getClubName() == null ? "" : player.getPlayerInfo().getClubName());
-        lblDistrict.setText(player.getPlayerInfo().getDistrictName() == null ? "" : player.getPlayerInfo().getDistrictName());
-      //  lblIdTurnier.setText(player.getPlayerTournamentId());
-        lblGender.setText(player.getGender().getDisplayName());
-        lblState.setText(player.getPlayerInfo().getStateName() == null ? "" : player.getPlayerInfo().getStateName());
-        lblGroup.setText(player.getPlayerInfo().getGroupName().getDisplayName());
+        lblName.setText(player.getPlayerName());
+        lblPlayerId.setText(player.getPlayerId());
+        lblBirthYear.setText(String.valueOf(player.getBirthYear()));
+        lblAgeClass.setText(player.getAgeClass());
+        lblClub.setText(player.getClubName() == null ? "" : player.getClubName());
+        lblDistrict.setText(player.getDistrictName() == null ? "" : player.getDistrictName());
+        //  lblIdTurnier.setText(player.getPlayerTournamentId());
+        lblGender.setText(player.getGender());
+        lblState.setText(player.getStateName() == null ? "" : player.getStateName());
+        lblGroup.setText(player.getStateGroup());
 
-        lblSTours.setText(String.valueOf(player.getSingleRankingInformation().tournaments()));
-        lblDTours.setText(String.valueOf(player.getDoubleRankingInformation().tournaments()));
-        lblMTours.setText(String.valueOf(player.getMixedRankingInformation().tournaments()));
+        lblSTours.setText(player.getSingleDisciplineStatistics().tournaments().toString());
+        lblSTours.setText(player.getDoubleDisciplineStatistics().tournaments().toString());
+        lblSTours.setText(player.getMixedDisciplineStatistics().tournaments().toString());
 
-      /*  lblSPoints.setText(player.getSingleDisciplineStatistics().points().toString());
+        lblSPoints.setText(player.getSingleDisciplineStatistics().points().toString());
         lblDPoints.setText(player.getDoubleDisciplineStatistics().points().toString());
         lblMPoints.setText(player.getMixedDisciplineStatistics().points().toString());
 
@@ -309,9 +302,9 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         lblDRank.setText(player.getDoubleDisciplineStatistics().fullRank().toString());
         lblMRank.setText(player.getMixedDisciplineStatistics().fullRank().toString());
 
-        lblSAKRank.setText(playerInfoHandler.getSingleRankingForAgeClass(player).toString());
-        lblDAKRank.setText(playerInfoHandler.getDoubleRankingForAgeClass(player).toString());
-        lblMAKRank.setText(playerInfoHandler.getMixedRankingForAgeClass(player).toString());*/
+//        lblSAKRank.setText(playerInfoService.getSingleRankingForAgeClass(player).toString());
+//        lblDAKRank.setText(playerInfoService.getDoubleRankingForAgeClass(player).toString());
+//        lblMAKRank.setText(playerInfoService.getMixedRankingForAgeClass(player).toString());
 
         txtTourURL.setText(""); // reset url since it is not saved in DB
     }
@@ -327,26 +320,21 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
     }
 
-    private String extractLastPathSegment(String url) {
-        if (url == null || !url.contains(PATH_SEPARATOR)) {
-            return ""; // Return empty string if URL is null or doesn't contain slashes
-        }
-        int lastSeparatorIndex = url.lastIndexOf(PATH_SEPARATOR);
-        return url.substring(lastSeparatorIndex + 1);
-    }
 
     private void initYearLabel() {
-        lblDisplayCurrentYear.setText(RecentYears.CURRENT_YEAR.toString());
-        lblDisplayCurrentYearMinusOne.setText(RecentYears.YEAR_MINUS_1.toString());
-        lblDisplayCurrentYearMinusTwo.setText(RecentYears.YEAR_MINUS_2.toString());
-        lblDisplayCurrentYearMinusThree.setText(RecentYears.YEAR_MINUS_3.toString());
+        lblDisplayCurrentYear.setText(RecentYears.CURRENT_YEAR.getDisplayValue());
+        lblDisplayCurrentYearMinusOne.setText(RecentYears.YEAR_MINUS_1.getDisplayValue());
+        lblDisplayCurrentYearMinusTwo.setText(RecentYears.YEAR_MINUS_2.getDisplayValue());
+        lblDisplayCurrentYearMinusThree.setText(RecentYears.YEAR_MINUS_3.getDisplayValue());
     }
 
+
+    // Extracted method to encapsulate the repetitive label reset logic
     private void resetPlayerInfo() {
         // Group repetitive label components into one array for iteration
-        Label[] labels = { lblName, lblPlayerId, lblBirthYear, lblAgeClass, lblClub, lblDistrict, lblIdTurnier, lblGroup, lblState, lblGender, lblSTours,
+        Label[] labels = {lblName, lblPlayerId, lblBirthYear, lblAgeClass, lblClub, lblDistrict, lblIdTurnier, lblGroup, lblState, lblGender, lblSTours,
                 lblDTours, lblMTours, lblSPoints, lblDPoints, lblMPoints, lblSRank, lblDRank, lblMRank, lblSAKRank, lblDAKRank, lblMAKRank, lblYear,
-                lblYearMinusOne, lblYearMinusTwo, lblYearMinusThree };
+                lblYearMinusOne, lblYearMinusTwo, lblYearMinusThree};
 
         // Clear all labels using a helper method
         for (Label label : labels) {
@@ -361,7 +349,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         txtTourURL.setText("");
     }
 
-    // Extracted method to encapsulate the repetitive label reset logic
     private void clearLabel(Label label) {
         label.setText("");
     }

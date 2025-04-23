@@ -33,6 +33,18 @@ public class Player {
         return getFullName();
     }
 
+    public int getSinglePoints() {
+        return singleRankingInformation.rankingPoints();
+    }
+
+    public int getDoublePoints() {
+        return doubleRankingInformation.rankingPoints();
+    }
+
+    public int getMixedPoints() {
+        return mixedRankingInformation.rankingPoints();
+    }
+
     public String getFullName() {
         return firstName + " " + lastName;
     }

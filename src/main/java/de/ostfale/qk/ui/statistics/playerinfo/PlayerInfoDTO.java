@@ -34,7 +34,7 @@ public class PlayerInfoDTO {
         log.tracef("PlayerInfoDTO :: init from player %d", player.getPlayerId());
         this.playerName = player.getFullName();
         this.gender = player.getGender().toString();
-        this.playerId = player.getPlayerId().toString() + "";
+        this.playerId = player.getPlayerId().playerId();
         //   this.playerTournamentId = player.getPlayerTournamentId();
         //    this.favorite = player.getFavorite();
         this.birthYear = String.valueOf(player.getYearOfBirth());

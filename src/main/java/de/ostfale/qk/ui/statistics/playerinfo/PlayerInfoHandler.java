@@ -5,20 +5,18 @@ import de.ostfale.qk.db.internal.match.TournamentsStatistic;
 import de.ostfale.qk.db.internal.player.Player;
 import de.ostfale.qk.db.service.PlayerServiceProvider;
 import de.ostfale.qk.db.service.TournamentsStatisticService;
+import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentRawModel;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentYearRawModel;
 import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
-import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.web.api.WebService;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jboss.logging.Logger;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.ToIntFunction;
 import java.util.stream.Stream;
 
 @Singleton
@@ -46,18 +44,6 @@ public class PlayerInfoHandler {
         log.debugf("PlayerInfoHandler :: Read all favorite players  %d players", favPlayers.size());
         return favPlayers;*/
         return List.of();
-    }
-
-    public Integer getSingleRankingForAgeClass(PlayerInfoDTO player) {
-        return calculateRanking(player, PlayerInfoDTO::getSinglePoints, "single");
-    }
-
-    public Integer getDoubleRankingForAgeClass(PlayerInfoDTO player) {
-        return calculateRanking(player, PlayerInfoDTO::getDoublePoints, "double");
-    }
-
-    public Integer getMixedRankingForAgeClass(PlayerInfoDTO player) {
-        return calculateRanking(player, PlayerInfoDTO::getMixedPoints, "mixed");
     }
 
     public TournamentsStatistic updateOrCreatePlayerTournamentsStatistics(PlayerInfoDTO playerDTO) {
@@ -120,30 +106,6 @@ public class PlayerInfoHandler {
         });
         return tournamentsStatisticsDTOs;
     }
-
-
-
-    private Integer calculateRanking(PlayerInfoDTO player, ToIntFunction<PlayerInfoDTO> pointsExtractor, String rankingType) {
-        List<PlayerInfoDTO> filteredPlayers = filterByAgeClassAndGender(allPlayer, player.getAgeClass(), player.getGender());
-        var sortedPlayers = filteredPlayers.stream()
-                .sorted(Comparator.comparingInt(pointsExtractor).reversed())
-                .toList();
-        int rank = sortedPlayers.indexOf(player) + 1;
-        log.debugf("Calculated %s ranking for player %s is %d", rankingType, player.getPlayerName(), rank);
-        return rank;
-    }
-
-    private List<PlayerInfoDTO> filterByAgeClassAndGender(List<PlayerInfoDTO> players, String ageClass, String gender) {
-        return players.stream()
-                .filter(p -> p.getAgeClass().equalsIgnoreCase(ageClass) && p.getGender().equalsIgnoreCase(gender))
-                .toList();
-    }
-
-/*    private void initPlayerList() {
-        if (allPlayer == null) {
-            allPlayer = playerServiceProvider.getAllPlayers().stream().map(PlayerInfoDTO::new).toList();
-        }
-    }*/
 
     // TODO - find better solution
     private static Tournament getTournamentInfos(TournamentYearRawModel tournamentYearRawModel, TournamentRawModel tInfo) {
