@@ -254,7 +254,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     void viewPlayerInfo(ActionEvent event) {
         log.debugf("View player info");
-        PlayerInfoDTO playerInfo = playerInfoService.getPlayerByName(ctfSearchPlayer.getText());
+        PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayer(ctfSearchPlayer.getText());
         if (playerInfo != null) {
             updatePlayerInfo(playerInfo);
         } else {

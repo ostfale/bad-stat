@@ -40,7 +40,8 @@ public class PlayerInfoService {
         return url.substring(lastSeparatorIndex + 1);
     }
 
-    public PlayerInfoDTO getPlayerByName(String playerName) {
+
+    public PlayerInfoDTO getPlayerInfosForPlayer(String playerName) {
         List<Player> foundPlayers = rankingPlayerCacheHandler.getRankingPlayerCache().getPlayerByName(playerName);
         if (foundPlayers.size() == 1) {
             var player = foundPlayers.getFirst();
