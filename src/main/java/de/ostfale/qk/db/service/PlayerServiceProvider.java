@@ -29,15 +29,6 @@ public class PlayerServiceProvider {
         return playerOverview;
     }
 
-    public Long getNofPlayers() {
-        return playerRepository.count();
-    }
-
-    public List<Player> findPlayersByFullName(String fullName) {
-        log.debugf("Find players by full name: %s", fullName);
-        return playerRepository.findPlayersByFullNameIgnoreCase(fullName);
-    }
-
     public Player findPlayerById(String playerId) {
         log.tracef("Find player by id: %s", playerId);
         return playerRepository.findByPlayerId(playerId);

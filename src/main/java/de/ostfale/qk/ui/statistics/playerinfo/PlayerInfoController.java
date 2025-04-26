@@ -228,13 +228,8 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     void togglePlayerFavoriteStatus(ActionEvent event) {
         log.debug("Toggle player favorite status");
-        var selectedPlayer = getSelectedPlayerByName(ctfSearchPlayer.getText());
-        if (selectedPlayer != null) {
-            playerInfoHandler.toggleAndSavePlayerAsFavorite(selectedPlayer);
-            dataModel.setItemList(playerInfoHandler.findAllFavoritePlayers());
-            cbPlayer.getSelectionModel().select(selectedPlayer);
-            ctfSearchPlayer.setText("");
-        }
+        var selectedPlayer = ctfSearchPlayer.getText();
+        playerInfoService.toggleFavoritePlayer(selectedPlayer);
     }
 
     private PlayerInfoDTO getSelectedPlayerByName(String playerName) {
@@ -264,47 +259,48 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     private void initFavPlayerComboboxModel() {
         log.debug("Initialize DataModel for player combobox");
-        List<PlayerInfoDTO> favPlayers = playerInfoHandler.findAllFavoritePlayers();
+        List<PlayerInfoDTO> favPlayers = playerInfoService.getAllFavoritePlayers();
+
         dataModel = new DataModel<>();
         dataModel.setStringConverter(new FavPlayerStringConverter());
         dataModel.setChangeListener(new FavPlayerChangeListener(this));
         dataModel.updateModel(favPlayers, cbPlayer);
     }
 
-    public void updatePlayerInfo(PlayerInfoDTO player) {
-        log.debugf("Update player info: %s", player.getPlayerName());
+    public void updatePlayerInfo(PlayerInfoDTO playerInfoDTO) {
+        log.debugf("Update player info: %s", playerInfoDTO.getPlayerName());
         resetPlayerInfo();
        /* if (player.getPlayerId() != null && !player.getPlayerTournamentId().isEmpty()) {
             TournamentsStatistic tournamentsStatistic = playerInfoHandler.updateOrCreatePlayerTournamentsStatistics(player);
             updateTournamentInfosForPlayerAndYear(tournamentsStatistic);
         }*/
 
-        lblName.setText(player.getPlayerName());
-        lblPlayerId.setText(player.getPlayerId());
-        lblBirthYear.setText(String.valueOf(player.getBirthYear()));
-        lblAgeClass.setText(player.getAgeClass());
-        lblClub.setText(player.getClubName() == null ? "" : player.getClubName());
-        lblDistrict.setText(player.getDistrictName() == null ? "" : player.getDistrictName());
+        lblName.setText(playerInfoDTO.getPlayerName());
+        lblPlayerId.setText(playerInfoDTO.getPlayerId());
+        lblBirthYear.setText(String.valueOf(playerInfoDTO.getBirthYear()));
+        lblAgeClass.setText(playerInfoDTO.getAgeClass());
+        lblClub.setText(playerInfoDTO.getClubName() == null ? "" : playerInfoDTO.getClubName());
+        lblDistrict.setText(playerInfoDTO.getDistrictName() == null ? "" : playerInfoDTO.getDistrictName());
         //  lblIdTurnier.setText(player.getPlayerTournamentId());
-        lblGender.setText(player.getGender());
-        lblState.setText(player.getStateName() == null ? "" : player.getStateName());
-        lblGroup.setText(player.getStateGroup());
+        lblGender.setText(playerInfoDTO.getGender());
+        lblState.setText(playerInfoDTO.getStateName() == null ? "" : playerInfoDTO.getStateName());
+        lblGroup.setText(playerInfoDTO.getStateGroup());
 
-        lblSTours.setText(player.getSingleDisciplineStatistics().tournaments().toString());
-        lblSTours.setText(player.getDoubleDisciplineStatistics().tournaments().toString());
-        lblSTours.setText(player.getMixedDisciplineStatistics().tournaments().toString());
+        lblSTours.setText(playerInfoDTO.getSingleDisciplineStatistics().tournaments().toString());
+        lblDTours.setText(playerInfoDTO.getDoubleDisciplineStatistics().tournaments().toString());
+        lblMTours.setText(playerInfoDTO.getMixedDisciplineStatistics().tournaments().toString());
 
-        lblSPoints.setText(player.getSingleDisciplineStatistics().points().toString());
-        lblDPoints.setText(player.getDoubleDisciplineStatistics().points().toString());
-        lblMPoints.setText(player.getMixedDisciplineStatistics().points().toString());
+        lblSPoints.setText(playerInfoDTO.getSingleDisciplineStatistics().points().toString());
+        lblDPoints.setText(playerInfoDTO.getDoubleDisciplineStatistics().points().toString());
+        lblMPoints.setText(playerInfoDTO.getMixedDisciplineStatistics().points().toString());
 
-        lblSRank.setText(player.getSingleDisciplineStatistics().fullRank().toString());
-        lblDRank.setText(player.getDoubleDisciplineStatistics().fullRank().toString());
-        lblMRank.setText(player.getMixedDisciplineStatistics().fullRank().toString());
+        lblSRank.setText(playerInfoDTO.getSingleDisciplineStatistics().fullRank().toString());
+        lblDRank.setText(playerInfoDTO.getDoubleDisciplineStatistics().fullRank().toString());
+        lblMRank.setText(playerInfoDTO.getMixedDisciplineStatistics().fullRank().toString());
 
-//        lblSAKRank.setText(playerInfoService.getSingleRankingForAgeClass(player).toString());
-//        lblDAKRank.setText(playerInfoService.getDoubleRankingForAgeClass(player).toString());
-//        lblMAKRank.setText(playerInfoService.getMixedRankingForAgeClass(player).toString());
+        lblSAKRank.setText(playerInfoDTO.getSingleDisciplineStatistics().ageClassRank().toString());
+        lblDAKRank.setText(playerInfoDTO.getDoubleDisciplineStatistics().ageClassRank().toString());
+        lblMAKRank.setText(playerInfoDTO.getMixedDisciplineStatistics().ageClassRank().toString());
 
         txtTourURL.setText(""); // reset url since it is not saved in DB
     }

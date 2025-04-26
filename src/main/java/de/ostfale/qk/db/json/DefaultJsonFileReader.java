@@ -38,7 +38,7 @@ public class DefaultJsonFileReader<T> implements JsonFileReader<T> {
             }
             String jsonContent = Files.readString(path);
             return configuredObjectMapper.mapToClass(jsonContent, targetClass);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.errorf("Failed to read object from file: %s", path, e);
             return Optional.empty();
         }

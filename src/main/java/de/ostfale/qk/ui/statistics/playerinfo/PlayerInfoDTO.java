@@ -45,15 +45,17 @@ public class PlayerInfoDTO {
         this.stateName = player.getPlayerInfo().getStateName();
         this.stateGroup = player.getPlayerInfo().getGroupName() == null ? "" : player.getPlayerInfo().getGroupName().getDisplayName();
 
-        this.singleDisciplineStatistics = mapSingleDisciplineStatistics(player);
+     /*   this.singleDisciplineStatistics = mapSingleDisciplineStatistics(player);
         this.doubleDisciplineStatistics = mapDoubleDisciplineStatistics(player);
-        this.mixedDisciplineStatistics = mapMixedDisciplineStatistics(player);
+        this.mixedDisciplineStatistics = mapMixedDisciplineStatistics(player);*/
     }
 
     @Override
     public String toString() {
         return playerName;
     }
+
+
 
     public String getStateName() {
         return stateName;
@@ -145,35 +147,5 @@ public class PlayerInfoDTO {
 
     public String getPlayerId() {
         return playerId;
-    }
-
-    private DisciplineStatisticsDTO mapSingleDisciplineStatistics(Player player) {
-        return Optional.ofNullable(player.getSingleRankingInformation())
-                .map(info -> new DisciplineStatisticsDTO(
-                        info.tournaments(),
-                        info.rankingPoints(),
-                        info.rankingPosition(),
-                        info.ageRankingPoints()))
-                .orElse(new DisciplineStatisticsDTO(0, 0, 0, 0));
-    }
-
-    private DisciplineStatisticsDTO mapDoubleDisciplineStatistics(Player player) {
-        return Optional.ofNullable(player.getDoubleRankingInformation())
-                .map(info -> new DisciplineStatisticsDTO(
-                        info.tournaments(),
-                        info.rankingPoints(),
-                        info.rankingPosition(),
-                        info.ageRankingPoints()))
-                .orElse(new DisciplineStatisticsDTO(0, 0, 0, 0));
-    }
-
-    private DisciplineStatisticsDTO mapMixedDisciplineStatistics(Player player) {
-        return Optional.ofNullable(player.getMixedRankingInformation())
-                .map(info -> new DisciplineStatisticsDTO(
-                        info.tournaments(),
-                        info.rankingPoints(),
-                        info.rankingPosition(),
-                        info.ageRankingPoints()))
-                .orElse(new DisciplineStatisticsDTO(0, 0, 0, 0));
     }
 }

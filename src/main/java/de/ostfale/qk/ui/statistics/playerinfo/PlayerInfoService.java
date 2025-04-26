@@ -1,5 +1,8 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
+import de.ostfale.qk.db.player.FavoritePlayerData;
+import de.ostfale.qk.db.player.FavoritePlayerDataJsonHandler;
+import de.ostfale.qk.db.player.FavoritePlayerListHandler;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.dashboard.DashboardService;
@@ -8,9 +11,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class PlayerInfoService {
@@ -21,6 +24,9 @@ public class PlayerInfoService {
 
     @Inject
     RankingPlayerCacheHandler rankingPlayerCacheHandler;
+
+    @Inject
+    FavoritePlayerDataJsonHandler favoritePlayerDataJsonHandler;
 
     public List<PlayerInfoDTO> getPlayerInfoList() {
         log.debug("PlayerInfoService :: map all players from cache into PlayerInfoDTOs ");
@@ -45,7 +51,12 @@ public class PlayerInfoService {
         List<Player> foundPlayers = rankingPlayerCacheHandler.getRankingPlayerCache().getPlayerByName(playerName);
         if (foundPlayers.size() == 1) {
             var player = foundPlayers.getFirst();
-            return new PlayerInfoDTO(player);
+
+            var playerInfo = new PlayerInfoDTO(player);
+            playerInfo.setSingleDisciplineStatistics(mapSingleDisciplineStatistics(player));
+            playerInfo.setDoubleDisciplineStatistics(mapDoubleDisciplineStatistics(player));
+            playerInfo.setMixedDisciplineStatistics(mapMixedDisciplineStatistics(player));
+            return playerInfo;
         }
 
         // TODO offer selection of player
@@ -58,16 +69,65 @@ public class PlayerInfoService {
         return null;
     }
 
-    public Integer getSingleRankingForAgeClass(Player player) {
-        return calculatePlayersRanking(player, Player::getSinglePoints, "single");
+    public List<PlayerInfoDTO> getAllFavoritePlayers() {
+        FavoritePlayerListHandler favoritePlayersList = favoritePlayerDataJsonHandler.readFavoritePlayersList();
+        List<FavoritePlayerData> favoritePlayers = favoritePlayersList.favoritePlayersList();
+
+        log.debugf("PlayerInfoService :: Processing favorite players list with %d entries", favoritePlayers.size());
+
+        return favoritePlayers.stream()
+                .map(FavoritePlayerData::getName)
+                .map(this::getPlayerInfosForPlayer)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
-    public Integer getDoubleRankingForAgeClass(Player player) {
-        return calculatePlayersRanking(player, Player::getDoublePoints, "double");
+
+    public void toggleFavoritePlayer(String playerName) {
+        log.debugf("Toggling favorite status for player: %s", playerName);
+
+        FavoritePlayerListHandler listHandler = favoritePlayerDataJsonHandler.readFavoritePlayersList();
+        if (listHandler.doesPlayerExist(playerName)) {
+            listHandler.favoritePlayersList().removeIf(player -> player.getName().equalsIgnoreCase(playerName));
+            log.infof("Removed favorite player: %s", playerName);
+        } else {
+            var playerInfos = getPlayerInfosForPlayer(playerName);
+            FavoritePlayerData newPlayer = new FavoritePlayerData();
+            newPlayer.setName(playerName);
+            newPlayer.setPlayerId(playerInfos.getPlayerId());
+            listHandler.addPlayerCustomData(newPlayer);
+        }
+        favoritePlayerDataJsonHandler.savePlayerCustomDataList(listHandler);
     }
 
-    public Integer getMixedRankingForAgeClass(Player player) {
-        return calculatePlayersRanking(player, Player::getMixedPoints, "mixed");
+    private DisciplineStatisticsDTO mapSingleDisciplineStatistics(Player player) {
+        return Optional.ofNullable(player.getSingleRankingInformation())
+                .map(info -> new DisciplineStatisticsDTO(
+                        info.tournaments(),
+                        info.rankingPoints(),
+                        info.rankingPosition(),
+                        calculatePlayersRanking(player, Player::getSinglePoints, "single")))
+                .orElse(new DisciplineStatisticsDTO(0, 0, 0, 0));
+    }
+
+    private DisciplineStatisticsDTO mapDoubleDisciplineStatistics(Player player) {
+        return Optional.ofNullable(player.getDoubleRankingInformation())
+                .map(info -> new DisciplineStatisticsDTO(
+                        info.tournaments(),
+                        info.rankingPoints(),
+                        info.rankingPosition(),
+                        calculatePlayersRanking(player, Player::getDoublePoints, "double")))
+                .orElse(new DisciplineStatisticsDTO(0, 0, 0, 0));
+    }
+
+    private DisciplineStatisticsDTO mapMixedDisciplineStatistics(Player player) {
+        return Optional.ofNullable(player.getMixedRankingInformation())
+                .map(info -> new DisciplineStatisticsDTO(
+                        info.tournaments(),
+                        info.rankingPoints(),
+                        info.rankingPosition(),
+                        calculatePlayersRanking(player, Player::getMixedPoints, "mixed")))
+                .orElse(new DisciplineStatisticsDTO(0, 0, 0, 0));
     }
 
     private Integer calculatePlayersRanking(Player player, ToIntFunction<Player> pointsExtractor, String rankingType) {

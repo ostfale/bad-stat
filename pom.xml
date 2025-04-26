@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.ostfale.qk</groupId>
     <artifactId>bad-stat</artifactId>
@@ -26,10 +27,10 @@
         <!-- libs -->
         <htmlunit.version>4.11.1</htmlunit.version>
         <quarkus-fx.version>0.9.1</quarkus-fx.version>
-        <quarkus-poi.version>2.1.1</quarkus-poi.version>
+        <quarkus-poi.version>2.1.2</quarkus-poi.version>
 
         <!-- ui -->
-        <ikonli-javafx.version>12.3.1</ikonli-javafx.version>
+        <ikonli-javafx.version>12.4.0</ikonli-javafx.version>
         <controlsfx.version>11.2.2</controlsfx.version>
     </properties>
 
@@ -62,18 +63,10 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-scheduler</artifactId>
         </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-vertx</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-undertow</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-smallrye-health</artifactId>
-            </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-health</artifactId>
+        </dependency>
 
         <!-- libs -->
         <dependency>

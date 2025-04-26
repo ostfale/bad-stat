@@ -34,14 +34,23 @@ public class Player {
     }
 
     public int getSinglePoints() {
+        if (singleRankingInformation == null) {
+            return 0;
+        }
         return singleRankingInformation.rankingPoints();
     }
 
     public int getDoublePoints() {
+        if (doubleRankingInformation == null) {
+            return 0;
+        }
         return doubleRankingInformation.rankingPoints();
     }
 
     public int getMixedPoints() {
+        if (mixedRankingInformation == null) {
+            return 0;
+        }
         return mixedRankingInformation.rankingPoints();
     }
 

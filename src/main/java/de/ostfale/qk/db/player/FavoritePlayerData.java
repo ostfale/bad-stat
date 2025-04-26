@@ -3,12 +3,11 @@ package de.ostfale.qk.db.player;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlayerCustomData {
+public class FavoritePlayerData {
 
     private String playerId;
     private String name;
     private String playerTournamentId = "";
-    private Boolean isFavorite = false;
     private Map<String, Integer> tournamentsForYear = new HashMap<>();
 
 
@@ -34,14 +33,6 @@ public class PlayerCustomData {
 
     public void setPlayerTournamentId(String playerTournamentId) {
         this.playerTournamentId = playerTournamentId;
-    }
-
-    public Boolean getFavorite() {
-        return isFavorite;
-    }
-
-    public void setFavorite(Boolean favorite) {
-        isFavorite = favorite;
     }
 
     public Map<String, Integer> getTournamentsForYear() {
