@@ -57,6 +57,13 @@ public class DashboardService implements TimeHandlerFacade {
         return updateCurrentRankingStatus();
     }
 
+    public void updatePlayersInCache() {
+        log.info("DashboardService :: read ranking file and update cache");
+        if (rankingPlayerCacheHandler.loadLocalRankingFileIntoCache()) {
+            log.info("Failed to load existing ranking file into cache ");
+        }
+    }
+
     public int getCurrentCW() {
         log.debug("DashboardService :: retrieve current calendar week");
         return getActualCalendarWeek();
@@ -94,13 +101,6 @@ public class DashboardService implements TimeHandlerFacade {
 
             getRankingFile().ifPresent(rankingFile ->
                     model.setDownloadFileName(rankingFile.getName()));
-        }
-    }
-
-    private void updatePlayersInCache() {
-        log.info("DashboardService :: read ranking file and update cache");
-        if (rankingPlayerCacheHandler.loadLocalRankingFileIntoCache()) {
-            log.info("Failed to load existing ranking file into cache ");
         }
     }
 

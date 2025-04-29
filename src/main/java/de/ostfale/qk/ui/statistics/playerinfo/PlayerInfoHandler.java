@@ -1,52 +1,34 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
 import de.ostfale.qk.db.api.tournament.Tournament;
-import de.ostfale.qk.db.internal.match.TournamentsStatistic;
-import de.ostfale.qk.db.internal.player.Player;
-import de.ostfale.qk.db.service.PlayerServiceProvider;
-import de.ostfale.qk.db.service.TournamentsStatisticService;
-import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentRawModel;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentYearRawModel;
-import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
-import de.ostfale.qk.web.api.WebService;
+import de.ostfale.qk.ui.app.BaseHandler;
+import io.quarkiverse.fx.views.FxViewRepository;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import javafx.scene.Node;
 import org.jboss.logging.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
-
 @Singleton
-public class PlayerInfoHandler {
+public class PlayerInfoHandler implements BaseHandler {
 
     private static final Logger log = Logger.getLogger(PlayerInfoHandler.class);
 
-    @Inject
-    RankingPlayerCacheHandler rankingPlayerCacheHandler;
+    private static final String PLAYER_INFO_FXML = "player-stat-info";
 
     @Inject
-    PlayerServiceProvider playerServiceProvider;
+    FxViewRepository fxViewRepository;
 
     @Inject
-    TournamentsStatisticService tournamentsStatisticService;
+    PlayerInfoController playerInfoController;
 
-    @Inject
-    WebService webService;
-
-    private List<PlayerInfoDTO> allPlayer;
-
-    public List<PlayerInfoDTO> findAllFavoritePlayers() {
-      //  initPlayerList();
-      /*  var favPlayers = allPlayer.stream().filter(PlayerInfoDTO::getFavorite).toList();
-        log.debugf("PlayerInfoHandler :: Read all favorite players  %d players", favPlayers.size());
-        return favPlayers;*/
-        return List.of();
+    @Override
+    public Node getRootNode() {
+        return fxViewRepository.getViewData(PLAYER_INFO_FXML).getRootNode();
     }
 
-    public TournamentsStatistic updateOrCreatePlayerTournamentsStatistics(PlayerInfoDTO playerDTO) {
+   /* public TournamentsStatistic updateOrCreatePlayerTournamentsStatistics(PlayerInfoDTO playerDTO) {
         Objects.requireNonNull(playerDTO, "Player name must not be null");
 
         // check if there is already a statistics entry in the database for this player
@@ -79,19 +61,9 @@ public class PlayerInfoHandler {
             playerServiceProvider.updatePlayersTournamentId(player, playerDTO.getPlayerTournamentId());
             return tournamentsStatistic;
         }
-    }
+    }*/
 
-    public void toggleAndSavePlayerAsFavorite(PlayerInfoDTO playerDTO) {
-        Objects.requireNonNull(playerDTO, "Player name must not be null");
-        playerServiceProvider.updatePlayerAsFavorite(playerDTO.getPlayerId(),true);
-    }
-
-    public List<PlayerInfoDTO> findPlayerByName(String playerName) {
-        log.debugf("PlayerInfoHandler :: Find player by name %s", playerName);
-        return allPlayer.stream().filter(player -> player.getPlayerName().equalsIgnoreCase(playerName)).toList();
-    }
-
-    public void updateAndSavePlayerTournamentsStatistics(PlayerInfoDTO playerDTO, Integer year) {
+   /* public void updateAndSavePlayerTournamentsStatistics(PlayerInfoDTO playerDTO, Integer year) {
         log.debugf("PlayerInfoHandler :: Update player %s statistics for year %d", playerDTO.getPlayerName(), year);
         List<TournamentRawModel> tourPlayerList= webService.getTournamentsForYearAndPlayer(year, playerDTO.getPlayerTournamentId());
 
@@ -105,7 +77,7 @@ public class PlayerInfoHandler {
             log.debugf("Read tournaments for player %s for year %d: %d", player.getPlayerName(), recentYears.getValue(), nofTournaments);
         });
         return tournamentsStatisticsDTOs;
-    }
+    }*/
 
     // TODO - find better solution
     private static Tournament getTournamentInfos(TournamentYearRawModel tournamentYearRawModel, TournamentRawModel tInfo) {

@@ -1,6 +1,5 @@
 package de.ostfale.qk.app;
 
-import de.ostfale.qk.db.service.PlayerServiceProvider;
 import de.ostfale.qk.parser.ranking.api.RankingParser;
 import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.dashboard.DashboardService;
@@ -29,9 +28,6 @@ public class ApplicationInitializer implements FileSystemFacade {
 
     @Inject
     RankingParser rankingParser;
-
-    @Inject
-    PlayerServiceProvider playerService;
 
     @Inject
     DashboardService dashboardService;

@@ -3,8 +3,6 @@ package de.ostfale.qk.ui.statistics.playerinfo;
 import de.ostfale.qk.domain.player.Player;
 import org.jboss.logging.Logger;
 
-import java.util.Optional;
-
 public class PlayerInfoDTO {
 
     private static final Logger log = Logger.getLogger(PlayerInfoDTO.class);
@@ -54,7 +52,6 @@ public class PlayerInfoDTO {
     public String toString() {
         return playerName;
     }
-
 
 
     public String getStateName() {

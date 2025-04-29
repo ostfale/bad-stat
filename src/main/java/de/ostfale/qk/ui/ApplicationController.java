@@ -1,15 +1,12 @@
 package de.ostfale.qk.ui;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.logging.Logger;
-
 import de.ostfale.qk.ui.app.StatusBarController;
 import de.ostfale.qk.ui.dashboard.DashboardHandler;
 import de.ostfale.qk.ui.statistics.PlayerStatisticsHandler;
 import de.ostfale.qk.ui.statistics.StatisticsController;
+import de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoHandler;
 import io.quarkiverse.fx.FxPostStartupEvent;
 import io.quarkiverse.fx.views.FxView;
-import io.quarkiverse.fx.views.FxViewRepository;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -22,6 +19,8 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
 
 @Singleton
 @FxView("app-view")
@@ -42,13 +41,13 @@ public class ApplicationController {
     AnchorPane centerAnchorPane;
 
     @Inject
-    FxViewRepository fxViewRepository;
-
-    @Inject
     DashboardHandler dashboardHandler;
 
     @Inject
     PlayerStatisticsHandler playerTourStatsHandler;
+
+    @Inject
+    PlayerInfoHandler playerInfoHandler;
 
     @Inject
     StatisticsController statisticsController;
@@ -97,8 +96,8 @@ public class ApplicationController {
     @FXML
     void showStatisticsView(ActionEvent event) {
         log.info("Show Statistics View");
-        bpApp.setCenter(statisticsController.getUI());
-        playerTourStatsHandler.refreshUI();
+        bpApp.setCenter(playerInfoHandler.getRootNode());
+       // playerTourStatsHandler.refreshUI();
     }
 
     @FXML

@@ -2,7 +2,6 @@ package de.ostfale.qk.ui.statistics.playerinfo;
 
 import de.ostfale.qk.db.internal.match.TournamentsStatistic;
 import de.ostfale.qk.domain.tournament.RecentYears;
-import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerChangeListener;
@@ -19,14 +18,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
-import javafx.util.Callback;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.CustomTextField;
-import org.controlsfx.control.textfield.TextFields;
 import org.jboss.logging.Logger;
 
 import java.time.Year;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,12 +35,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @Inject
     PlayerInfoService playerInfoService;
-
-    @Inject
-    PlayerInfoHandler playerInfoHandler;
-
-    @Inject
-    RankingPlayerCacheHandler rankingPlayerCacheHandler;
 
     @FXML
     GridPane gpPlayerInfo;
@@ -161,11 +150,13 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     private Label lblYearMinusOne;
 
+
     @FXML
     public void initialize() {
         log.info("Initialize PlayerInfoStatisticsController");
         initFavPlayerComboboxModel();
-        initSearchPlayerTextField();
+        new PlayerTextSearchComponent(playerInfoService, ctfSearchPlayer).initialize();
+      //  initSearchPlayerTextField();
         initYearLabel();
     }
 
@@ -181,8 +172,8 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
                 return;
             }
             currentSelectedPlayer.setPlayerTournamentId(playerTourID);
-            TournamentsStatistic tournamentsStatistic = playerInfoHandler.updateOrCreatePlayerTournamentsStatistics(currentSelectedPlayer);
-            updateTournamentInfosForPlayerAndYear(tournamentsStatistic);
+            //    TournamentsStatistic tournamentsStatistic = playerInfoHandler.updateOrCreatePlayerTournamentsStatistics(currentSelectedPlayer);
+            //    updateTournamentInfosForPlayerAndYear(tournamentsStatistic);
             lblIdTurnier.setText(playerTourID);
         }
     }
@@ -191,28 +182,28 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     void downloadThisYearsTournaments(ActionEvent event) {
         Integer year = Year.now().getValue();
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
+        //   playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
     }
 
     @FXML
     void downloadThisYearMinusOneTournaments(ActionEvent event) {
         Integer year = Year.now().minusYears(1).getValue();
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
+        //   playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
     }
 
     @FXML
     void downloadThisYearMinusTwoTournaments(ActionEvent event) {
         Integer year = Year.now().minusYears(2).getValue();
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
+        //   playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
     }
 
     @FXML
     void downloadThisYearMinusThreeTournaments(ActionEvent event) {
         Integer year = Year.now().minusYears(3).getValue();
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
+        //   playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
     }
 
     private void updateTournamentInfosForPlayerAndYear(TournamentsStatistic tournamentsStatistic) {
@@ -232,19 +223,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         playerInfoService.toggleFavoritePlayer(selectedPlayer);
     }
 
-    private PlayerInfoDTO getSelectedPlayerByName(String playerName) {
-        List<PlayerInfoDTO> selectedPlayer = playerInfoHandler.findPlayerByName(playerName);
-        if (selectedPlayer.isEmpty()) {
-            log.warnf("No player found with name %s", playerName);
-            return null;
-        } else if (selectedPlayer.size() > 1) {
-            // TODO handle multiple results
-            log.warnf("More than one player found with name %s", playerName);
-            return null;
-        } else {
-            return selectedPlayer.getFirst();
-        }
-    }
 
     @FXML
     void viewPlayerInfo(ActionEvent event) {
@@ -255,6 +233,10 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         } else {
             log.warn("No player selected");
         }
+    }
+
+    public CustomTextField getCtfSearchPlayer() {
+        return ctfSearchPlayer;
     }
 
     private void initFavPlayerComboboxModel() {
@@ -304,18 +286,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
         txtTourURL.setText(""); // reset url since it is not saved in DB
     }
-
-    // init text field to search player from all players list
-    private void initSearchPlayerTextField() {
-        ctfSearchPlayer.setPromptText("Spieler suchen");
-        var playerInfoList = playerInfoService.getPlayerInfoList();
-
-        Callback<AutoCompletionBinding.ISuggestionRequest, Collection<PlayerInfoDTO>> suggestionProvider = request -> playerInfoList.stream()
-                .filter(suggestion -> suggestion.getPlayerName().toLowerCase().contains(request.getUserText().toLowerCase())).toList();
-
-        TextFields.bindAutoCompletion(ctfSearchPlayer, suggestionProvider);
-    }
-
 
     private void initYearLabel() {
         lblDisplayCurrentYear.setText(RecentYears.CURRENT_YEAR.getDisplayValue());

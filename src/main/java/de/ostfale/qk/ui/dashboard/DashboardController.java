@@ -80,8 +80,7 @@ public class DashboardController extends BaseController<DashboardUIModel> {
         var downloadSuccess = dashboardService.loadCurrentCWRankingFile();
         if (downloadSuccess) {
             log.debug("DashboardController :: Download Current CW Ranking successful");
-            var dashboardRankingUIModel = dashboardService.updateCurrentRankingStatus();
-            updateRankingDisplay(dashboardRankingUIModel);
+            updateRankingDisplay(dashboardService.updateCurrentRankingStatus());
         } else {
             log.warn("DashboardController :: Download Current CW Ranking failed");
         }
@@ -93,8 +92,7 @@ public class DashboardController extends BaseController<DashboardUIModel> {
         var downloadSuccess = dashboardService.loadLastCWRankingFile();
         if (downloadSuccess) {
             log.debug("DashboardController :: Download Last CW Ranking successful");
-            var dashboardRankingUIModel = dashboardService.updateCurrentRankingStatus();
-            updateRankingDisplay(dashboardRankingUIModel);
+            updateRankingDisplay(dashboardService.updateCurrentRankingStatus());
         } else {
             log.warn("DashboardController :: Download Last CW Ranking failed");
         }
