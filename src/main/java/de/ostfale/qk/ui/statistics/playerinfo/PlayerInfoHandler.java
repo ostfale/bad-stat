@@ -20,13 +20,13 @@ public class PlayerInfoHandler implements BaseHandler {
     @Inject
     FxViewRepository fxViewRepository;
 
-    @Inject
-    PlayerInfoController playerInfoController;
-
     @Override
     public Node getRootNode() {
+        log.debug("PlayerInfoHandler :: Get player info view");
         return fxViewRepository.getViewData(PLAYER_INFO_FXML).getRootNode();
     }
+
+
 
    /* public TournamentsStatistic updateOrCreatePlayerTournamentsStatistics(PlayerInfoDTO playerDTO) {
         Objects.requireNonNull(playerDTO, "Player name must not be null");

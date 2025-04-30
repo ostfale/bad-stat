@@ -59,6 +59,13 @@ public class PlayerInfoService {
             playerInfo.setSingleDisciplineStatistics(mapSingleDisciplineStatistics(player));
             playerInfo.setDoubleDisciplineStatistics(mapDoubleDisciplineStatistics(player));
             playerInfo.setMixedDisciplineStatistics(mapMixedDisciplineStatistics(player));
+
+            // set tournament ID for favorite player if available
+            List<FavoritePlayerData> favoritePlayers = getFavoritePlayerData(playerName);
+            if (!favoritePlayers.isEmpty()) {
+                playerInfo.setPlayerTournamentId(favoritePlayers.getFirst().getPlayerTournamentId());
+            }
+
             return playerInfo;
         }
 
@@ -85,23 +92,71 @@ public class PlayerInfoService {
                 .collect(Collectors.toList());
     }
 
+    public void addPlayerToFavoriteList(String playerName) {
+        log.debugf("Adding player to favorite list: %s", playerName);
+        FavoritePlayerListHandler favoritePlayerList = favoritePlayerDataJsonHandler.readFavoritePlayersList();
 
-    public void toggleFavoritePlayer(String playerName) {
-        log.debugf("Toggling favorite status for player: %s", playerName);
+        if (favoritePlayerList.doesPlayerExist(playerName)) {
+            log.infof("Player already in favorite list: %s -> no action", playerName);
+            return;
+        }
+
+        FavoritePlayerData newPlayer = createFavoritePlayerData(playerName);
+        favoritePlayerList.addPlayerCustomData(newPlayer);
+        favoritePlayerDataJsonHandler.savePlayerCustomDataList(favoritePlayerList);
+    }
+
+    private FavoritePlayerData createFavoritePlayerData(String playerName) {
+        var playerInfos = getPlayerInfosForPlayer(playerName);
+        FavoritePlayerData newPlayer = new FavoritePlayerData();
+        newPlayer.setName(playerName);
+        newPlayer.setPlayerId(playerInfos.getPlayerId());
+        return newPlayer;
+    }
+
+
+    public void removePlayerFromFavoriteList(String playerName) {
+        log.debugf("PlayerInfoService :: Removing player from favorite list: %s", playerName);
+        FavoritePlayerListHandler listHandler = favoritePlayerDataJsonHandler.readFavoritePlayersList();
+        if (!listHandler.doesPlayerExist(playerName)) {
+            log.infof("Player not in favorite list: %s -> no action", playerName);
+            return;
+        }
+        listHandler.favoritePlayersList().removeIf(player -> player.getName().equalsIgnoreCase(playerName));
+        favoritePlayerDataJsonHandler.savePlayerCustomDataList(listHandler);
+        log.infof("Removed player from favorite list: %s", playerName);
+    }
+
+    public void updatePlayerTournamentId(PlayerInfoDTO selectedFavPlayerInfo) {
+        String playerName = selectedFavPlayerInfo.getPlayerName();
+        String playerTournamentId = selectedFavPlayerInfo.getPlayerTournamentId();
+
+        log.infof("Updating tournament ID '%s' for player '%s'", playerTournamentId, playerName);
 
         FavoritePlayerListHandler listHandler = favoritePlayerDataJsonHandler.readFavoritePlayersList();
-        if (listHandler.doesPlayerExist(playerName)) {
-            listHandler.favoritePlayersList().removeIf(player -> player.getName().equalsIgnoreCase(playerName));
-            log.infof("Removed favorite player: %s", playerName);
-        } else {
-            var playerInfos = getPlayerInfosForPlayer(playerName);
-            FavoritePlayerData newPlayer = new FavoritePlayerData();
-            newPlayer.setName(playerName);
-            newPlayer.setPlayerId(playerInfos.getPlayerId());
-            listHandler.addPlayerCustomData(newPlayer);
+
+        if (!listHandler.doesPlayerExist(playerName)) {
+            log.warnf("Player not in favorite list: %s -> no action", playerName);
+            return;
         }
+
+        updatePlayerInList(listHandler, playerName, playerTournamentId);
         favoritePlayerDataJsonHandler.savePlayerCustomDataList(listHandler);
     }
+
+    private List<FavoritePlayerData> getFavoritePlayerData(String playerName) {
+        log.debugf("PlayerInfoService :: get favorite player data for player %s", playerName);
+        FavoritePlayerListHandler listHandler = favoritePlayerDataJsonHandler.readFavoritePlayersList();
+        return listHandler.favoritePlayersList().stream().filter(player -> player.getName().equalsIgnoreCase(playerName)).toList();
+    }
+
+    private void updatePlayerInList(FavoritePlayerListHandler listHandler, String playerName, String playerTournamentId) {
+        listHandler.favoritePlayersList().stream()
+                .filter(player -> player.getName().equalsIgnoreCase(playerName))
+                .findFirst()
+                .ifPresent(player -> player.setPlayerTournamentId(playerTournamentId));
+    }
+
 
     private DisciplineStatisticsDTO mapSingleDisciplineStatistics(Player player) {
         return Optional.ofNullable(player.getSingleRankingInformation())

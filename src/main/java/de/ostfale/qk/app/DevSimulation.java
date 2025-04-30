@@ -1,17 +1,6 @@
 package de.ostfale.qk.app;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import org.htmlunit.WebClient;
-import org.htmlunit.html.HtmlElement;
-import org.htmlunit.html.HtmlPage;
-import org.jboss.logging.Logger;
-
 import de.ostfale.qk.db.api.MatchRepository;
-import de.ostfale.qk.db.api.PlayerRepository;
 import de.ostfale.qk.db.api.TournamentRepository;
 import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.db.internal.match.Match;
@@ -30,6 +19,15 @@ import de.ostfale.qk.web.ConfiguredWebClient;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlPage;
+import org.jboss.logging.Logger;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Singleton
 public class DevSimulation {
@@ -43,9 +41,6 @@ public class DevSimulation {
 
     @Inject
     RankingParser rankingParser;
-
-    @Inject
-    PlayerRepository playerRepository;
 
     @Inject
     TournamentRepository tournamentRepository;
@@ -99,7 +94,6 @@ public class DevSimulation {
             player.setAgeClassDetail(rankingPlayer.getAgeClassDetail());
             player.setFavorite(rankingPlayer.getFavorite());
 
-            playerRepository.persist(player);
         }
     }
 

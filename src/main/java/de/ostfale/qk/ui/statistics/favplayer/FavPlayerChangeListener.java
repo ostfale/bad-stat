@@ -10,19 +10,20 @@ public class FavPlayerChangeListener implements ChangeListener<PlayerInfoDTO> {
 
     private static final Logger log = Logger.getLogger(FavPlayerChangeListener.class);
 
-    private final PlayerInfoController controller;
+    final PlayerInfoController playerInfoController;
 
     public FavPlayerChangeListener(PlayerInfoController controller) {
-        this.controller = controller;
+        this.playerInfoController = controller;
     }
 
     @Override
     public void changed(ObservableValue<? extends PlayerInfoDTO> observableValue, PlayerInfoDTO oldPlayer, PlayerInfoDTO newPlayer) {
         if (newPlayer != null) {
             log.infof("Player %s is now a selected", newPlayer.getPlayerName());
-          //  controller.updatePlayerInfo(newPlayer);
-        } else {
+            playerInfoController.updatePlayerInfo(newPlayer);
+        } else if (oldPlayer != null) {
             log.debugf("Player %s is no longer selected", oldPlayer.getPlayerName());
+            playerInfoController.updatePlayerInfo(oldPlayer);
         }
     }
 }

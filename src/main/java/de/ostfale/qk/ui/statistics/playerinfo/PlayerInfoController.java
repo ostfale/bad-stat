@@ -24,6 +24,7 @@ import org.jboss.logging.Logger;
 import java.time.Year;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Dependent
 @FxView("player-stat-info")
@@ -50,7 +51,10 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     private Button btnPlayerView;
 
     @FXML
-    private Button btnFavorite;
+    private Button btnFavRemove;
+
+    @FXML
+    private Button btnFavAdd;
 
     // player general info
     @FXML
@@ -156,7 +160,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         log.info("Initialize PlayerInfoStatisticsController");
         initFavPlayerComboboxModel();
         new PlayerTextSearchComponent(playerInfoService, ctfSearchPlayer).initialize();
-      //  initSearchPlayerTextField();
+        //  initSearchPlayerTextField();
         initYearLabel();
     }
 
@@ -168,10 +172,13 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
             log.infof("Enter key pressed with text: %s and extracted player tournament ID: %s", enteredUrl, playerTourID);
             PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
             if (currentSelectedPlayer == null) {
-                log.warn("No player selected");
+                log.info("No player selected");
                 return;
             }
             currentSelectedPlayer.setPlayerTournamentId(playerTourID);
+            playerInfoService.updatePlayerTournamentId(currentSelectedPlayer);
+
+
             //    TournamentsStatistic tournamentsStatistic = playerInfoHandler.updateOrCreatePlayerTournamentsStatistics(currentSelectedPlayer);
             //    updateTournamentInfosForPlayerAndYear(tournamentsStatistic);
             lblIdTurnier.setText(playerTourID);
@@ -217,12 +224,26 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     // init button to toggle player as favorites
     @FXML
-    void togglePlayerFavoriteStatus(ActionEvent event) {
-        log.debug("Toggle player favorite status");
+    void addToFavorites(ActionEvent event) {
+        log.debug("Add player to favorites");
         var selectedPlayer = ctfSearchPlayer.getText();
-        playerInfoService.toggleFavoritePlayer(selectedPlayer);
+        playerInfoService.addPlayerToFavoriteList(selectedPlayer);
+        var playerInfo = playerInfoService.getPlayerInfosForPlayer(selectedPlayer);
+        updateFavorites();
+        ctfSearchPlayer.clear();
+        cbPlayer.getSelectionModel().select(playerInfo);
     }
 
+    @FXML
+    void removeFromFavorites(ActionEvent actionEvent) {
+        log.debug("Remove player from favorites");
+        String selectedPlayerName = getSelectedFavoritePlayer();
+        if (selectedPlayerName.isEmpty()) {
+            log.warn("No player selected");
+        }
+        playerInfoService.removePlayerFromFavoriteList(selectedPlayerName);
+        updateFavorites();
+    }
 
     @FXML
     void viewPlayerInfo(ActionEvent event) {
@@ -235,9 +256,12 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         }
     }
 
-    public CustomTextField getCtfSearchPlayer() {
-        return ctfSearchPlayer;
+    private String getSelectedFavoritePlayer() {
+        return Optional.ofNullable(cbPlayer.getSelectionModel().getSelectedItem())
+                .map(item -> Optional.ofNullable(item.getPlayerName()).orElse(""))
+                .orElse("");
     }
+
 
     private void initFavPlayerComboboxModel() {
         log.debug("Initialize DataModel for player combobox");
@@ -246,6 +270,12 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         dataModel = new DataModel<>();
         dataModel.setStringConverter(new FavPlayerStringConverter());
         dataModel.setChangeListener(new FavPlayerChangeListener(this));
+        dataModel.updateModel(favPlayers, cbPlayer);
+    }
+
+    public void updateFavorites() {
+        log.debug("PlayerInfoStatisticsController :: Update favorites");
+        List<PlayerInfoDTO> favPlayers = playerInfoService.getAllFavoritePlayers();
         dataModel.updateModel(favPlayers, cbPlayer);
     }
 
@@ -263,7 +293,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         lblAgeClass.setText(playerInfoDTO.getAgeClass());
         lblClub.setText(playerInfoDTO.getClubName() == null ? "" : playerInfoDTO.getClubName());
         lblDistrict.setText(playerInfoDTO.getDistrictName() == null ? "" : playerInfoDTO.getDistrictName());
-        //  lblIdTurnier.setText(player.getPlayerTournamentId());
+        lblIdTurnier.setText(playerInfoDTO.getPlayerTournamentId() == null ? "" : playerInfoDTO.getPlayerTournamentId());
         lblGender.setText(playerInfoDTO.getGender());
         lblState.setText(playerInfoDTO.getStateName() == null ? "" : playerInfoDTO.getStateName());
         lblGroup.setText(playerInfoDTO.getStateGroup());

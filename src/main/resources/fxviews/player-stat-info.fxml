@@ -144,13 +144,13 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </Label>
-      <CustomTextField fx:id="ctfSearchPlayer" promptText="Spieler suchen" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-      <Button fx:id="btnFavorite" mnemonicParsing="false" onAction="#togglePlayerFavoriteStatus" GridPane.columnIndex="5" GridPane.rowIndex="2">
+      <CustomTextField fx:id="ctfSearchPlayer" promptText="Spieler suchen" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+      <Button fx:id="btnFavAdd" mnemonicParsing="false" onAction="#addToFavorites" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2">
          <GridPane.margin>
-            <Insets left="50.0" />
+            <Insets />
          </GridPane.margin>
          <graphic>
-            <FontIcon iconLiteral="fa-star-o" />
+            <FontIcon iconLiteral="fas-arrow-left" />
          </graphic>
          <tooltip>
             <Tooltip text="Zu den Favoriten hinzufügen" />
@@ -315,7 +315,7 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </TextField>
-      <Button fx:id="btnPlayerView" mnemonicParsing="false" onAction="#viewPlayerInfo" GridPane.columnIndex="5" GridPane.rowIndex="2">
+      <Button fx:id="btnPlayerView" mnemonicParsing="false" onAction="#viewPlayerInfo" GridPane.columnIndex="6" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets left="10.0" />
          </GridPane.margin>
@@ -356,5 +356,13 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </Label>
+      <Button fx:id="btnFavRemove" layoutX="347.0" layoutY="73.0" mnemonicParsing="false" onAction="#removeFromFavorites" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+         <graphic>
+            <FontIcon iconLiteral="fas-arrow-right" />
+         </graphic>
+         <tooltip>
+            <Tooltip text="Aus den Favoriten entfernen" />
+         </tooltip>
+      </Button>
    </children>
   </GridPane>

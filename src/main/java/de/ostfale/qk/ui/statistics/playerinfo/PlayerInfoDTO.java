@@ -145,4 +145,5 @@ public class PlayerInfoDTO {
     public String getPlayerId() {
         return playerId;
     }
+
 }
