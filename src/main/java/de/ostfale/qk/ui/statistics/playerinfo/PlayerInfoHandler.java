@@ -26,50 +26,6 @@ public class PlayerInfoHandler implements BaseHandler {
         return fxViewRepository.getViewData(PLAYER_INFO_FXML).getRootNode();
     }
 
-
-
-   /* public TournamentsStatistic updateOrCreatePlayerTournamentsStatistics(PlayerInfoDTO playerDTO) {
-        Objects.requireNonNull(playerDTO, "Player name must not be null");
-
-        // check if there is already a statistics entry in the database for this player
-        TournamentsStatistic statistic = tournamentsStatisticService.findByPlayerId(playerDTO.getPlayerId());
-        if (statistic.hasStatisticForPlayer()) {
-            log.debugf("PlayerInfoHandler :: Updating player %s with tournament statistics", playerDTO.getPlayerName());
-            return statistic;
-        } else {
-            log.debugf("PlayerInfoHandler :: Creating tournaments statistics overview for player %s ", playerDTO.getPlayerName());
-            List<TournamentsStatisticsDTO> tournamentsStatisticsDTOs = readPlayersTournamentsForLastFourYears(playerDTO);
-            TournamentsStatistic tournamentsStatistic = new TournamentsStatistic();
-            tournamentsStatistic.setPlayerId(playerDTO.getPlayerId());
-            tournamentsStatisticsDTOs.forEach(statisticsDTO -> {
-                RecentYears year = RecentYears.lookup(statisticsDTO.year());
-                switch (year) {
-                    case RecentYears.CURRENT_YEAR ->
-                            tournamentsStatistic.setYearPlayedTournaments(statisticsDTO.allTournaments());
-                    case YEAR_MINUS_1 ->
-                            tournamentsStatistic.setYearMinusOnePlayedTournaments(statisticsDTO.allTournaments());
-                    case YEAR_MINUS_2 ->
-                            tournamentsStatistic.setYearMinusTwoPlayedTournaments(statisticsDTO.allTournaments());
-                    case YEAR_MINUS_3 ->
-                            tournamentsStatistic.setYearMinusThreePlayedTournaments(statisticsDTO.allTournaments());
-                    default -> log.errorf("TournamentsStatistic Mapper :: Unknown year: %s", year);
-                }
-            });
-
-            tournamentsStatisticService.save(tournamentsStatistic);
-            Player player = playerServiceProvider.findPlayerById(playerDTO.getPlayerId());
-            playerServiceProvider.updatePlayersTournamentId(player, playerDTO.getPlayerTournamentId());
-            return tournamentsStatistic;
-        }
-    }*/
-
-   /* public void updateAndSavePlayerTournamentsStatistics(PlayerInfoDTO playerDTO, Integer year) {
-        log.debugf("PlayerInfoHandler :: Update player %s statistics for year %d", playerDTO.getPlayerName(), year);
-        List<TournamentRawModel> tourPlayerList= webService.getTournamentsForYearAndPlayer(year, playerDTO.getPlayerTournamentId());
-
-    }
-    }*/
-
     // TODO - find better solution
     private static Tournament getTournamentInfos(TournamentYearRawModel tournamentYearRawModel, TournamentRawModel tInfo) {
         String tournamentId = tInfo.getTournamentId();

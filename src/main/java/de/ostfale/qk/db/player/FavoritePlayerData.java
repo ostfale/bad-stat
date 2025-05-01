@@ -1,6 +1,6 @@
 package de.ostfale.qk.db.player;
 
-import de.ostfale.qk.ui.statistics.matches.TournamentsStatisticsDTO;
+import de.ostfale.qk.ui.statistics.playerinfo.tournamentdata.TournamentsStatistic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,20 +11,20 @@ public class FavoritePlayerData {
     private String playerId;
     private String name;
     private String playerTournamentId = "";
-    private final List<TournamentsStatisticsDTO> tournamentsStatisticsDTOS = new ArrayList<>();
+    private final List<TournamentsStatistic> tournamentsStatistics = new ArrayList<>();
 
-    public List<TournamentsStatisticsDTO> getTournamentsStatisticsDTOS() {
-        return tournamentsStatisticsDTOS;
+    public List<TournamentsStatistic> getTournamentsStatisticsDTOS() {
+        return tournamentsStatistics;
     }
 
-    public void addTournamentsStatisticsDTO(TournamentsStatisticsDTO tournamentsStatisticsDTO) {
-        tournamentsStatisticsDTOS.add(tournamentsStatisticsDTO);
+    public void addTournamentsStatisticsDTO(TournamentsStatistic tournamentsStatistic) {
+        tournamentsStatistics.add(tournamentsStatistic);
     }
 
     // TODO check here for updates within a year or a new years entry
-    public void addTournamentsStatisticsDTO(List<TournamentsStatisticsDTO> tournamentsStatisticsDTOs) {
-        for (TournamentsStatisticsDTO tournamentsStatisticsDTO : tournamentsStatisticsDTOs) {
-            addTournamentsStatisticsDTO(tournamentsStatisticsDTO);
+    public void addTournamentsStatisticsDTO(List<TournamentsStatistic> tournamentsStatistics) {
+        for (TournamentsStatistic tournamentsStatistic : tournamentsStatistics) {
+            addTournamentsStatisticsDTO(tournamentsStatistic);
         }
     }
 
@@ -59,7 +59,7 @@ public class FavoritePlayerData {
         return Objects.equals(playerId, that.playerId)
                 && Objects.equals(name, that.name)
                 && Objects.equals(playerTournamentId, that.playerTournamentId)
-                && Objects.equals(tournamentsStatisticsDTOS, that.tournamentsStatisticsDTOS);
+                && Objects.equals(tournamentsStatistics, that.tournamentsStatistics);
     }
 
     @Override

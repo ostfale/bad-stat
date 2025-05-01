@@ -1,11 +1,13 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
-import de.ostfale.qk.db.internal.match.TournamentsStatistic;
 import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerChangeListener;
 import de.ostfale.qk.ui.statistics.favplayer.FavPlayerStringConverter;
+import de.ostfale.qk.ui.statistics.playerinfo.filter.PlayerTextSearchComponent;
+import de.ostfale.qk.ui.statistics.playerinfo.masterdata.PlayerInfoDTO;
+import de.ostfale.qk.ui.statistics.playerinfo.tournamentdata.TournamentsStatisticDTO;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -23,7 +25,6 @@ import org.jboss.logging.Logger;
 
 import java.time.Year;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Dependent
@@ -213,13 +214,14 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         //   playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
     }
 
-    private void updateTournamentInfosForPlayerAndYear(TournamentsStatistic tournamentsStatistic) {
-        Objects.requireNonNull(tournamentsStatistic, "Tournaments statistic must not be null");
-        log.debugf("UI :: Update tournament infos for player %s ", tournamentsStatistic.getPlayerId());
-        lblYear.setText(tournamentsStatistic.getTournamentsStatisticAsString().getFirst());
-        lblYearMinusOne.setText(tournamentsStatistic.getTournamentsStatisticAsString().get(1));
-        lblYearMinusTwo.setText(tournamentsStatistic.getTournamentsStatisticAsString().get(2));
-        lblYearMinusThree.setText(tournamentsStatistic.getTournamentsStatisticAsString().get(3));
+    private void updateTournamentInfosForPlayerAndYear(TournamentsStatisticDTO tournamentsStatisticDTO) {
+        if (tournamentsStatisticDTO != null) {
+            log.debugf("UI :: Update tournament infos for player %s ", tournamentsStatisticDTO.getPlayerId());
+            lblYear.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().getFirst());
+            lblYearMinusOne.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().get(1));
+            lblYearMinusTwo.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().get(2));
+            lblYearMinusThree.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().get(3));
+        }
     }
 
     // init button to toggle player as favorites
@@ -282,10 +284,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     public void updatePlayerInfo(PlayerInfoDTO playerInfoDTO) {
         log.debugf("Update player info: %s", playerInfoDTO.getPlayerName());
         resetPlayerInfo();
-       /* if (player.getPlayerId() != null && !player.getPlayerTournamentId().isEmpty()) {
-            TournamentsStatistic tournamentsStatistic = playerInfoHandler.updateOrCreatePlayerTournamentsStatistics(player);
-            updateTournamentInfosForPlayerAndYear(tournamentsStatistic);
-        }*/
+        updateTournamentInfosForPlayerAndYear(playerInfoDTO.getTournamentsStatisticDTO());
 
         lblName.setText(playerInfoDTO.getPlayerName());
         lblPlayerId.setText(playerInfoDTO.getPlayerId());

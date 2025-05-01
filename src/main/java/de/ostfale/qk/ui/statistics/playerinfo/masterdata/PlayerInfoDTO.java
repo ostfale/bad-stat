@@ -1,6 +1,8 @@
-package de.ostfale.qk.ui.statistics.playerinfo;
+package de.ostfale.qk.ui.statistics.playerinfo.masterdata;
 
 import de.ostfale.qk.domain.player.Player;
+import de.ostfale.qk.ui.statistics.playerinfo.rankingdata.DisciplineStatisticsDTO;
+import de.ostfale.qk.ui.statistics.playerinfo.tournamentdata.TournamentsStatisticDTO;
 import org.jboss.logging.Logger;
 
 public class PlayerInfoDTO {
@@ -22,10 +24,13 @@ public class PlayerInfoDTO {
 
     private String playerTournamentId;
 
-    // tournament statistics
+    // ranking statistics
     private DisciplineStatisticsDTO singleDisciplineStatistics;
     private DisciplineStatisticsDTO doubleDisciplineStatistics;
     private DisciplineStatisticsDTO mixedDisciplineStatistics;
+
+    // tournaments statistics for favorite players
+    private TournamentsStatisticDTO tournamentsStatisticDTO;
 
     public PlayerInfoDTO(Player player) {
         log.tracef("PlayerInfoDTO :: init from player %d", player.getPlayerId());
@@ -39,10 +44,6 @@ public class PlayerInfoDTO {
         this.districtName = player.getPlayerInfo().getDistrictName() == null ? "" : player.getPlayerInfo().getDistrictName();
         this.stateName = player.getPlayerInfo().getStateName();
         this.stateGroup = player.getPlayerInfo().getGroupName() == null ? "" : player.getPlayerInfo().getGroupName().getDisplayName();
-
-     /*   this.singleDisciplineStatistics = mapSingleDisciplineStatistics(player);
-        this.doubleDisciplineStatistics = mapDoubleDisciplineStatistics(player);
-        this.mixedDisciplineStatistics = mapMixedDisciplineStatistics(player);*/
     }
 
     @Override
@@ -50,6 +51,13 @@ public class PlayerInfoDTO {
         return playerName;
     }
 
+    public TournamentsStatisticDTO getTournamentsStatisticDTO() {
+        return tournamentsStatisticDTO;
+    }
+
+    public void setTournamentsStatisticDTO(TournamentsStatisticDTO tournamentsStatisticDTO) {
+        this.tournamentsStatisticDTO = tournamentsStatisticDTO;
+    }
 
     public String getStateName() {
         return stateName;

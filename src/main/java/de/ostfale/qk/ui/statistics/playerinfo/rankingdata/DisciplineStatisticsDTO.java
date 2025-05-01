@@ -1,4 +1,4 @@
-package de.ostfale.qk.ui.statistics.playerinfo;
+package de.ostfale.qk.ui.statistics.playerinfo.rankingdata;
 
 public record DisciplineStatisticsDTO(
         Integer tournaments,

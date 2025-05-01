@@ -9,15 +9,32 @@ quarkus:
   log:
     console:
       format: '%d{dd-MM-yyyy HH:mm:ss} %-5p [%c] (%t) %s%e%n'
-    level: INFO
-    category:
-      "de.ostfale.qk":
-        level: DEBUG
+    level: ERROR
     file:
-      enable: true
       path: ${user.home}/.bad_stat/logs/bad-stat.log
       rotation:
         max-backup-index: 5
         max-file-size: 10M
         file-suffix: dd-MM-yyyy
 
+"%prod":
+  quarkus:
+    log:
+      level: WARN
+      file:
+        enable: true
+        category:
+          "de.ostfale.qk":
+            level: WARN
+
+
+
+"%dev":
+    quarkus:
+      log:
+        level: INFO
+        file:
+          enable: false
+        category:
+          "de.ostfale.qk":
+            level: DEBUG
