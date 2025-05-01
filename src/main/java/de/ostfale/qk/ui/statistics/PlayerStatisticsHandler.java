@@ -1,7 +1,6 @@
 package de.ostfale.qk.ui.statistics;
 
 import de.ostfale.qk.db.api.tournament.Tournament;
-import de.ostfale.qk.db.api.tournament.TournamentService;
 import de.ostfale.qk.ui.statistics.model.PlayerMatchStatisticsUIModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -17,9 +16,6 @@ public class PlayerStatisticsHandler {
 
     @Inject
     PlayerStatisticsController playerTourStatsController;
-
-    @Inject
-    TournamentService tournamentService;
 
     public List<PlayerMatchStatisticsUIModel> mapFromTournaments(List<Tournament> tournaments) {
         log.debugf("Found %d tournaments to be mapped into PlayerTournamentsStatisticsModel", tournaments.size());
@@ -44,11 +40,11 @@ public class PlayerStatisticsHandler {
                 .toList(); // Use stream API for concise and functional transformation
     }
 
-    public void refreshUI() {
+   /* public void refreshUI() {
         var result = tournamentService.getAllTournamentsForYearAndPlayer(2024, "Louis Sauerbrei");
         var mapped = mapFromTournaments(result);
         playerTourStatsController.updateTreeTable(mapped);
-    }
+    }*/
 
     public TreeTableView<PlayerMatchStatisticsUIModel> getUI() {
         return playerTourStatsController.getPlStatTreeView();

@@ -1,20 +1,13 @@
 package de.ostfale.qk.db.api.tournament;
 
 import de.ostfale.qk.db.internal.match.Match;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Entity
 public class Tournament {
 
-    @Id
-    @GeneratedValue
     private Long id;
 
     private String tournamentID;
@@ -24,7 +17,6 @@ public class Tournament {
     private String tournamentDate;
     private Integer tournamentYear;
 
-    @OneToMany(mappedBy = "associatedTournament")
     private Set<Match> matches;
 
     public Tournament(String tournamentID, String tournamentName, String tournamentOrganizer, String tournamentLocation, String tournamentDate, Integer tournamentYear) {

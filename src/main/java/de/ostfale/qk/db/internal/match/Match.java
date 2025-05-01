@@ -4,12 +4,10 @@ import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
 import de.ostfale.qk.parser.match.internal.model.MatchRawModel;
 import de.ostfale.qk.parser.set.SetRawModel;
-import jakarta.persistence.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Entity
 public class Match implements Comparable<Match> {
 
     private static final String EMPTY_STRING = "";
@@ -18,15 +16,10 @@ public class Match implements Comparable<Match> {
     private static final String TOURNAMENT_ID_COLUMN = "tournament_id";
     private static final String TOURNAMENT_REFERENCED_ID_COLUMN = "id";
 
-    @Id
-    @GeneratedValue
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = TOURNAMENT_ID_COLUMN, referencedColumnName = TOURNAMENT_REFERENCED_ID_COLUMN, nullable = false)
     private Tournament associatedTournament;
 
-    @Enumerated(EnumType.STRING)
     private Discipline discipline;
 
     private int matchOrder = 0;

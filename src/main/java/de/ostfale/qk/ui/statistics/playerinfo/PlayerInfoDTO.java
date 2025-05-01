@@ -21,7 +21,6 @@ public class PlayerInfoDTO {
     private final String playerId;
 
     private String playerTournamentId;
-    private Boolean favorite;
 
     // tournament statistics
     private DisciplineStatisticsDTO singleDisciplineStatistics;
@@ -33,8 +32,6 @@ public class PlayerInfoDTO {
         this.playerName = player.getFullName();
         this.gender = player.getGender().toString();
         this.playerId = player.getPlayerId().playerId();
-        //   this.playerTournamentId = player.getPlayerTournamentId();
-        //    this.favorite = player.getFavorite();
         this.birthYear = String.valueOf(player.getYearOfBirth());
         this.ageClass = player.getPlayerInfo().getAgeClassGeneral();
         this.ageClassDetail = player.getPlayerInfo().getAgeClassSpecific();
@@ -122,14 +119,6 @@ public class PlayerInfoDTO {
         this.playerTournamentId = playerTournamentId;
     }
 
-    public Boolean getFavorite() {
-        return favorite;
-    }
-
-    public void setFavorite(Boolean favorite) {
-        this.favorite = favorite;
-    }
-
     public String getBirthYear() {
         return birthYear;
     }
@@ -145,5 +134,4 @@ public class PlayerInfoDTO {
     public String getPlayerId() {
         return playerId;
     }
-
 }

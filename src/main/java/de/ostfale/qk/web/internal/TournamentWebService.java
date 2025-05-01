@@ -1,6 +1,5 @@
 package de.ostfale.qk.web.internal;
 
-import de.ostfale.qk.db.api.TournamentRepository;
 import de.ostfale.qk.parser.tournament.api.TournamentParser;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentRawModel;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentYearRawModel;
@@ -19,9 +18,6 @@ public class TournamentWebService extends BaseWebService {
 
     @Inject
     TournamentParser parser;
-
-    @Inject
-    TournamentRepository tournamentRepository;
 
     @Override
     public Integer getNumberOfTournamentsForYearAndPlayer(Integer year, String playerTournamentsId) {

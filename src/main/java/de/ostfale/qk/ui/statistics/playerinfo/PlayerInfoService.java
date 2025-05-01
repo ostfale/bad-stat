@@ -6,6 +6,8 @@ import de.ostfale.qk.db.player.FavoritePlayerListHandler;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.dashboard.DashboardService;
+import de.ostfale.qk.ui.statistics.matches.PlayerInfoMatchStatisticsService;
+import de.ostfale.qk.ui.statistics.matches.TournamentsStatisticsDTO;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -30,6 +32,9 @@ public class PlayerInfoService {
 
     @Inject
     FavoritePlayerDataJsonHandler favoritePlayerDataJsonHandler;
+
+    @Inject
+    PlayerInfoMatchStatisticsService playerInfoMatchStatisticsService;
 
     public List<PlayerInfoDTO> getPlayerInfoList() {
         log.debug("PlayerInfoService :: map all players from cache into PlayerInfoDTOs ");
@@ -140,7 +145,10 @@ public class PlayerInfoService {
             return;
         }
 
-        updatePlayerInList(listHandler, playerName, playerTournamentId);
+        // get the number of tournaments for the last 4 years and add it to the favorite players data
+        List<TournamentsStatisticsDTO> tourStatDTOs = playerInfoMatchStatisticsService.readPlayersTournamentsForLastFourYears(selectedFavPlayerInfo);
+
+        updatePlayerInList(listHandler, playerName, playerTournamentId, tourStatDTOs);
         favoritePlayerDataJsonHandler.savePlayerCustomDataList(listHandler);
     }
 
@@ -150,11 +158,14 @@ public class PlayerInfoService {
         return listHandler.favoritePlayersList().stream().filter(player -> player.getName().equalsIgnoreCase(playerName)).toList();
     }
 
-    private void updatePlayerInList(FavoritePlayerListHandler listHandler, String playerName, String playerTournamentId) {
+    private void updatePlayerInList(FavoritePlayerListHandler listHandler, String playerName, String playerTournamentId, List<TournamentsStatisticsDTO> tourStatDTOs) {
         listHandler.favoritePlayersList().stream()
                 .filter(player -> player.getName().equalsIgnoreCase(playerName))
                 .findFirst()
-                .ifPresent(player -> player.setPlayerTournamentId(playerTournamentId));
+                .ifPresent(player -> {
+                    player.setPlayerTournamentId(playerTournamentId);
+                    player.addTournamentsStatisticsDTO(tourStatDTOs);
+                });
     }
 
 

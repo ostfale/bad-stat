@@ -21,39 +21,3 @@ quarkus:
         max-file-size: 10M
         file-suffix: dd-MM-yyyy
 
-# To start the application using a H2 instance (./mvnw -Dquarkus-profile=prod quarkus:dev)
-"%prod":
-  quarkus:
-    datasource:
-      db-kind: h2
-      jdbc:
-        driver: org.h2.Driver
-        url: jdbc:h2:file:~/.bad_stat/data/bad-db
-      username: sa
-      password:
-      devservices:
-        init-script-path: scripts/load-data.sql
-    hibernate-orm:
-      database:
-        generation:
-          create-schemas: false
-      log:
-        sql: true
-    log:
-      console:
-        level: WARN
-
-
-# To start the application using an H2 (./mvnw -Dquarkus-profile=dev quarkus:dev)
-"%dev":
-  quarkus:
-    datasource:
-      db-kind: h2
-      jdbc:
-        driver: org.h2.Driver
-        url: jdbc:h2:file:~/.bad_stat/data/bad-db
-      username: sa
-      password:
-    hibernate-orm:
-      database:
-        generation: update

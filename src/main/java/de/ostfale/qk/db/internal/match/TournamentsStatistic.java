@@ -1,18 +1,11 @@
 package de.ostfale.qk.db.internal.match;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 public class TournamentsStatistic {
 
-    @Id
-    @GeneratedValue
     private Long id;
 
     private String playerId;

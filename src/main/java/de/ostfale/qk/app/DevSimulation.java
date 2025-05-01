@@ -1,11 +1,7 @@
 package de.ostfale.qk.app;
 
-import de.ostfale.qk.db.api.MatchRepository;
-import de.ostfale.qk.db.api.TournamentRepository;
 import de.ostfale.qk.db.api.tournament.Tournament;
 import de.ostfale.qk.db.internal.match.Match;
-import de.ostfale.qk.db.internal.player.Player;
-import de.ostfale.qk.db.service.TournamentServiceProvider;
 import de.ostfale.qk.parser.discipline.internal.model.DisciplineRawModel;
 import de.ostfale.qk.parser.match.internal.model.DoubleMatchRawModel;
 import de.ostfale.qk.parser.match.internal.model.MixedMatchRawModel;
@@ -43,16 +39,7 @@ public class DevSimulation {
     RankingParser rankingParser;
 
     @Inject
-    TournamentRepository tournamentRepository;
-
-    @Inject
     TournamentParserService tournamentParserService;
-
-    @Inject
-    MatchRepository matchRepository;
-
-    @Inject
-    TournamentServiceProvider tournamentServiceProvider;
 
     public void loadSimulationData() {
         log.info("Load simulation data");
@@ -64,7 +51,7 @@ public class DevSimulation {
 
         List<RankingPlayer> rankingPlayerList = rankingParser.parseRankingFile(inputStream);
         log.infof("Loaded %d players", rankingPlayerList.size());
-        savePlayer(rankingPlayerList);
+        // savePlayer(rankingPlayerList);
 
         // load and save tournament data
         HtmlPage page = loadHtmlPage(TOURNAMENTS_FILE);
@@ -73,28 +60,7 @@ public class DevSimulation {
         saveTournament(tournamentYearRawModel);
 
         // find all tournaments for 2024 and Louis Sauerbrei
-        tournamentServiceProvider.getAllTournamentsForYearAndPlayer(2024, "Louis Sauerbrei");
-    }
-
-    @Transactional
-    public void savePlayer(List<RankingPlayer> rankingPlayerList) {
-        log.infof("Number of players to save: %d", rankingPlayerList.size());
-        for (RankingPlayer rankingPlayer : rankingPlayerList) {
-
-            if (rankingPlayer.getName().equals("Louis Sauerbrei")) {
-                rankingPlayer.setFavorite(true);
-            }
-
-            Player player = new Player(rankingPlayer);
-            player.setClubName(rankingPlayer.getClubName());
-            player.setDistrictName(rankingPlayer.getDistrictName());
-            player.setStateName(rankingPlayer.getStateName());
-            player.setStateGroup(rankingPlayer.getStateGroup());
-            player.setAgeClassGeneral(rankingPlayer.getAgeClassGeneral());
-            player.setAgeClassDetail(rankingPlayer.getAgeClassDetail());
-            player.setFavorite(rankingPlayer.getFavorite());
-
-        }
+       // tournamentServiceProvider.getAllTournamentsForYearAndPlayer(2024, "Louis Sauerbrei");
     }
 
     @Transactional
@@ -102,7 +68,7 @@ public class DevSimulation {
         tournamentYearRawModel.tournaments().forEach(tournamentRawModel -> {
             log.infof("Save tournament %s", tournamentRawModel.getTournamentName());
             Tournament tournament = getTournamentInfos(tournamentYearRawModel, tournamentRawModel);
-            tournamentRepository.persist(tournament);
+          //  tournamentRepository.persist(tournament);
 
             // save matches for all disciplines
             saveMatches(tournament.getTournamentID(), tournamentRawModel.getTournamentDisciplines());
@@ -135,40 +101,40 @@ public class DevSimulation {
     @Transactional()
     public void saveSingleMatches(String tournamentId, DisciplineRawModel dto) {
         log.infof("Save single matches #: %d", dto.getMatches().size());
-        Tournament tournament = tournamentRepository.findByTournamentId(tournamentId);
+     //   Tournament tournament = tournamentRepository.findByTournamentId(tournamentId);
         List<Match> matchList = new ArrayList<>();
         dto.getMatches().forEach(match -> {
             SingleMatchRawModel singleMatchRawModel = (SingleMatchRawModel) match;
-            Match actualMatch = new Match(tournament, singleMatchRawModel, dto.getDisciplineName());
-            matchList.add(actualMatch);
+       //     Match actualMatch = new Match(tournament, singleMatchRawModel, dto.getDisciplineName());
+        //    matchList.add(actualMatch);
         });
-        matchRepository.persist(matchList);
+        //matchRepository.persist(matchList);
     }
 
     @Transactional()
     public void saveDoubleMatches(String tournamentId, DisciplineRawModel dto) {
         log.infof("Save double matches #: %d", dto.getMatches().size());
-        Tournament tournament = tournamentRepository.findByTournamentId(tournamentId);
+     //   Tournament tournament = tournamentRepository.findByTournamentId(tournamentId);
         List<Match> matchList = new ArrayList<>();
         dto.getMatches().forEach(match -> {
             DoubleMatchRawModel doubleMatchRawModel = (DoubleMatchRawModel) match;
-            Match actualMatch = new Match(tournament, doubleMatchRawModel, dto.getDisciplineName());
-            matchList.add(actualMatch);
+         //   Match actualMatch = new Match(tournament, doubleMatchRawModel, dto.getDisciplineName());
+         //   matchList.add(actualMatch);
         });
-        matchRepository.persist(matchList);
+       // matchRepository.persist(matchList);
     }
 
     @Transactional()
     public void saveMixedMatches(String tournamentId, DisciplineRawModel dto) {
         log.infof("Save mixed matches #: %d", dto.getMatches().size());
-        Tournament tournament = tournamentRepository.findByTournamentId(tournamentId);
+      //  Tournament tournament = tournamentRepository.findByTournamentId(tournamentId);
         List<Match> matchList = new ArrayList<>();
         dto.getMatches().forEach(match -> {
             MixedMatchRawModel mixedMatchRawModel = (MixedMatchRawModel) match;
-            Match actualMatch = new Match(tournament, mixedMatchRawModel, dto.getDisciplineName());
-            matchList.add(actualMatch);
+       //     Match actualMatch = new Match(tournament, mixedMatchRawModel, dto.getDisciplineName());
+       //     matchList.add(actualMatch);
         });
-        matchRepository.persist(matchList);
+       // matchRepository.persist(matchList);
     }
 
     private HtmlPage loadHtmlPage(String fileName) {

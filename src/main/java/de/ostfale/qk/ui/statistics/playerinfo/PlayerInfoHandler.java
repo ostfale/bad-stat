@@ -68,15 +68,6 @@ public class PlayerInfoHandler implements BaseHandler {
         List<TournamentRawModel> tourPlayerList= webService.getTournamentsForYearAndPlayer(year, playerDTO.getPlayerTournamentId());
 
     }
-
-    public List<TournamentsStatisticsDTO> readPlayersTournamentsForLastFourYears(PlayerInfoDTO player) {
-        List<TournamentsStatisticsDTO> tournamentsStatisticsDTOs = new ArrayList<>();
-        Stream.of(RecentYears.values()).forEach(recentYears -> {
-            Integer nofTournaments = webService.getNumberOfTournamentsForYearAndPlayer(recentYears.getValue(), player.getPlayerTournamentId());
-            tournamentsStatisticsDTOs.add(new TournamentsStatisticsDTO(recentYears.getValue(), nofTournaments, 0));
-            log.debugf("Read tournaments for player %s for year %d: %d", player.getPlayerName(), recentYears.getValue(), nofTournaments);
-        });
-        return tournamentsStatisticsDTOs;
     }*/
 
     // TODO - find better solution
