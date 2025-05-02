@@ -1,8 +1,8 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
-import de.ostfale.qk.db.player.FavoritePlayerData;
-import de.ostfale.qk.db.player.FavoritePlayerDataJsonHandler;
-import de.ostfale.qk.db.player.FavoritePlayerListHandler;
+import de.ostfale.qk.persistence.player.FavoritePlayerData;
+import de.ostfale.qk.persistence.player.FavoritePlayerDataJsonHandler;
+import de.ostfale.qk.persistence.player.FavoritePlayerListHandler;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.dashboard.DashboardService;
@@ -73,7 +73,7 @@ public class PlayerInfoService {
             if (!favoritePlayers.isEmpty()) {
                 log.debugf("PlayerInfoService :: found favorite player with name: %s", playerName);
                 var favoritePlayer = favoritePlayers.getFirst();
-                playerInfo.setPlayerTournamentId(favoritePlayer.getPlayerTournamentId());
+                playerInfo.getPlayerInfoMasterDataDTO().setPlayerTournamentId(favoritePlayer.getPlayerTournamentId());
 
                 // if available map tournament statistic from persisted json into the DTO
                 var tournamentsStatistics = favoritePlayer.getTournamentsStatisticsDTOS();
@@ -124,7 +124,7 @@ public class PlayerInfoService {
         var playerInfos = getPlayerInfosForPlayer(playerName);
         FavoritePlayerData newPlayer = new FavoritePlayerData();
         newPlayer.setName(playerName);
-        newPlayer.setPlayerId(playerInfos.getPlayerId());
+        newPlayer.setPlayerId(playerInfos.getPlayerInfoMasterDataDTO().getPlayerId());
         return newPlayer;
     }
 
@@ -141,9 +141,9 @@ public class PlayerInfoService {
         log.infof("Removed player from favorite list: %s", playerName);
     }
 
-    public void updatePlayerTournamentId(PlayerInfoDTO selectedFavPlayerInfo) {
-        String playerName = selectedFavPlayerInfo.getPlayerName();
-        String playerTournamentId = selectedFavPlayerInfo.getPlayerTournamentId();
+    public List<TournamentsStatistic> updatePlayerTournamentId(PlayerInfoDTO selectedFavPlayerInfo) {
+        String playerName = selectedFavPlayerInfo.getPlayerInfoMasterDataDTO().getPlayerName();
+        String playerTournamentId = selectedFavPlayerInfo.getPlayerInfoMasterDataDTO().getPlayerTournamentId();
 
         log.infof("Updating tournament ID '%s' for player '%s'", playerTournamentId, playerName);
 
@@ -151,7 +151,7 @@ public class PlayerInfoService {
 
         if (!listHandler.doesPlayerExist(playerName)) {
             log.warnf("Player not in favorite list: %s -> no action", playerName);
-            return;
+            return List.of();
         }
 
         // get the number of tournaments for the last 4 years and add it to the favorite players data
@@ -159,6 +159,7 @@ public class PlayerInfoService {
 
         updatePlayerInList(listHandler, playerName, playerTournamentId, tourStatDTOs);
         favoritePlayerDataJsonHandler.savePlayerCustomDataList(listHandler);
+        return tourStatDTOs;
     }
 
     private List<FavoritePlayerData> getFavoritePlayerData(String playerName) {

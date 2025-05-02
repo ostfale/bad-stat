@@ -168,20 +168,19 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     void onEnterKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            var enteredUrl = txtTourURL.getText();
-            String playerTourID = playerInfoService.extractPlayerTournamentIdFromUrl(enteredUrl);
-            log.infof("Enter key pressed with text: %s and extracted player tournament ID: %s", enteredUrl, playerTourID);
             PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
             if (currentSelectedPlayer == null) {
                 log.info("No player selected");
                 return;
             }
-            currentSelectedPlayer.setPlayerTournamentId(playerTourID);
-            playerInfoService.updatePlayerTournamentId(currentSelectedPlayer);
 
+            var enteredUrl = txtTourURL.getText();
+            String playerTourID = playerInfoService.extractPlayerTournamentIdFromUrl(enteredUrl);
+            log.infof("PlayerInfoController :: Enter key pressed for favorite player %s and tournamentId %s", currentSelectedPlayer.toString(), playerTourID);
 
-            //    TournamentsStatistic tournamentsStatistic = playerInfoHandler.updateOrCreatePlayerTournamentsStatistics(currentSelectedPlayer);
-            //    updateTournamentInfosForPlayerAndYear(tournamentsStatistic);
+            currentSelectedPlayer.getPlayerInfoMasterDataDTO().setPlayerTournamentId(playerTourID);
+            var tourStatistics = playerInfoService.updatePlayerTournamentId(currentSelectedPlayer);
+            updateTournamentInfosForPlayerAndYear(new TournamentsStatisticDTO(tourStatistics) );
             lblIdTurnier.setText(playerTourID);
         }
     }
@@ -212,16 +211,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         Integer year = Year.now().minusYears(3).getValue();
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
         //   playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
-    }
-
-    private void updateTournamentInfosForPlayerAndYear(TournamentsStatisticDTO tournamentsStatisticDTO) {
-        if (tournamentsStatisticDTO != null) {
-            log.debugf("UI :: Update tournament infos for player %s ", tournamentsStatisticDTO.getPlayerId());
-            lblYear.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().getFirst());
-            lblYearMinusOne.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().get(1));
-            lblYearMinusTwo.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().get(2));
-            lblYearMinusThree.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().get(3));
-        }
     }
 
     // init button to toggle player as favorites
@@ -260,7 +249,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     private String getSelectedFavoritePlayer() {
         return Optional.ofNullable(cbPlayer.getSelectionModel().getSelectedItem())
-                .map(item -> Optional.ofNullable(item.getPlayerName()).orElse(""))
+                .map(item -> Optional.ofNullable(item.getPlayerInfoMasterDataDTO().getPlayerName()).orElse(""))
                 .orElse("");
     }
 
@@ -282,20 +271,12 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     }
 
     public void updatePlayerInfo(PlayerInfoDTO playerInfoDTO) {
-        log.debugf("Update player info: %s", playerInfoDTO.getPlayerName());
+        log.debugf("Update player info: %s", playerInfoDTO.toString());
         resetPlayerInfo();
         updateTournamentInfosForPlayerAndYear(playerInfoDTO.getTournamentsStatisticDTO());
 
-        lblName.setText(playerInfoDTO.getPlayerName());
-        lblPlayerId.setText(playerInfoDTO.getPlayerId());
-        lblBirthYear.setText(String.valueOf(playerInfoDTO.getBirthYear()));
-        lblAgeClass.setText(playerInfoDTO.getAgeClass());
-        lblClub.setText(playerInfoDTO.getClubName() == null ? "" : playerInfoDTO.getClubName());
-        lblDistrict.setText(playerInfoDTO.getDistrictName() == null ? "" : playerInfoDTO.getDistrictName());
-        lblIdTurnier.setText(playerInfoDTO.getPlayerTournamentId() == null ? "" : playerInfoDTO.getPlayerTournamentId());
-        lblGender.setText(playerInfoDTO.getGender());
-        lblState.setText(playerInfoDTO.getStateName() == null ? "" : playerInfoDTO.getStateName());
-        lblGroup.setText(playerInfoDTO.getStateGroup());
+        setPlayersMasterData(playerInfoDTO);
+
 
         lblSTours.setText(playerInfoDTO.getSingleDisciplineStatistics().tournaments().toString());
         lblDTours.setText(playerInfoDTO.getDoubleDisciplineStatistics().tournaments().toString());
@@ -314,6 +295,31 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         lblMAKRank.setText(playerInfoDTO.getMixedDisciplineStatistics().ageClassRank().toString());
 
         txtTourURL.setText(""); // reset url since it is not saved in DB
+    }
+
+    private void setPlayersMasterData(PlayerInfoDTO playerInfoDTO) {
+        var masterData = playerInfoDTO.getPlayerInfoMasterDataDTO();
+        lblName.setText(masterData.getPlayerName());
+        lblGender.setText(masterData.getGender());
+        lblPlayerId.setText(masterData.getPlayerId());
+        lblBirthYear.setText(String.valueOf(masterData.getBirthYear()));
+        lblAgeClass.setText(masterData.getAgeClass());
+        lblClub.setText(masterData.getClubName() == null ? "" : masterData.getClubName());
+        lblDistrict.setText(masterData.getDistrictName() == null ? "" : masterData.getDistrictName());
+        lblState.setText(masterData.getStateName() == null ? "" : masterData.getStateName());
+        lblGroup.setText(masterData.getStateGroup()== null ? "" : masterData.getStateGroup());
+        lblIdTurnier.setText(masterData.getPlayerTournamentId() == null ? "" : masterData.getPlayerTournamentId());
+    }
+
+
+    private void updateTournamentInfosForPlayerAndYear(TournamentsStatisticDTO tournamentsStatisticDTO) {
+        if (tournamentsStatisticDTO != null) {
+            log.debugf("UI :: Update tournament infos for player %s ", tournamentsStatisticDTO.getPlayerId());
+            lblYear.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().getFirst());
+            lblYearMinusOne.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().get(1));
+            lblYearMinusTwo.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().get(2));
+            lblYearMinusThree.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().get(3));
+        }
     }
 
     private void initYearLabel() {

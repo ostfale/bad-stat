@@ -1,4 +1,4 @@
-package de.ostfale.qk.db.player;
+package de.ostfale.qk.persistence.player;
 
 import de.ostfale.qk.ui.statistics.playerinfo.tournamentdata.TournamentsStatistic;
 

@@ -1,4 +1,4 @@
-package de.ostfale.qk.db.player;
+package de.ostfale.qk.persistence.player;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jboss.logging.Logger;

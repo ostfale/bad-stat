@@ -27,10 +27,10 @@ public class PlayerInfoMatchStatisticsService {
 
     private TournamentsStatistic createTournamentStatistics(RecentYears year, PlayerInfoDTO player) {
         int yearValue = year.getValue();
-        String playerTournamentId = player.getPlayerTournamentId();
+        String playerTournamentId = player.getPlayerInfoMasterDataDTO().getPlayerTournamentId();
 
         Integer tournamentCount = webService.getNumberOfTournamentsForYearAndPlayer(yearValue, playerTournamentId);
-        log.debugf("Read tournaments for player %s for year %d: %d", player.getPlayerName(), yearValue, tournamentCount);
+        log.debugf("Read tournaments for player %s for year %d: %d", player.toString(), yearValue, tournamentCount);
         // TODO add here the value for the already persisted matches from the last years
         return new TournamentsStatistic(yearValue, tournamentCount, 0);
     }

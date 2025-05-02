@@ -12,7 +12,7 @@ public class FavPlayerStringConverter extends StringConverter<PlayerInfoDTO> {
 
     @Override
     public String toString(PlayerInfoDTO player) {
-        return player.getPlayerName();
+        return player.getPlayerInfoMasterDataDTO().getPlayerName() == null ? "" : player.getPlayerInfoMasterDataDTO().getPlayerName();
     }
 
     @Override

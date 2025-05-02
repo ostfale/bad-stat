@@ -70,7 +70,7 @@ public class PlayerTextSearchComponent {
 
         private Collection<PlayerInfoDTO> filterPlayersByName(Collection<PlayerInfoDTO> players, String searchText) {
             return players.stream()
-                    .filter(player -> player.getPlayerName().toLowerCase().contains(searchText))
+                    .filter(player -> player.getPlayerInfoMasterDataDTO().getPlayerName().toLowerCase().contains(searchText))
                     .toList();
         }
     }

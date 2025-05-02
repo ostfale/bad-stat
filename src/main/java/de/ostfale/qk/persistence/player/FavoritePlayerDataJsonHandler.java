@@ -1,8 +1,8 @@
-package de.ostfale.qk.db.player;
+package de.ostfale.qk.persistence.player;
 
-import de.ostfale.qk.db.json.JsonDBFacade;
-import de.ostfale.qk.db.json.JsonFileReader;
-import de.ostfale.qk.db.json.JsonFileWriter;
+import de.ostfale.qk.persistence.json.JsonDBFacade;
+import de.ostfale.qk.persistence.json.JsonFileReader;
+import de.ostfale.qk.persistence.json.JsonFileWriter;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jboss.logging.Logger;
