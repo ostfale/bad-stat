@@ -1,4 +1,4 @@
-package de.ostfale.qk.db.dashboard;
+package de.ostfale.qk.persistence.dashboard;
 
 import de.ostfale.qk.persistence.json.JsonDBFacade;
 import de.ostfale.qk.persistence.json.JsonFileReader;

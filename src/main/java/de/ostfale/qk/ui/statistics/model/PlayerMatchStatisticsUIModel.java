@@ -1,7 +1,7 @@
 package de.ostfale.qk.ui.statistics.model;
 
-import de.ostfale.qk.db.api.tournament.Tournament;
-import de.ostfale.qk.db.internal.match.Match;
+import de.ostfale.qk.domain.tournament.Tournament;
+import de.ostfale.qk.domain.match.Match;
 import org.jboss.logging.Logger;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package de.ostfale.qk.ui.statistics;
 
-import de.ostfale.qk.db.api.tournament.Tournament;
+import de.ostfale.qk.domain.tournament.Tournament;
 import de.ostfale.qk.ui.statistics.model.PlayerMatchStatisticsUIModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

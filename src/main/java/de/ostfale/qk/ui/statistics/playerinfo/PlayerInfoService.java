@@ -1,8 +1,8 @@
 package de.ostfale.qk.ui.statistics.playerinfo;
 
-import de.ostfale.qk.persistence.player.FavoritePlayerData;
-import de.ostfale.qk.persistence.player.FavoritePlayerDataJsonHandler;
-import de.ostfale.qk.persistence.player.FavoritePlayerListHandler;
+import de.ostfale.qk.persistence.player.favorites.FavoritePlayerData;
+import de.ostfale.qk.persistence.player.favorites.FavoritePlayerDataJsonHandler;
+import de.ostfale.qk.persistence.player.favorites.FavoritePlayerListHandler;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.dashboard.DashboardService;

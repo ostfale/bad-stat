@@ -1,4 +1,4 @@
-package de.ostfale.qk.db.internal.match;
+package de.ostfale.qk.domain.match;
 
 import java.util.Arrays;
 import java.util.Optional;

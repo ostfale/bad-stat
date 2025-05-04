@@ -1,7 +1,7 @@
 package de.ostfale.qk.persistence.ranking;
 
 import de.ostfale.qk.app.downloader.ranking.RankingFacade;
-import de.ostfale.qk.db.dashboard.DashboardRankingDataJsonHandler;
+import de.ostfale.qk.persistence.dashboard.DashboardRankingDataJsonHandler;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.parser.ranking.api.RankingParser;
 import jakarta.inject.Inject;

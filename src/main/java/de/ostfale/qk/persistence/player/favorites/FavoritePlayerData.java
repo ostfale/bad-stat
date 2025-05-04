@@ -1,4 +1,4 @@
-package de.ostfale.qk.persistence.player;
+package de.ostfale.qk.persistence.player.favorites;
 
 import de.ostfale.qk.ui.statistics.playerinfo.tournamentdata.TournamentsStatistic;
 

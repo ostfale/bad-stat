@@ -1,6 +1,6 @@
 package de.ostfale.qk.ui.dashboard.model;
 
-import de.ostfale.qk.db.internal.player.PlayerOverview;
+import de.ostfale.qk.domain.player.PlayerOverview;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
