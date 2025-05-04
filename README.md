@@ -26,6 +26,7 @@ The application can be packaged using:
 
 ```shell script
 ./mvnw package
+./mvnw clean package -Dquarkus.profile=prod
 ```
 
 It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.

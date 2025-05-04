@@ -27,8 +27,6 @@ quarkus:
           "de.ostfale.qk":
             level: WARN
 
-
-
 "%dev":
     quarkus:
       log:

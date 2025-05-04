@@ -161,8 +161,8 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         log.info("Initialize PlayerInfoStatisticsController");
         initFavPlayerComboboxModel();
         new PlayerTextSearchComponent(playerInfoService, ctfSearchPlayer).initialize();
-        //  initSearchPlayerTextField();
         initYearLabel();
+        enableControls();
     }
 
     @FXML
@@ -180,7 +180,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
             currentSelectedPlayer.getPlayerInfoMasterDataDTO().setPlayerTournamentId(playerTourID);
             var tourStatistics = playerInfoService.updatePlayerTournamentId(currentSelectedPlayer);
-            updateTournamentInfosForPlayerAndYear(new TournamentsStatisticDTO(tourStatistics) );
+            updateTournamentInfosForPlayerAndYear(new TournamentsStatisticDTO(tourStatistics));
             lblIdTurnier.setText(playerTourID);
         }
     }
@@ -247,12 +247,15 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         }
     }
 
+    private void enableControls() {
+        txtTourURL.disableProperty().bind(lblIdTurnier.textProperty().isNotEmpty());
+    }
+
     private String getSelectedFavoritePlayer() {
         return Optional.ofNullable(cbPlayer.getSelectionModel().getSelectedItem())
                 .map(item -> Optional.ofNullable(item.getPlayerInfoMasterDataDTO().getPlayerName()).orElse(""))
                 .orElse("");
     }
-
 
     private void initFavPlayerComboboxModel() {
         log.debug("Initialize DataModel for player combobox");
@@ -307,7 +310,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         lblClub.setText(masterData.getClubName() == null ? "" : masterData.getClubName());
         lblDistrict.setText(masterData.getDistrictName() == null ? "" : masterData.getDistrictName());
         lblState.setText(masterData.getStateName() == null ? "" : masterData.getStateName());
-        lblGroup.setText(masterData.getStateGroup()== null ? "" : masterData.getStateGroup());
+        lblGroup.setText(masterData.getStateGroup() == null ? "" : masterData.getStateGroup());
         lblIdTurnier.setText(masterData.getPlayerTournamentId() == null ? "" : masterData.getPlayerTournamentId());
     }
 

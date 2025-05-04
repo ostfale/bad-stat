@@ -11,6 +11,8 @@ import org.jboss.logging.Logger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PlayerTextSearchComponent {
     private static final Logger log = Logger.getLogger(PlayerTextSearchComponent.class);
@@ -32,7 +34,7 @@ public class PlayerTextSearchComponent {
     }
 
     public void refreshPlayerData() {
-        autoCompleteHandler.refreshPlayerList();
+        autoCompleteHandler.updateNonFavoritePlayers();
         TextFields.bindAutoCompletion(searchField, autoCompleteHandler.createSuggestionProvider());
     }
 
@@ -44,13 +46,26 @@ public class PlayerTextSearchComponent {
             this.playerInfoService = playerInfoService;
         }
 
-        public void refreshPlayerList() {
+        public void updateNonFavoritePlayers() {
             List<PlayerInfoDTO> allPlayers = playerInfoService.getPlayerInfoList();
-            log.debugf("Update player list with %d players", allPlayers.size());
+            List<PlayerInfoDTO> favoritePlayers = playerInfoService.getAllFavoritePlayers();
+
+            List<PlayerInfoDTO> nonFavoritePlayers = filterOutFavoritePlayers(allPlayers, favoritePlayers);
+
+            log.debugf("Update player list with %d players", nonFavoritePlayers.size());
             playerList.clear();
-            playerList.addAll(allPlayers);
+            playerList.addAll(nonFavoritePlayers);
         }
 
+        private List<PlayerInfoDTO> filterOutFavoritePlayers(List<PlayerInfoDTO> allPlayers, List<PlayerInfoDTO> favoritePlayers) {
+            Set<String> favoritePlayerIds = favoritePlayers.stream()
+                    .map(player -> player.getPlayerInfoMasterDataDTO().getPlayerId())
+                    .collect(Collectors.toSet());
+
+            return allPlayers.stream()
+                    .filter(player -> !favoritePlayerIds.contains(player.getPlayerInfoMasterDataDTO().getPlayerId()))
+                    .toList();
+        }
 
         public Callback<AutoCompletionBinding.ISuggestionRequest, Collection<PlayerInfoDTO>> createSuggestionProvider() {
             return request -> {
@@ -60,10 +75,7 @@ public class PlayerTextSearchComponent {
                     return List.of();
                 }
 
-                if (playerList.isEmpty()) {
-                    refreshPlayerList();
-                }
-
+                updateNonFavoritePlayers();
                 return filterPlayersByName(playerList, searchText);
             };
         }
