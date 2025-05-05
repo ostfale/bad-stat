@@ -1,4 +1,4 @@
-package de.ostfale.qk.ui.statistics.playerinfo.masterdata;
+package de.ostfale.qk.ui.playerstats.info.masterdata;
 
 import de.ostfale.qk.domain.player.Player;
 import org.jboss.logging.Logger;

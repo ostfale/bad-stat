@@ -1,4 +1,4 @@
-package de.ostfale.qk.ui.statistics.playerinfo.tournamentdata;
+package de.ostfale.qk.ui.playerstats.info.tournamentdata;
 
 import de.ostfale.qk.domain.tournament.RecentYears;
 import io.quarkus.logging.Log;

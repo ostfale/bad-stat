@@ -1,7 +1,7 @@
-package de.ostfale.qk.ui.statistics.favplayer;
+package de.ostfale.qk.ui.playerstats.info.filter;
 
-import de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoController;
-import de.ostfale.qk.ui.statistics.playerinfo.masterdata.PlayerInfoDTO;
+import de.ostfale.qk.ui.playerstats.info.PlayerInfoController;
+import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import org.jboss.logging.Logger;

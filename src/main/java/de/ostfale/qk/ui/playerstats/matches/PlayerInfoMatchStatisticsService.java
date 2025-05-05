@@ -1,8 +1,8 @@
 package de.ostfale.qk.ui.statistics.matches;
 
 import de.ostfale.qk.domain.tournament.RecentYears;
-import de.ostfale.qk.ui.statistics.playerinfo.masterdata.PlayerInfoDTO;
-import de.ostfale.qk.ui.statistics.playerinfo.tournamentdata.TournamentsStatistic;
+import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
+import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatistic;
 import de.ostfale.qk.web.api.WebService;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -34,5 +34,4 @@ public class PlayerInfoMatchStatisticsService {
         // TODO add here the value for the already persisted matches from the last years
         return new TournamentsStatistic(yearValue, tournamentCount, 0);
     }
-
 }

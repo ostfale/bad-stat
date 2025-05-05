@@ -1,8 +1,8 @@
-package de.ostfale.qk.ui.statistics.playerinfo.masterdata;
+package de.ostfale.qk.ui.playerstats.info.masterdata;
 
 import de.ostfale.qk.domain.player.Player;
-import de.ostfale.qk.ui.statistics.playerinfo.rankingdata.DisciplineStatisticsDTO;
-import de.ostfale.qk.ui.statistics.playerinfo.tournamentdata.TournamentsStatisticDTO;
+import de.ostfale.qk.ui.playerstats.info.rankingdata.DisciplineStatisticsDTO;
+import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatisticDTO;
 import org.jboss.logging.Logger;
 
 public class PlayerInfoDTO {

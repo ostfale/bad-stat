@@ -1,6 +1,6 @@
 package de.ostfale.qk.persistence.player.favorites;
 
-import de.ostfale.qk.ui.statistics.playerinfo.tournamentdata.TournamentsStatistic;
+import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatistic;
 
 import java.util.ArrayList;
 import java.util.List;

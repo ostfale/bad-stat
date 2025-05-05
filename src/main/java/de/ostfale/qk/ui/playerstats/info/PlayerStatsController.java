@@ -1,7 +1,7 @@
-package de.ostfale.qk.ui.statistics;
+package de.ostfale.qk.ui.playerstats.info;
 
 import de.ostfale.qk.ui.ApplicationController;
-import de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoController;
+import de.ostfale.qk.ui.statistics.PlayerStatisticsHandler;
 import io.quarkiverse.fx.views.FxViewData;
 import io.quarkiverse.fx.views.FxViewRepository;
 import jakarta.inject.Inject;
@@ -14,7 +14,7 @@ import org.jboss.logging.Logger;
 import java.util.List;
 
 @Singleton
-public class StatisticsController {
+public class PlayerStatsController {
 
     private static final Logger log = Logger.getLogger(ApplicationController.class);
 
@@ -44,7 +44,6 @@ public class StatisticsController {
         if (accordionContainer == null) {
             initialize();
         }
-
         return accordionContainer;
     }
 

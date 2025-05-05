@@ -1,7 +1,7 @@
-package de.ostfale.qk.ui.statistics.favplayer;
+package de.ostfale.qk.ui.playerstats.info.filter;
 
-import de.ostfale.qk.ui.statistics.playerinfo.masterdata.PlayerInfoDTO;
-import de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoService;
+import de.ostfale.qk.ui.playerstats.info.PlayerInfoService;
+import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import jakarta.inject.Inject;
 import javafx.util.StringConverter;
 

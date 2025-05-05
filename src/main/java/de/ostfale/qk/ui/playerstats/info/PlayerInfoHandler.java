@@ -1,4 +1,4 @@
-package de.ostfale.qk.ui.statistics.playerinfo;
+package de.ostfale.qk.ui.playerstats.info;
 
 import de.ostfale.qk.domain.tournament.Tournament;
 import de.ostfale.qk.parser.tournament.internal.model.TournamentRawModel;

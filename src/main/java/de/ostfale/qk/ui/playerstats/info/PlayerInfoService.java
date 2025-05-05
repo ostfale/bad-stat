@@ -1,4 +1,4 @@
-package de.ostfale.qk.ui.statistics.playerinfo;
+package de.ostfale.qk.ui.playerstats.info;
 
 import de.ostfale.qk.persistence.player.favorites.FavoritePlayerData;
 import de.ostfale.qk.persistence.player.favorites.FavoritePlayerDataJsonHandler;
@@ -7,10 +7,10 @@ import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.dashboard.DashboardService;
 import de.ostfale.qk.ui.statistics.matches.PlayerInfoMatchStatisticsService;
-import de.ostfale.qk.ui.statistics.playerinfo.tournamentdata.TournamentsStatistic;
-import de.ostfale.qk.ui.statistics.playerinfo.masterdata.PlayerInfoDTO;
-import de.ostfale.qk.ui.statistics.playerinfo.rankingdata.DisciplineStatisticsDTO;
-import de.ostfale.qk.ui.statistics.playerinfo.tournamentdata.TournamentsStatisticDTO;
+import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatistic;
+import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
+import de.ostfale.qk.ui.playerstats.info.rankingdata.DisciplineStatisticsDTO;
+import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatisticDTO;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

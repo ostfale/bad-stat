@@ -1,7 +1,7 @@
-package de.ostfale.qk.ui.statistics.playerinfo.filter;
+package de.ostfale.qk.ui.playerstats.info.filter;
 
-import de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoService;
-import de.ostfale.qk.ui.statistics.playerinfo.masterdata.PlayerInfoDTO;
+import de.ostfale.qk.ui.playerstats.info.PlayerInfoService;
+import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import org.controlsfx.control.textfield.AutoCompletionBinding;

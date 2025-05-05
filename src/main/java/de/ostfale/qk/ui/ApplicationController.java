@@ -2,9 +2,7 @@ package de.ostfale.qk.ui;
 
 import de.ostfale.qk.ui.app.StatusBarController;
 import de.ostfale.qk.ui.dashboard.DashboardHandler;
-import de.ostfale.qk.ui.statistics.PlayerStatisticsHandler;
-import de.ostfale.qk.ui.statistics.StatisticsController;
-import de.ostfale.qk.ui.statistics.playerinfo.PlayerInfoHandler;
+import de.ostfale.qk.ui.playerstats.info.PlayerStatsHandler;
 import io.quarkiverse.fx.FxPostStartupEvent;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.event.Observes;
@@ -44,13 +42,7 @@ public class ApplicationController {
     DashboardHandler dashboardHandler;
 
     @Inject
-    PlayerStatisticsHandler playerTourStatsHandler;
-
-    @Inject
-    PlayerInfoHandler playerInfoHandler;
-
-    @Inject
-    StatisticsController statisticsController;
+    PlayerStatsHandler playerStatsHandler;
 
     @Inject
     StatusBarController statusBarController;
@@ -96,7 +88,7 @@ public class ApplicationController {
     @FXML
     void showStatisticsView(ActionEvent event) {
         log.info("Show Statistics View");
-        bpApp.setCenter(playerInfoHandler.getRootNode());
+        bpApp.setCenter(playerStatsHandler.getRootNode() );
        // playerTourStatsHandler.refreshUI();
     }
 

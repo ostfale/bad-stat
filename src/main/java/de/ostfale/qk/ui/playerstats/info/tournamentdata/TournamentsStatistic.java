@@ -1,4 +1,4 @@
-package de.ostfale.qk.ui.statistics.playerinfo.tournamentdata;
+package de.ostfale.qk.ui.playerstats.info.tournamentdata;
 
 public record TournamentsStatistic(
         Integer year,

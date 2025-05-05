@@ -1,13 +1,13 @@
-package de.ostfale.qk.ui.statistics.playerinfo;
+package de.ostfale.qk.ui.playerstats.info;
 
 import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
-import de.ostfale.qk.ui.statistics.favplayer.FavPlayerChangeListener;
-import de.ostfale.qk.ui.statistics.favplayer.FavPlayerStringConverter;
-import de.ostfale.qk.ui.statistics.playerinfo.filter.PlayerTextSearchComponent;
-import de.ostfale.qk.ui.statistics.playerinfo.masterdata.PlayerInfoDTO;
-import de.ostfale.qk.ui.statistics.playerinfo.tournamentdata.TournamentsStatisticDTO;
+import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerChangeListener;
+import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerStringConverter;
+import de.ostfale.qk.ui.playerstats.info.filter.PlayerTextSearchComponent;
+import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
+import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatisticDTO;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
