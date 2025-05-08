@@ -1,11 +1,13 @@
 package de.ostfale.qk.parser.match.internal.model;
 
 import de.ostfale.qk.parser.discipline.internal.model.Discipline;
+import de.ostfale.qk.parser.player.PlayerRawModel;
 import de.ostfale.qk.parser.set.SetRawModel;
 import org.jboss.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class MatchRawModel implements Match {
 
@@ -104,5 +106,17 @@ public abstract class MatchRawModel implements Match {
 
     public Boolean getMatchRetired() {
         return isMatchRetired;
+    }
+
+    protected String formatPlayersNames(PlayerRawModel firstPlayer, PlayerRawModel secondPlayer) {
+        String firstPlayerName = getValidPlayerName(firstPlayer);
+        String secondPlayerName = getValidPlayerName(secondPlayer);
+        return String.format("%s / %s", firstPlayerName, secondPlayerName);
+    }
+
+    protected String getValidPlayerName(PlayerRawModel player) {
+        return Optional.ofNullable(player.getName())
+                .filter(name -> !name.isBlank())
+                .orElse("");
     }
 }

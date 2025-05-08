@@ -1,6 +1,7 @@
 package de.ostfale.qk.parser.tournament.internal;
 
 import de.ostfale.qk.parser.HtmlParser;
+import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.discipline.api.DisciplineParser;
 import de.ostfale.qk.parser.discipline.internal.model.DisciplineRawModel;
 import de.ostfale.qk.parser.tournament.api.TournamentParser;
@@ -30,10 +31,14 @@ public class TournamentParserService implements TournamentParser {
         TournamentYearRawModel tournamentYearRawModel = new TournamentYearRawModel(year);
         List<HtmlElement> tournamentElements = htmlParser.getAllTournaments(content);
         tournamentElements.forEach(tournamentElement -> {
-            TournamentRawModel tournamentRawModel = parseTournamentInfo(tournamentElement);
-            List<DisciplineRawModel> disciplineDTOS = disciplineParser.parseDisciplines(tournamentElement);
-            tournamentRawModel.getTournamentDisciplines().addAll(disciplineDTOS);
-            tournamentYearRawModel.addTournament(tournamentRawModel);
+            try {
+                TournamentRawModel tournamentRawModel = parseTournamentInfo(tournamentElement);
+                List<DisciplineRawModel> disciplineDTOS = disciplineParser.parseDisciplines(tournamentElement);
+                tournamentRawModel.getTournamentDisciplines().addAll(disciplineDTOS);
+                tournamentYearRawModel.addTournament(tournamentRawModel);
+            } catch (HtmlParserException e) {
+                log.errorf("TournamentParser :: year %s -> %s ", year, e.getParserError());
+            }
         });
         return tournamentYearRawModel;
     }

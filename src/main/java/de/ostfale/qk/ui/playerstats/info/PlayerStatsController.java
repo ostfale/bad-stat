@@ -1,7 +1,7 @@
 package de.ostfale.qk.ui.playerstats.info;
 
 import de.ostfale.qk.ui.ApplicationController;
-import de.ostfale.qk.ui.statistics.PlayerStatisticsHandler;
+import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsHandler;
 import io.quarkiverse.fx.views.FxViewData;
 import io.quarkiverse.fx.views.FxViewRepository;
 import jakarta.inject.Inject;

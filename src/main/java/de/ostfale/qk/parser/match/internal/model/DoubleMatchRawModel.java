@@ -30,6 +30,17 @@ public class DoubleMatchRawModel extends MatchRawModel {
     }
 
     @Override
+    public String getFirstPlayerOfPlayersName() {
+        return formatPlayersNames(firstDoublePlayerOne, firstDoublePlayerTwo);
+    }
+
+    @Override
+    public String getSecondPlayerOfPlayersName() {
+        return formatPlayersNames(secondDoublePlayerOne, secondDoublePlayerTwo);
+    }
+
+
+    @Override
     public Discipline getDiscipline() {
         return Discipline.DOUBLE;
     }

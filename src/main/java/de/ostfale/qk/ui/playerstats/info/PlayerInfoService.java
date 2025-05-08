@@ -7,7 +7,7 @@ import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.dashboard.DashboardService;
 import de.ostfale.qk.ui.statistics.matches.PlayerInfoMatchStatisticsService;
-import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatistic;
+import de.ostfale.qk.persistence.player.favorites.TournamentsStatistic;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.rankingdata.DisciplineStatisticsDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatisticDTO;

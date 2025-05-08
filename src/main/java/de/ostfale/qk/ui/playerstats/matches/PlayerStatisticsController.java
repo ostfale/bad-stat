@@ -1,6 +1,5 @@
-package de.ostfale.qk.ui.statistics;
+package de.ostfale.qk.ui.playerstats.matches;
 
-import de.ostfale.qk.ui.statistics.model.PlayerMatchStatisticsUIModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.SelectionMode;

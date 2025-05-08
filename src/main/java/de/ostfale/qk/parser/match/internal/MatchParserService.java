@@ -28,7 +28,8 @@ public class MatchParserService implements MatchParser {
     private static final String RETIRED_MARKER_LOST = "Retired. L";
     private static final String RETIRED_MARKER_NO_MATCH = "Kein Spiel";
     private static final String H2H_MARKER = "H2H";
-
+    private static final String MATCH_RAST = "Rast";
+    private static final String EMPTY_PLAYER_NAME = "";
 
     @Override
     public SingleMatchRawModel parseSingleMatch(HtmlElement content) {
@@ -92,7 +93,7 @@ public class MatchParserService implements MatchParser {
         var result = extractNumbersFromStrings(List.of(resultSplit));
         var sets = prepareSets(result);
 
-        return new DoubleMatchRawModel(playerRawModelList.get(0), playerRawModelList.get(1), playerRawModelList.get(2), playerRawModelList.get(3), sets);
+        return prepareDoubleMatch(playerRawModelList,sets);
     }
 
     @Override
@@ -114,9 +115,65 @@ public class MatchParserService implements MatchParser {
             }
             return mixedMatchDT;
         }
-
-        return new MixedMatchRawModel(playerRawModelList.get(0), playerRawModelList.get(1), playerRawModelList.get(2), playerRawModelList.get(3), sets);
+        return prepareMixedMatch(playerRawModelList,sets);
     }
+
+    private enum MatchType {
+        DOUBLE("Double"),
+        MIXED("Mixed");
+
+        private final String name;
+
+        MatchType(String name) {
+            this.name = name;
+        }
+    }
+
+    private DoubleMatchRawModel prepareDoubleMatch(List<PlayerRawModel> playerList, List<SetRawModel> sets) {
+        return prepareMatch(playerList, sets, MatchType.DOUBLE, DoubleMatchRawModel::new);
+    }
+
+    private MixedMatchRawModel prepareMixedMatch(List<PlayerRawModel> playerList, List<SetRawModel> sets) {
+        return prepareMatch(playerList, sets, MatchType.MIXED, MixedMatchRawModel::new);
+    }
+
+    private <T> T prepareMatch(List<PlayerRawModel> playerList,
+                               List<SetRawModel> sets,
+                               MatchType matchType,
+                               MatchConstructor<T> constructor) {
+        if (playerList.size() == 4) {
+            log.debugf("%s match has 4 player entries", matchType.name);
+            return constructor.create(playerList.get(0), playerList.get(1),
+                    playerList.get(2), playerList.get(3), sets);
+        }
+
+        if (playerList.size() == 3) {
+            log.debugf("%s match has 3 player entries", matchType.name);
+            boolean hasRastPlayer = playerList.stream()
+                    .anyMatch(it -> it.name.equalsIgnoreCase(MATCH_RAST));
+
+            if (hasRastPlayer) {
+                log.debugf("%s match has a Rast player", matchType.name);
+                var validPlayers = playerList.stream()
+                        .filter(it -> !it.name.equalsIgnoreCase(MATCH_RAST))
+                        .toList();
+                return constructor.create(validPlayers.getFirst(), validPlayers.getLast(),
+                        new PlayerRawModel(EMPTY_PLAYER_NAME),
+                        new PlayerRawModel(EMPTY_PLAYER_NAME), sets);
+            }
+        }
+
+        log.errorf("%s match has invalid number of player entries: %d",
+                matchType.name, playerList.size());
+        return null;
+    }
+
+    @FunctionalInterface
+    private interface MatchConstructor<T> {
+        T create(PlayerRawModel p1, PlayerRawModel p2, PlayerRawModel p3,
+                 PlayerRawModel p4, List<SetRawModel> sets);
+    }
+
 
     final String MATCH_ROUND_NAME = ".//li[contains(@class, 'match__header-title-item')]";
     final String MATCH_ROUND_LOCATION_DATE = ".//li[contains(@class, 'match__footer-list-item')]";

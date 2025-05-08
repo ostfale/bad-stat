@@ -2,7 +2,7 @@ package de.ostfale.qk.ui.statistics.matches;
 
 import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
-import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatistic;
+import de.ostfale.qk.persistence.player.favorites.TournamentsStatistic;
 import de.ostfale.qk.web.api.WebService;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

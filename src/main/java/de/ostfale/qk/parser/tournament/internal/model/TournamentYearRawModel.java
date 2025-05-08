@@ -14,9 +14,4 @@ public record TournamentYearRawModel(
     public void addTournament(TournamentRawModel tournament) {
         tournaments.add(tournament);
     }
-
-    @Override
-    public String toString() {
-        return "Tournaments for year " + year + ":\n\n" + tournaments + "\n\n";
-    }
 }

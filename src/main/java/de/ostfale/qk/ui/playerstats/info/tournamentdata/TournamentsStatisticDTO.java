@@ -1,6 +1,7 @@
 package de.ostfale.qk.ui.playerstats.info.tournamentdata;
 
 import de.ostfale.qk.domain.tournament.RecentYears;
+import de.ostfale.qk.persistence.player.favorites.TournamentsStatistic;
 import io.quarkus.logging.Log;
 
 import java.util.ArrayList;

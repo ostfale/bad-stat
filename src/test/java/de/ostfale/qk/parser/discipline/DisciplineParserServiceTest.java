@@ -1,6 +1,7 @@
 package de.ostfale.qk.parser.discipline;
 
 import de.ostfale.qk.parser.BaseParserTest;
+import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.discipline.internal.model.DisciplineRawModel;
 import de.ostfale.qk.parser.match.internal.MatchParserService;
 import io.quarkus.test.junit.QuarkusTest;
@@ -28,7 +29,7 @@ class DisciplineParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Parse discipline")
-    void parseDiscipline() {
+    void parseDiscipline() throws HtmlParserException {
         // given
         String testFileName = "disciplines/SingleDiscipline.txt";
         HtmlPage page = loadHtmlPage(testFileName);
@@ -51,7 +52,7 @@ class DisciplineParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Parse discipline with group phase")
-    void parseDisciplineWithGroupPhase() {
+    void parseDisciplineWithGroupPhase() throws HtmlParserException {
         // given
         String testFileName = "tournaments/TournamentWithGroupPhase.txt";
         HtmlPage page = loadHtmlPage(testFileName);

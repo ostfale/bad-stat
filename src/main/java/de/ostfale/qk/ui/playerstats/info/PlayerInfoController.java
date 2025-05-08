@@ -7,6 +7,7 @@ import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerChangeListener;
 import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerStringConverter;
 import de.ostfale.qk.ui.playerstats.info.filter.PlayerTextSearchComponent;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
+import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTournamentsService;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatisticDTO;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
@@ -37,6 +38,9 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @Inject
     PlayerInfoService playerInfoService;
+
+    @Inject
+    PlayerTournamentsService playerTournamentsService;
 
     @FXML
     GridPane gpPlayerInfo;
@@ -187,30 +191,30 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @FXML
     void downloadThisYearsTournaments(ActionEvent event) {
-        Integer year = Year.now().getValue();
+        int year = Year.now().getValue();
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        //   playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
+        playerTournamentsService.loadPlayerTournamentsForYear(year,currentSelectedPlayer);
     }
 
     @FXML
     void downloadThisYearMinusOneTournaments(ActionEvent event) {
-        Integer year = Year.now().minusYears(1).getValue();
+        int year = Year.now().minusYears(1).getValue();
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        //   playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
+        playerTournamentsService.loadPlayerTournamentsForYear(year,currentSelectedPlayer);
     }
 
     @FXML
     void downloadThisYearMinusTwoTournaments(ActionEvent event) {
-        Integer year = Year.now().minusYears(2).getValue();
+        int year = Year.now().minusYears(2).getValue();
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        //   playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
+        playerTournamentsService.loadPlayerTournamentsForYear(year,currentSelectedPlayer);
     }
 
     @FXML
     void downloadThisYearMinusThreeTournaments(ActionEvent event) {
-        Integer year = Year.now().minusYears(3).getValue();
+        int year = Year.now().minusYears(3).getValue();
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        //   playerInfoHandler.updateAndSavePlayerTournamentsStatistics(currentSelectedPlayer, year);
+        playerTournamentsService.loadPlayerTournamentsForYear(year,currentSelectedPlayer);
     }
 
     // init button to toggle player as favorites

@@ -1,6 +1,8 @@
 package de.ostfale.qk.parser.discipline;
 
 import de.ostfale.qk.parser.HtmlParser;
+import de.ostfale.qk.parser.HtmlParserException;
+import de.ostfale.qk.parser.ParsedComponent;
 import de.ostfale.qk.parser.discipline.api.DisciplineParser;
 import de.ostfale.qk.parser.discipline.internal.model.DisciplineRawModel;
 import de.ostfale.qk.parser.match.api.MatchParser;
@@ -28,25 +30,29 @@ public class DisciplineParserService implements DisciplineParser {
     private static final Logger log = Logger.getLogger(DisciplineParserService.class);
 
     @Override
-    public List<DisciplineRawModel> parseDisciplines(HtmlElement moduleCard) {
+    public List<DisciplineRawModel> parseDisciplines(HtmlElement moduleCard) throws HtmlParserException {
         log.debug("Parsing disciplines for tournament");
         List<DisciplineRawModel> disciplineList = new ArrayList<>();
 
-        // read all discipline header starting with
-        List<HtmlElement> disciplineHeaderElements = htmlParser.getAllDisciplineInfos(moduleCard);
-        for (HtmlElement disciplineHeaderElement : disciplineHeaderElements) {
-            // read discipline type and age class
-            DisciplineRawModel disciplineDTO = getDisciplineInfos(disciplineHeaderElement);
-            disciplineList.add(disciplineDTO);
-        }
+        try {
+            // read all discipline header starting with
+            List<HtmlElement> disciplineHeaderElements = htmlParser.getAllDisciplineInfos(moduleCard);
+            for (HtmlElement disciplineHeaderElement : disciplineHeaderElements) {
+                // read discipline type and age class
+                DisciplineRawModel disciplineDTO = getDisciplineInfos(disciplineHeaderElement);
+                disciplineList.add(disciplineDTO);
+            }
 
-        var isTreeMode = isTreeMode(moduleCard);
-        if (isTreeMode) {
-            parseAllTreeMatchesForThisDiscipline(disciplineList, moduleCard);
-        } else {
-            parseCombinedTreeAndGroupMatchesForThisDiscipline(disciplineList, moduleCard);
+            var isTreeMode = isTreeMode(moduleCard);
+            if (isTreeMode) {
+                parseAllTreeMatchesForThisDiscipline(disciplineList, moduleCard);
+            } else {
+                parseCombinedTreeAndGroupMatchesForThisDiscipline(disciplineList, moduleCard);
+            }
+            return disciplineList;
+        } catch (Exception e) {
+            throw new HtmlParserException(ParsedComponent.DISCIPLINE, e);
         }
-        return disciplineList;
     }
 
     private void parseCombinedTreeAndGroupMatchesForThisDiscipline(List<DisciplineRawModel> disciplineList, HtmlElement moduleCard) {

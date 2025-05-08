@@ -1,7 +1,6 @@
-package de.ostfale.qk.ui.statistics;
+package de.ostfale.qk.ui.playerstats.matches;
 
 import de.ostfale.qk.domain.tournament.Tournament;
-import de.ostfale.qk.ui.statistics.model.PlayerMatchStatisticsUIModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import javafx.scene.control.TreeTableView;
@@ -28,17 +27,21 @@ public class PlayerStatisticsHandler {
     private PlayerMatchStatisticsUIModel mapTournamentToPlToStatDTO(Tournament tournament) {
         log.debugf("Mapping Tournament: %s", tournament.getTournamentName());
 
-        PlayerMatchStatisticsUIModel rootData = PlayerMatchStatisticsUIModel.createRootData(tournament);
-        rootData.setMatchDetails(mapMatchesToChildStatistics(tournament));
-        return rootData;
+
+
+
+      //  PlayerMatchStatisticsUIModel rootData = PlayerMatchStatisticsUIModel.createRootData(tournament);
+//        rootData.setMatchDetails(mapMatchesToChildStatistics(tournament));
+//        return rootData;
+        return null;
     }
 
-    private List<PlayerMatchStatisticsUIModel> mapMatchesToChildStatistics(Tournament tournament) {
+/*    private List<PlayerMatchStatisticsUIModel> mapMatchesToChildStatistics(Tournament tournament) {
         return tournament.getMatches()
                 .stream()
                 .map(PlayerMatchStatisticsUIModel::createChildData)
                 .toList(); // Use stream API for concise and functional transformation
-    }
+    }*/
 
    /* public void refreshUI() {
         var result = tournamentService.getAllTournamentsForYearAndPlayer(2024, "Louis Sauerbrei");

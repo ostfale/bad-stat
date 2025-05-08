@@ -1,7 +1,7 @@
-package de.ostfale.qk.ui.statistics.model;
+package de.ostfale.qk.ui.playerstats.matches;
 
-import de.ostfale.qk.domain.tournament.Tournament;
-import de.ostfale.qk.domain.match.Match;
+import de.ostfale.qk.parser.match.internal.model.MatchRawModel;
+import de.ostfale.qk.parser.tournament.internal.model.TournamentRawModel;
 import org.jboss.logging.Logger;
 
 import java.util.ArrayList;
@@ -23,26 +23,26 @@ public class PlayerMatchStatisticsUIModel {
     private String matchResult;
     private List<PlayerMatchStatisticsUIModel> matchDetails = new ArrayList<>();
 
-    public static PlayerMatchStatisticsUIModel createChildData(Match match) {
+    public static PlayerMatchStatisticsUIModel createChildData(MatchRawModel match) {
         log.debug("PlToStatDTO :: Create new child row ");
         var dto = new PlayerMatchStatisticsUIModel();
         dto.setTournamentName(SPACE);
         dto.setTournamentDate(SPACE);
         dto.setTournamentLocation(SPACE);
-        dto.setDisciplineName(match.getDisciplineName());
+        dto.setDisciplineName(match.getDiscipline().name());
         dto.setRoundName(match.getRoundName());
-        dto.setPtOneName(match.getPlayerOrTeamOne());
-        dto.setPtTwoName(match.getPlayerOrTeamTwo());
-        dto.setMatchResult(match.getMatchResult());
+        dto.setPtOneName(match.getFirstPlayerOfPlayersName());
+        dto.setPtTwoName(match.getSecondPlayerOfPlayersName());
+    //    dto.setMatchResult(match.getMatchResult());
         return dto;
     }
 
-    public static PlayerMatchStatisticsUIModel createRootData(Tournament tournament) {
-        log.debug("PlToStatDTO :: Create new root row ");
+    public static PlayerMatchStatisticsUIModel createRootData(TournamentRawModel tournamentRawModel) {
+        log.debug("PlayerMatchStatisticsUIModel :: Create new root row ");
         var dto = new PlayerMatchStatisticsUIModel();
-        dto.setTournamentName(tournament.getTournamentName());
-        dto.setTournamentDate(tournament.getTournamentDate());
-        dto.setTournamentLocation(tournament.getTournamentLocation());
+        dto.setTournamentName(tournamentRawModel.getTournamentName());
+        dto.setTournamentDate(tournamentRawModel.getTournamentDate());
+        dto.setTournamentLocation(tournamentRawModel.getTournamentLocation());
         return dto;
     }
 
