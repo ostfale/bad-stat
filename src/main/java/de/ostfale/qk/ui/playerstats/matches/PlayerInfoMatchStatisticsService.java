@@ -1,4 +1,4 @@
-package de.ostfale.qk.ui.statistics.matches;
+package de.ostfale.qk.ui.playerstats.matches;
 
 import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;

@@ -1,7 +1,7 @@
 package de.ostfale.qk.domain.match;
 
 import de.ostfale.qk.domain.tournament.Tournament;
-import de.ostfale.qk.parser.discipline.internal.model.Discipline;
+import de.ostfale.qk.domain.discipline.Discipline;
 import de.ostfale.qk.parser.match.internal.model.MatchRawModel;
 import de.ostfale.qk.parser.set.SetRawModel;
 

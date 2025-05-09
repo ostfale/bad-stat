@@ -1,7 +1,7 @@
 package de.ostfale.qk.ui.playerstats.matches;
 
 import de.ostfale.qk.parser.match.internal.model.MatchRawModel;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentRawModel;
+import de.ostfale.qk.parser.tournament.model.TournamentParserModel;
 import org.jboss.logging.Logger;
 
 import java.util.ArrayList;
@@ -31,18 +31,18 @@ public class PlayerMatchStatisticsUIModel {
         dto.setTournamentLocation(SPACE);
         dto.setDisciplineName(match.getDiscipline().name());
         dto.setRoundName(match.getRoundName());
-        dto.setPtOneName(match.getFirstPlayerOfPlayersName());
-        dto.setPtTwoName(match.getSecondPlayerOfPlayersName());
+        dto.setPtOneName(match.getFirstPlayerOrTeamName());
+        dto.setPtTwoName(match.getSecondPlayerOrTeamName());
     //    dto.setMatchResult(match.getMatchResult());
         return dto;
     }
 
-    public static PlayerMatchStatisticsUIModel createRootData(TournamentRawModel tournamentRawModel) {
+    public static PlayerMatchStatisticsUIModel createRootData(TournamentParserModel tournamentParserModel) {
         log.debug("PlayerMatchStatisticsUIModel :: Create new root row ");
         var dto = new PlayerMatchStatisticsUIModel();
-        dto.setTournamentName(tournamentRawModel.getTournamentName());
-        dto.setTournamentDate(tournamentRawModel.getTournamentDate());
-        dto.setTournamentLocation(tournamentRawModel.getTournamentLocation());
+        dto.setTournamentName(tournamentParserModel.getTournamentName());
+        dto.setTournamentDate(tournamentParserModel.getTournamentDate());
+        dto.setTournamentLocation(tournamentParserModel.getTournamentLocation());
         return dto;
     }
 

@@ -1,12 +1,11 @@
-package de.ostfale.qk.parser.tournament.internal;
+package de.ostfale.qk.parser.tournament;
 
 import de.ostfale.qk.parser.HtmlParser;
 import de.ostfale.qk.parser.HtmlParserException;
-import de.ostfale.qk.parser.discipline.api.DisciplineParser;
-import de.ostfale.qk.parser.discipline.internal.model.DisciplineRawModel;
-import de.ostfale.qk.parser.tournament.api.TournamentParser;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentRawModel;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentYearRawModel;
+import de.ostfale.qk.parser.discipline.DisciplineParser;
+import de.ostfale.qk.parser.discipline.model.DisciplineParserModel;
+import de.ostfale.qk.parser.tournament.model.TournamentParserModel;
+import de.ostfale.qk.parser.tournament.model.TournamentYearParserModel;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlElement;
@@ -26,25 +25,25 @@ public class TournamentParserService implements TournamentParser {
     private static final Logger log = Logger.getLogger(TournamentParserService.class);
 
     @Override
-    public TournamentYearRawModel parseTournamentYear(String year, HtmlElement content) {
+    public TournamentYearParserModel parseTournamentYear(String year, HtmlElement content) {
         log.debugf("Parsing tournament year {}", year);
-        TournamentYearRawModel tournamentYearRawModel = new TournamentYearRawModel(year);
+        TournamentYearParserModel tournamentYearParserModel = new TournamentYearParserModel(year);
         List<HtmlElement> tournamentElements = htmlParser.getAllTournaments(content);
         tournamentElements.forEach(tournamentElement -> {
             try {
-                TournamentRawModel tournamentRawModel = parseTournamentInfo(tournamentElement);
-                List<DisciplineRawModel> disciplineDTOS = disciplineParser.parseDisciplines(tournamentElement);
-                tournamentRawModel.getTournamentDisciplines().addAll(disciplineDTOS);
-                tournamentYearRawModel.addTournament(tournamentRawModel);
+                TournamentParserModel tournamentParserModel = parseTournamentInfo(tournamentElement);
+                List<DisciplineParserModel> disciplineDTOS = disciplineParser.parseDisciplines(tournamentElement);
+                tournamentParserModel.getTournamentDisciplines().addAll(disciplineDTOS);
+                tournamentYearParserModel.addTournament(tournamentParserModel);
             } catch (HtmlParserException e) {
                 log.errorf("TournamentParser :: year %s -> %s ", year, e.getParserError());
             }
         });
-        return tournamentYearRawModel;
+        return tournamentYearParserModel;
     }
 
     @Override
-    public TournamentRawModel parseTournamentInfo(HtmlElement content) {
+    public TournamentParserModel parseTournamentInfo(HtmlElement content) {
         log.debug("Parsing tournament general info");
         HtmlElement tournamentNameElement = htmlParser.getTournamentNameElement(content);
         HtmlElement tournamentDateElement = htmlParser.getTournamentDateElement(content);
@@ -60,7 +59,7 @@ public class TournamentParserService implements TournamentParser {
         var tournamentId = tournamentIdArray[tournamentIdArray.length - 1];
         var tournamentDate = tournamentDateElement.asNormalizedText();
 
-        return new TournamentRawModel(tournamentId, tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate);
+        return new TournamentParserModel(tournamentId, tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate);
     }
 
     @Override

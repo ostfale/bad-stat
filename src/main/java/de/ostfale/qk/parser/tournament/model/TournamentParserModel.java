@@ -1,14 +1,14 @@
-package de.ostfale.qk.parser.tournament.internal.model;
+package de.ostfale.qk.parser.tournament.model;
 
-import de.ostfale.qk.parser.discipline.internal.model.DisciplineRawModel;
+import de.ostfale.qk.parser.discipline.model.DisciplineParserModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class TournamentRawModel {
+public class TournamentParserModel {
 
-    private List<DisciplineRawModel> tournamentDisciplines = new ArrayList<>();
+    private List<DisciplineParserModel> tournamentDisciplines = new ArrayList<>();
 
     private String tournamentId;
     private String tournamentName;
@@ -17,7 +17,7 @@ public class TournamentRawModel {
     private String tournamentDate;
 
 
-    public TournamentRawModel(String tournamentId, String tournamentName, String tournamentOrganisation, String tournamentLocation, String tournamentDate) {
+    public TournamentParserModel(String tournamentId, String tournamentName, String tournamentOrganisation, String tournamentLocation, String tournamentDate) {
         this.tournamentId = tournamentId;
         this.tournamentName = tournamentName;
         this.tournamentOrganisation = tournamentOrganisation;
@@ -25,15 +25,15 @@ public class TournamentRawModel {
         this.tournamentDate = tournamentDate;
     }
 
-    public void addDiscipline(DisciplineRawModel tournamentDiscipline) {
+    public void addDiscipline(DisciplineParserModel tournamentDiscipline) {
         this.tournamentDisciplines.add(tournamentDiscipline);
     }
 
-    public List<DisciplineRawModel> getTournamentDisciplines() {
+    public List<DisciplineParserModel> getTournamentDisciplines() {
         return tournamentDisciplines;
     }
 
-    public void setTournamentDisciplines(List<DisciplineRawModel> tournamentDisciplines) {
+    public void setTournamentDisciplines(List<DisciplineParserModel> tournamentDisciplines) {
         this.tournamentDisciplines = tournamentDisciplines;
     }
 
@@ -82,7 +82,7 @@ public class TournamentRawModel {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        TournamentRawModel that = (TournamentRawModel) o;
+        TournamentParserModel that = (TournamentParserModel) o;
         return Objects.equals(tournamentId, that.tournamentId);
     }
 

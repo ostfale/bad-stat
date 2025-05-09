@@ -1,8 +1,16 @@
 package de.ostfale.qk.parser.match.internal.model;
 
+import de.ostfale.qk.parser.set.SetRawModel;
+
+import java.util.List;
+
 public interface Match {
 
-    String getFirstPlayerOfPlayersName();
+    String getFirstPlayerOrTeamName();
 
-    String getSecondPlayerOfPlayersName();
+    String getSecondPlayerOrTeamName();
+
+    String getRoundName();
+
+    List<SetRawModel> getPlayersSets();
 }

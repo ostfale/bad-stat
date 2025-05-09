@@ -3,8 +3,7 @@ package de.ostfale.qk.parser.discipline;
 import de.ostfale.qk.parser.HtmlParser;
 import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.ParsedComponent;
-import de.ostfale.qk.parser.discipline.api.DisciplineParser;
-import de.ostfale.qk.parser.discipline.internal.model.DisciplineRawModel;
+import de.ostfale.qk.parser.discipline.model.DisciplineParserModel;
 import de.ostfale.qk.parser.match.api.MatchParser;
 import de.ostfale.qk.parser.match.internal.model.DoubleMatchRawModel;
 import de.ostfale.qk.parser.match.internal.model.MatchInfoRawModel;
@@ -30,16 +29,16 @@ public class DisciplineParserService implements DisciplineParser {
     private static final Logger log = Logger.getLogger(DisciplineParserService.class);
 
     @Override
-    public List<DisciplineRawModel> parseDisciplines(HtmlElement moduleCard) throws HtmlParserException {
+    public List<DisciplineParserModel> parseDisciplines(HtmlElement moduleCard) throws HtmlParserException {
         log.debug("Parsing disciplines for tournament");
-        List<DisciplineRawModel> disciplineList = new ArrayList<>();
+        List<DisciplineParserModel> disciplineList = new ArrayList<>();
 
         try {
             // read all discipline header starting with
             List<HtmlElement> disciplineHeaderElements = htmlParser.getAllDisciplineInfos(moduleCard);
             for (HtmlElement disciplineHeaderElement : disciplineHeaderElements) {
                 // read discipline type and age class
-                DisciplineRawModel disciplineDTO = getDisciplineInfos(disciplineHeaderElement);
+                DisciplineParserModel disciplineDTO = getDisciplineInfos(disciplineHeaderElement);
                 disciplineList.add(disciplineDTO);
             }
 
@@ -55,13 +54,13 @@ public class DisciplineParserService implements DisciplineParser {
         }
     }
 
-    private void parseCombinedTreeAndGroupMatchesForThisDiscipline(List<DisciplineRawModel> disciplineList, HtmlElement moduleCard) {
+    private void parseCombinedTreeAndGroupMatchesForThisDiscipline(List<DisciplineParserModel> disciplineList, HtmlElement moduleCard) {
         log.debug("Tree mode found -> parse only tree matches for this discipline");
 
 
     }
 
-    private void parseAllTreeMatchesForThisDiscipline(List<DisciplineRawModel> disciplineList, HtmlElement moduleCard) {
+    private void parseAllTreeMatchesForThisDiscipline(List<DisciplineParserModel> disciplineList, HtmlElement moduleCard) {
         log.debug("Group mode found -> parse all tree and group matches for this discipline");
 
         int disciplineIndex = 0;
@@ -119,7 +118,7 @@ public class DisciplineParserService implements DisciplineParser {
         return false;
     }
 
-    private DisciplineRawModel getDisciplineInfos(HtmlElement headerElement) {
+    private DisciplineParserModel getDisciplineInfos(HtmlElement headerElement) {
         String[] disciplineAge = headerElement.asNormalizedText().split(" ");
 
         var disciplineName = "";
@@ -132,7 +131,7 @@ public class DisciplineParserService implements DisciplineParser {
             disciplineAgeGroup = disciplineAge[1];
         }
 
-        var disciplineInfo = new DisciplineRawModel(disciplineName, disciplineAgeGroup);
+        var disciplineInfo = new DisciplineParserModel(disciplineName, disciplineAgeGroup);
         log.debugf("Tournament discipline info: {}", disciplineInfo);
         return disciplineInfo;
     }

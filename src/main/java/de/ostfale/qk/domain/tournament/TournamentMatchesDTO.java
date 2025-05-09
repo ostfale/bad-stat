@@ -1,4 +1,6 @@
-package de.ostfale.qk.persistence.player.matches;
+package de.ostfale.qk.domain.tournament;
+
+import de.ostfale.qk.domain.discipline.DisciplineMatchesDTO;
 
 import java.util.List;
 

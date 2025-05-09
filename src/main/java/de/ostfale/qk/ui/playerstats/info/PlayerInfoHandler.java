@@ -1,8 +1,8 @@
 package de.ostfale.qk.ui.playerstats.info;
 
 import de.ostfale.qk.domain.tournament.Tournament;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentRawModel;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentYearRawModel;
+import de.ostfale.qk.parser.tournament.model.TournamentParserModel;
+import de.ostfale.qk.parser.tournament.model.TournamentYearParserModel;
 import de.ostfale.qk.ui.app.BaseHandler;
 import io.quarkiverse.fx.views.FxViewRepository;
 import jakarta.inject.Inject;
@@ -27,13 +27,13 @@ public class PlayerInfoHandler implements BaseHandler {
     }
 
     // TODO - find better solution
-    private static Tournament getTournamentInfos(TournamentYearRawModel tournamentYearRawModel, TournamentRawModel tInfo) {
+    private static Tournament getTournamentInfos(TournamentYearParserModel tournamentYearParserModel, TournamentParserModel tInfo) {
         String tournamentId = tInfo.getTournamentId();
         String tournamentName = tInfo.getTournamentName();
         String tournamentOrganisation = tInfo.getTournamentOrganisation();
         String tournamentLocation = tInfo.getTournamentLocation();
         String tournamentDate = tInfo.getTournamentDate();
-        Integer year = Integer.parseInt(tournamentYearRawModel.year());
+        Integer year = Integer.parseInt(tournamentYearParserModel.year());
         return new Tournament(tournamentId, tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate, year);
     }
 }

@@ -1,6 +1,6 @@
 package de.ostfale.qk.parser.match.internal.model;
 
-import de.ostfale.qk.parser.discipline.internal.model.Discipline;
+import de.ostfale.qk.domain.discipline.Discipline;
 import de.ostfale.qk.parser.player.PlayerRawModel;
 import de.ostfale.qk.parser.set.SetRawModel;
 import org.jboss.logging.Logger;

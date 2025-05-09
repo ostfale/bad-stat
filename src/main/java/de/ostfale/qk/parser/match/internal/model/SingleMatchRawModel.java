@@ -1,6 +1,6 @@
 package de.ostfale.qk.parser.match.internal.model;
 
-import de.ostfale.qk.parser.discipline.internal.model.Discipline;
+import de.ostfale.qk.domain.discipline.Discipline;
 import de.ostfale.qk.parser.player.PlayerRawModel;
 import de.ostfale.qk.parser.set.SetRawModel;
 
@@ -24,12 +24,12 @@ public class SingleMatchRawModel extends MatchRawModel {
     }
 
     @Override
-    public String getFirstPlayerOfPlayersName() {
+    public String getFirstPlayerOrTeamName() {
         return firstPlayer.getName() == null ? "" : firstPlayer.getName();
     }
 
     @Override
-    public String getSecondPlayerOfPlayersName() {
+    public String getSecondPlayerOrTeamName() {
         return secondPlayer.getName() == null ? "" : secondPlayer.getName();
     }
 

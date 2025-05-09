@@ -1,4 +1,4 @@
-package de.ostfale.qk.parser.discipline.internal.model;
+package de.ostfale.qk.domain.discipline;
 
 public enum AgeClass {
     U13, U15, U17, U19, O19;

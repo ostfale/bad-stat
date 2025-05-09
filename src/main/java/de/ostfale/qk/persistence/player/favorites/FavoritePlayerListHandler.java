@@ -10,7 +10,7 @@ public class FavoritePlayerListHandler {
 
     Logger log = Logger.getLogger(FavoritePlayerListHandler.class);
 
-    private  List<FavoritePlayerData> favoritePlayersList = new ArrayList<>();
+    private final List<FavoritePlayerData> favoritePlayersList = new ArrayList<>();
 
     public List<FavoritePlayerData> favoritePlayersList() {
         return favoritePlayersList;

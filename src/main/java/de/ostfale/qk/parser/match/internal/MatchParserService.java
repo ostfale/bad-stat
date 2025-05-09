@@ -1,6 +1,6 @@
 package de.ostfale.qk.parser.match.internal;
 
-import de.ostfale.qk.parser.discipline.internal.model.Discipline;
+import de.ostfale.qk.domain.discipline.Discipline;
 import de.ostfale.qk.parser.match.api.MatchParser;
 import de.ostfale.qk.parser.match.internal.model.*;
 import de.ostfale.qk.parser.player.PlayerRawModel;

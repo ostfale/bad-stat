@@ -8,11 +8,16 @@ public interface JsonDBFacade extends FileSystemFacade {
 
     Logger log = Logger.getLogger(JsonDBFacade.class);
 
+    String JSON_SUFFIX = ".json";
+    String FILE_NAME_SEPARATOR = "_";
+
     String DASHBOARD_DIR_NAME = "dashboard";
     String DASHBOARD_RANKING_DATA_FILE_NAME = "dashboardRankingData.json";
 
     String FAVORITE_PLAYERS_DIR_NAME = "favPlayer";
     String FAVORITE_PLAYERS_FILE_NAME = "favPlayerList.json";
+
+    String FAVORITE_PLAYER_MATCH_DIR_NAME = "matches";
 
     default String getDashboardDir() {
         var result = getApplicationHomeDir() + SEP + DirTypes.DATA.displayName + SEP + DASHBOARD_DIR_NAME + SEP;
@@ -25,4 +30,18 @@ public interface JsonDBFacade extends FileSystemFacade {
         log.debugf("JsonDBFacade :: PlayerCustomData dir: %s", result);
         return result;
     }
+
+    default String getFavPlayerMatchesDir() {
+        var dirName = getPlayerCustomDataDir() + FAVORITE_PLAYER_MATCH_DIR_NAME + SEP;
+        log.debugf("JsonDBFacade :: FavPlayerMatches dir: %s", dirName);
+        return dirName;
+    }
+
+    default String createFavPlayerTournamentMatchesFileName(String playerName, String playerId, String year) {
+        var fileName = playerId + FILE_NAME_SEPARATOR + playerName + FILE_NAME_SEPARATOR + year + JSON_SUFFIX;
+        log.infof("JsonDBFacade :: FavPlayerTournamentMatchesFileName: %s", fileName);
+        return fileName;
+    }
 }
+
+

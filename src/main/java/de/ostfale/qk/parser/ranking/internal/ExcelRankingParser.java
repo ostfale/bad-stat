@@ -1,7 +1,7 @@
 package de.ostfale.qk.parser.ranking.internal;
 
 import de.ostfale.qk.domain.player.*;
-import de.ostfale.qk.parser.discipline.internal.model.Discipline;
+import de.ostfale.qk.domain.discipline.Discipline;
 import de.ostfale.qk.parser.ranking.api.RankingParser;
 import jakarta.inject.Singleton;
 import org.apache.poi.ss.usermodel.*;

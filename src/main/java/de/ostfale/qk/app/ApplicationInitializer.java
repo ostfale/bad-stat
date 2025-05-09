@@ -24,9 +24,6 @@ public class ApplicationInitializer implements FileSystemFacade {
     RankingPlayerCacheHandler rankingPlayerCacheHandler;
 
     @Inject
-    DevSimulation devSimulation;
-
-    @Inject
     RankingParser rankingParser;
 
     @Inject

@@ -1,8 +1,8 @@
 package de.ostfale.qk.web.internal;
 
-import de.ostfale.qk.parser.tournament.api.TournamentParser;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentRawModel;
-import de.ostfale.qk.parser.tournament.internal.model.TournamentYearRawModel;
+import de.ostfale.qk.parser.tournament.TournamentParser;
+import de.ostfale.qk.parser.tournament.model.TournamentParserModel;
+import de.ostfale.qk.parser.tournament.model.TournamentYearParserModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlPage;
@@ -36,11 +36,11 @@ public class TournamentWebService extends BaseWebService {
     }
 
     @Override
-    public List<TournamentRawModel> getTournamentsForYearAndPlayer(Integer year, String playerTournamentId) {
+    public List<TournamentParserModel> getTournamentsForYearAndPlayer(Integer year, String playerTournamentId) {
         log.debugf("WebService :: Get tournaments for year %d and player tournament id %s", year, playerTournamentId);
         String tournamentsURI = preparePlayerTournamentsUrl(playerTournamentId, year.toString());
         HtmlPage tournamentPage = cookieDialogHandler.loadWebsite(tournamentsURI);
-        TournamentYearRawModel tournamentYearRawModel = parser.parseTournamentYear(year.toString(), tournamentPage.getActiveElement());
-        return tournamentYearRawModel.tournaments();
+        TournamentYearParserModel tournamentYearParserModel = parser.parseTournamentYear(year.toString(), tournamentPage.getActiveElement());
+        return tournamentYearParserModel.tournaments();
     }
 }
