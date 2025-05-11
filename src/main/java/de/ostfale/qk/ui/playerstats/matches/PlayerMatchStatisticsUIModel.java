@@ -1,7 +1,5 @@
 package de.ostfale.qk.ui.playerstats.matches;
 
-import de.ostfale.qk.parser.match.internal.model.MatchRawModel;
-import de.ostfale.qk.parser.tournament.model.TournamentParserModel;
 import org.jboss.logging.Logger;
 
 import java.util.ArrayList;
@@ -22,38 +20,6 @@ public class PlayerMatchStatisticsUIModel {
     private String ptTwoName;
     private String matchResult;
     private List<PlayerMatchStatisticsUIModel> matchDetails = new ArrayList<>();
-
-    public static PlayerMatchStatisticsUIModel createChildData(MatchRawModel match) {
-        log.debug("PlToStatDTO :: Create new child row ");
-        var dto = new PlayerMatchStatisticsUIModel();
-        dto.setTournamentName(SPACE);
-        dto.setTournamentDate(SPACE);
-        dto.setTournamentLocation(SPACE);
-        dto.setDisciplineName(match.getDiscipline().name());
-        dto.setRoundName(match.getRoundName());
-        dto.setPtOneName(match.getFirstPlayerOrTeamName());
-        dto.setPtTwoName(match.getSecondPlayerOrTeamName());
-    //    dto.setMatchResult(match.getMatchResult());
-        return dto;
-    }
-
-    public static PlayerMatchStatisticsUIModel createRootData(TournamentParserModel tournamentParserModel) {
-        log.debug("PlayerMatchStatisticsUIModel :: Create new root row ");
-        var dto = new PlayerMatchStatisticsUIModel();
-        dto.setTournamentName(tournamentParserModel.getTournamentName());
-        dto.setTournamentDate(tournamentParserModel.getTournamentDate());
-        dto.setTournamentLocation(tournamentParserModel.getTournamentLocation());
-        return dto;
-    }
-
-    @Override
-    public String toString() {
-        return "PlayerMatchStatisticsUIModel{" +
-                "tournamentName='" + tournamentName + '\'' +
-                ", disciplineName='" + disciplineName + '\'' +
-                ", roundName='" + roundName + '\'' +
-                '}';
-    }
 
     public PlayerMatchStatisticsUIModel() {
     }

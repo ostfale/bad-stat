@@ -9,6 +9,8 @@ import de.ostfale.qk.ui.playerstats.info.filter.PlayerTextSearchComponent;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTournamentsService;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatisticDTO;
+import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsController;
+import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsHandler;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -41,6 +43,13 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @Inject
     PlayerTournamentsService playerTournamentsService;
+
+    @Inject
+    PlayerStatisticsHandler playerStatisticsHandler;
+
+    // TODO use event bus to handle messages
+    @Inject
+    PlayerStatisticsController playerTourStatsController;
 
     @FXML
     GridPane gpPlayerInfo;
@@ -193,28 +202,30 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     void downloadThisYearsTournaments(ActionEvent event) {
         int year = Year.now().getValue();
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerTournamentsService.loadPlayerTournamentsForYear(year,currentSelectedPlayer);
+        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year,currentSelectedPlayer);
+        var uiModel = playerTournamentsService.readPlayerTournamentsForLastFourYears(currentSelectedPlayer);
+        playerStatisticsHandler.updatePlayerMatchStatistics(uiModel);
     }
 
     @FXML
     void downloadThisYearMinusOneTournaments(ActionEvent event) {
         int year = Year.now().minusYears(1).getValue();
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerTournamentsService.loadPlayerTournamentsForYear(year,currentSelectedPlayer);
+        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year,currentSelectedPlayer);
     }
 
     @FXML
     void downloadThisYearMinusTwoTournaments(ActionEvent event) {
         int year = Year.now().minusYears(2).getValue();
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerTournamentsService.loadPlayerTournamentsForYear(year,currentSelectedPlayer);
+        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year,currentSelectedPlayer);
     }
 
     @FXML
     void downloadThisYearMinusThreeTournaments(ActionEvent event) {
         int year = Year.now().minusYears(3).getValue();
         PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerTournamentsService.loadPlayerTournamentsForYear(year,currentSelectedPlayer);
+        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year,currentSelectedPlayer);
     }
 
     // init button to toggle player as favorites
@@ -281,9 +292,8 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         log.debugf("Update player info: %s", playerInfoDTO.toString());
         resetPlayerInfo();
         updateTournamentInfosForPlayerAndYear(playerInfoDTO.getTournamentsStatisticDTO());
-
         setPlayersMasterData(playerInfoDTO);
-
+        updatePlayerMatchesStatics(playerInfoDTO);
 
         lblSTours.setText(playerInfoDTO.getSingleDisciplineStatistics().tournaments().toString());
         lblDTours.setText(playerInfoDTO.getDoubleDisciplineStatistics().tournaments().toString());
@@ -302,6 +312,12 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         lblMAKRank.setText(playerInfoDTO.getMixedDisciplineStatistics().ageClassRank().toString());
 
         txtTourURL.setText(""); // reset url since it is not saved in DB
+    }
+
+    private void updatePlayerMatchesStatics(PlayerInfoDTO playerInfoDTO) {
+        log.debugf("UI :: Update player matches statistics for player %s ", playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerName());
+        var uiModel = playerTournamentsService.readPlayerTournamentsForLastFourYears(playerInfoDTO);
+        playerTourStatsController.updateTreeTable(uiModel);
     }
 
     private void setPlayersMasterData(PlayerInfoDTO playerInfoDTO) {

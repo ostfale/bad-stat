@@ -23,7 +23,7 @@ quarkus:
       level: WARN
       file:
         enable: true
-        category:
+      category:
           "de.ostfale.qk":
             level: WARN
 
