@@ -28,6 +28,7 @@
         <htmlunit.version>4.11.1</htmlunit.version>
         <quarkus-fx.version>0.9.1</quarkus-fx.version>
         <quarkus-poi.version>2.1.2</quarkus-poi.version>
+        <opencsv.version>5.11</opencsv.version>
 
         <!-- ui -->
         <ikonli-javafx.version>12.4.0</ikonli-javafx.version>
@@ -67,6 +68,10 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-health</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-vertx</artifactId>
+        </dependency>
 
         <!-- libs -->
         <dependency>
@@ -78,6 +83,11 @@
             <groupId>io.quarkiverse.poi</groupId>
             <artifactId>quarkus-poi</artifactId>
             <version>${quarkus-poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>${opencsv.version}</version>
         </dependency>
 
         <!-- ui -->

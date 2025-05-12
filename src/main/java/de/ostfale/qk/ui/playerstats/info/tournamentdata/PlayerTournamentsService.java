@@ -5,7 +5,7 @@ import de.ostfale.qk.domain.converter.TournamentMatchesParserModelToDTOConverter
 import de.ostfale.qk.domain.tournament.TournamentMatchesDTO;
 import de.ostfale.qk.domain.tournament.TournamentMatchesListDTO;
 import de.ostfale.qk.parser.tournament.model.TournamentParserModel;
-import de.ostfale.qk.persistence.player.matches.PlayerTournamentMatchesJsonHandler;
+import de.ostfale.qk.data.player.PlayerTournamentMatchesJsonHandler;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoMasterDataDTO;
 import de.ostfale.qk.ui.playerstats.matches.PlayerMatchStatisticsUIModel;

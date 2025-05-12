@@ -1,7 +1,7 @@
 package de.ostfale.qk.ui.playerstats.info.tournamentdata;
 
 import de.ostfale.qk.domain.tournament.RecentYears;
-import de.ostfale.qk.persistence.player.favorites.TournamentsStatistic;
+import de.ostfale.qk.data.player.model.TournamentsStatisticData;
 import io.quarkus.logging.Log;
 
 import java.util.ArrayList;
@@ -19,10 +19,10 @@ public class TournamentsStatisticDTO {
     private Integer yearMinusThreePlayedTournaments = 0;
     private Integer yearMinusThreeDownloadedTournaments = 0;
 
-    public TournamentsStatisticDTO(List<TournamentsStatistic> tournamentsStatistic) {
+    public TournamentsStatisticDTO(List<TournamentsStatisticData> tournamentsStatisticData) {
         Log.debug("TournamentsStatisticDTO :: Create TournamentsStatisticDTO from List<TournamentsStatistic>");
 
-        for (TournamentsStatistic ts : tournamentsStatistic) {
+        for (TournamentsStatisticData ts : tournamentsStatisticData) {
             if (ts.year() == null) {
                 Log.warn("TournamentsStatisticDTO :: Encountered TournamentsStatistic with null year. Skipping.");
                 continue;

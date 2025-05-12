@@ -16,7 +16,7 @@ public class TournamentMatchesDTOToUIConverter implements Converter<TournamentMa
 
     @Override
     public PlayerMatchStatisticsUIModel convertTo(TournamentMatchesDTO source) {
-        log.debug("TournamentMatchesDTOToUIConverter :: Convert JSON TournamentMatchesDTO to UI model");
+        log.trace("TournamentMatchesDTOToUIConverter :: Convert JSON TournamentMatchesDTO to UI model");
         var uiModel = new PlayerMatchStatisticsUIModel();
         uiModel.setTournamentName(source.getTournamentName());
         uiModel.setTournamentLocation(source.getTournamentLocation());
@@ -26,7 +26,7 @@ public class TournamentMatchesDTOToUIConverter implements Converter<TournamentMa
     }
 
     private void convertTo(DisciplineMatchesDTO source, PlayerMatchStatisticsUIModel parentModel) {
-        log.debug("TournamentMatchesDTOToUIConverter :: Convert JSON DisciplineMatchesDTO to UI model");
+        log.trace("TournamentMatchesDTOToUIConverter :: Convert JSON DisciplineMatchesDTO to UI model");
         parentModel.getMatchDetails().addAll(source.getMatchesDTOs()
                 .stream()
                 .map(matchesDTO -> convertTo(matchesDTO, source.getDisciplineName()))
@@ -34,7 +34,7 @@ public class TournamentMatchesDTOToUIConverter implements Converter<TournamentMa
     }
 
     private PlayerMatchStatisticsUIModel convertTo(MatchesDTO source, String disciplineName) {
-        log.debug("TournamentMatchesDTOToUIConverter :: Convert JSON MatchesDTO to UI model");
+        log.trace("TournamentMatchesDTOToUIConverter :: Convert JSON MatchesDTO to UI model");
         var uiModel = new PlayerMatchStatisticsUIModel();
         uiModel.setTournamentName(EMPTY_STRING);
         uiModel.setTournamentLocation(EMPTY_STRING);
@@ -43,7 +43,7 @@ public class TournamentMatchesDTOToUIConverter implements Converter<TournamentMa
         uiModel.setRoundName(source.getRoundName());
         uiModel.setPtOneName(source.getPtOneName());
         uiModel.setPtTwoName(source.getPtTwoName());
-        uiModel.setMatchResult(String.join(",", source.getSetResults()));
+        uiModel.setMatchResult(String.join(" - ", source.getSetResults()));
         return uiModel;
     }
 }

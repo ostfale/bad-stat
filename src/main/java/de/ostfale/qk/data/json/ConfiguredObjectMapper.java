@@ -1,4 +1,4 @@
-package de.ostfale.qk.persistence.json;
+package de.ostfale.qk.data.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;

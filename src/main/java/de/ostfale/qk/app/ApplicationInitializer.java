@@ -1,7 +1,7 @@
 package de.ostfale.qk.app;
 
+import de.ostfale.qk.data.dashboard.RankingPlayerCacheHandler;
 import de.ostfale.qk.parser.ranking.api.RankingParser;
-import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.dashboard.DashboardService;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;

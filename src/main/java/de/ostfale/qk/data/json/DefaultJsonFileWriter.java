@@ -1,4 +1,4 @@
-package de.ostfale.qk.persistence.json;
+package de.ostfale.qk.data.json;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;

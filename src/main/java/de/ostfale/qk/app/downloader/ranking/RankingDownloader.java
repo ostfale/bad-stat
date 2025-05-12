@@ -1,7 +1,7 @@
 package de.ostfale.qk.app.downloader.ranking;
 
-import de.ostfale.qk.persistence.dashboard.DashboardRankingData;
-import de.ostfale.qk.persistence.dashboard.DashboardRankingDataJsonHandler;
+import de.ostfale.qk.data.dashboard.model.DashboardRankingData;
+import de.ostfale.qk.data.dashboard.DashboardRankingDataJsonHandler;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jboss.logging.Logger;

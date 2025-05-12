@@ -1,5 +1,6 @@
 package de.ostfale.qk.persistence.ranking;
 
+import de.ostfale.qk.data.dashboard.model.RankingPlayerCacheData;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.parser.BaseParserTest;
 import de.ostfale.qk.parser.ranking.internal.ExcelRankingParser;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("unittest")
 @DisplayName("Test the ranking player cache service functions")
-class RankingPlayerCacheTest extends BaseParserTest {
+class RankingPlayerCacheDataTest extends BaseParserTest {
 
     private static final String FILE_TEST_NAME = "ranking/Ranking_2025_Part.xlsx";
 
@@ -36,7 +37,7 @@ class RankingPlayerCacheTest extends BaseParserTest {
     @DisplayName("Test getNumberOfPlayers should be  0 for empty list")
     void testGetNumberOfPlayersWithEmptyList() {
         // given
-        RankingPlayerCache cache = new RankingPlayerCache(List.of());
+        RankingPlayerCacheData cache = new RankingPlayerCacheData(List.of());
 
         // when
         var result = cache.getNumberOfPlayers();
@@ -48,7 +49,7 @@ class RankingPlayerCacheTest extends BaseParserTest {
     @DisplayName("Test number of players")
     void testGetNumberOfPlayer() {
         // given
-        RankingPlayerCache cache = new RankingPlayerCache(players);
+        RankingPlayerCacheData cache = new RankingPlayerCacheData(players);
         Long expectedNofPlayers = 38L;
 
         // when
@@ -62,7 +63,7 @@ class RankingPlayerCacheTest extends BaseParserTest {
     @DisplayName("Test number of female players")
     void testGetNumberOfFemalePlayer() {
         // given
-        RankingPlayerCache cache = new RankingPlayerCache(players);
+        RankingPlayerCacheData cache = new RankingPlayerCacheData(players);
         Long expectedNofPlayers = 20L;
 
         // when
@@ -76,7 +77,7 @@ class RankingPlayerCacheTest extends BaseParserTest {
     @DisplayName("Test number of male players")
     void testGetNumberOfMalePlayer() {
         // given
-        RankingPlayerCache cache = new RankingPlayerCache(players);
+        RankingPlayerCacheData cache = new RankingPlayerCacheData(players);
         Long expectedNofPlayers = 18L;
 
         // when

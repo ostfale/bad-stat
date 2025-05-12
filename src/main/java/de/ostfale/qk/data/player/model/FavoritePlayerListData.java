@@ -1,4 +1,4 @@
-package de.ostfale.qk.persistence.player.favorites;
+package de.ostfale.qk.data.player.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jboss.logging.Logger;
@@ -6,9 +6,9 @@ import org.jboss.logging.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FavoritePlayerListHandler {
+public class FavoritePlayerListData {
 
-    Logger log = Logger.getLogger(FavoritePlayerListHandler.class);
+    Logger log = Logger.getLogger(FavoritePlayerListData.class);
 
     private final List<FavoritePlayerData> favoritePlayersList = new ArrayList<>();
 

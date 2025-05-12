@@ -4,8 +4,8 @@ import de.ostfale.qk.ui.ApplicationController;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsHandler;
 import io.quarkiverse.fx.views.FxViewData;
 import io.quarkiverse.fx.views.FxViewRepository;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
@@ -13,7 +13,7 @@ import org.jboss.logging.Logger;
 
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class PlayerStatsController {
 
     private static final Logger log = Logger.getLogger(ApplicationController.class);

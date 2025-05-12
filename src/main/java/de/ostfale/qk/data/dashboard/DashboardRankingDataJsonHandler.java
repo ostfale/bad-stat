@@ -1,8 +1,9 @@
-package de.ostfale.qk.persistence.dashboard;
+package de.ostfale.qk.data.dashboard;
 
-import de.ostfale.qk.persistence.json.JsonDBFacade;
-import de.ostfale.qk.persistence.json.JsonFileReader;
-import de.ostfale.qk.persistence.json.JsonFileWriter;
+import de.ostfale.qk.data.dashboard.model.DashboardRankingData;
+import de.ostfale.qk.data.json.JsonDBFacade;
+import de.ostfale.qk.data.json.JsonFileReader;
+import de.ostfale.qk.data.json.JsonFileWriter;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jboss.logging.Logger;

@@ -1,7 +1,7 @@
-package de.ostfale.qk.persistence.ranking;
+package de.ostfale.qk.data.dashboard;
 
 import de.ostfale.qk.app.downloader.ranking.RankingFacade;
-import de.ostfale.qk.persistence.dashboard.DashboardRankingDataJsonHandler;
+import de.ostfale.qk.data.dashboard.model.RankingPlayerCacheData;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.parser.ranking.api.RankingParser;
 import jakarta.inject.Inject;
@@ -24,7 +24,7 @@ public class RankingPlayerCacheHandler implements RankingFacade {
     @Inject
     DashboardRankingDataJsonHandler dashboardRankingDataJsonHandler;
 
-    private RankingPlayerCache rankingPlayerCache;
+    private RankingPlayerCacheData rankingPlayerCacheData;
 
     public boolean loadLocalRankingFileIntoCache() {
         log.debug("Loading existing ranking file into cache");
@@ -49,18 +49,18 @@ public class RankingPlayerCacheHandler implements RankingFacade {
         return !processRankingFile(rankingFiles.getFirst());
     }
 
-    public RankingPlayerCache getRankingPlayerCache() {
-        return rankingPlayerCache;
+    public RankingPlayerCacheData getRankingPlayerCache() {
+        return rankingPlayerCacheData;
     }
 
-    public void setRankingPlayerCache(RankingPlayerCache rankingPlayerCache) {
-        this.rankingPlayerCache = rankingPlayerCache;
+    public void setRankingPlayerCache(RankingPlayerCacheData rankingPlayerCacheData) {
+        this.rankingPlayerCacheData = rankingPlayerCacheData;
     }
 
     private boolean processRankingFile(File rankingFile) {
         try (FileInputStream rankingFileIS = new FileInputStream(rankingFile)) {
             List<Player> allPlayers = rankingParser.parseRankingFileToPlayers(rankingFileIS);
-            setRankingPlayerCache(new RankingPlayerCache(allPlayers));
+            setRankingPlayerCache(new RankingPlayerCacheData(allPlayers));
             log.debugf("Successfully loaded %d players from ranking file", allPlayers.size());
             return true;
         } catch (FileNotFoundException e) {

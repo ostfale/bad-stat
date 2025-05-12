@@ -1,4 +1,4 @@
-package de.ostfale.qk.persistence.json;
+package de.ostfale.qk.data.json;
 
 import de.ostfale.qk.app.DirTypes;
 import de.ostfale.qk.app.FileSystemFacade;

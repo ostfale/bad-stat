@@ -19,8 +19,7 @@ public class SetRawModel {
     public String toString() {
         String firstValueString = firstValue < 10  ? " "+ firstValue : firstValue.toString();
         String secondValueString = secondValue < 10 ? " "+ secondValue : secondValue.toString();
-
-        return "(Satz " + setNo.getSetNo() + ") " + firstValueString + " : " + secondValueString;
+        return String.format("[Satz %d] %s : %s ",setNo.getSetNo(), firstValueString, secondValueString);
     }
 
     public boolean firstIsBetterThanSecond() {

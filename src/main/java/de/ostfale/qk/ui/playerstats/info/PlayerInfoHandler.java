@@ -1,16 +1,16 @@
 package de.ostfale.qk.ui.playerstats.info;
 
-import de.ostfale.qk.domain.tournament.Tournament;
-import de.ostfale.qk.parser.tournament.model.TournamentParserModel;
-import de.ostfale.qk.parser.tournament.model.TournamentYearParserModel;
 import de.ostfale.qk.ui.app.BaseHandler;
+import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
+import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkiverse.fx.views.FxViewRepository;
+import io.quarkus.vertx.ConsumeEvent;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import javafx.scene.Node;
 import org.jboss.logging.Logger;
 
-@Singleton
+@ApplicationScoped
 public class PlayerInfoHandler implements BaseHandler {
 
     private static final Logger log = Logger.getLogger(PlayerInfoHandler.class);
@@ -26,14 +26,15 @@ public class PlayerInfoHandler implements BaseHandler {
         return fxViewRepository.getViewData(PLAYER_INFO_FXML).getRootNode();
     }
 
-    // TODO - find better solution
-    private static Tournament getTournamentInfos(TournamentYearParserModel tournamentYearParserModel, TournamentParserModel tInfo) {
-        String tournamentId = tInfo.getTournamentId();
-        String tournamentName = tInfo.getTournamentName();
-        String tournamentOrganisation = tInfo.getTournamentOrganisation();
-        String tournamentLocation = tInfo.getTournamentLocation();
-        String tournamentDate = tInfo.getTournamentDate();
-        Integer year = Integer.parseInt(tournamentYearParserModel.year());
-        return new Tournament(tournamentId, tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate, year);
+    @ConsumeEvent("player-selected")
+    public void consumeFavChange(PlayerInfoDTO player) {
+        updatePlayerInfo(player);
+    }
+
+    @RunOnFxThread
+    public void updatePlayerInfo(PlayerInfoDTO player) {
+        PlayerInfoController controller = fxViewRepository.getViewData(PLAYER_INFO_FXML).getController();
+        controller.updatePlayerInfo(player);
+        controller.updatePlayerMatchesStatics(player);
     }
 }

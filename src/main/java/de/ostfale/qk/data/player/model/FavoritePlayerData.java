@@ -1,4 +1,4 @@
-package de.ostfale.qk.persistence.player.favorites;
+package de.ostfale.qk.data.player.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,20 +9,20 @@ public class FavoritePlayerData {
     private String playerId;
     private String name;
     private String playerTournamentId = "";
-    private final List<TournamentsStatistic> tournamentsStatistics = new ArrayList<>();
+    private final List<TournamentsStatisticData> tournamentsStatisticData = new ArrayList<>();
 
-    public List<TournamentsStatistic> getTournamentsStatisticsDTOS() {
-        return tournamentsStatistics;
+    public List<TournamentsStatisticData> getTournamentsStatisticsDTOS() {
+        return tournamentsStatisticData;
     }
 
-    public void addTournamentsStatisticsDTO(TournamentsStatistic tournamentsStatistic) {
-        tournamentsStatistics.add(tournamentsStatistic);
+    public void addTournamentsStatisticsDTO(TournamentsStatisticData tournamentsStatisticData) {
+        this.tournamentsStatisticData.add(tournamentsStatisticData);
     }
 
     // TODO check here for updates within a year or a new years entry
-    public void addTournamentsStatisticsDTO(List<TournamentsStatistic> tournamentsStatistics) {
-        for (TournamentsStatistic tournamentsStatistic : tournamentsStatistics) {
-            addTournamentsStatisticsDTO(tournamentsStatistic);
+    public void addTournamentsStatisticsDTO(List<TournamentsStatisticData> aTournamentsStatisticData) {
+        for (TournamentsStatisticData tournamentsStatisticData : aTournamentsStatisticData) {
+            addTournamentsStatisticsDTO(tournamentsStatisticData);
         }
     }
 
@@ -57,7 +57,7 @@ public class FavoritePlayerData {
         return Objects.equals(playerId, that.playerId)
                 && Objects.equals(name, that.name)
                 && Objects.equals(playerTournamentId, that.playerTournamentId)
-                && Objects.equals(tournamentsStatistics, that.tournamentsStatistics);
+                && Objects.equals(tournamentsStatisticData, that.tournamentsStatisticData);
     }
 
     @Override

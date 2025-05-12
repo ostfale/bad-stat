@@ -1,4 +1,4 @@
-package de.ostfale.qk.persistence.ranking;
+package de.ostfale.qk.data.dashboard.model;
 
 import de.ostfale.qk.domain.player.GenderType;
 import de.ostfale.qk.domain.player.Player;
@@ -6,9 +6,9 @@ import org.jboss.logging.Logger;
 
 import java.util.List;
 
-public record RankingPlayerCache(List<Player> players) {
+public record RankingPlayerCacheData(List<Player> players) {
 
-    private static final Logger log = Logger.getLogger(RankingPlayerCache.class);
+    private static final Logger log = Logger.getLogger(RankingPlayerCacheData.class);
 
 
     public List<Player> getPlayers() {

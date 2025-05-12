@@ -1,6 +1,6 @@
-package de.ostfale.qk.persistence.player.favorites;
+package de.ostfale.qk.data.player.model;
 
-public record TournamentsStatistic(
+public record TournamentsStatisticData(
         Integer year,
         Integer allTournaments,
         Integer savedTournaments

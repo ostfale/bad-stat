@@ -1,4 +1,4 @@
-package de.ostfale.qk.persistence.dashboard;
+package de.ostfale.qk.data.dashboard.model;
 
 import org.jboss.logging.Logger;
 

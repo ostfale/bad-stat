@@ -2,10 +2,10 @@ package de.ostfale.qk.ui.dashboard;
 
 import de.ostfale.qk.app.TimeHandlerFacade;
 import de.ostfale.qk.app.downloader.ranking.RankingDownloader;
-import de.ostfale.qk.persistence.dashboard.DashboardRankingData;
-import de.ostfale.qk.persistence.dashboard.DashboardRankingDataJsonHandler;
+import de.ostfale.qk.data.dashboard.model.DashboardRankingData;
+import de.ostfale.qk.data.dashboard.DashboardRankingDataJsonHandler;
 import de.ostfale.qk.domain.player.PlayerOverview;
-import de.ostfale.qk.persistence.ranking.RankingPlayerCacheHandler;
+import de.ostfale.qk.data.dashboard.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.dashboard.model.DashboardRankingUIModel;
 import de.ostfale.qk.web.internal.RankingWebService;
 import jakarta.enterprise.context.ApplicationScoped;
