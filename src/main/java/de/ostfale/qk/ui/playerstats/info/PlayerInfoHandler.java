@@ -4,8 +4,8 @@ import de.ostfale.qk.ui.app.BaseHandler;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkiverse.fx.views.FxViewRepository;
-import io.quarkus.vertx.ConsumeEvent;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import javafx.scene.Node;
 import org.jboss.logging.Logger;
@@ -26,15 +26,14 @@ public class PlayerInfoHandler implements BaseHandler {
         return fxViewRepository.getViewData(PLAYER_INFO_FXML).getRootNode();
     }
 
-    @ConsumeEvent("player-selected")
-    public void consumeFavChange(PlayerInfoDTO player) {
+    public void onChangedFavorite(@Observes PlayerInfoDTO player) {
         updatePlayerInfo(player);
     }
 
     @RunOnFxThread
     public void updatePlayerInfo(PlayerInfoDTO player) {
         PlayerInfoController controller = fxViewRepository.getViewData(PLAYER_INFO_FXML).getController();
-        controller.updatePlayerInfo(player);
+        controller.updatePlayerInfoUI(player);
         controller.updatePlayerMatchesStatics(player);
     }
 }

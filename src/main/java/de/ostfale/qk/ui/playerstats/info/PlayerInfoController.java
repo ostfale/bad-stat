@@ -8,6 +8,7 @@ import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerChangeListener;
 import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerStringConverter;
 import de.ostfale.qk.ui.playerstats.info.filter.PlayerTextSearchComponent;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
+import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoMasterDataDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTournamentsService;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatisticDTO;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsController;
@@ -235,16 +236,21 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, currentSelectedPlayer);
     }
 
-    // init button to toggle player as favorites
     @FXML
     void addToFavorites(ActionEvent event) {
         log.debug("Add player to favorites");
         var selectedPlayer = ctfSearchPlayer.getText();
-        playerInfoService.addPlayerToFavoriteList(selectedPlayer);
-        var playerInfo = playerInfoService.getPlayerInfosForPlayer(selectedPlayer);
+        var playerInfoDTO = getPlayerInfoFromPlayerName(selectedPlayer);
+        playerInfoService.addPlayerToFavoriteList(playerInfoDTO);
         updateFavorites();
         ctfSearchPlayer.clear();
-        cbPlayer.getSelectionModel().select(playerInfo);
+        cbPlayer.getSelectionModel().select(playerInfoDTO);
+
+        if ( playerInfoDTO != null && playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerTournamentId() != null) {
+            log.debugf("Player has tournament ID -> update tournament statistics for player %s", playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerName());
+            var tourStatistics = playerInfoService.updatePlayerTournamentId(playerInfoDTO);
+            updateTournamentInfosForPlayerAndYear(new TournamentsStatisticDTO(tourStatistics));
+        }
     }
 
     @FXML
@@ -261,13 +267,33 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     void viewPlayerInfo(ActionEvent event) {
         log.debugf("View player info");
-        PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayer(ctfSearchPlayer.getText());
-        if (playerInfo != null) {
-            updatePlayerInfo(playerInfo);
-        } else {
-            log.warn("No player selected");
-        }
+
+        String searchedPlayerName = ctfSearchPlayer.getText();
+        PlayerInfoDTO playerInfo = getPlayerInfoFromPlayerName(searchedPlayerName);
+        if (playerInfo == null) return;
+        updatePlayerInfoUI(playerInfo);
     }
+
+    private PlayerInfoDTO getPlayerInfoFromPlayerName(String searchedPlayerName) {
+        PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayer(searchedPlayerName);
+
+        if (playerInfo == null) {
+            log.warn("No player selected");
+            return null;
+        }
+
+        enrichPlayerInfoWithTournamentId(playerInfo);
+        return playerInfo;
+    }
+
+    private void enrichPlayerInfoWithTournamentId(PlayerInfoDTO playerInfo) {
+        PlayerInfoMasterDataDTO masterData = playerInfo.getPlayerInfoMasterDataDTO();
+        log.debugf("View player info for player %s", playerInfo);
+
+        csvReaderService.getPlayerTournamentId(masterData.getPlayerId())
+                .ifPresent(masterData::setPlayerTournamentId);
+    }
+
 
     private void enableControls() {
         txtTourURL.disableProperty().bind(lblIdTurnier.textProperty().isNotEmpty());
@@ -295,7 +321,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         dataModel.updateModel(favPlayers, cbPlayer);
     }
 
-    public void updatePlayerInfo(PlayerInfoDTO playerInfoDTO) {
+    public void updatePlayerInfoUI(PlayerInfoDTO playerInfoDTO) {
         log.debugf("Update player info: %s", playerInfoDTO.toString());
         resetPlayerInfo();
         updateTournamentInfosForPlayerAndYear(playerInfoDTO.getTournamentsStatisticDTO());

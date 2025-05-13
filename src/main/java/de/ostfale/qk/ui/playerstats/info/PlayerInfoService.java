@@ -106,16 +106,16 @@ public class PlayerInfoService {
                 .collect(Collectors.toList());
     }
 
-    public void addPlayerToFavoriteList(String playerName) {
-        log.debugf("Adding player to favorite list: %s", playerName);
+    public void addPlayerToFavoriteList(PlayerInfoDTO playerInfoDTO) {
+        log.debugf("Adding player to favorite list: %s", playerInfoDTO);
         FavoritePlayerListData favoritePlayerList = favoritePlayerDataJsonHandler.readFavoritePlayersList();
 
-        if (favoritePlayerList.doesPlayerExist(playerName)) {
-            log.infof("Player already in favorite list: %s -> no action", playerName);
+        if (favoritePlayerList.doesPlayerExist(playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerName())) {
+            log.infof("Player already in favorite list: %s -> no action", playerInfoDTO);
             return;
         }
 
-        FavoritePlayerData newPlayer = createFavoritePlayerData(playerName);
+        FavoritePlayerData newPlayer = createFavoritePlayerData(playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerName());
         favoritePlayerList.addPlayerCustomData(newPlayer);
         favoritePlayerDataJsonHandler.savePlayerCustomDataList(favoritePlayerList);
     }
