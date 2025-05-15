@@ -1,4 +1,4 @@
-package de.ostfale.qk.web;
+package de.ostfale.qk.web.common;
 
 import jakarta.inject.Singleton;
 import org.jboss.logging.Logger;

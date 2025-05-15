@@ -1,4 +1,4 @@
-package de.ostfale.qk.web;
+package de.ostfale.qk.web.common;
 
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlButton;

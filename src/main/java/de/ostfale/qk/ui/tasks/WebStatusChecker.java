@@ -1,7 +1,7 @@
 package de.ostfale.qk.ui.tasks;
 
 import de.ostfale.qk.ui.app.StatusBarController;
-import de.ostfale.qk.web.HttpHandler;
+import de.ostfale.qk.web.common.HttpHandler;
 import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;

@@ -25,7 +25,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
-import org.controlsfx.control.textfield.CustomTextField;
 import org.jboss.logging.Logger;
 
 import java.time.Year;
@@ -67,7 +66,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     private ComboBox<PlayerInfoDTO> cbPlayer;
 
     @FXML
-    private CustomTextField ctfSearchPlayer;
+    private TextField tfSearchPlayer;
 
     @FXML
     private Button btnPlayerView;
@@ -181,7 +180,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     public void initialize() {
         log.info("Initialize PlayerInfoStatisticsController");
         initFavPlayerComboboxModel();
-        new PlayerTextSearchComponent(playerInfoService, ctfSearchPlayer).initialize();
+        new PlayerTextSearchComponent(playerInfoService, tfSearchPlayer).initialize();
         initYearLabel();
         enableControls();
     }
@@ -239,14 +238,14 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     void addToFavorites(ActionEvent event) {
         log.debug("Add player to favorites");
-        var selectedPlayer = ctfSearchPlayer.getText();
+        var selectedPlayer = tfSearchPlayer.getText();
         var playerInfoDTO = getPlayerInfoFromPlayerName(selectedPlayer);
         playerInfoService.addPlayerToFavoriteList(playerInfoDTO);
         updateFavorites();
-        ctfSearchPlayer.clear();
+        tfSearchPlayer.clear();
         cbPlayer.getSelectionModel().select(playerInfoDTO);
 
-        if ( playerInfoDTO != null && playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerTournamentId() != null) {
+        if (playerInfoDTO != null && playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerTournamentId() != null) {
             log.debugf("Player has tournament ID -> update tournament statistics for player %s", playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerName());
             var tourStatistics = playerInfoService.updatePlayerTournamentId(playerInfoDTO);
             updateTournamentInfosForPlayerAndYear(new TournamentsStatisticDTO(tourStatistics));
@@ -268,7 +267,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     void viewPlayerInfo(ActionEvent event) {
         log.debugf("View player info");
 
-        String searchedPlayerName = ctfSearchPlayer.getText();
+        String searchedPlayerName = tfSearchPlayer.getText();
         PlayerInfoDTO playerInfo = getPlayerInfoFromPlayerName(searchedPlayerName);
         if (playerInfo == null) return;
         updatePlayerInfoUI(playerInfo);

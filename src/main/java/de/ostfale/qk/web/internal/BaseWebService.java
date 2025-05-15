@@ -1,6 +1,6 @@
 package de.ostfale.qk.web.internal;
 
-import de.ostfale.qk.web.CookieDialogHandler;
+import de.ostfale.qk.web.common.CookieDialogHandler;
 import de.ostfale.qk.web.api.WebService;
 import org.jboss.logging.Logger;
 

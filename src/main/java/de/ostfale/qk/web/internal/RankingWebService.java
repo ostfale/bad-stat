@@ -1,6 +1,6 @@
 package de.ostfale.qk.web.internal;
 
-import de.ostfale.qk.web.CookieDialogHandler;
+import de.ostfale.qk.web.common.CookieDialogHandler;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.FrameWindow;
 import org.htmlunit.html.HtmlPage;
