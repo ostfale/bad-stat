@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Test SetRawModel")
 @Tag( "unittest")
@@ -27,6 +27,6 @@ class SetRawModelTest {
         var result = setRawModel.toString();
 
         // then
-        assertEquals("(Satz 1) 21 : 17", result);
+        assertEquals("[Satz 1] 21 : 17", result);
     }
 }
