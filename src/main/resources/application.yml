@@ -16,6 +16,9 @@ quarkus:
         max-backup-index: 5
         max-file-size: 10M
         file-suffix: dd-MM-yyyy
+  package:
+    jar:
+      type: uber-jar
 
 "%prod":
   quarkus:
