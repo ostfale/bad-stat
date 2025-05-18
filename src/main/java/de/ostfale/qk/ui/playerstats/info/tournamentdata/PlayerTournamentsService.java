@@ -7,7 +7,7 @@ import de.ostfale.qk.domain.tournament.TournamentMatchesListDTO;
 import de.ostfale.qk.parser.tournament.model.TournamentParserModel;
 import de.ostfale.qk.data.player.PlayerTournamentMatchesJsonHandler;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
-import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoMasterDataDTO;
+import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoMasterDTO;
 import de.ostfale.qk.ui.playerstats.matches.PlayerMatchStatisticsUIModel;
 import de.ostfale.qk.web.internal.TournamentWebService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -66,7 +66,7 @@ public class PlayerTournamentsService {
 
     private TournamentMatchesListDTO createTournamentMatchesList(
             int year,
-            PlayerInfoMasterDataDTO playerMasterData,
+            PlayerInfoMasterDTO playerMasterData,
             List<TournamentMatchesDTO> tournamentDTOs) {
 
         var matchesList = new TournamentMatchesListDTO();

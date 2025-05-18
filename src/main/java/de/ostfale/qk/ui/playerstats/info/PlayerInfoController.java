@@ -1,16 +1,17 @@
 package de.ostfale.qk.ui.playerstats.info;
 
-import de.ostfale.qk.app.config.CSVReaderService;
+import de.ostfale.qk.data.player.model.FavPlayerData;
+import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
+import de.ostfale.qk.ui.playerstats.info.favplayer.FavPlayerService;
 import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerChangeListener;
 import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerStringConverter;
 import de.ostfale.qk.ui.playerstats.info.filter.PlayerTextSearchComponent;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
-import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoMasterDataDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTournamentsService;
-import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatisticDTO;
+import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsController;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsHandler;
 import io.quarkiverse.fx.views.FxView;
@@ -22,14 +23,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import org.jboss.logging.Logger;
 
 import java.time.Year;
 import java.util.List;
-import java.util.Optional;
 
 @Dependent
 @FxView("player-stat-info")
@@ -40,7 +38,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     private static final String INITIAL_TOURNAMENT_RESULT = "0/0";
 
     @Inject
-    CSVReaderService csvReaderService;
+    FavPlayerService favPlayerService;
 
     @Inject
     PlayerInfoService playerInfoService;
@@ -61,9 +59,11 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     GridPane gpPlayerInfo;
 
+    DataModel<FavPlayerData> dataModelFavPlayer = new DataModel<>();
+
     // filter
     @FXML
-    private ComboBox<PlayerInfoDTO> cbPlayer;
+    private ComboBox<FavPlayerData> cbPlayer;
 
     @FXML
     private TextField tfSearchPlayer;
@@ -161,9 +161,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     private Label lblDisplayCurrentYearMinusTwo;
 
     @FXML
-    private TextField txtTourURL;
-
-    @FXML
     private Label lblYearMinusThree;
 
     @FXML
@@ -175,149 +172,89 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     private Label lblYearMinusOne;
 
-
     @FXML
     public void initialize() {
         log.info("Initialize PlayerInfoStatisticsController");
         initFavPlayerComboboxModel();
         new PlayerTextSearchComponent(playerInfoService, tfSearchPlayer).initialize();
         initYearLabel();
-        enableControls();
-    }
-
-    @FXML
-    void onEnterKeyPressed(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-            if (currentSelectedPlayer == null) {
-                log.info("No player selected");
-                return;
-            }
-
-            var enteredUrl = txtTourURL.getText();
-            String playerTourID = playerInfoService.extractPlayerTournamentIdFromUrl(enteredUrl);
-            log.infof("PlayerInfoController :: Enter key pressed for favorite player %s and tournamentId %s", currentSelectedPlayer.toString(), playerTourID);
-
-            currentSelectedPlayer.getPlayerInfoMasterDataDTO().setPlayerTournamentId(playerTourID);
-            var tourStatistics = playerInfoService.updatePlayerTournamentId(currentSelectedPlayer);
-            updateTournamentInfosForPlayerAndYear(new TournamentsStatisticDTO(tourStatistics));
-            lblIdTurnier.setText(playerTourID);
-        }
     }
 
     @FXML
     void downloadThisYearsTournaments(ActionEvent event) {
         int year = Year.now().getValue();
-        PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
+      /*  PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
         playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, currentSelectedPlayer);
         var uiModel = playerTournamentsService.readPlayerTournamentsForLastFourYears(currentSelectedPlayer);
-        playerStatisticsHandler.updatePlayerMatchStatistics(uiModel);
+        playerStatisticsHandler.updatePlayerMatchStatistics(uiModel);*/
     }
 
     @FXML
     void downloadThisYearMinusOneTournaments(ActionEvent event) {
         int year = Year.now().minusYears(1).getValue();
-        PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, currentSelectedPlayer);
+       /* PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
+        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, currentSelectedPlayer);*/
     }
 
     @FXML
     void downloadThisYearMinusTwoTournaments(ActionEvent event) {
         int year = Year.now().minusYears(2).getValue();
-        PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, currentSelectedPlayer);
+     /*   PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
+        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, currentSelectedPlayer);*/
     }
 
     @FXML
     void downloadThisYearMinusThreeTournaments(ActionEvent event) {
         int year = Year.now().minusYears(3).getValue();
-        PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, currentSelectedPlayer);
+      /*  PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
+        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, currentSelectedPlayer);*/
     }
 
     @FXML
     void addToFavorites(ActionEvent event) {
         log.debug("Add player to favorites");
-        var selectedPlayer = tfSearchPlayer.getText();
-        var playerInfoDTO = getPlayerInfoFromPlayerName(selectedPlayer);
-        playerInfoService.addPlayerToFavoriteList(playerInfoDTO);
+        favPlayerService.addFavPlayer(tfSearchPlayer.getText());
         updateFavorites();
         tfSearchPlayer.clear();
-        cbPlayer.getSelectionModel().select(playerInfoDTO);
-
-        if (playerInfoDTO != null && playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerTournamentId() != null) {
-            log.debugf("Player has tournament ID -> update tournament statistics for player %s", playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerName());
-            var tourStatistics = playerInfoService.updatePlayerTournamentId(playerInfoDTO);
-            updateTournamentInfosForPlayerAndYear(new TournamentsStatisticDTO(tourStatistics));
-        }
     }
 
     @FXML
     void removeFromFavorites(ActionEvent actionEvent) {
         log.debug("Remove player from favorites");
-        String selectedPlayerName = getSelectedFavoritePlayer();
-        if (selectedPlayerName.isEmpty()) {
-            log.warn("No player selected");
-        }
-        playerInfoService.removePlayerFromFavoriteList(selectedPlayerName);
+        favPlayerService.removeFavPlayer(tfSearchPlayer.getText());
         updateFavorites();
     }
 
     @FXML
     void viewPlayerInfo(ActionEvent event) {
         log.debugf("View player info");
-
         String searchedPlayerName = tfSearchPlayer.getText();
-        PlayerInfoDTO playerInfo = getPlayerInfoFromPlayerName(searchedPlayerName);
+        PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayerName(searchedPlayerName);
         if (playerInfo == null) return;
         updatePlayerInfoUI(playerInfo);
+        //retrieveAndUpdateYearlyTournamentStatistics(playerInfo);
     }
 
-    private PlayerInfoDTO getPlayerInfoFromPlayerName(String searchedPlayerName) {
-        PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayer(searchedPlayerName);
-
-        if (playerInfo == null) {
-            log.warn("No player selected");
-            return null;
-        }
-
-        enrichPlayerInfoWithTournamentId(playerInfo);
-        return playerInfo;
-    }
-
-    private void enrichPlayerInfoWithTournamentId(PlayerInfoDTO playerInfo) {
-        PlayerInfoMasterDataDTO masterData = playerInfo.getPlayerInfoMasterDataDTO();
-        log.debugf("View player info for player %s", playerInfo);
-
-        csvReaderService.getPlayerTournamentId(masterData.getPlayerId())
-                .ifPresent(masterData::setPlayerTournamentId);
-    }
-
-
-    private void enableControls() {
-        txtTourURL.disableProperty().bind(lblIdTurnier.textProperty().isNotEmpty());
-    }
-
-    private String getSelectedFavoritePlayer() {
-        return Optional.ofNullable(cbPlayer.getSelectionModel().getSelectedItem())
-                .map(item -> Optional.ofNullable(item.getPlayerInfoMasterDataDTO().getPlayerName()).orElse(""))
-                .orElse("");
-    }
-
+    // TODO check selected player from dataModel
     private void initFavPlayerComboboxModel() {
         log.debug("Initialize DataModel for player combobox");
-        List<PlayerInfoDTO> favPlayers = playerInfoService.getAllFavoritePlayers();
+        List<FavPlayerData> favPlayers = favPlayerService.getFavoritePlayerListData().getFavoritePlayers().stream().toList();
 
-        dataModel = new DataModel<>();
-        dataModel.setStringConverter(new FavPlayerStringConverter());
-        dataModel.setChangeListener(favPlayerChangeListener);
-        dataModel.updateModel(favPlayers, cbPlayer);
+        dataModelFavPlayer.setStringConverter(new FavPlayerStringConverter());
+        dataModelFavPlayer.setChangeListener(favPlayerChangeListener);
+        dataModelFavPlayer.updateModel(favPlayers, cbPlayer);
     }
 
     public void updateFavorites() {
         log.debug("PlayerInfoStatisticsController :: Update favorites");
-        List<PlayerInfoDTO> favPlayers = playerInfoService.getAllFavoritePlayers();
-        dataModel.updateModel(favPlayers, cbPlayer);
+        var favoritePlayers = favPlayerService.getFavoritePlayerListData().getFavoritePlayers().stream().toList();
+        dataModelFavPlayer.updateModel(favoritePlayers, cbPlayer);
+    }
+
+    public void updatePlayerInfoUI(PlayerId playerId) {
+        var playerInfo = playerInfoService.getPlayerInfoDTO(playerId);
+        updatePlayerInfoUI(playerInfo);
+
     }
 
     public void updatePlayerInfoUI(PlayerInfoDTO playerInfoDTO) {
@@ -327,23 +264,21 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         setPlayersMasterData(playerInfoDTO);
         updatePlayerMatchesStatics(playerInfoDTO);
 
-        lblSTours.setText(playerInfoDTO.getSingleDisciplineStatistics().tournaments().toString());
-        lblDTours.setText(playerInfoDTO.getDoubleDisciplineStatistics().tournaments().toString());
-        lblMTours.setText(playerInfoDTO.getMixedDisciplineStatistics().tournaments().toString());
+        lblSTours.setText(playerInfoDTO.getSingleDiscStat().tournaments().toString());
+        lblDTours.setText(playerInfoDTO.getDoubleDiscStat().tournaments().toString());
+        lblMTours.setText(playerInfoDTO.getMixedDiscStat().tournaments().toString());
 
-        lblSPoints.setText(playerInfoDTO.getSingleDisciplineStatistics().points().toString());
-        lblDPoints.setText(playerInfoDTO.getDoubleDisciplineStatistics().points().toString());
-        lblMPoints.setText(playerInfoDTO.getMixedDisciplineStatistics().points().toString());
+        lblSPoints.setText(playerInfoDTO.getSingleDiscStat().points().toString());
+        lblDPoints.setText(playerInfoDTO.getDoubleDiscStat().points().toString());
+        lblMPoints.setText(playerInfoDTO.getMixedDiscStat().points().toString());
 
-        lblSRank.setText(playerInfoDTO.getSingleDisciplineStatistics().fullRank().toString());
-        lblDRank.setText(playerInfoDTO.getDoubleDisciplineStatistics().fullRank().toString());
-        lblMRank.setText(playerInfoDTO.getMixedDisciplineStatistics().fullRank().toString());
+        lblSRank.setText(playerInfoDTO.getSingleDiscStat().fullRank().toString());
+        lblDRank.setText(playerInfoDTO.getDoubleDiscStat().fullRank().toString());
+        lblMRank.setText(playerInfoDTO.getMixedDiscStat().fullRank().toString());
 
-        lblSAKRank.setText(playerInfoDTO.getSingleDisciplineStatistics().ageClassRank().toString());
-        lblDAKRank.setText(playerInfoDTO.getDoubleDisciplineStatistics().ageClassRank().toString());
-        lblMAKRank.setText(playerInfoDTO.getMixedDisciplineStatistics().ageClassRank().toString());
-
-        txtTourURL.setText(""); // reset url since it is not saved in DB
+        lblSAKRank.setText(playerInfoDTO.getSingleDiscStat().ageClassRank().toString());
+        lblDAKRank.setText(playerInfoDTO.getDoubleDiscStat().ageClassRank().toString());
+        lblMAKRank.setText(playerInfoDTO.getMixedDiscStat().ageClassRank().toString());
     }
 
     public void updatePlayerMatchesStatics(PlayerInfoDTO playerInfoDTO) {
@@ -367,13 +302,13 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     }
 
 
-    private void updateTournamentInfosForPlayerAndYear(TournamentsStatisticDTO tournamentsStatisticDTO) {
-        if (tournamentsStatisticDTO != null) {
-            log.debugf("UI :: Update tournament infos for player %s ", tournamentsStatisticDTO.getPlayerId());
-            lblYear.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().getFirst());
-            lblYearMinusOne.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().get(1));
-            lblYearMinusTwo.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().get(2));
-            lblYearMinusThree.setText(tournamentsStatisticDTO.getTournamentsStatisticAsString().get(3));
+    private void updateTournamentInfosForPlayerAndYear(PlayerTourStatDTO playerTourStatDTO) {
+        if (playerTourStatDTO != null) {
+            log.debugf("UI :: Update tournament infos for player %s ", playerTourStatDTO.getPlayerId());
+            lblYear.setText(playerTourStatDTO.getTournamentsStatisticAsString().getFirst());
+            lblYearMinusOne.setText(playerTourStatDTO.getTournamentsStatisticAsString().get(1));
+            lblYearMinusTwo.setText(playerTourStatDTO.getTournamentsStatisticAsString().get(2));
+            lblYearMinusThree.setText(playerTourStatDTO.getTournamentsStatisticAsString().get(3));
         }
     }
 
@@ -388,9 +323,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     // Extracted method to encapsulate the repetitive label reset logic
     private void resetPlayerInfo() {
         // Group repetitive label components into one array for iteration
-        Label[] labels = {lblName, lblPlayerId, lblBirthYear, lblAgeClass, lblClub, lblDistrict, lblIdTurnier, lblGroup, lblState, lblGender, lblSTours,
-                lblDTours, lblMTours, lblSPoints, lblDPoints, lblMPoints, lblSRank, lblDRank, lblMRank, lblSAKRank, lblDAKRank, lblMAKRank, lblYear,
-                lblYearMinusOne, lblYearMinusTwo, lblYearMinusThree};
+        Label[] labels = {lblName, lblPlayerId, lblBirthYear, lblAgeClass, lblClub, lblDistrict, lblIdTurnier, lblGroup, lblState, lblGender, lblSTours, lblDTours, lblMTours, lblSPoints, lblDPoints, lblMPoints, lblSRank, lblDRank, lblMRank, lblSAKRank, lblDAKRank, lblMAKRank, lblYear, lblYearMinusOne, lblYearMinusTwo, lblYearMinusThree};
 
         // Clear all labels using a helper method
         for (Label label : labels) {
@@ -402,7 +335,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         lblYearMinusOne.setText(INITIAL_TOURNAMENT_RESULT);
         lblYearMinusTwo.setText(INITIAL_TOURNAMENT_RESULT);
         lblYearMinusThree.setText(INITIAL_TOURNAMENT_RESULT);
-        txtTourURL.setText("");
     }
 
     private void clearLabel(Label label) {

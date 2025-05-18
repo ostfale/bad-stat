@@ -1,23 +1,23 @@
 package de.ostfale.qk.ui.playerstats.info.filter;
 
-import de.ostfale.qk.ui.playerstats.info.PlayerInfoService;
-import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
+import de.ostfale.qk.data.player.model.FavPlayerData;
+import de.ostfale.qk.ui.playerstats.info.favplayer.FavPlayerService;
 import jakarta.inject.Inject;
 import javafx.util.StringConverter;
 
-public class FavPlayerStringConverter extends StringConverter<PlayerInfoDTO> {
+public class FavPlayerStringConverter extends StringConverter<FavPlayerData> {
 
     @Inject
-    PlayerInfoService playerInfoService;
+    FavPlayerService favPlayerService;
 
     @Override
-    public String toString(PlayerInfoDTO player) {
-        return player.getPlayerInfoMasterDataDTO().getPlayerName() == null ? "" : player.getPlayerInfoMasterDataDTO().getPlayerName();
+    public String toString(FavPlayerData player) {
+        return player.playerName();
     }
 
     @Override
-    public PlayerInfoDTO fromString(String playerName) {
-        PlayerInfoDTO player = playerInfoService.getPlayerInfosForPlayer(playerName);
+    public FavPlayerData fromString(String playerName) {
+        FavPlayerData player = favPlayerService.getFavoritePlayerListData().getFavPlayerDataByPlayerName(playerName);
         if (player == null) {
             throw new IllegalStateException("No players found");
         }

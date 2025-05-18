@@ -3,6 +3,7 @@ package de.ostfale.qk.web.internal;
 import de.ostfale.qk.parser.tournament.TournamentParser;
 import de.ostfale.qk.parser.tournament.model.TournamentParserModel;
 import de.ostfale.qk.parser.tournament.model.TournamentYearParserModel;
+import de.ostfale.qk.web.common.CookieDialogHandler;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlPage;
@@ -18,6 +19,9 @@ public class TournamentWebService extends BaseWebService {
 
     @Inject
     TournamentParser parser;
+
+    @Inject
+    CookieDialogHandler cookieDialogHandler;
 
     @Override
     public Integer getNumberOfTournamentsForYearAndPlayer(Integer year, String playerTournamentsId) {

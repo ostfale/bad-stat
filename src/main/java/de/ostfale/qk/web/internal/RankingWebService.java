@@ -1,6 +1,7 @@
 package de.ostfale.qk.web.internal;
 
 import de.ostfale.qk.web.common.CookieDialogHandler;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.FrameWindow;
 import org.htmlunit.html.HtmlPage;
@@ -15,7 +16,8 @@ public class RankingWebService {
 
     String BASE_RANKING_DOWNLOAD_URL = "https://www.badminton.de/der-dbv/jugend-wettkampf/ranglistentabelle/";
 
-    private final CookieDialogHandler cookieDialogHandler = new CookieDialogHandler();
+    @Inject
+    CookieDialogHandler cookieDialogHandler;
 
     public String getCalendarWeekForLastUpdate() {
         HtmlPage page = cookieDialogHandler.loadWebsite(BASE_RANKING_DOWNLOAD_URL);

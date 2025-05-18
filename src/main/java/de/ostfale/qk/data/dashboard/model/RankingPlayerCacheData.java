@@ -31,6 +31,10 @@ public record RankingPlayerCacheData(List<Player> players) {
         return players.parallelStream().filter(player -> player.getFullName().equals(playerName)).toList();
     }
 
+    public Player getPlayerByPlayerId(String playerId) {
+        return players.parallelStream().filter(player -> player.getPlayerId().playerId().equals(playerId)).findFirst().orElse(null);
+    }
+
     public List<Player> filterByGenderAndAgeClass(String ageClass, String gender) {
         var result = players.parallelStream()
                 .filter(player -> matchesGenderAndAgeClass(player, ageClass, gender))

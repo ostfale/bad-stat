@@ -1,6 +1,5 @@
 package de.ostfale.qk.web.internal;
 
-import de.ostfale.qk.web.common.CookieDialogHandler;
 import de.ostfale.qk.web.api.WebService;
 import org.jboss.logging.Logger;
 
@@ -9,8 +8,6 @@ import java.util.Objects;
 public abstract class BaseWebService implements WebService {
 
     private static final Logger log = Logger.getLogger(TournamentWebService.class);
-
-    protected final CookieDialogHandler cookieDialogHandler = new CookieDialogHandler();
 
     @Override
     public String preparePlayerTournamentsUrl(String playerTournamentId) {

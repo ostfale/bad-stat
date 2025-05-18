@@ -1,8 +1,8 @@
 package de.ostfale.qk.ui.playerstats.info.masterdata;
 
 import de.ostfale.qk.domain.player.Player;
-import de.ostfale.qk.ui.playerstats.info.rankingdata.DisciplineStatisticsDTO;
-import de.ostfale.qk.ui.playerstats.info.tournamentdata.TournamentsStatisticDTO;
+import de.ostfale.qk.ui.playerstats.info.rankingdata.PlayerDiscStatDTO;
+import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
 import org.jboss.logging.Logger;
 
 public class PlayerInfoDTO {
@@ -10,77 +10,84 @@ public class PlayerInfoDTO {
     private static final Logger log = Logger.getLogger(PlayerInfoDTO.class);
 
     // all players static master data
-    private PlayerInfoMasterDataDTO  playerInfoMasterDataDTO;
+    private PlayerInfoMasterDTO playerInfoMasterDTO;
 
     // tournaments statistics for favorite players
-    private TournamentsStatisticDTO tournamentsStatisticDTO;
+    private PlayerTourStatDTO playerTourStatDTO;
 
     // ranking statistics
-    private DisciplineStatisticsDTO singleDisciplineStatistics;
-    private DisciplineStatisticsDTO doubleDisciplineStatistics;
-    private DisciplineStatisticsDTO mixedDisciplineStatistics;
+    private PlayerDiscStatDTO singleDiscStat;
+    private PlayerDiscStatDTO doubleDiscStat;
+    private PlayerDiscStatDTO mixedDiscStat;
 
 
+    public PlayerTourStatDTO getPlayerTourStatDTO() {
+        return playerTourStatDTO;
+    }
+
+    public void setPlayerTourStatDTO(PlayerTourStatDTO playerTourStatDTO) {
+        this.playerTourStatDTO = playerTourStatDTO;
+    }
 
     public PlayerInfoDTO(Player player) {
         log.tracef("PlayerInfoDTO :: init from player %d", player.getPlayerId());
-        this.playerInfoMasterDataDTO = new PlayerInfoMasterDataDTO(player);
+        this.playerInfoMasterDTO = new PlayerInfoMasterDTO(player);
     }
 
     @Override
     public String toString() {
-        return playerInfoMasterDataDTO.getPlayerName();
+        return playerInfoMasterDTO.getPlayerName();
     }
 
-    public PlayerInfoMasterDataDTO getPlayerInfoMasterDataDTO() {
-        return playerInfoMasterDataDTO;
+    public PlayerInfoMasterDTO getPlayerInfoMasterDataDTO() {
+        return playerInfoMasterDTO;
     }
 
-    public void setPlayerInfoMasterDataDTO(PlayerInfoMasterDataDTO playerInfoMasterDataDTO) {
-        this.playerInfoMasterDataDTO = playerInfoMasterDataDTO;
+    public void setPlayerInfoMasterDataDTO(PlayerInfoMasterDTO playerInfoMasterDTO) {
+        this.playerInfoMasterDTO = playerInfoMasterDTO;
     }
 
-    public TournamentsStatisticDTO getTournamentsStatisticDTO() {
-        return tournamentsStatisticDTO;
+    public PlayerTourStatDTO getTournamentsStatisticDTO() {
+        return playerTourStatDTO;
     }
 
-    public void setTournamentsStatisticDTO(TournamentsStatisticDTO tournamentsStatisticDTO) {
-        this.tournamentsStatisticDTO = tournamentsStatisticDTO;
+    public void setTournamentsStatisticDTO(PlayerTourStatDTO playerTourStatDTO) {
+        this.playerTourStatDTO = playerTourStatDTO;
     }
 
     public Integer getSinglePoints() {
-        return singleDisciplineStatistics.points();
+        return singleDiscStat.points();
     }
 
     public Integer getDoublePoints() {
-        return doubleDisciplineStatistics.points();
+        return doubleDiscStat.points();
     }
 
     public Integer getMixedPoints() {
-        return mixedDisciplineStatistics.points();
+        return mixedDiscStat.points();
     }
 
-    public DisciplineStatisticsDTO getSingleDisciplineStatistics() {
-        return singleDisciplineStatistics;
+    public PlayerDiscStatDTO getSingleDiscStat() {
+        return singleDiscStat;
     }
 
-    public void setSingleDisciplineStatistics(DisciplineStatisticsDTO singleDisciplineStatistics) {
-        this.singleDisciplineStatistics = singleDisciplineStatistics;
+    public void setSingleDiscStat(PlayerDiscStatDTO singleDiscStat) {
+        this.singleDiscStat = singleDiscStat;
     }
 
-    public DisciplineStatisticsDTO getDoubleDisciplineStatistics() {
-        return doubleDisciplineStatistics;
+    public PlayerDiscStatDTO getDoubleDiscStat() {
+        return doubleDiscStat;
     }
 
-    public void setDoubleDisciplineStatistics(DisciplineStatisticsDTO doubleDisciplineStatistics) {
-        this.doubleDisciplineStatistics = doubleDisciplineStatistics;
+    public void setDoubleDiscStat(PlayerDiscStatDTO doubleDiscStat) {
+        this.doubleDiscStat = doubleDiscStat;
     }
 
-    public DisciplineStatisticsDTO getMixedDisciplineStatistics() {
-        return mixedDisciplineStatistics;
+    public PlayerDiscStatDTO getMixedDiscStat() {
+        return mixedDiscStat;
     }
 
-    public void setMixedDisciplineStatistics(DisciplineStatisticsDTO mixedDisciplineStatistics) {
-        this.mixedDisciplineStatistics = mixedDisciplineStatistics;
+    public void setMixedDiscStat(PlayerDiscStatDTO mixedDiscStat) {
+        this.mixedDiscStat = mixedDiscStat;
     }
 }

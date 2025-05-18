@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.ostfale.qk</groupId>
     <artifactId>bad-stat</artifactId>
-    <version>v0.1.0</version>
+    <version>v0.2.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,11 +28,14 @@
         <htmlunit.version>4.11.1</htmlunit.version>
         <quarkus-fx.version>0.9.1</quarkus-fx.version>
         <quarkus-poi.version>2.1.2</quarkus-poi.version>
-        <opencsv.version>5.11</opencsv.version>
 
         <!-- ui -->
         <ikonli-javafx.version>12.4.0</ikonli-javafx.version>
         <controlsfx.version>11.2.2</controlsfx.version>
+
+        <!-- test -->
+        <assertj-core.version>3.27.3</assertj-core.version>
+
     </properties>
 
     <dependencyManagement>
@@ -83,11 +86,6 @@
             <groupId>io.quarkiverse.poi</groupId>
             <artifactId>quarkus-poi</artifactId>
             <version>${quarkus-poi.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>${opencsv.version}</version>
         </dependency>
 
         <!-- ui -->
@@ -148,6 +146,12 @@
                     <artifactId>quarkus-junit5-properties</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj-core.version}</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

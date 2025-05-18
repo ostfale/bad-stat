@@ -1,13 +1,9 @@
 package de.ostfale.qk.ui.playerstats.info.tournamentdata;
 
-import de.ostfale.qk.domain.tournament.RecentYears;
-import de.ostfale.qk.data.player.model.TournamentsStatisticData;
-import io.quarkus.logging.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class TournamentsStatisticDTO {
+public class PlayerTourStatDTO {
 
     private String playerId;
     private Integer yearPlayedTournaments = 0;
@@ -19,47 +15,8 @@ public class TournamentsStatisticDTO {
     private Integer yearMinusThreePlayedTournaments = 0;
     private Integer yearMinusThreeDownloadedTournaments = 0;
 
-    public TournamentsStatisticDTO(List<TournamentsStatisticData> tournamentsStatisticData) {
-        Log.debug("TournamentsStatisticDTO :: Create TournamentsStatisticDTO from List<TournamentsStatistic>");
-
-        for (TournamentsStatisticData ts : tournamentsStatisticData) {
-            if (ts.year() == null) {
-                Log.warn("TournamentsStatisticDTO :: Encountered TournamentsStatistic with null year. Skipping.");
-                continue;
-            }
-            try {
-                RecentYears recentYear = RecentYears.lookup(ts.year());
-
-                switch (recentYear) {
-                    case CURRENT_YEAR:
-                        yearPlayedTournaments = ts.allTournaments();
-                        yearDownloadedTournaments = ts.savedTournaments();
-                        break;
-                    case YEAR_MINUS_1:
-                        yearMinusOnePlayedTournaments = ts.allTournaments();
-                        yearMinusOneDownloadedTournaments = ts.savedTournaments();
-                        break;
-                    case YEAR_MINUS_2:
-                        yearMinusTwoPlayedTournaments = ts.allTournaments();
-                        yearMinusTwoDownloadedTournaments = ts.savedTournaments();
-                        break;
-                    case YEAR_MINUS_3:
-                        yearMinusThreePlayedTournaments = ts.allTournaments();
-                        yearMinusThreeDownloadedTournaments = ts.savedTournaments();
-                        break;
-                }
-            } catch (IllegalArgumentException e) {
-                Log.warnf("TournamentsStatisticDTO :: TournamentsStatistic for year %d is not considered recent. Skipping.", ts.year());
-            }
-        }
-    }
-
-
-    public Boolean hasStatisticForPlayer() {
-        return yearPlayedTournaments > 0 ||
-                yearMinusOnePlayedTournaments > 0 ||
-                yearMinusTwoPlayedTournaments > 0 ||
-                yearMinusThreePlayedTournaments > 0;
+    public PlayerTourStatDTO(String playerId) {
+        this.playerId = playerId;
     }
 
     public List<String> getTournamentsStatisticAsString() {

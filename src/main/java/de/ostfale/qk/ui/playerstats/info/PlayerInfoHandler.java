@@ -1,7 +1,7 @@
 package de.ostfale.qk.ui.playerstats.info;
 
+import de.ostfale.qk.data.player.model.FavPlayerData;
 import de.ostfale.qk.ui.app.BaseHandler;
-import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkiverse.fx.views.FxViewRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -26,14 +26,14 @@ public class PlayerInfoHandler implements BaseHandler {
         return fxViewRepository.getViewData(PLAYER_INFO_FXML).getRootNode();
     }
 
-    public void onChangedFavorite(@Observes PlayerInfoDTO player) {
+    public void onChangedFavorite(@Observes FavPlayerData player) {
+        log.debugf("PlayerInfoHandler :: Favorite player changed to %s", player);
         updatePlayerInfo(player);
     }
 
     @RunOnFxThread
-    public void updatePlayerInfo(PlayerInfoDTO player) {
+    public void updatePlayerInfo(FavPlayerData player) {
         PlayerInfoController controller = fxViewRepository.getViewData(PLAYER_INFO_FXML).getController();
-        controller.updatePlayerInfoUI(player);
-        controller.updatePlayerMatchesStatics(player);
+        controller.updatePlayerInfoUI(player.playerId());
     }
 }

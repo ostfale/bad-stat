@@ -13,8 +13,9 @@ public class CookieDialogHandler {
     private static final String COOKIE_WALL = "cookiewall";
     private static final String COOKIE_BUTTON_XPATH = "/html/body/div/div/div/main/form/div[1]/button[1]";
 
+    WebClient webClient = ConfiguredWebClient.getWebClient();
+
     public HtmlPage loadWebsite(String url) {
-        WebClient webClient = ConfiguredWebClient.getWebClient();
         HtmlPage page = null;
         try {
             page = webClient.getPage(url);
