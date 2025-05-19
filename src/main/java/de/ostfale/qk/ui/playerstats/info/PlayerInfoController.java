@@ -10,10 +10,11 @@ import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerChangeListener;
 import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerStringConverter;
 import de.ostfale.qk.ui.playerstats.info.filter.PlayerTextSearchComponent;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
-import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTournamentsService;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
+import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTournamentsService;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsController;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsHandler;
+import de.ostfale.qk.web.player.PlayerTournamentId;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -28,6 +29,7 @@ import org.jboss.logging.Logger;
 
 import java.time.Year;
 import java.util.List;
+import java.util.Map;
 
 @Dependent
 @FxView("player-stat-info")
@@ -231,7 +233,8 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         String searchedPlayerName = tfSearchPlayer.getText();
         PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayerName(searchedPlayerName);
         if (playerInfo == null) return;
-        updatePlayerInfoUI(playerInfo);
+        PlayerId playerId = new PlayerId(playerInfo.getPlayerInfoMasterDataDTO().getPlayerId());
+        updatePlayerInfoUI(playerId);
         //retrieveAndUpdateYearlyTournamentStatistics(playerInfo);
     }
 
@@ -255,9 +258,55 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         var playerInfo = playerInfoService.getPlayerInfoDTO(playerId);
         updatePlayerInfoUI(playerInfo);
 
+        if (isTournamentIdMissing(playerInfo)) {
+            log.debugf("PlayerInfoStatisticsController :: Update player info for player %s with tournament ID", playerId.playerId());
+            updatePlayerTournamentId(playerId);
+        }
     }
 
-    public void updatePlayerInfoUI(PlayerInfoDTO playerInfoDTO) {
+    private boolean isTournamentIdMissing(PlayerInfoDTO playerInfo) {
+        return playerInfo.getPlayerInfoMasterDataDTO().getPlayerTournamentId() == null;
+    }
+
+    private void updatePlayerTournamentId(PlayerId playerId) {
+        playerInfoService.getPlayerTourStatsAsync(playerId.playerId())
+                .subscribe().with(
+                        plMap -> handleTournamentUpdate(playerId, plMap),
+                        error -> log.errorf("Error processing tournament ID: %s", error.getMessage())
+                );
+    }
+
+    private void handleTournamentUpdate(PlayerId playerId, Map<PlayerTournamentId, PlayerTourStatDTO> statsByTournament) {
+        // Extract tournament ID and tournament statistics
+        PlayerTournamentId tournamentId = extractTournamentId(statsByTournament);
+        PlayerTourStatDTO tournamentStatistics = extractTournamentStatistics(statsByTournament);
+
+        if (tournamentId != null) {
+            PlayerInfoDTO updatedPlayerInfo = playerInfoService.getPlayerInfoDTO(playerId);
+
+            // Update player's tournament data
+            updatedPlayerInfo.getPlayerInfoMasterDataDTO().setPlayerTournamentId(tournamentId.tournamentId());
+            updatedPlayerInfo.setTournamentsStatisticDTO(tournamentStatistics);
+
+            // Perform UI update and log the operation
+            updatePlayerInfoUI(updatedPlayerInfo);
+            log.debugf("PlayerInfoStatisticsController :: Updated player info for player %s with tournament ID %s"
+                    , playerId.playerId(), tournamentId.tournamentId());
+        } else {
+            log.warnf("PlayerInfoStatisticsController :: Tournament ID is missing for player %s", playerId.playerId());
+        }
+    }
+
+    private PlayerTournamentId extractTournamentId(Map<PlayerTournamentId, PlayerTourStatDTO> statsByTournament) {
+        return statsByTournament.keySet().stream().findFirst().orElse(null);
+    }
+
+    private PlayerTourStatDTO extractTournamentStatistics(Map<PlayerTournamentId, PlayerTourStatDTO> statsByTournament) {
+        return statsByTournament.values().stream().findFirst().orElse(null);
+    }
+
+
+    private void updatePlayerInfoUI(PlayerInfoDTO playerInfoDTO) {
         log.debugf("Update player info: %s", playerInfoDTO.toString());
         resetPlayerInfo();
         updateTournamentInfosForPlayerAndYear(playerInfoDTO.getTournamentsStatisticDTO());

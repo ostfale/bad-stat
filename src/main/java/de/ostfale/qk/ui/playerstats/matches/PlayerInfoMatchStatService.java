@@ -1,12 +1,15 @@
 package de.ostfale.qk.ui.playerstats.matches;
 
 import de.ostfale.qk.domain.tournament.RecentYears;
-import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
 import de.ostfale.qk.web.api.WebService;
+import de.ostfale.qk.web.player.PlayerTournamentId;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jboss.logging.Logger;
+
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 @Singleton
 public class PlayerInfoMatchStatService {
@@ -16,23 +19,33 @@ public class PlayerInfoMatchStatService {
     @Inject
     WebService webService;
 
-    public PlayerTourStatDTO readYearlyTournamentStatistics(PlayerInfoDTO player) {
-        PlayerTourStatDTO stats = new PlayerTourStatDTO(player.getPlayerInfoMasterDataDTO().getPlayerId());
-        String tournamentId = player.getPlayerInfoMasterDataDTO().getPlayerTournamentId();
+    public Map<PlayerTournamentId, PlayerTourStatDTO> readYearlyTournamentStatistics(String playerId, PlayerTournamentId tournamentId) {
+        PlayerTourStatDTO playerStats = new PlayerTourStatDTO(playerId);
 
-        for (RecentYears year : RecentYears.values()) {
-            setTournamentStatForYear(stats, year, tournamentId);
+        // Iterate over enum values
+        for (RecentYears recentYear : RecentYears.values()) {
+            setTournamentStatsForYear(playerStats, recentYear, tournamentId.tournamentId());
         }
-        return stats;
+
+        return Map.of(tournamentId, playerStats);
     }
 
-    private void setTournamentStatForYear(PlayerTourStatDTO stats, RecentYears year, String tournamentId) {
-        int tournaments = webService.getNumberOfTournamentsForYearAndPlayer(year.getValue(), tournamentId);
-        switch (year) {
-            case CURRENT_YEAR -> stats.setYearPlayedTournaments(tournaments);
-            case YEAR_MINUS_1 -> stats.setYearMinusOnePlayedTournaments(tournaments);
-            case YEAR_MINUS_2 -> stats.setYearMinusTwoPlayedTournaments(tournaments);
-            case YEAR_MINUS_3 -> stats.setYearMinusThreePlayedTournaments(tournaments);
-        }
+    private final Map<RecentYears, BiConsumer<PlayerTourStatDTO, Integer>> yearStatSetters = Map.of(
+            RecentYears.CURRENT_YEAR, PlayerTourStatDTO::setYearPlayedTournaments,
+            RecentYears.YEAR_MINUS_1, PlayerTourStatDTO::setYearMinusOnePlayedTournaments,
+            RecentYears.YEAR_MINUS_2, PlayerTourStatDTO::setYearMinusTwoPlayedTournaments,
+            RecentYears.YEAR_MINUS_3, PlayerTourStatDTO::setYearMinusThreePlayedTournaments
+    );
+
+    private void setTournamentStatsForYear(PlayerTourStatDTO playerStats, RecentYears recentYear, String tournamentId) {
+        log.debugf("Reading tournament statistics for player %s, tournament %s, year %s", playerStats.getPlayerId(), tournamentId, recentYear.getValue());
+
+        int tournamentCount = getTournamentCountForYear(recentYear.getValue(), tournamentId);
+        yearStatSetters.get(recentYear).accept(playerStats, tournamentCount);
     }
+
+    private int getTournamentCountForYear(int year, String tournamentId) {
+        return webService.getNumberOfTournamentsForYearAndPlayer(year, tournamentId);
+    }
+
 }

@@ -6,8 +6,11 @@ import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.ui.dashboard.DashboardService;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.rankingdata.PlayerDiscStatDTO;
+import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
 import de.ostfale.qk.ui.playerstats.matches.PlayerInfoMatchStatService;
+import de.ostfale.qk.web.player.PlayerTournamentId;
 import de.ostfale.qk.web.player.PlayerWebParserService;
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
@@ -16,7 +19,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.ToIntFunction;
 
@@ -44,34 +46,20 @@ public class PlayerInfoService {
             return playerInfoDTOMap.get(playerIdObject);
         }
         Player foundPlayer = rankingPlayerCacheHandler.getRankingPlayerCache().getPlayerByPlayerId(playerId);
-    //    PlayerTournamentId playerTournamentId = playerWebParserService.getPlayerTournamentId(playerId);
         var playerInfo = new PlayerInfoDTO(foundPlayer);
         playerInfo.setSingleDiscStat(mapSingleDisciplineStatistics(foundPlayer));
         playerInfo.setDoubleDiscStat(mapDoubleDisciplineStatistics(foundPlayer));
         playerInfo.setMixedDiscStat(mapMixedDisciplineStatistics(foundPlayer));
-
-        // Create async call and handle the result
-        readTournamentIdAsync(playerIdObject, playerId, playerInfo);
-
-
-
-      /*  playerInfo.getPlayerInfoMasterDataDTO().setPlayerTournamentId(playerTournamentId.tournamentId());
-        var stats = playerInfoMatchStatService.readYearlyTournamentStatistics(playerInfo);
-        playerInfo.setTournamentsStatisticDTO(stats);
-        playerInfoDTOMap.put(playerIdObject, playerInfo);*/
+        playerInfoDTOMap.put(playerIdObject, playerInfo);
         return playerInfo;
     }
 
-    public void readTournamentIdAsync(PlayerId playerIdObject, String playerId, PlayerInfoDTO playerInfo) {
-        CompletableFuture.supplyAsync(() -> playerWebParserService.getPlayerTournamentId(playerId))
-                .thenAccept(pTId -> {
-                    playerInfo.getPlayerInfoMasterDataDTO().setPlayerTournamentId(pTId.tournamentId());
-                  //  var stats = playerInfoMatchStatService.readYearlyTournamentStatistics(playerInfo);
-                    //playerInfo.setTournamentsStatisticDTO(stats);
-                    playerInfoDTOMap.put(playerIdObject, playerInfo);
-                });
+    // read tournamentId and use it to get the tournament statistics -> async request
+    public Uni<Map<PlayerTournamentId, PlayerTourStatDTO>> getPlayerTourStatsAsync(String playerId) {
+        return Uni.createFrom()
+                .item(() -> playerWebParserService.getPlayerTournamentId(playerId))
+                .onItem().transform(ptId -> playerInfoMatchStatService.readYearlyTournamentStatistics(playerId, ptId));
     }
-
 
     public List<PlayerInfoDTO> getPlayerInfoList() {
         log.debug("PlayerInfoService :: map all players from cache into PlayerInfoDTOs ");
