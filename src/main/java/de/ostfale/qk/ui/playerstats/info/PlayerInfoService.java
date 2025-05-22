@@ -8,8 +8,8 @@ import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.rankingdata.PlayerDiscStatDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
 import de.ostfale.qk.ui.playerstats.matches.PlayerInfoMatchStatService;
-import de.ostfale.qk.web.player.PlayerTournamentId;
 import de.ostfale.qk.web.player.PlayerWebParserService;
+import io.quarkus.cache.CacheResult;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -39,6 +39,7 @@ public class PlayerInfoService {
     private final Map<PlayerId, PlayerInfoDTO> playerInfoDTOMap = new ConcurrentHashMap<>();
 
 
+    @CacheResult(cacheName = "playerCache")
     public PlayerInfoDTO getPlayerInfoDTO(PlayerId playerIdObject) {
         String playerId = playerIdObject.playerId();
         log.debugf("PlayerInfoService :: get player info for player id %s", playerId);
@@ -55,10 +56,15 @@ public class PlayerInfoService {
     }
 
     // read tournamentId and use it to get the tournament statistics -> async request
-    public Uni<Map<PlayerTournamentId, PlayerTourStatDTO>> getPlayerTourStatsAsync(String playerId) {
+    public Uni<PlayerTourStatDTO> fetchPlayerTournamentIdAsync(String playerId) {
+        PlayerId playerIdObject = new PlayerId(playerId);
         return Uni.createFrom()
-                .item(() -> playerWebParserService.getPlayerTournamentId(playerId))
-                .onItem().transform(ptId -> playerInfoMatchStatService.readYearlyTournamentStatistics(playerId, ptId));
+                .item(playerId)
+                .onItem().transformToUni(id ->
+                        Uni.createFrom().item(() -> playerWebParserService.getPlayerTournamentId(id)))
+                .onItem().transformToUni(tournamentId ->
+                        Uni.createFrom().item(() ->
+                                playerInfoMatchStatService.readYearlyTournamentStatistics(playerIdObject, tournamentId)));
     }
 
     public List<PlayerInfoDTO> getPlayerInfoList() {

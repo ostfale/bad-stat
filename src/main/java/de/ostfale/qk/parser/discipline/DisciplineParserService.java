@@ -1,5 +1,6 @@
 package de.ostfale.qk.parser.discipline;
 
+import de.ostfale.qk.domain.discipline.AgeClass;
 import de.ostfale.qk.parser.HtmlParser;
 import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.ParsedComponent;
@@ -15,6 +16,7 @@ import org.htmlunit.html.HtmlElement;
 import org.jboss.logging.Logger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Singleton
@@ -122,17 +124,38 @@ public class DisciplineParserService implements DisciplineParser {
         String[] disciplineAge = headerElement.asNormalizedText().split(" ");
 
         var disciplineName = "";
-        var disciplineAgeGroup = "";
-        if (disciplineAge[2].startsWith("U") || disciplineAge[2].startsWith("O")) {
-            disciplineName = disciplineAge[1];
-            disciplineAgeGroup = disciplineAge[2];
-        } else {
-            disciplineName = disciplineAge[2];
-            disciplineAgeGroup = disciplineAge[1];
+        var disciplineAgeGroup = AgeClass.UOX.name();
+
+        if (disciplineAge.length == 3) {
+
+            if (containsAgeClassMarker(disciplineAge)) {
+                if (disciplineAge[2].startsWith("U") || disciplineAge[2].startsWith("O")) {
+                    disciplineName = disciplineAge[1];
+                    disciplineAgeGroup = disciplineAge[2];
+                } else {
+                    disciplineName = disciplineAge[2];
+                    disciplineAgeGroup = disciplineAge[1];
+                }
+            } else {
+                log.warnf("DisciplineParserService :: no info about age class found: %s", String.join(" ", disciplineAge));
+                disciplineName = disciplineAge[1] + " " + disciplineAge[2];
+            }
+        } else if (disciplineAge.length == 2) {
+            log.warnf("DisciplineParserService :: wrong number of args for discipline and age: %s", disciplineAge[1]);
+            if (disciplineAge[1].startsWith("U") || disciplineAge[1].startsWith("O")) {
+                disciplineAgeGroup = disciplineAge[1];
+            } else {
+                disciplineName = disciplineAge[1];
+            }
         }
 
         var disciplineInfo = new DisciplineParserModel(disciplineName, disciplineAgeGroup);
         log.debugf("Tournament discipline info: {}", disciplineInfo);
         return disciplineInfo;
+    }
+
+
+    private boolean containsAgeClassMarker(String[] rawData) {
+        return Arrays.stream(rawData).anyMatch(rawDataElement -> rawDataElement.startsWith("U") || rawDataElement.startsWith("O"));
     }
 }

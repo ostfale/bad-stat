@@ -26,7 +26,11 @@ public class FavPlayerService {
 
     private FavPlayerListData favoritePlayerListData;
 
-    private final List<PlayerInfoDTO> favPlayers = new ArrayList<>();
+    private final List<PlayerInfoDTO> favPlayers;
+
+    public FavPlayerService() {
+        favPlayers = new ArrayList<>();
+    }
 
     @PostConstruct
     public void readFavoritePlayersFromData() {
@@ -68,44 +72,4 @@ public class FavPlayerService {
                 .findFirst().orElse(null);
         favPlayers.remove(playerToRemove);
     }
-
-
-
-
-
-  /*  public List<PlayerInfoDTO> getFavPlayers() {
-        log.debug("FavPlayerService ::Get favorite players");
-        if (favPlayers.isEmpty()) {
-            initFavPlayers();
-        }
-        return favPlayers;
-    }*/
-
-
-
-
-
-  /*  private void initFavPlayers() {
-        log.debug("FavPlayerService ::Favorite players list is empty -> will be initialized from file");
-        List<FavPlayerData> favoritePlayers = getFavoritePlayersList();
-        favoritePlayers.stream()
-                .map(this::createEnrichedPlayerInfo)
-                .forEach(this::addFavPlayer);
-    }*/
-
-   /* private List<FavPlayerData> getFavoritePlayersList() {
-        FavPlayerListData favoritePlayersList = favoritePlayerDataJsonHandler.readFavoritePlayersList();
-        return favoritePlayersList.favoritePlayersList();
-    }
-
-    private PlayerInfoDTO createEnrichedPlayerInfo(FavPlayerData playerData) {
-        PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayerId(playerData.getPlayerId());
-        playerInfo.setTournamentsStatisticDTO(createTournamentStatistics(playerData));
-        return playerInfo;
-    }
-
-    private TournamentsStatisticDTO createTournamentStatistics(FavPlayerData playerData) {
-        List<FavPlayerTourStatisticData> statisticData = playerData.getTournamentsStatisticsDTOS();
-        return new TournamentsStatisticDTO(statisticData);
-    }*/
 }

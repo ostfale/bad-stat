@@ -9,9 +9,9 @@ public enum Discipline {
         }
 
         return switch (discipline) {
-            case "JE", "DE", "HE", "ME" -> SINGLE;
-            case "JD", "DD", "HD", "MD" -> DOUBLE;
-            case "MX", "DM", "HM" -> MIXED;
+            case "JE", "DE", "HE", "ME", "Boys Singles", "Girls Singles" -> SINGLE;
+            case "JD", "DD", "HD", "MD", "Doubles", "Boys Doubles", "Girls Doubles" -> DOUBLE;
+            case "MX", "DM", "HM", "Mixed", "Mixed Doubles" -> MIXED;
             default -> throw new IllegalArgumentException("Unknown discipline found: " + discipline);
         };
     }

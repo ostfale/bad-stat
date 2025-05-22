@@ -2,7 +2,6 @@ package de.ostfale.qk.ui.playerstats.info;
 
 import de.ostfale.qk.data.player.model.FavPlayerData;
 import de.ostfale.qk.ui.app.BaseHandler;
-import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkiverse.fx.views.FxViewRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
@@ -31,7 +30,6 @@ public class PlayerInfoHandler implements BaseHandler {
         updatePlayerInfo(player);
     }
 
-    @RunOnFxThread
     public void updatePlayerInfo(FavPlayerData player) {
         PlayerInfoController controller = fxViewRepository.getViewData(PLAYER_INFO_FXML).getController();
         controller.updatePlayerInfoUI(player.playerId());

@@ -1,9 +1,10 @@
 package de.ostfale.qk.ui.playerstats.matches;
 
+import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
 import de.ostfale.qk.web.api.WebService;
-import de.ostfale.qk.web.player.PlayerTournamentId;
+import de.ostfale.qk.domain.player.PlayerTournamentId;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jboss.logging.Logger;
@@ -19,15 +20,16 @@ public class PlayerInfoMatchStatService {
     @Inject
     WebService webService;
 
-    public Map<PlayerTournamentId, PlayerTourStatDTO> readYearlyTournamentStatistics(String playerId, PlayerTournamentId tournamentId) {
-        PlayerTourStatDTO playerStats = new PlayerTourStatDTO(playerId);
+    public PlayerTourStatDTO readYearlyTournamentStatistics(PlayerId playerId, PlayerTournamentId tournamentId) {
+        PlayerTourStatDTO playerStats = new PlayerTourStatDTO(playerId, tournamentId);
+        playerStats.setPlayerTournamentId(tournamentId);
 
         // Iterate over enum values
         for (RecentYears recentYear : RecentYears.values()) {
             setTournamentStatsForYear(playerStats, recentYear, tournamentId.tournamentId());
         }
 
-        return Map.of(tournamentId, playerStats);
+        return playerStats;
     }
 
     private final Map<RecentYears, BiConsumer<PlayerTourStatDTO, Integer>> yearStatSetters = Map.of(
@@ -47,5 +49,4 @@ public class PlayerInfoMatchStatService {
     private int getTournamentCountForYear(int year, String tournamentId) {
         return webService.getNumberOfTournamentsForYearAndPlayer(year, tournamentId);
     }
-
 }

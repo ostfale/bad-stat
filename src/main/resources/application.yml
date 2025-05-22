@@ -38,4 +38,4 @@ quarkus:
           enable: false
         category:
           "de.ostfale.qk":
-            level: DEBUG
+            level: INFO

@@ -1,11 +1,15 @@
 package de.ostfale.qk.ui.playerstats.info.tournamentdata;
 
+import de.ostfale.qk.domain.player.PlayerId;
+import de.ostfale.qk.domain.player.PlayerTournamentId;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerTourStatDTO {
 
-    private String playerId;
+    private PlayerId playerId;
+    private PlayerTournamentId tournamentId;
     private Integer yearPlayedTournaments = 0;
     private Integer yearDownloadedTournaments = 0;
     private Integer yearMinusOnePlayedTournaments = 0;
@@ -15,8 +19,9 @@ public class PlayerTourStatDTO {
     private Integer yearMinusThreePlayedTournaments = 0;
     private Integer yearMinusThreeDownloadedTournaments = 0;
 
-    public PlayerTourStatDTO(String playerId) {
+    public PlayerTourStatDTO(PlayerId playerId, PlayerTournamentId tournamentId) {
         this.playerId = playerId;
+        this.tournamentId = tournamentId;
     }
 
     public List<String> getTournamentsStatisticAsString() {
@@ -28,11 +33,19 @@ public class PlayerTourStatDTO {
         return tournamentsStatistic;
     }
 
-    public String getPlayerId() {
+    public PlayerTournamentId getPlayerTournamentId() {
+        return tournamentId;
+    }
+
+    public void setPlayerTournamentId(PlayerTournamentId playerTournamentId) {
+        this.tournamentId = playerTournamentId;
+    }
+
+    public PlayerId getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(String playerId) {
+    public void setPlayerId(PlayerId playerId) {
         this.playerId = playerId;
     }
 

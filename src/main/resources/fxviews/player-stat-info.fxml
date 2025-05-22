@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<GridPane fx:id="gpPlayerInfo" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ostfale.qk.ui.playerstats.info.PlayerInfoController">
+<GridPane fx:id="gpPlayerInfo" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ostfale.qk.ui.playerstats.info.PlayerInfoController">
       <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.3768539428711" minWidth="10.0" prefWidth="90.05016326904297" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="109.94983673095703" minWidth="10.0" prefWidth="109.94983673095703" />
@@ -263,10 +263,10 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Button mnemonicParsing="false" onAction="#downloadThisYearsTournaments" text="Download" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
-      <Button layoutX="225.0" layoutY="493.0" mnemonicParsing="false" onAction="#downloadThisYearMinusOneTournaments" text="Download" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="10" />
-      <Button layoutX="225.0" layoutY="523.0" mnemonicParsing="false" onAction="#downloadThisYearMinusTwoTournaments" text="Download" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="11" />
-      <Button layoutX="225.0" layoutY="553.0" mnemonicParsing="false" onAction="#downloadThisYearMinusThreeTournaments" text="Download" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="12" />
+      <Button fx:id="btnDownloadThisYear" mnemonicParsing="false" onAction="#downloadThisYearsTournaments" text="Download" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
+      <Button fx:id="btnDownloadMinusOne" layoutX="225.0" layoutY="493.0" mnemonicParsing="false" onAction="#downloadThisYearMinusOneTournaments" text="Download" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="10" />
+      <Button fx:id="btnDownloadMinusTwo" layoutX="225.0" layoutY="523.0" mnemonicParsing="false" onAction="#downloadThisYearMinusTwoTournaments" text="Download" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="11" />
+      <Button fx:id="btnDownloadMinusThree" layoutX="225.0" layoutY="553.0" mnemonicParsing="false" onAction="#downloadThisYearMinusThreeTournaments" text="Download" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="12" />
       <Label fx:id="lblYear" text="0/0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
       <Label fx:id="lblYearMinusOne" text="0/0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="10" />
       <Label fx:id="lblYearMinusTwo" text="0/0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="11" />

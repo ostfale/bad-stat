@@ -21,6 +21,7 @@ public class DataModel<T> {
 
     private final ObservableList<T> objectList = FXCollections.observableArrayList();
     private final ObjectProperty<T> currentObject = new SimpleObjectProperty<>();
+    private final ObjectProperty<T> currentSelection = new SimpleObjectProperty<>();
 
     private ChangeListener<T> changeListener = null;
     private Comparator<T> comparator = null;
@@ -107,4 +108,23 @@ public class DataModel<T> {
         return sortedList.sorted();
     }
 
+    public Object getCurrentSelection() {
+        return currentSelection.get();
+    }
+
+    public ObjectProperty<T> currentSelectionProperty() {
+        return currentSelection;
+    }
+
+    public void setCurrentSelection(T currentSelection) {
+        this.currentSelection.set(currentSelection);
+    }
+
+    public Object getCurrentObject() {
+        return currentObject.get();
+    }
+
+    public ObjectProperty<T> currentObjectProperty() {
+        return currentObject;
+    }
 }

@@ -1,5 +1,6 @@
 package de.ostfale.qk.web.player;
 
+import de.ostfale.qk.domain.player.PlayerTournamentId;
 import de.ostfale.qk.web.common.CookieDialogHandler;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

@@ -14,22 +14,18 @@ import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTournamentsService;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsController;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsHandler;
-import de.ostfale.qk.web.player.PlayerTournamentId;
+import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkiverse.fx.views.FxView;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import org.jboss.logging.Logger;
 
 import java.time.Year;
 import java.util.List;
-import java.util.Map;
 
 @Dependent
 @FxView("player-stat-info")
@@ -175,41 +171,48 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     private Label lblYearMinusOne;
 
     @FXML
+    private Button btnDownloadMinusOne;
+
+    @FXML
+    private Button btnDownloadMinusThree;
+
+    @FXML
+    private Button btnDownloadMinusTwo;
+
+    @FXML
+    private Button btnDownloadThisYear;
+
+    @FXML
     public void initialize() {
         log.info("Initialize PlayerInfoStatisticsController");
         initFavPlayerComboboxModel();
         new PlayerTextSearchComponent(playerInfoService, tfSearchPlayer).initialize();
         initYearLabel();
+        initBinding();
     }
 
     @FXML
     void downloadThisYearsTournaments(ActionEvent event) {
         int year = Year.now().getValue();
-      /*  PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, currentSelectedPlayer);
-        var uiModel = playerTournamentsService.readPlayerTournamentsForLastFourYears(currentSelectedPlayer);
-        playerStatisticsHandler.updatePlayerMatchStatistics(uiModel);*/
+        loadTournamentDataForYear(year);
     }
 
     @FXML
     void downloadThisYearMinusOneTournaments(ActionEvent event) {
         int year = Year.now().minusYears(1).getValue();
-       /* PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, currentSelectedPlayer);*/
+        loadTournamentDataForYear(year);
     }
 
     @FXML
     void downloadThisYearMinusTwoTournaments(ActionEvent event) {
         int year = Year.now().minusYears(2).getValue();
-     /*   PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, currentSelectedPlayer);*/
+        loadTournamentDataForYear(year);
     }
 
     @FXML
     void downloadThisYearMinusThreeTournaments(ActionEvent event) {
         int year = Year.now().minusYears(3).getValue();
-      /*  PlayerInfoDTO currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
-        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, currentSelectedPlayer);*/
+        loadTournamentDataForYear(year);
     }
 
     @FXML
@@ -230,12 +233,28 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     void viewPlayerInfo(ActionEvent event) {
         log.debugf("View player info");
+        cbPlayer.getSelectionModel().clearSelection();
+        cbPlayer.setValue(null);
         String searchedPlayerName = tfSearchPlayer.getText();
         PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayerName(searchedPlayerName);
         if (playerInfo == null) return;
         PlayerId playerId = new PlayerId(playerInfo.getPlayerInfoMasterDataDTO().getPlayerId());
         updatePlayerInfoUI(playerId);
-        //retrieveAndUpdateYearlyTournamentStatistics(playerInfo);
+    }
+
+    private void initBinding() {
+        btnDownloadThisYear.disableProperty().bind(dataModelFavPlayer.currentObjectProperty().isNull());
+        btnDownloadMinusOne.disableProperty().bind(dataModelFavPlayer.currentObjectProperty().isNull());
+        btnDownloadMinusTwo.disableProperty().bind(dataModelFavPlayer.currentObjectProperty().isNull());
+        btnDownloadMinusThree.disableProperty().bind(dataModelFavPlayer.currentObjectProperty().isNull());
+    }
+
+    private void loadTournamentDataForYear(int year) {
+        FavPlayerData currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
+        var playerInfo = playerInfoService.getPlayerInfoDTO(currentSelectedPlayer.playerId());
+        playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, playerInfo);
+        var uiModel = playerTournamentsService.readPlayerTournamentsForLastFourYears(playerInfo);
+        playerStatisticsHandler.updatePlayerMatchStatistics(uiModel);
     }
 
     // TODO check selected player from dataModel
@@ -246,6 +265,19 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         dataModelFavPlayer.setStringConverter(new FavPlayerStringConverter());
         dataModelFavPlayer.setChangeListener(favPlayerChangeListener);
         dataModelFavPlayer.updateModel(favPlayers, cbPlayer);
+
+        // reset combobox to show the prompt if nothing is selected
+        cbPlayer.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(FavPlayerData favPlayerData, boolean empty) {
+                super.updateItem(favPlayerData, empty);
+                if (favPlayerData == null || empty) {
+                    setText(cbPlayer.getPromptText());
+                } else {
+                    setText(favPlayerData.playerName());
+                }
+            }
+        });
     }
 
     public void updateFavorites() {
@@ -254,6 +286,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         dataModelFavPlayer.updateModel(favoritePlayers, cbPlayer);
     }
 
+    @RunOnFxThread
     public void updatePlayerInfoUI(PlayerId playerId) {
         var playerInfo = playerInfoService.getPlayerInfoDTO(playerId);
         updatePlayerInfoUI(playerInfo);
@@ -269,42 +302,31 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     }
 
     private void updatePlayerTournamentId(PlayerId playerId) {
-        playerInfoService.getPlayerTourStatsAsync(playerId.playerId())
+        playerInfoService.fetchPlayerTournamentIdAsync(playerId.playerId())
                 .subscribe().with(
                         plMap -> handleTournamentUpdate(playerId, plMap),
                         error -> log.errorf("Error processing tournament ID: %s", error.getMessage())
                 );
     }
 
-    private void handleTournamentUpdate(PlayerId playerId, Map<PlayerTournamentId, PlayerTourStatDTO> statsByTournament) {
+    private void handleTournamentUpdate(PlayerId playerId, PlayerTourStatDTO statsByTournament) {
         // Extract tournament ID and tournament statistics
-        PlayerTournamentId tournamentId = extractTournamentId(statsByTournament);
-        PlayerTourStatDTO tournamentStatistics = extractTournamentStatistics(statsByTournament);
-
-        if (tournamentId != null) {
+        var tournamentsId = statsByTournament.getPlayerTournamentId();
+        if (tournamentsId != null) {
             PlayerInfoDTO updatedPlayerInfo = playerInfoService.getPlayerInfoDTO(playerId);
 
             // Update player's tournament data
-            updatedPlayerInfo.getPlayerInfoMasterDataDTO().setPlayerTournamentId(tournamentId.tournamentId());
-            updatedPlayerInfo.setTournamentsStatisticDTO(tournamentStatistics);
+            updatedPlayerInfo.getPlayerInfoMasterDataDTO().setPlayerTournamentId(tournamentsId.tournamentId());
+            updatedPlayerInfo.setTournamentsStatisticDTO(statsByTournament);
 
             // Perform UI update and log the operation
             updatePlayerInfoUI(updatedPlayerInfo);
             log.debugf("PlayerInfoStatisticsController :: Updated player info for player %s with tournament ID %s"
-                    , playerId.playerId(), tournamentId.tournamentId());
+                    , playerId.playerId(), tournamentsId.tournamentId());
         } else {
             log.warnf("PlayerInfoStatisticsController :: Tournament ID is missing for player %s", playerId.playerId());
         }
     }
-
-    private PlayerTournamentId extractTournamentId(Map<PlayerTournamentId, PlayerTourStatDTO> statsByTournament) {
-        return statsByTournament.keySet().stream().findFirst().orElse(null);
-    }
-
-    private PlayerTourStatDTO extractTournamentStatistics(Map<PlayerTournamentId, PlayerTourStatDTO> statsByTournament) {
-        return statsByTournament.values().stream().findFirst().orElse(null);
-    }
-
 
     private void updatePlayerInfoUI(PlayerInfoDTO playerInfoDTO) {
         log.debugf("Update player info: %s", playerInfoDTO.toString());
@@ -336,7 +358,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         playerTourStatsController.updateTreeTable(uiModel);
     }
 
-    private void setPlayersMasterData(PlayerInfoDTO playerInfoDTO) {
+    void setPlayersMasterData(PlayerInfoDTO playerInfoDTO) {
         var masterData = playerInfoDTO.getPlayerInfoMasterDataDTO();
         lblName.setText(masterData.getPlayerName());
         lblGender.setText(masterData.getGender());
