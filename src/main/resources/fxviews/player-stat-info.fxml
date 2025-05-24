@@ -271,12 +271,12 @@
       <Label fx:id="lblYearMinusOne" text="0/0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="10" />
       <Label fx:id="lblYearMinusTwo" text="0/0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="11" />
       <Label fx:id="lblYearMinusThree" text="0/0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="12" />
-      <Label text="ID Turnier.de" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+      <Label text="Spieler Name" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
          <font>
             <Font name="System Bold" size="11.0" />
          </font>
       </Label>
-      <Label fx:id="lblIdTurnier" GridPane.columnIndex="4" GridPane.columnSpan="4" GridPane.rowIndex="6">
+      <Label fx:id="lblPlayerName" GridPane.columnIndex="4" GridPane.columnSpan="4" GridPane.rowIndex="6">
          <GridPane.margin>
             <Insets left="10.0" />
          </GridPane.margin>

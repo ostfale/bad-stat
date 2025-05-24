@@ -116,7 +116,6 @@ public class PlayerStatisticsController {
         // create child tree items
         List<TreeItem<PlayerMatchStatisticsUIModel>> childTreeItems = ptm.getMatchDetails().stream().map(TreeItem::new).toList();
         parentTreeItem.getChildren().addAll(childTreeItems);
-        System.out.println(ptm.getMatchDetails());
         return parentTreeItem;
     }
 }

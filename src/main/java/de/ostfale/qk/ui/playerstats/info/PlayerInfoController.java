@@ -2,6 +2,7 @@ package de.ostfale.qk.ui.playerstats.info;
 
 import de.ostfale.qk.data.player.model.FavPlayerData;
 import de.ostfale.qk.domain.player.PlayerId;
+import de.ostfale.qk.domain.player.PlayerTournamentId;
 import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
@@ -14,15 +15,14 @@ import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTournamentsService;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsController;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsHandler;
-import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkiverse.fx.views.FxView;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import org.jboss.logging.Logger;
 
 import java.time.Year;
 import java.util.List;
@@ -30,8 +30,6 @@ import java.util.List;
 @Dependent
 @FxView("player-stat-info")
 public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
-
-    private static final Logger log = Logger.getLogger(PlayerInfoController.class);
 
     private static final String INITIAL_TOURNAMENT_RESULT = "0/0";
 
@@ -95,7 +93,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     private Label lblDistrict;
 
     @FXML
-    private Label lblIdTurnier;
+    private Label lblPlayerName;
 
     @FXML
     private Label lblGroup;
@@ -184,7 +182,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @FXML
     public void initialize() {
-        log.info("Initialize PlayerInfoStatisticsController");
+        Log.info("Initialize PlayerInfoStatisticsController");
         initFavPlayerComboboxModel();
         new PlayerTextSearchComponent(playerInfoService, tfSearchPlayer).initialize();
         initYearLabel();
@@ -217,7 +215,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @FXML
     void addToFavorites(ActionEvent event) {
-        log.debug("Add player to favorites");
+        Log.debug("Add player to favorites");
         favPlayerService.addFavPlayer(tfSearchPlayer.getText());
         updateFavorites();
         tfSearchPlayer.clear();
@@ -225,21 +223,30 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @FXML
     void removeFromFavorites(ActionEvent actionEvent) {
-        log.debug("Remove player from favorites");
+        Log.debug("Remove player from favorites");
         favPlayerService.removeFavPlayer(tfSearchPlayer.getText());
         updateFavorites();
     }
 
     @FXML
     void viewPlayerInfo(ActionEvent event) {
-        log.debugf("View player info");
-        cbPlayer.getSelectionModel().clearSelection();
-        cbPlayer.setValue(null);
+        btnPlayerView.setDisable(true);
+        Log.debugf("View player info");
+        resetFavoriteCombobox();
+
         String searchedPlayerName = tfSearchPlayer.getText();
         PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayerName(searchedPlayerName);
-        if (playerInfo == null) return;
-        PlayerId playerId = new PlayerId(playerInfo.getPlayerInfoMasterDataDTO().getPlayerId());
-        updatePlayerInfoUI(playerId);
+        updatePlayerInfoUI(playerInfo);
+        btnPlayerView.setDisable(false);
+    }
+
+    public void clearPlayerSearchField() {
+        tfSearchPlayer.clear();
+    }
+
+    private void resetFavoriteCombobox() {
+        cbPlayer.getSelectionModel().clearSelection();
+        cbPlayer.setValue(null);
     }
 
     private void initBinding() {
@@ -259,7 +266,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     // TODO check selected player from dataModel
     private void initFavPlayerComboboxModel() {
-        log.debug("Initialize DataModel for player combobox");
+        Log.debug("Initialize DataModel for player combobox");
         List<FavPlayerData> favPlayers = favPlayerService.getFavoritePlayerListData().getFavoritePlayers().stream().toList();
 
         dataModelFavPlayer.setStringConverter(new FavPlayerStringConverter());
@@ -281,55 +288,19 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     }
 
     public void updateFavorites() {
-        log.debug("PlayerInfoStatisticsController :: Update favorites");
+        Log.debug("PlayerInfoStatisticsController :: Update favorites");
         var favoritePlayers = favPlayerService.getFavoritePlayerListData().getFavoritePlayers().stream().toList();
         dataModelFavPlayer.updateModel(favoritePlayers, cbPlayer);
     }
 
-    @RunOnFxThread
-    public void updatePlayerInfoUI(PlayerId playerId) {
+    public void updatePlayerInfoUI(PlayerId playerId, PlayerTournamentId playerTournamentId) {
         var playerInfo = playerInfoService.getPlayerInfoDTO(playerId);
+        playerInfo.getPlayerInfoMasterDataDTO().setPlayerTournamentId(playerTournamentId.tournamentId());
         updatePlayerInfoUI(playerInfo);
-
-        if (isTournamentIdMissing(playerInfo)) {
-            log.debugf("PlayerInfoStatisticsController :: Update player info for player %s with tournament ID", playerId.playerId());
-            updatePlayerTournamentId(playerId);
-        }
-    }
-
-    private boolean isTournamentIdMissing(PlayerInfoDTO playerInfo) {
-        return playerInfo.getPlayerInfoMasterDataDTO().getPlayerTournamentId() == null;
-    }
-
-    private void updatePlayerTournamentId(PlayerId playerId) {
-        playerInfoService.fetchPlayerTournamentIdAsync(playerId.playerId())
-                .subscribe().with(
-                        plMap -> handleTournamentUpdate(playerId, plMap),
-                        error -> log.errorf("Error processing tournament ID: %s", error.getMessage())
-                );
-    }
-
-    private void handleTournamentUpdate(PlayerId playerId, PlayerTourStatDTO statsByTournament) {
-        // Extract tournament ID and tournament statistics
-        var tournamentsId = statsByTournament.getPlayerTournamentId();
-        if (tournamentsId != null) {
-            PlayerInfoDTO updatedPlayerInfo = playerInfoService.getPlayerInfoDTO(playerId);
-
-            // Update player's tournament data
-            updatedPlayerInfo.getPlayerInfoMasterDataDTO().setPlayerTournamentId(tournamentsId.tournamentId());
-            updatedPlayerInfo.setTournamentsStatisticDTO(statsByTournament);
-
-            // Perform UI update and log the operation
-            updatePlayerInfoUI(updatedPlayerInfo);
-            log.debugf("PlayerInfoStatisticsController :: Updated player info for player %s with tournament ID %s"
-                    , playerId.playerId(), tournamentsId.tournamentId());
-        } else {
-            log.warnf("PlayerInfoStatisticsController :: Tournament ID is missing for player %s", playerId.playerId());
-        }
     }
 
     private void updatePlayerInfoUI(PlayerInfoDTO playerInfoDTO) {
-        log.debugf("Update player info: %s", playerInfoDTO.toString());
+        Log.debugf("Update player info: %s", playerInfoDTO.toString());
         resetPlayerInfo();
         updateTournamentInfosForPlayerAndYear(playerInfoDTO.getTournamentsStatisticDTO());
         setPlayersMasterData(playerInfoDTO);
@@ -353,7 +324,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     }
 
     public void updatePlayerMatchesStatics(PlayerInfoDTO playerInfoDTO) {
-        log.debugf("UI :: Update player matches statistics for player %s ", playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerName());
+        Log.debugf("UI :: Update player matches statistics for player %s ", playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerName());
         var uiModel = playerTournamentsService.readPlayerTournamentsForLastFourYears(playerInfoDTO);
         playerTourStatsController.updateTreeTable(uiModel);
     }
@@ -369,13 +340,13 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         lblDistrict.setText(masterData.getDistrictName() == null ? "" : masterData.getDistrictName());
         lblState.setText(masterData.getStateName() == null ? "" : masterData.getStateName());
         lblGroup.setText(masterData.getStateGroup() == null ? "" : masterData.getStateGroup());
-        lblIdTurnier.setText(masterData.getPlayerTournamentId() == null ? "" : masterData.getPlayerTournamentId());
+        lblPlayerName.setText(masterData.getPlayerName() == null ? "" : masterData.getPlayerName());
     }
 
 
     private void updateTournamentInfosForPlayerAndYear(PlayerTourStatDTO playerTourStatDTO) {
         if (playerTourStatDTO != null) {
-            log.debugf("UI :: Update tournament infos for player %s ", playerTourStatDTO.getPlayerId());
+            Log.debugf("UI :: Update tournament infos for player %s ", playerTourStatDTO.getPlayerId());
             lblYear.setText(playerTourStatDTO.getTournamentsStatisticAsString().getFirst());
             lblYearMinusOne.setText(playerTourStatDTO.getTournamentsStatisticAsString().get(1));
             lblYearMinusTwo.setText(playerTourStatDTO.getTournamentsStatisticAsString().get(2));
@@ -394,7 +365,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     // Extracted method to encapsulate the repetitive label reset logic
     private void resetPlayerInfo() {
         // Group repetitive label components into one array for iteration
-        Label[] labels = {lblName, lblPlayerId, lblBirthYear, lblAgeClass, lblClub, lblDistrict, lblIdTurnier, lblGroup, lblState, lblGender, lblSTours, lblDTours, lblMTours, lblSPoints, lblDPoints, lblMPoints, lblSRank, lblDRank, lblMRank, lblSAKRank, lblDAKRank, lblMAKRank, lblYear, lblYearMinusOne, lblYearMinusTwo, lblYearMinusThree};
+        Label[] labels = {lblName, lblPlayerId, lblBirthYear, lblAgeClass, lblClub, lblDistrict, lblPlayerName, lblGroup, lblState, lblGender, lblSTours, lblDTours, lblMTours, lblSPoints, lblDPoints, lblMPoints, lblSRank, lblDRank, lblMRank, lblSAKRank, lblDAKRank, lblMAKRank, lblYear, lblYearMinusOne, lblYearMinusTwo, lblYearMinusThree};
 
         // Clear all labels using a helper method
         for (Label label : labels) {

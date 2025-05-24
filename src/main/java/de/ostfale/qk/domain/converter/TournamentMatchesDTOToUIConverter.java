@@ -10,7 +10,7 @@ import org.jboss.logging.Logger;
 @Singleton
 public class TournamentMatchesDTOToUIConverter implements Converter<TournamentMatchesDTO, PlayerMatchStatisticsUIModel> {
 
-    private static final Logger log = Logger.getLogger(PlayerMatchStatisticsUIModel.class);
+    private static final Logger log = Logger.getLogger(TournamentMatchesDTOToUIConverter.class);
 
     private static final String EMPTY_STRING = "";
 

@@ -19,11 +19,12 @@ public class PlayerTextSearchComponent {
 
     private final TextField searchField;
     private final PlayerAutoCompleteHandler autoCompleteHandler;
+    private final static List<PlayerInfoDTO> playerList = new ArrayList<>();
 
-    public PlayerTextSearchComponent(PlayerInfoService playerInfoService, TextField searchField) {
+    public PlayerTextSearchComponent(PlayerInfoService aPlayerInfoService, TextField searchField) {
         log.debug("Initialize PlayerTextSearchComponent");
         this.searchField = searchField;
-        this.autoCompleteHandler = new PlayerAutoCompleteHandler(playerInfoService);
+        this.autoCompleteHandler = new PlayerAutoCompleteHandler(aPlayerInfoService);
         initialize();
     }
 
@@ -37,10 +38,12 @@ public class PlayerTextSearchComponent {
     }
 
     private static class PlayerAutoCompleteHandler {
-        private final List<PlayerInfoDTO> playerList = new ArrayList<>();
+
+        private final PlayerInfoService playerInfoService;
 
         public PlayerAutoCompleteHandler(PlayerInfoService playerInfoService) {
             playerList.addAll(playerInfoService.getPlayerInfoList());
+            this.playerInfoService = playerInfoService;
         }
 
         public Callback<AutoCompletionBinding.ISuggestionRequest, Collection<PlayerInfoDTO>> createSuggestionProvider() {
@@ -51,12 +54,16 @@ public class PlayerTextSearchComponent {
                     return List.of();
                 }
 
-                return filterPlayersByName(playerList, searchText);
+                return filterPlayersByName(searchText);
             };
         }
 
-        private Collection<PlayerInfoDTO> filterPlayersByName(Collection<PlayerInfoDTO> players, String searchText) {
-            return players.stream()
+        private Collection<PlayerInfoDTO> filterPlayersByName(String searchText) {
+            if (playerList.isEmpty()) {
+                playerList.addAll(playerInfoService.getPlayerInfoList());
+            }
+
+            return playerList.stream()
                     .filter(player -> player.getPlayerInfoMasterDataDTO().getPlayerName().toLowerCase().contains(searchText))
                     .toList();
         }

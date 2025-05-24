@@ -3,17 +3,15 @@ package de.ostfale.qk.ui.playerstats.info;
 import de.ostfale.qk.data.dashboard.RankingPlayerCacheHandler;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.domain.player.PlayerId;
-import de.ostfale.qk.ui.dashboard.DashboardService;
+import de.ostfale.qk.domain.player.PlayerTournamentId;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.rankingdata.PlayerDiscStatDTO;
-import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
 import de.ostfale.qk.ui.playerstats.matches.PlayerInfoMatchStatService;
+import de.ostfale.qk.web.async.PlayerAsyncWebService;
 import de.ostfale.qk.web.player.PlayerWebParserService;
-import io.quarkus.cache.CacheResult;
-import io.smallrye.mutiny.Uni;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.jboss.logging.Logger;
 
 import java.util.Comparator;
 import java.util.List;
@@ -25,8 +23,6 @@ import java.util.function.ToIntFunction;
 @ApplicationScoped
 public class PlayerInfoService {
 
-    private static final Logger log = Logger.getLogger(DashboardService.class);
-
     @Inject
     RankingPlayerCacheHandler rankingPlayerCacheHandler;
 
@@ -36,14 +32,16 @@ public class PlayerInfoService {
     @Inject
     PlayerWebParserService playerWebParserService;
 
+    @Inject
+    PlayerAsyncWebService playerAsyncWebService;
+
     private final Map<PlayerId, PlayerInfoDTO> playerInfoDTOMap = new ConcurrentHashMap<>();
 
-
-    @CacheResult(cacheName = "playerCache")
     public PlayerInfoDTO getPlayerInfoDTO(PlayerId playerIdObject) {
         String playerId = playerIdObject.playerId();
-        log.debugf("PlayerInfoService :: get player info for player id %s", playerId);
+        Log.debugf("PlayerInfoService :: get player info for player id %s", playerIdObject.playerId());
         if (playerInfoDTOMap.containsKey(playerIdObject)) {
+            Log.debugf("PlayerInfoService :: found player info in cache for player id %s", playerIdObject.playerId());
             return playerInfoDTOMap.get(playerIdObject);
         }
         Player foundPlayer = rankingPlayerCacheHandler.getRankingPlayerCache().getPlayerByPlayerId(playerId);
@@ -51,24 +49,26 @@ public class PlayerInfoService {
         playerInfo.setSingleDiscStat(mapSingleDisciplineStatistics(foundPlayer));
         playerInfo.setDoubleDiscStat(mapDoubleDisciplineStatistics(foundPlayer));
         playerInfo.setMixedDiscStat(mapMixedDisciplineStatistics(foundPlayer));
+
+        playerAsyncWebService.fetchPlayerTournamentId(playerId)
+                .onFailure().invoke(throwable -> Log.errorf("Failed to get tournament id for player %s", playerId, throwable))
+                .onItem().transform(PlayerTournamentId::tournamentId)
+                .subscribe().with(tournamentId -> {
+                    playerInfo.getPlayerInfoMasterDataDTO().setPlayerTournamentId(tournamentId);
+                });
+
+        var playerIdObj = new PlayerId(playerId);
+        var playerTournamentId = new PlayerTournamentId(playerInfo.getPlayerInfoMasterDataDTO().getPlayerTournamentId());
+        playerAsyncWebService.fetchPlayerTourStatInfo(playerIdObj,playerTournamentId)
+                .onFailure().invoke(throwable -> Log.errorf("Failed to get tournament statistics for player %s", playerId, throwable))
+                        .subscribe().with(playerInfo::setPlayerTourStatDTO);
+
         playerInfoDTOMap.put(playerIdObject, playerInfo);
         return playerInfo;
     }
 
-    // read tournamentId and use it to get the tournament statistics -> async request
-    public Uni<PlayerTourStatDTO> fetchPlayerTournamentIdAsync(String playerId) {
-        PlayerId playerIdObject = new PlayerId(playerId);
-        return Uni.createFrom()
-                .item(playerId)
-                .onItem().transformToUni(id ->
-                        Uni.createFrom().item(() -> playerWebParserService.getPlayerTournamentId(id)))
-                .onItem().transformToUni(tournamentId ->
-                        Uni.createFrom().item(() ->
-                                playerInfoMatchStatService.readYearlyTournamentStatistics(playerIdObject, tournamentId)));
-    }
-
     public List<PlayerInfoDTO> getPlayerInfoList() {
-        log.debug("PlayerInfoService :: map all players from cache into PlayerInfoDTOs ");
+        Log.debug("PlayerInfoService :: map all players from cache into PlayerInfoDTOs ");
         var rankingPlayerCache = rankingPlayerCacheHandler.getRankingPlayerCache();
         if (rankingPlayerCache != null) {
             return rankingPlayerCache.players().stream().map(PlayerInfoDTO::new).toList();
@@ -81,7 +81,7 @@ public class PlayerInfoService {
         if (foundPlayers.size() == 1) {
             return getPlayerInfoDTO(foundPlayers.getFirst().getPlayerId());
         }
-        log.errorf("Multiple players found with name: %s -> %d", playerName, foundPlayers.size());
+        Log.errorf("Multiple players found with name: %s -> %d", playerName, foundPlayers.size());
         return null;
     }
 
@@ -116,14 +116,14 @@ public class PlayerInfoService {
     }
 
     private Integer calculatePlayersRanking(Player player, ToIntFunction<Player> pointsExtractor, String rankingType) {
-        log.debugf("PlayerInfoService :: calculate ranking for player %s", player.getFullName());
+        Log.debugf("PlayerInfoService :: calculate ranking for player %s", player.getFullName());
         List<Player> filteredPlayers = rankingPlayerCacheHandler.getRankingPlayerCache()
                 .filterByGenderAndAgeClass(player.getPlayerInfo().getAgeClassGeneral(), player.getGender().getDisplayName());
         var sortedPlayers = filteredPlayers.stream()
                 .sorted(Comparator.comparingInt(pointsExtractor).reversed())
                 .toList();
         int rank = sortedPlayers.indexOf(player) + 1;
-        log.debugf("Calculated %s ranking for player %s is %d", rankingType, player.getFullName(), rank);
+        Log.debugf("Calculated %s ranking for player %s is %d", rankingType, player.getFullName(), rank);
         return rank;
     }
 }

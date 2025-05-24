@@ -25,13 +25,14 @@ public class PlayerInfoHandler implements BaseHandler {
         return fxViewRepository.getViewData(PLAYER_INFO_FXML).getRootNode();
     }
 
-    public void onChangedFavorite(@Observes FavPlayerData player) {
-        log.debugf("PlayerInfoHandler :: Favorite player changed to %s", player);
-        updatePlayerInfo(player);
+    public void onChangedFavorite(@Observes FavPlayerData favPlayerData) {
+        log.debugf("PlayerInfoHandler :: Favorite player changed to %s", favPlayerData);
+        updatePlayerInfo(favPlayerData);
     }
 
-    public void updatePlayerInfo(FavPlayerData player) {
+    public void updatePlayerInfo(FavPlayerData favPlayerData) {
         PlayerInfoController controller = fxViewRepository.getViewData(PLAYER_INFO_FXML).getController();
-        controller.updatePlayerInfoUI(player.playerId());
+        controller.updatePlayerInfoUI(favPlayerData.playerId(), favPlayerData.playerTournamentId());
+        controller.clearPlayerSearchField();
     }
 }

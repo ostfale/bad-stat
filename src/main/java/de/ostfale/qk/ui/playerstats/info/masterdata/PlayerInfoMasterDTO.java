@@ -1,11 +1,9 @@
 package de.ostfale.qk.ui.playerstats.info.masterdata;
 
 import de.ostfale.qk.domain.player.Player;
-import org.jboss.logging.Logger;
+import io.quarkus.logging.Log;
 
 public class PlayerInfoMasterDTO {
-
-    private static final Logger log = Logger.getLogger(PlayerInfoMasterDTO.class);
 
     private final String playerName;
     private final String gender;
@@ -21,7 +19,7 @@ public class PlayerInfoMasterDTO {
     private String playerTournamentId;
 
     public PlayerInfoMasterDTO(Player player) {
-        log.tracef("PlayerInfoDTO :: init from player %d", player.getPlayerId());
+        Log.tracef("PlayerInfoDTO :: init from player %d", player.getPlayerId());
         this.playerName = player.getFullName();
         this.gender = player.getGender().toString();
         this.playerId = player.getPlayerId().playerId();

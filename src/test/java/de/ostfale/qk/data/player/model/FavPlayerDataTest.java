@@ -1,68 +1,62 @@
 package de.ostfale.qk.data.player.model;
 
 import de.ostfale.qk.domain.player.PlayerId;
+import de.ostfale.qk.domain.player.PlayerTournamentId;
+import de.ostfale.qk.parser.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Test FavPlayerData record initialization")
 @Tag("unittest")
-class FavPlayerDataTest {
+class FavPlayerDataTest extends BaseTest {
+
+
 
     @Test
     void testToStringReturnsPlayerName() {
         // given
-        String playerId = "player123";
-        String playerName = "John Doe";
-        PlayerId pId = new PlayerId(playerId);
+        PlayerId pId = new PlayerId(PLAYER_ID);
+        PlayerTournamentId pTournamentId = new PlayerTournamentId(PLAYER_TOURNAMENT_ID);
 
-        FavPlayerData favPlayerData = new FavPlayerData(pId, playerName);
+        FavPlayerData favPlayerData = new FavPlayerData(pId, pTournamentId, PLAYER_NAME);
 
         // when
         String result = favPlayerData.toString();
 
         // then
-        assertThat(result).isEqualTo(playerName);
+        assertAll(
+                "Test valid FavPlayerData record initialization with player name:",
+                () -> assertThat(result).isEqualTo(PLAYER_NAME)
+        );
     }
 
     @Test
-    void testToStringWithEmptyPlayerNameThrowsException() {
+    void testToStringWithEmptyPlayerNameThrowsException () {
         // given
-        String playerId = "player123";
+        PlayerId pId = new PlayerId(PLAYER_ID);
+        PlayerTournamentId pTournamentId = new PlayerTournamentId(PLAYER_TOURNAMENT_ID);
         String playerName = " ";
-        PlayerId pId = new PlayerId(playerId);
 
         // when & then
-        assertThrows(IllegalArgumentException.class, () -> new FavPlayerData(pId, playerName));
+        assertThrows(IllegalArgumentException.class, () -> new FavPlayerData(pId, pTournamentId, playerName));
     }
 
     @Test
     void testToStringWithNullPlayerNameThrowsException() {
         // given
-        String playerId = "player123";
+        PlayerId pId = new PlayerId(PLAYER_ID);
+        PlayerTournamentId pTournamentId = new PlayerTournamentId(PLAYER_TOURNAMENT_ID);
         String playerName = null;
-        PlayerId pId = new PlayerId(playerId);
 
         // when & then
-        assertThrows(IllegalArgumentException.class, () -> new FavPlayerData(pId, playerName));
+        assertThrows(IllegalArgumentException.class, () ->  new FavPlayerData(pId, pTournamentId, playerName));
     }
 
-    @Test
-    void testToStringWithValidPlayerIdAndPlayerName() {
-        // given
-        String playerId = "validId123";
-        String playerName = "Alice";
-        PlayerId pId = new PlayerId(playerId);
-
-        // when
-        FavPlayerData favPlayerData = new FavPlayerData(pId, playerName);
-
-        // then
-        assertThat(favPlayerData.toString()).isEqualTo(playerName);
-    }
 
     @Test
     void testToStringWithEmptyPlayerIdThrowsException() {
@@ -71,5 +65,28 @@ class FavPlayerDataTest {
 
         // when & then
         assertThrows(IllegalArgumentException.class, () -> new PlayerId(playerId));
+    }
+
+    @Test
+    void testToStringWithNullPlayerTournamentIdThrowsException() {
+        // given
+        PlayerId pId = new PlayerId(PLAYER_ID);
+        PlayerTournamentId pTournamentId = null;
+
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> new FavPlayerData(pId, pTournamentId, PLAYER_NAME));
+    }
+
+    @Test
+    void testToStringReturnsPlayerNameForValidInput() {
+        // given
+        PlayerId pId = new PlayerId(PLAYER_ID);
+        PlayerTournamentId pTournamentId = new PlayerTournamentId(PLAYER_TOURNAMENT_ID);
+
+        // when
+        FavPlayerData favPlayerData = new FavPlayerData(pId, pTournamentId, PLAYER_NAME);
+
+        // then
+        assertThat(favPlayerData.toString()).isEqualTo(PLAYER_NAME);
     }
 }

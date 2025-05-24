@@ -1,6 +1,8 @@
 package de.ostfale.qk.data.player.model;
 
 import de.ostfale.qk.domain.player.PlayerId;
+import de.ostfale.qk.domain.player.PlayerTournamentId;
+import de.ostfale.qk.parser.BaseTest;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoMasterDTO;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Test FavPlayerListData record initialization")
 @Tag("unittest")
-class FavPlayerListDataTest {
+class FavPlayerListDataTest extends BaseTest {
 
     @Test
     void shouldAddFavoritePlayerSuccessfully() {
@@ -22,8 +24,9 @@ class FavPlayerListDataTest {
         FavPlayerListData favPlayerListData = new FavPlayerListData();
 
         PlayerInfoMasterDTO playerInfoMasterDTO = Mockito.mock(PlayerInfoMasterDTO.class);
-        Mockito.when(playerInfoMasterDTO.getPlayerId()).thenReturn("P001");
-        Mockito.when(playerInfoMasterDTO.getPlayerName()).thenReturn("John Doe");
+        Mockito.when(playerInfoMasterDTO.getPlayerId()).thenReturn(PLAYER_ID);
+        Mockito.when(playerInfoMasterDTO.getPlayerName()).thenReturn(PLAYER_NAME);
+        Mockito.when(playerInfoMasterDTO.getPlayerTournamentId()).thenReturn(PLAYER_TOURNAMENT_ID);
 
         PlayerInfoDTO playerInfoDTO = Mockito.mock(PlayerInfoDTO.class);
         Mockito.when(playerInfoDTO.getPlayerInfoMasterDataDTO()).thenReturn(playerInfoMasterDTO);
@@ -33,7 +36,7 @@ class FavPlayerListDataTest {
 
         // Then
         Set<FavPlayerData> favoritePlayers = favPlayerListData.getFavoritePlayers();
-        assertTrue(favoritePlayers.contains(new FavPlayerData(new PlayerId("P001"), "John Doe")));
+        assertTrue(favoritePlayers.contains(new FavPlayerData(new PlayerId(PLAYER_ID), new PlayerTournamentId(PLAYER_TOURNAMENT_ID), PLAYER_NAME)));
     }
 
     @Test
@@ -42,8 +45,10 @@ class FavPlayerListDataTest {
         FavPlayerListData favPlayerListData = new FavPlayerListData();
 
         PlayerInfoMasterDTO playerInfoMasterDTO = Mockito.mock(PlayerInfoMasterDTO.class);
-        Mockito.when(playerInfoMasterDTO.getPlayerId()).thenReturn("P001");
-        Mockito.when(playerInfoMasterDTO.getPlayerName()).thenReturn("John Doe");
+        Mockito.when(playerInfoMasterDTO.getPlayerId()).thenReturn(PLAYER_ID);
+        Mockito.when(playerInfoMasterDTO.getPlayerName()).thenReturn(PLAYER_NAME);
+        Mockito.when(playerInfoMasterDTO.getPlayerTournamentId()).thenReturn(PLAYER_TOURNAMENT_ID);
+
 
         PlayerInfoDTO playerInfoDTO = Mockito.mock(PlayerInfoDTO.class);
         Mockito.when(playerInfoDTO.getPlayerInfoMasterDataDTO()).thenReturn(playerInfoMasterDTO);
@@ -55,7 +60,7 @@ class FavPlayerListDataTest {
         // Then
         Set<FavPlayerData> favoritePlayers = favPlayerListData.getFavoritePlayers();
         assertEquals(1, favoritePlayers.size());
-        assertTrue(favoritePlayers.contains(new FavPlayerData(new PlayerId("P001"), "John Doe")));
+        assertTrue(favoritePlayers.contains(new FavPlayerData(new PlayerId(PLAYER_ID), new PlayerTournamentId(PLAYER_TOURNAMENT_ID), PLAYER_NAME)));
     }
 
     @Test
@@ -64,8 +69,8 @@ class FavPlayerListDataTest {
         FavPlayerListData favPlayerListData = new FavPlayerListData();
 
         PlayerInfoMasterDTO playerInfoMasterDTO = Mockito.mock(PlayerInfoMasterDTO.class);
-        Mockito.when(playerInfoMasterDTO.getPlayerId()).thenReturn("P001");
-        Mockito.when(playerInfoMasterDTO.getPlayerName()).thenReturn("John Doe");
+        Mockito.when(playerInfoMasterDTO.getPlayerId()).thenReturn(PLAYER_ID);
+        Mockito.when(playerInfoMasterDTO.getPlayerName()).thenReturn(PLAYER_NAME);
 
         PlayerInfoDTO playerInfoDTO = Mockito.mock(PlayerInfoDTO.class);
         Mockito.when(playerInfoDTO.getPlayerInfoMasterDataDTO()).thenReturn(playerInfoMasterDTO);
@@ -74,6 +79,6 @@ class FavPlayerListDataTest {
         Set<FavPlayerData> favoritePlayers = favPlayerListData.getFavoritePlayers();
 
         // Then
-        assertFalse(favoritePlayers.contains(new FavPlayerData(new PlayerId("P001"), "John Doe")));
+        assertFalse(favoritePlayers.contains(new FavPlayerData(new PlayerId(PLAYER_ID), new PlayerTournamentId(PLAYER_TOURNAMENT_ID), PLAYER_NAME)));
     }
 }

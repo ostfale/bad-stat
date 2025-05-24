@@ -1,15 +1,9 @@
 package de.ostfale.qk.ui.playerstats.matches;
 
-import org.jboss.logging.Logger;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerMatchStatisticsUIModel {
-
-    private static final Logger log = Logger.getLogger(PlayerMatchStatisticsUIModel.class);
-
-    private static final String SPACE = "";
 
     private String tournamentDate;
     private String tournamentName;
@@ -22,6 +16,11 @@ public class PlayerMatchStatisticsUIModel {
     private List<PlayerMatchStatisticsUIModel> matchDetails = new ArrayList<>();
 
     public PlayerMatchStatisticsUIModel() {
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 
     public String getMatchResult() {

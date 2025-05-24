@@ -15,6 +15,10 @@ public abstract class BaseTest {
 
     protected final WebClient webClient = ConfiguredWebClient.getWebClient();
 
+    protected static final String PLAYER_ID = "06-153648";
+    protected static final String PLAYER_TOURNAMENT_ID = "65c792c7-e2a7-47d0-95eb-c8b591022523";
+    protected static final String PLAYER_NAME = "Victoria Braun";
+
     protected HtmlPage loadHtmlPage(String fileName) {
         try {
             var htmlString = readFile(fileName);

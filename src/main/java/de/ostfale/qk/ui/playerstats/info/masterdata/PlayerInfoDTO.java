@@ -3,11 +3,9 @@ package de.ostfale.qk.ui.playerstats.info.masterdata;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.ui.playerstats.info.rankingdata.PlayerDiscStatDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
-import org.jboss.logging.Logger;
+import io.quarkus.logging.Log;
 
 public class PlayerInfoDTO {
-
-    private static final Logger log = Logger.getLogger(PlayerInfoDTO.class);
 
     // all players static master data
     private PlayerInfoMasterDTO playerInfoMasterDTO;
@@ -30,7 +28,7 @@ public class PlayerInfoDTO {
     }
 
     public PlayerInfoDTO(Player player) {
-        log.tracef("PlayerInfoDTO :: init from player %d", player.getPlayerId());
+        Log.tracef("PlayerInfoDTO :: init from player %d", player.getPlayerId());
         this.playerInfoMasterDTO = new PlayerInfoMasterDTO(player);
     }
 
