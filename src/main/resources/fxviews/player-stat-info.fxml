@@ -180,7 +180,7 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </Separator>
-      <Label text="Spieler Rangliste / Turniere" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="8">
+      <Label text="Spieler Rangliste / Turnierstatistik" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="8">
          <GridPane.margin>
             <Insets left="20.0" />
          </GridPane.margin>
@@ -188,7 +188,7 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Separator prefWidth="200.0" GridPane.columnIndex="5" GridPane.columnSpan="11" GridPane.rowIndex="8">
+      <Separator prefWidth="200.0" GridPane.columnIndex="6" GridPane.columnSpan="10" GridPane.rowIndex="8">
          <GridPane.margin>
             <Insets left="10.0" right="10.0" />
          </GridPane.margin>
@@ -322,12 +322,23 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </Label>
-      <Button fx:id="btnFavRemove" layoutX="347.0" layoutY="73.0" mnemonicParsing="false" onAction="#removeFromFavorites" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+      <Button fx:id="btnFavRemove" layoutX="347.0" layoutY="73.0" mnemonicParsing="false" onAction="#removeFromFavorites" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
          <graphic>
             <FontIcon iconLiteral="fas-arrow-right" />
          </graphic>
          <tooltip>
             <Tooltip text="Aus den Favoriten entfernen" />
+         </tooltip>
+      </Button>
+      <Button fx:id="btnFavUpdate" mnemonicParsing="false" onAction="#updateFavoritesWebData" GridPane.columnIndex="2" GridPane.rowIndex="2">
+         <GridPane.margin>
+            <Insets left="10.0" />
+         </GridPane.margin>
+         <graphic>
+            <FontIcon iconLiteral="fa-refresh" />
+         </graphic>
+         <tooltip>
+            <Tooltip text="Favoriten aktualisieren" />
          </tooltip>
       </Button>
    </children>

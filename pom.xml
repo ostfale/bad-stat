@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.ostfale.qk</groupId>
     <artifactId>bad-stat</artifactId>
-    <version>v0.2.0</version>
+    <version>v0.3.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,7 +25,7 @@
         <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
 
         <!-- libs -->
-        <htmlunit.version>4.11.1</htmlunit.version>
+        <htmlunit.version>4.12.0</htmlunit.version>
         <quarkus-fx.version>0.9.1</quarkus-fx.version>
         <quarkus-poi.version>2.1.2</quarkus-poi.version>
 

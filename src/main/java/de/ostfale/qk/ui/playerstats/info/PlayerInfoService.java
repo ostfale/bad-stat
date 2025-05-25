@@ -71,7 +71,9 @@ public class PlayerInfoService {
         Log.debug("PlayerInfoService :: map all players from cache into PlayerInfoDTOs ");
         var rankingPlayerCache = rankingPlayerCacheHandler.getRankingPlayerCache();
         if (rankingPlayerCache != null) {
-            return rankingPlayerCache.players().stream().map(PlayerInfoDTO::new).toList();
+            var result = rankingPlayerCache.players().stream().map(PlayerInfoDTO::new).toList();
+            Log.debugf("Found %d players in cache", result.size());
+            return result;
         }
         return List.of();
     }

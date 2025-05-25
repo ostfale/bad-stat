@@ -4,6 +4,8 @@ import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.domain.player.PlayerTournamentId;
 import jakarta.annotation.Nonnull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -13,7 +15,8 @@ import java.util.Objects;
 public record FavPlayerData(
         @Nonnull PlayerId playerId,
         @Nonnull PlayerTournamentId playerTournamentId,
-        @Nonnull String playerName
+        @Nonnull String playerName,
+        List<FavPlayerYearStat> yearStats
 ) {
     private static final String PLAYER_ID_ERROR = "PlayerId must not be null";
     private static final String PLAYER_NAME_ERROR = "playerName must not be null or blank";
@@ -23,6 +26,18 @@ public record FavPlayerData(
         validatePlayerId(playerId);
         validatePlayerName(playerName);
         validatePlayerTournamentId(playerTournamentId);
+    }
+
+    public FavPlayerData(@Nonnull PlayerId playerId, @Nonnull PlayerTournamentId playerTournamentId, @Nonnull String playerName) {
+        this(playerId, playerTournamentId, playerName, new ArrayList<>());
+    }
+
+    public void addYearStat(FavPlayerYearStat yearStat) {
+        yearStats.add(yearStat);
+    }
+
+    public FavPlayerYearStat getYearStat(int year) {
+        return yearStats.stream().filter(yearStat -> yearStat.year() == year).findFirst().orElse(null);
     }
 
     private static void validatePlayerId(PlayerId playerId) {

@@ -2,18 +2,17 @@ package de.ostfale.qk.ui.playerstats.info.filter;
 
 import de.ostfale.qk.ui.playerstats.info.PlayerInfoService;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
+import io.quarkus.logging.Log;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
-import org.jboss.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class PlayerTextSearchComponent {
-    private static final Logger log = Logger.getLogger(PlayerTextSearchComponent.class);
 
     private static final String PROMPT_TEXT = "Spieler suchen";
 
@@ -22,7 +21,7 @@ public class PlayerTextSearchComponent {
     private final static List<PlayerInfoDTO> playerList = new ArrayList<>();
 
     public PlayerTextSearchComponent(PlayerInfoService aPlayerInfoService, TextField searchField) {
-        log.debug("Initialize PlayerTextSearchComponent");
+        Log.debug("Initialize PlayerTextSearchComponent");
         this.searchField = searchField;
         this.autoCompleteHandler = new PlayerAutoCompleteHandler(aPlayerInfoService);
         initialize();
@@ -37,35 +36,29 @@ public class PlayerTextSearchComponent {
         TextFields.bindAutoCompletion(searchField, autoCompleteHandler.createSuggestionProvider());
     }
 
-    private static class PlayerAutoCompleteHandler {
+    private record PlayerAutoCompleteHandler(PlayerInfoService playerInfoService) {
 
-        private final PlayerInfoService playerInfoService;
+            public Callback<AutoCompletionBinding.ISuggestionRequest, Collection<PlayerInfoDTO>> createSuggestionProvider() {
+                return request -> {
+                    String searchText = request.getUserText().toLowerCase();
 
-        public PlayerAutoCompleteHandler(PlayerInfoService playerInfoService) {
-            playerList.addAll(playerInfoService.getPlayerInfoList());
-            this.playerInfoService = playerInfoService;
-        }
-
-        public Callback<AutoCompletionBinding.ISuggestionRequest, Collection<PlayerInfoDTO>> createSuggestionProvider() {
-            return request -> {
-                String searchText = request.getUserText().toLowerCase();
-
-                if (searchText.isEmpty()) {
-                    return List.of();
-                }
-
-                return filterPlayersByName(searchText);
-            };
-        }
-
-        private Collection<PlayerInfoDTO> filterPlayersByName(String searchText) {
-            if (playerList.isEmpty()) {
-                playerList.addAll(playerInfoService.getPlayerInfoList());
+                    if (searchText.isEmpty()) {
+                        return List.of();
+                    }
+                    return filterPlayersByName(searchText);
+                };
             }
 
-            return playerList.stream()
-                    .filter(player -> player.getPlayerInfoMasterDataDTO().getPlayerName().toLowerCase().contains(searchText))
-                    .toList();
+            private Collection<PlayerInfoDTO> filterPlayersByName(String searchText) {
+                if (playerList.isEmpty()) {
+                    Log.debug("PlayerAutoCompleteHandler :: player list is empty, fetching data from web service");
+                    var fetchedPlayers = playerInfoService.getPlayerInfoList();
+                    playerList.addAll(fetchedPlayers);
+                }
+
+                return playerList.stream()
+                        .filter(player -> player.getPlayerInfoMasterDataDTO().getPlayerName().toLowerCase().contains(searchText))
+                        .toList();
+            }
         }
-    }
 }

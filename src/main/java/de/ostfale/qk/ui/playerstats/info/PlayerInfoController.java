@@ -181,6 +181,9 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     private Button btnDownloadThisYear;
 
     @FXML
+    private Button btnFavUpdate;
+
+    @FXML
     public void initialize() {
         Log.info("Initialize PlayerInfoStatisticsController");
         initFavPlayerComboboxModel();
@@ -238,6 +241,11 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayerName(searchedPlayerName);
         updatePlayerInfoUI(playerInfo);
         btnPlayerView.setDisable(false);
+    }
+
+    @FXML
+    void updateFavoritesWebData(ActionEvent event) {
+        Log.debug("Update favorites web data");
     }
 
     public void clearPlayerSearchField() {
