@@ -1,7 +1,10 @@
 package de.ostfale.qk.ui.playerstats.info.tournamentdata;
 
+import de.ostfale.qk.data.player.model.FavPlayerData;
+import de.ostfale.qk.data.player.model.FavPlayerYearStat;
 import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.domain.player.PlayerTournamentId;
+import io.quarkus.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,13 @@ public class PlayerTourStatDTO {
         this.playerId = playerId;
         this.tournamentId = tournamentId;
     }
+    
+    public PlayerTourStatDTO(FavPlayerData favPlayerData) {
+        Log.debugf("PlayerTourStatDTO :: Read player tour statistics for favourite player %s", favPlayerData.playerName());
+        this.playerId = favPlayerData.playerId();
+        this.tournamentId = favPlayerData.playerTournamentId();
+        mapYearStatistics(favPlayerData.yearStats());
+    }
 
     public List<String> getTournamentsStatisticAsString() {
         List<String> tournamentsStatistic = new ArrayList<>();
@@ -31,6 +41,34 @@ public class PlayerTourStatDTO {
         tournamentsStatistic.add(yearMinusTwoPlayedTournaments.toString() + " / " + yearMinusTwoDownloadedTournaments.toString());
         tournamentsStatistic.add(yearMinusThreePlayedTournaments.toString() + " / " + yearMinusThreeDownloadedTournaments.toString());
         return tournamentsStatistic;
+    }
+
+    private void mapYearStatistics(List<FavPlayerYearStat> yearStats) {
+        if (yearStats == null || yearStats.isEmpty()) return;
+
+        yearStats.sort((a, b) -> b.year() - a.year());
+
+        for (int i = 0; i < Math.min(yearStats.size(), 4); i++) {
+            FavPlayerYearStat stat = yearStats.get(i);
+            switch (i) {
+                case 0 -> {
+                    yearPlayedTournaments = stat.played();
+                    yearDownloadedTournaments = stat.loaded();
+                }
+                case 1 -> {
+                    yearMinusOnePlayedTournaments = stat.played();
+                    yearMinusOneDownloadedTournaments = stat.loaded();
+                }
+                case 2 -> {
+                    yearMinusTwoPlayedTournaments = stat.played();
+                    yearMinusTwoDownloadedTournaments = stat.loaded();
+                }
+                case 3 -> {
+                    yearMinusThreePlayedTournaments = stat.played();
+                    yearMinusThreeDownloadedTournaments = stat.loaded();
+                }
+            }
+        }
     }
 
     public PlayerTournamentId getPlayerTournamentId() {

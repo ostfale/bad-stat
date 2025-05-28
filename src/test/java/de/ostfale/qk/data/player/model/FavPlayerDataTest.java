@@ -16,6 +16,31 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class FavPlayerDataTest extends BaseTest {
 
 
+    @Test
+    @DisplayName("Test valid FavPlayerData record initialization with player name:")
+    void testFullObjectWithValidData() {
+        // given
+        PlayerId pId = new PlayerId(PLAYER_ID);
+        PlayerTournamentId pTournamentId = new PlayerTournamentId(PLAYER_TOURNAMENT_ID);
+        FavPlayerYearStat favPlayerYearStat = new FavPlayerYearStat(2025, 4, 0);
+
+        // when
+        var result = new FavPlayerData(pId, pTournamentId, PLAYER_NAME);
+        result.addYearStat(favPlayerYearStat);
+
+        // then
+        assertAll(
+                "Test all record values initialized",
+                () -> assertThat(result.playerName()).isEqualTo(PLAYER_NAME),
+                () -> assertThat(result.playerId().playerId()).isEqualTo(PLAYER_ID),
+                () -> assertThat(result.playerTournamentId().tournamentId()).isEqualTo(PLAYER_TOURNAMENT_ID),
+                () -> assertThat(result.getYearStat(2025)).isNotNull(),
+                () -> assertThat(result.getYearStat(2025).year()).isEqualTo(2025),
+                () -> assertThat(result.getYearStat(2025).played()).isEqualTo(4),
+                () -> assertThat(result.getYearStat(2025).loaded()).isEqualTo(0)
+        );
+
+    }
 
     @Test
     void testToStringReturnsPlayerName() {
@@ -36,7 +61,7 @@ class FavPlayerDataTest extends BaseTest {
     }
 
     @Test
-    void testToStringWithEmptyPlayerNameThrowsException () {
+    void testToStringWithEmptyPlayerNameThrowsException() {
         // given
         PlayerId pId = new PlayerId(PLAYER_ID);
         PlayerTournamentId pTournamentId = new PlayerTournamentId(PLAYER_TOURNAMENT_ID);
@@ -54,7 +79,7 @@ class FavPlayerDataTest extends BaseTest {
         String playerName = null;
 
         // when & then
-        assertThrows(IllegalArgumentException.class, () ->  new FavPlayerData(pId, pTournamentId, playerName));
+        assertThrows(IllegalArgumentException.class, () -> new FavPlayerData(pId, pTournamentId, playerName));
     }
 
 
@@ -88,5 +113,54 @@ class FavPlayerDataTest extends BaseTest {
 
         // then
         assertThat(favPlayerData.toString()).isEqualTo(PLAYER_NAME);
+    }
+
+    @Test
+    @DisplayName("Test adding a valid year statistic")
+    void testAddValidYearStat() {
+        // given
+        PlayerId pId = new PlayerId(PLAYER_ID);
+        PlayerTournamentId pTournamentId = new PlayerTournamentId(PLAYER_TOURNAMENT_ID);
+        FavPlayerData favPlayerData = new FavPlayerData(pId, pTournamentId, PLAYER_NAME);
+        FavPlayerYearStat favPlayerYearStat = new FavPlayerYearStat(2025, 10, 2);
+
+        // when
+        favPlayerData.addYearStat(favPlayerYearStat);
+
+        // then
+        assertThat(favPlayerData.getYearStat(2025)).isEqualTo(favPlayerYearStat);
+    }
+
+    @Test
+    @DisplayName("Test adding multiple year statistics and retrieving them")
+    void testAddMultipleYearStats() {
+        // given
+        PlayerId pId = new PlayerId(PLAYER_ID);
+        PlayerTournamentId pTournamentId = new PlayerTournamentId(PLAYER_TOURNAMENT_ID);
+        FavPlayerData favPlayerData = new FavPlayerData(pId, pTournamentId, PLAYER_NAME);
+        FavPlayerYearStat stat2025 = new FavPlayerYearStat(2025, 5, 1);
+        FavPlayerYearStat stat2026 = new FavPlayerYearStat(2026, 3, 0);
+
+        // when
+        favPlayerData.addYearStat(stat2025);
+        favPlayerData.addYearStat(stat2026);
+
+        // then
+        assertAll(
+                () -> assertThat(favPlayerData.getYearStat(2025)).isEqualTo(stat2025),
+                () -> assertThat(favPlayerData.getYearStat(2026)).isEqualTo(stat2026)
+        );
+    }
+
+    @Test
+    @DisplayName("Test adding a null year statistic throws NullPointerException")
+    void testAddNullYearStat() {
+        // given
+        PlayerId pId = new PlayerId(PLAYER_ID);
+        PlayerTournamentId pTournamentId = new PlayerTournamentId(PLAYER_TOURNAMENT_ID);
+        FavPlayerData favPlayerData = new FavPlayerData(pId, pTournamentId, PLAYER_NAME);
+
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> favPlayerData.addYearStat(null));
     }
 }

@@ -1,11 +1,13 @@
 package de.ostfale.qk.ui.playerstats.info;
 
 import de.ostfale.qk.data.dashboard.RankingPlayerCacheHandler;
+import de.ostfale.qk.data.player.model.FavPlayerData;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.domain.player.PlayerTournamentId;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.rankingdata.PlayerDiscStatDTO;
+import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
 import de.ostfale.qk.ui.playerstats.matches.PlayerInfoMatchStatService;
 import de.ostfale.qk.web.async.PlayerAsyncWebService;
 import de.ostfale.qk.web.player.PlayerWebParserService;
@@ -37,6 +39,22 @@ public class PlayerInfoService {
 
     private final Map<PlayerId, PlayerInfoDTO> playerInfoDTOMap = new ConcurrentHashMap<>();
 
+    public PlayerInfoDTO getPlayerInfoDTO(FavPlayerData favPlayerData) {
+        Log.debugf("PlayerInfoService :: Read player infos for favourite player %s", favPlayerData.playerName());
+        if (playerInfoDTOMap.containsKey(favPlayerData.playerId())) {
+            Log.debugf("PlayerInfoService :: found player info in cache for player id %s", favPlayerData.playerId());
+            return playerInfoDTOMap.get(favPlayerData.playerId());
+        }
+        Player foundPlayer = rankingPlayerCacheHandler.getRankingPlayerCache().getPlayerByPlayerId(favPlayerData.playerId().playerId());
+        var playerInfo = new PlayerInfoDTO(foundPlayer);
+        playerInfo.setSingleDiscStat(mapSingleDisciplineStatistics(foundPlayer));
+        playerInfo.setDoubleDiscStat(mapDoubleDisciplineStatistics(foundPlayer));
+        playerInfo.setMixedDiscStat(mapMixedDisciplineStatistics(foundPlayer));
+        playerInfo.getPlayerInfoMasterDataDTO().setPlayerTournamentId(favPlayerData.playerTournamentId().tournamentId());
+        playerInfo.setPlayerTourStatDTO(new PlayerTourStatDTO(favPlayerData));
+        return playerInfo;
+    }
+
     public PlayerInfoDTO getPlayerInfoDTO(PlayerId playerIdObject) {
         String playerId = playerIdObject.playerId();
         Log.debugf("PlayerInfoService :: get player info for player id %s", playerIdObject.playerId());
@@ -59,9 +77,9 @@ public class PlayerInfoService {
 
         var playerIdObj = new PlayerId(playerId);
         var playerTournamentId = new PlayerTournamentId(playerInfo.getPlayerInfoMasterDataDTO().getPlayerTournamentId());
-        playerAsyncWebService.fetchPlayerTourStatInfo(playerIdObj,playerTournamentId)
+        playerAsyncWebService.fetchPlayerTourStatInfo(playerIdObj, playerTournamentId)
                 .onFailure().invoke(throwable -> Log.errorf("Failed to get tournament statistics for player %s", playerId, throwable))
-                        .subscribe().with(playerInfo::setPlayerTourStatDTO);
+                .subscribe().with(playerInfo::setPlayerTourStatDTO);
 
         playerInfoDTOMap.put(playerIdObject, playerInfo);
         return playerInfo;

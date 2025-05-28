@@ -1,9 +1,6 @@
 package de.ostfale.qk.domain.player;
 
-import org.jboss.logging.Logger;
-
 public class Player {
-    private static final Logger log = Logger.getLogger(Player.class);
 
     private PlayerId playerId;
     private String firstName;

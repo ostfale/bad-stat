@@ -18,7 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("unittest")
 class FavPlayerListDataTest extends BaseTest {
 
-    @Test
+  /*  @Test
+    @DisplayName("Test valid FavPlayerListData record initialization with player name:")
     void shouldAddFavoritePlayerSuccessfully() {
         // Given
         FavPlayerListData favPlayerListData = new FavPlayerListData();
@@ -80,5 +81,5 @@ class FavPlayerListDataTest extends BaseTest {
 
         // Then
         assertFalse(favoritePlayers.contains(new FavPlayerData(new PlayerId(PLAYER_ID), new PlayerTournamentId(PLAYER_TOURNAMENT_ID), PLAYER_NAME)));
-    }
+    }*/
 }

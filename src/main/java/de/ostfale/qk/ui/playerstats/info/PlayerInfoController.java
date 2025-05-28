@@ -1,8 +1,6 @@
 package de.ostfale.qk.ui.playerstats.info;
 
 import de.ostfale.qk.data.player.model.FavPlayerData;
-import de.ostfale.qk.domain.player.PlayerId;
-import de.ostfale.qk.domain.player.PlayerTournamentId;
 import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
@@ -227,7 +225,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     void removeFromFavorites(ActionEvent actionEvent) {
         Log.debug("Remove player from favorites");
-        favPlayerService.removeFavPlayer(tfSearchPlayer.getText());
+        favPlayerService.removeFavoritePlayer(tfSearchPlayer.getText());
         updateFavorites();
     }
 
@@ -301,9 +299,9 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         dataModelFavPlayer.updateModel(favoritePlayers, cbPlayer);
     }
 
-    public void updatePlayerInfoUI(PlayerId playerId, PlayerTournamentId playerTournamentId) {
-        var playerInfo = playerInfoService.getPlayerInfoDTO(playerId);
-        playerInfo.getPlayerInfoMasterDataDTO().setPlayerTournamentId(playerTournamentId.tournamentId());
+    public void updatePlayerInfoUI(FavPlayerData favPlayerData) {
+        var playerInfo = playerInfoService.getPlayerInfoDTO(favPlayerData);
+        playerInfo.getPlayerInfoMasterDataDTO().setPlayerTournamentId(favPlayerData.playerTournamentId().tournamentId());
         updatePlayerInfoUI(playerInfo);
     }
 

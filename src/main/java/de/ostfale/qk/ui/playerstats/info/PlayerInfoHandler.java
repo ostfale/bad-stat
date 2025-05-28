@@ -32,7 +32,7 @@ public class PlayerInfoHandler implements BaseHandler {
 
     public void updatePlayerInfo(FavPlayerData favPlayerData) {
         PlayerInfoController controller = fxViewRepository.getViewData(PLAYER_INFO_FXML).getController();
-        controller.updatePlayerInfoUI(favPlayerData.playerId(), favPlayerData.playerTournamentId());
+        controller.updatePlayerInfoUI(favPlayerData);
         controller.clearPlayerSearchField();
     }
 }

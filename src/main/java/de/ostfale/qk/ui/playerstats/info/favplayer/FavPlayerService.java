@@ -10,9 +10,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @ApplicationScoped
 public class FavPlayerService {
 
@@ -26,10 +23,7 @@ public class FavPlayerService {
 
     private FavPlayerListData favoritePlayerListData;
 
-    private final List<PlayerInfoDTO> favPlayers;
-
     public FavPlayerService() {
-        favPlayers = new ArrayList<>();
     }
 
     @PostConstruct
@@ -65,11 +59,20 @@ public class FavPlayerService {
         }
     }
 
-    public void removeFavPlayer(String playerName) {
-        PlayerInfoDTO playerToRemove = favPlayers
-                .stream()
-                .filter(player -> player.getPlayerInfoMasterDataDTO().getPlayerName().equals(playerName))
-                .findFirst().orElse(null);
-        favPlayers.remove(playerToRemove);
+    public void removeFavoritePlayer(String playerName) {
+        if (playerName == null || playerName.isBlank()) {
+            log.warn("Cannot remove favorite player: player name is null or empty");
+            return;
+        }
+
+        log.debugf("FavPlayerService :: Removing player from favorite list: %s", playerName);
+
+        boolean removed = favoritePlayerListData.getFavoritePlayers()
+                .removeIf(player -> player.playerName().equals(playerName));
+
+        if (!removed) {
+            log.warnf("Player not found in favorites: %s", playerName);
+        }
     }
+
 }

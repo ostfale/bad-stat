@@ -20,7 +20,7 @@ public class FavPlayerChangeListener implements ChangeListener<FavPlayerData> {
     public void changed(ObservableValue<? extends FavPlayerData> observableValue, FavPlayerData oldPlayer, FavPlayerData newPlayer) {
         if (newPlayer != null) {
             log.infof("Player %s is now a selected", newPlayer.playerName());
-            event.fire(newPlayer);
+            event.fire(newPlayer);      // PlayerInfoHandler
         } else if (oldPlayer != null) {
             log.debugf("Player %s is no longer selected", oldPlayer.playerName());
         }

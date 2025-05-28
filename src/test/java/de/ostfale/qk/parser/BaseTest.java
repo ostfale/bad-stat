@@ -1,8 +1,6 @@
 package de.ostfale.qk.parser;
 
-import de.ostfale.qk.domain.player.GenderType;
-import de.ostfale.qk.domain.player.Player;
-import de.ostfale.qk.domain.player.RankingInformation;
+import de.ostfale.qk.domain.player.*;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoMasterDTO;
 import de.ostfale.qk.web.common.ConfiguredWebClient;
@@ -34,7 +32,7 @@ public abstract class BaseTest {
     protected static final String PLAYER_CLUB_NAME = "Horner-TV";
     protected static final String PLAYER_DISTRICT_NAME = "Hamburg";
     protected static final String PLAYER_STATE_NAME = "Hamburg";
-    protected static final String PLAYER_GROUP_NAME = "Nord";
+    protected static final Group PLAYER_GROUP_NAME = Group.NORTH;
 
     // single ranking data
     protected static final int PLAYER_SINGLE_RANKING_POINTS = 28456;
@@ -70,13 +68,12 @@ public abstract class BaseTest {
     // prepare player test object
     protected Player createPlayer() {
         Player player = new Player(PLAYER_ID, PLAYER_FIRST_NAME, PLAYER_SECOND_NAME, PLAYER_GENDER, PLAYER_YEAR_OF_BIRTH);
-
+        player.setPlayerInfo(new PlayerInfo(PLAYER_AGE_CLASS_GENERAL, PLAYER_AGE_CLASS_DETAIL, PLAYER_CLUB_NAME, PLAYER_DISTRICT_NAME, PLAYER_STATE_NAME, PLAYER_GROUP_NAME));
         player.setSingleRankingInformation(createSingleRankingInformation());
         player.setDoubleRankingInformation(createDoubleRankingInformation());
         player.setMixedRankingInformation(createMixedRankingInformation());
         return player;
     }
-
 
     private RankingInformation createSingleRankingInformation() {
         return new RankingInformation(PLAYER_SINGLE_RANKING_POINTS, PLAYER_SINGLE_RANKING_POSITION, PLAYER_SINGLE_RANKING_AGE_POSITION, PLAYER_SINGLE_RANKING_TOURNAMENTS);
@@ -91,11 +88,13 @@ public abstract class BaseTest {
     }
 
     protected PlayerInfoDTO createPlayerInfoDTO() {
-        return null;
+        var player = createPlayer();
+        return new PlayerInfoDTO(player);
     }
 
     private PlayerInfoMasterDTO createPlayerInfoMasterDTO() {
-        return null;
+        var player = createPlayer();
+        return new PlayerInfoMasterDTO(player);
     }
 
     private String readFile(String fileName) throws IOException, URISyntaxException {
@@ -104,6 +103,4 @@ public abstract class BaseTest {
         var file = new File(resource.toURI());
         return Files.readString(file.toPath());
     }
-
-
 }

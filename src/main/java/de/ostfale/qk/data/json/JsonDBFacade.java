@@ -2,11 +2,9 @@ package de.ostfale.qk.data.json;
 
 import de.ostfale.qk.app.DirTypes;
 import de.ostfale.qk.app.FileSystemFacade;
-import org.jboss.logging.Logger;
+import io.quarkus.logging.Log;
 
 public interface JsonDBFacade extends FileSystemFacade {
-
-    Logger log = Logger.getLogger(JsonDBFacade.class);
 
     String JSON_SUFFIX = ".json";
     String FILE_NAME_SEPARATOR = "_";
@@ -21,25 +19,25 @@ public interface JsonDBFacade extends FileSystemFacade {
 
     default String getDashboardDir() {
         var result = getApplicationHomeDir() + SEP + DirTypes.DATA.displayName + SEP + DASHBOARD_DIR_NAME + SEP;
-        log.debugf("JsonDBFacade :: Dashboard dir: %s", result);
+        Log.debugf("JsonDBFacade :: Dashboard dir: %s", result);
         return result;
     }
 
     default String getPlayerCustomDataDir() {
         var result = getApplicationHomeDir() + SEP + DirTypes.DATA.displayName + SEP + FAVORITE_PLAYERS_DIR_NAME + SEP;
-        log.debugf("JsonDBFacade :: PlayerCustomData dir: %s", result);
+        Log.debugf("JsonDBFacade :: PlayerCustomData dir: %s", result);
         return result;
     }
 
     default String getFavPlayerMatchesDir() {
         var dirName = getPlayerCustomDataDir() + FAVORITE_PLAYER_MATCH_DIR_NAME + SEP;
-        log.debugf("JsonDBFacade :: FavPlayerMatches dir: %s", dirName);
+        Log.debugf("JsonDBFacade :: FavPlayerMatches dir: %s", dirName);
         return dirName;
     }
 
     default String createFavPlayerTournamentMatchesFileName(String playerName, String playerId, String year) {
         var fileName = playerId + FILE_NAME_SEPARATOR + playerName + FILE_NAME_SEPARATOR + year + JSON_SUFFIX;
-        log.infof("JsonDBFacade :: FavPlayerTournamentMatchesFileName: %s", fileName);
+        Log.infof("JsonDBFacade :: FavPlayerTournamentMatchesFileName: %s", fileName);
         return fileName;
     }
 }

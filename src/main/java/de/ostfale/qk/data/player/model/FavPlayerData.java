@@ -33,6 +33,9 @@ public record FavPlayerData(
     }
 
     public void addYearStat(FavPlayerYearStat yearStat) {
+        if (Objects.isNull(yearStat)) {
+            throw new IllegalArgumentException("YearStat must not be null");
+        }
         yearStats.add(yearStat);
     }
 

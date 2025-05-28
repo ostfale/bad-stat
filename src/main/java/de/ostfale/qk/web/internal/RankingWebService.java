@@ -24,6 +24,12 @@ public class RankingWebService {
         List<FrameWindow> frames = page.getFrames();
         FrameWindow first = frames.getFirst();
         HtmlPage framePage = (HtmlPage) first.getEnclosedPage();
+
+        if (framePage.getAnchors().isEmpty()) {
+            log.error("HTML DBV RANKING :: Website not available");
+            return "??";
+        }
+
         String textContent = framePage.getAnchors().getFirst().getTextContent();
         String foundKW = textContent.substring(textContent.indexOf("KW") + 2).trim();
         log.debugf("HTML DBV RANKING :: found KW: %s", foundKW);
