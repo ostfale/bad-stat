@@ -9,7 +9,7 @@ import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerChangeListener;
 import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerStringConverter;
 import de.ostfale.qk.ui.playerstats.info.filter.PlayerTextSearchComponent;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
-import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
+import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoMasterDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTournamentsService;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsController;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsHandler;
@@ -231,14 +231,9 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @FXML
     void viewPlayerInfo(ActionEvent event) {
-        btnPlayerView.setDisable(true);
         Log.debugf("View player info");
         resetFavoriteCombobox();
-
-        String searchedPlayerName = tfSearchPlayer.getText();
-        PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayerName(searchedPlayerName);
-        updatePlayerInfoUI(playerInfo);
-        btnPlayerView.setDisable(false);
+        updatePlayerInfoUI();
     }
 
     @FXML
@@ -299,19 +294,17 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         dataModelFavPlayer.updateModel(favoritePlayers, cbPlayer);
     }
 
-    public void updatePlayerInfoUI(FavPlayerData favPlayerData) {
-        var playerInfo = playerInfoService.getPlayerInfoDTO(favPlayerData);
-        playerInfo.getPlayerInfoMasterDataDTO().setPlayerTournamentId(favPlayerData.playerTournamentId().tournamentId());
-        updatePlayerInfoUI(playerInfo);
+    private void updatePlayerInfoUI() {
+        String searchedPlayerName = tfSearchPlayer.getText();
+        PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayerName(searchedPlayerName);
+        Log.debugf("Update player info for : %s", playerInfo.getPlayerInfoMasterDataDTO().getPlayerName());
+        resetPlayerInfo();
+        updateDynamicPlayerInfo(playerInfo);
+        setPlayersMasterData(playerInfo);
+        updateDynamicPlayerInfo(playerInfo);
     }
 
-    private void updatePlayerInfoUI(PlayerInfoDTO playerInfoDTO) {
-        Log.debugf("Update player info: %s", playerInfoDTO.toString());
-        resetPlayerInfo();
-        updateTournamentInfosForPlayerAndYear(playerInfoDTO.getTournamentsStatisticDTO());
-        setPlayersMasterData(playerInfoDTO);
-        updatePlayerMatchesStatics(playerInfoDTO);
-
+    public void updateDynamicPlayerInfo(PlayerInfoDTO playerInfoDTO) {
         lblSTours.setText(playerInfoDTO.getSingleDiscStat().tournaments().toString());
         lblDTours.setText(playerInfoDTO.getDoubleDiscStat().tournaments().toString());
         lblMTours.setText(playerInfoDTO.getMixedDiscStat().tournaments().toString());
@@ -329,10 +322,31 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         lblMAKRank.setText(playerInfoDTO.getMixedDiscStat().ageClassRank().toString());
     }
 
-    public void updatePlayerMatchesStatics(PlayerInfoDTO playerInfoDTO) {
+    public void updateTreeMatchStatistics(PlayerInfoDTO playerInfoDTO) {
         Log.debugf("UI :: Update player matches statistics for player %s ", playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerName());
         var uiModel = playerTournamentsService.readPlayerTournamentsForLastFourYears(playerInfoDTO);
         playerTourStatsController.updateTreeTable(uiModel);
+    }
+
+    public void updatePlayerMatchesStatsForYear(FavPlayerData favPlayerData) {
+        Log.debugf("UI :: Update player matches statistics for player %s ", favPlayerData.playerName());
+        lblYear.setText(favPlayerData.getPlayerTournamentsStatForYear(RecentYears.CURRENT_YEAR.getValue()));
+        lblYearMinusOne.setText(favPlayerData.getPlayerTournamentsStatForYear(RecentYears.YEAR_MINUS_1.getValue()));
+        lblYearMinusTwo.setText(favPlayerData.getPlayerTournamentsStatForYear(RecentYears.YEAR_MINUS_2.getValue()));
+        lblYearMinusThree.setText(favPlayerData.getPlayerTournamentsStatForYear(RecentYears.YEAR_MINUS_3.getValue()));
+    }
+
+    public void updatePlayerMasterData(PlayerInfoMasterDTO playerInfoMasterDTO) {
+        Log.debugf("UI :: Update player master data for player %s ", playerInfoMasterDTO.getPlayerName());
+        lblName.setText(playerInfoMasterDTO.getPlayerName());
+        lblPlayerId.setText(playerInfoMasterDTO.getPlayerId());
+        lblBirthYear.setText(String.valueOf(playerInfoMasterDTO.getBirthYear()));
+        lblAgeClass.setText(playerInfoMasterDTO.getAgeClass());
+        lblClub.setText(playerInfoMasterDTO.getClubName() == null ? "" : playerInfoMasterDTO.getClubName());
+        lblDistrict.setText(playerInfoMasterDTO.getDistrictName() == null ? "" : playerInfoMasterDTO.getDistrictName());
+        lblState.setText(playerInfoMasterDTO.getStateName() == null ? "" : playerInfoMasterDTO.getStateName());
+        lblGroup.setText(playerInfoMasterDTO.getStateGroup() == null ? "" : playerInfoMasterDTO.getStateGroup());
+        lblPlayerName.setText(playerInfoMasterDTO.getPlayerName() == null ? "" : playerInfoMasterDTO.getPlayerName());
     }
 
     void setPlayersMasterData(PlayerInfoDTO playerInfoDTO) {
@@ -347,17 +361,6 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         lblState.setText(masterData.getStateName() == null ? "" : masterData.getStateName());
         lblGroup.setText(masterData.getStateGroup() == null ? "" : masterData.getStateGroup());
         lblPlayerName.setText(masterData.getPlayerName() == null ? "" : masterData.getPlayerName());
-    }
-
-
-    private void updateTournamentInfosForPlayerAndYear(PlayerTourStatDTO playerTourStatDTO) {
-        if (playerTourStatDTO != null) {
-            Log.debugf("UI :: Update tournament infos for player %s ", playerTourStatDTO.getPlayerId());
-            lblYear.setText(playerTourStatDTO.getTournamentsStatisticAsString().getFirst());
-            lblYearMinusOne.setText(playerTourStatDTO.getTournamentsStatisticAsString().get(1));
-            lblYearMinusTwo.setText(playerTourStatDTO.getTournamentsStatisticAsString().get(2));
-            lblYearMinusThree.setText(playerTourStatDTO.getTournamentsStatisticAsString().get(3));
-        }
     }
 
     private void initYearLabel() {

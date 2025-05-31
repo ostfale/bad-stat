@@ -35,6 +35,10 @@ public class FavPlayerListData {
         return favoritePlayers.stream().filter(favPlayerData -> favPlayerData.playerName().equals(name)).findFirst().orElse(null);
     }
 
+    public FavPlayerData getFavPlayerDataByPlayerId(PlayerId playerId) {
+        return favoritePlayers.stream().filter(favPlayerData -> favPlayerData.playerId().equals(playerId)).findFirst().orElse(null);
+    }
+
     private FavPlayerData fromPlayerInfoDTO(PlayerInfoDTO playerInfoDTO) {
         var masterData = playerInfoDTO.getPlayerInfoMasterDataDTO();
         Log.debugf("FavPlayerListData :: map fromPlayerInfoDTO(%s)", masterData.getPlayerName());

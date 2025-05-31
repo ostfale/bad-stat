@@ -1,19 +1,17 @@
 package de.ostfale.qk.ui.playerstats.matches;
 
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
-import org.jboss.logging.Logger;
 
 import java.util.List;
 
 @ApplicationScoped
 public class PlayerStatisticsController {
-
-    private static final Logger log = Logger.getLogger(PlayerStatisticsController.class);
 
     private final TreeTableView<PlayerMatchStatisticsUIModel> ttView;
     private final TreeItem<PlayerMatchStatisticsUIModel> root;
@@ -29,13 +27,30 @@ public class PlayerStatisticsController {
     TreeTableColumn<PlayerMatchStatisticsUIModel, String> colMatchResult;
 
     public PlayerStatisticsController() {
-        log.debug("Init PlayerTournamentsStatisticsTreeTableController");
+        Log.debug("Init PlayerTournamentsStatisticsTreeTableController");
         this.root = createTreeItemRoot();
         this.ttView = new TreeTableView<>();
 
         ttView.setShowRoot(false);
         ttView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         initTreeTableView();
+    }
+
+    public void updateTreeTable(List<PlayerMatchStatisticsUIModel> playerTournaments) {
+        Log.debugf("Update tree table view with %d entries", playerTournaments.size());
+        //   var treeItemList = playerTournaments.stream().map(this::createTreeItem).toList();
+
+        root.getChildren().clear();
+        playerTournaments.forEach(ptm -> {
+            var result = createTreeItem(ptm);
+            root.getChildren().add(result);
+        });
+
+        ttView.setRoot(root);
+    }
+
+    public TreeTableView<PlayerMatchStatisticsUIModel> getPlStatTreeView() {
+        return ttView;
     }
 
     @SuppressWarnings("unchecked")
@@ -81,23 +96,6 @@ public class PlayerStatisticsController {
         colMatchResult.prefWidthProperty().bind(ttView.widthProperty().multiply(0.25));
 
         ttView.getColumns().addAll(colTournamentDate, colTournamentName, colTournamentLocation, colDiscipline, colRoundName, colTPOne, colTPTwo, colMatchResult);
-    }
-
-    public TreeTableView<PlayerMatchStatisticsUIModel> getPlStatTreeView() {
-        return ttView;
-    }
-
-    public void updateTreeTable(List<PlayerMatchStatisticsUIModel> playerTournaments) {
-        log.debugf("Update tree table view with %d entries", playerTournaments.size());
-        //   var treeItemList = playerTournaments.stream().map(this::createTreeItem).toList();
-
-        root.getChildren().clear();
-        playerTournaments.forEach(ptm -> {
-            var result = createTreeItem(ptm);
-            root.getChildren().add(result);
-        });
-
-        ttView.setRoot(root);
     }
 
     private TreeItem<PlayerMatchStatisticsUIModel> createTreeItemRoot() {

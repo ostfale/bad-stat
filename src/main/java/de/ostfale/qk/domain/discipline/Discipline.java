@@ -6,16 +6,16 @@ public enum Discipline {
     SINGLE, DOUBLE, MIXED;
 
     private static final Set<String> SINGLE_CODES = Set.of(
-            "JE", "DE", "HE", "ME","HE-A",
+            "JE", "DE", "HE", "ME","HE-A","BS",
             "Boys Singles", "Girls Singles",
             "Herreneinzel", "Dameneinzel",
             "Jungeneinzel", "Mädcheneinzel"
     );
 
     private static final Set<String> DOUBLE_CODES = Set.of(
-            "JD", "DD", "HD", "MD",
+            "JD", "DD", "HD", "MD","BD",
             "Doubles", "Boys Doubles", "Girls Doubles",
-            "Herrendoppel", "Damendoppel", "Mädchendoppel"
+            "Herrendoppel", "Damendoppel", "Mädchendoppel","Jungendoppel"
     );
 
     private static final Set<String> MIXED_CODES = Set.of(

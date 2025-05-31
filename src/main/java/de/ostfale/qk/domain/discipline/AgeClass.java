@@ -1,7 +1,7 @@
 package de.ostfale.qk.domain.discipline;
 
 public enum AgeClass {
-    U13, U15, U17, U19,U22, O19, UOX;
+    U9, U11, U13, U15, U17, U19, U22, O19, UOX;
 
     public static AgeClass fromString(String ageClass) {
         if (ageClass == null || ageClass.isEmpty()) {
@@ -14,6 +14,8 @@ public enum AgeClass {
         }
 
         return switch (trimmedAgeClass) {
+            case "U9" -> U9;
+            case "U11" -> U11;
             case "U13" -> U13;
             case "U15" -> U15;
             case "U17" -> U17;

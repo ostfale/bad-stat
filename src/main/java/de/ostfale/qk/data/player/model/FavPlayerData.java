@@ -21,6 +21,7 @@ public record FavPlayerData(
     private static final String PLAYER_ID_ERROR = "PlayerId must not be null";
     private static final String PLAYER_NAME_ERROR = "playerName must not be null or blank";
     private static final String PLAYER_TOURNAMENT_ID_ERROR = "playerTournamentId must not be null";
+    private static final String DEFAULT_STAT_DISPlAY = "0 | 0";
 
     public FavPlayerData {
         validatePlayerId(playerId);
@@ -32,11 +33,25 @@ public record FavPlayerData(
         this(playerId, playerTournamentId, playerName, new ArrayList<>());
     }
 
+    public String getPlayerTournamentsStatForYear(int year) {
+        return yearStats.stream()
+                .filter(yearStat -> yearStat.year() == year)
+                .findFirst().map(FavPlayerYearStat::getDisplayFormat)
+                .orElse(DEFAULT_STAT_DISPlAY);
+    }
+
     public void addYearStat(FavPlayerYearStat yearStat) {
         if (Objects.isNull(yearStat)) {
             throw new IllegalArgumentException("YearStat must not be null");
         }
         yearStats.add(yearStat);
+    }
+
+    public void removeYearStat(FavPlayerYearStat yearStat) {
+        if (Objects.isNull(yearStat)) {
+            throw new IllegalArgumentException("YearStat must not be null");
+        }
+        yearStats.remove(yearStat);
     }
 
     public FavPlayerYearStat getYearStat(int year) {

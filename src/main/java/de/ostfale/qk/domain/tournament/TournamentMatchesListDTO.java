@@ -1,14 +1,12 @@
 package de.ostfale.qk.domain.tournament;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.jboss.logging.Logger;
+import io.quarkus.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TournamentMatchesListDTO {
-
-    Logger log = Logger.getLogger(TournamentMatchesListDTO.class);
 
     private String playerName;
     private String playerId;
@@ -22,7 +20,7 @@ public class TournamentMatchesListDTO {
 
     @JsonIgnore
     public void addTournamentMatch(TournamentMatchesDTO tournamentMatchesDTO) {
-        log.debugf("TournamentMatchesListHandler :: addTournamentMatch (%s)", tournamentMatchesDTO.getTournamentName());
+        Log.debugf("TournamentMatchesListHandler :: addTournamentMatch (%s)", tournamentMatchesDTO.getTournamentName());
         tournamentMatchesList.add(tournamentMatchesDTO);
     }
 
