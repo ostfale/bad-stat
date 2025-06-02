@@ -1,11 +1,11 @@
 package de.ostfale.qk.ui.dashboard;
 
 import de.ostfale.qk.app.TimeHandlerFacade;
+import de.ostfale.qk.app.cache.RankingPlayerCache;
 import de.ostfale.qk.app.downloader.ranking.RankingDownloader;
-import de.ostfale.qk.data.dashboard.model.DashboardRankingData;
 import de.ostfale.qk.data.dashboard.DashboardRankingDataJsonHandler;
+import de.ostfale.qk.data.dashboard.model.DashboardRankingData;
 import de.ostfale.qk.domain.player.PlayerOverview;
-import de.ostfale.qk.data.dashboard.RankingPlayerCacheHandler;
 import de.ostfale.qk.ui.dashboard.model.DashboardRankingUIModel;
 import de.ostfale.qk.web.internal.RankingWebService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -22,7 +22,7 @@ public class DashboardService implements TimeHandlerFacade {
     private static final Logger log = Logger.getLogger(DashboardService.class);
 
     @Inject
-    RankingPlayerCacheHandler rankingPlayerCacheHandler;
+    RankingPlayerCache rankingPlayerCache;
 
     @Inject
     DashboardRankingDataJsonHandler dashboardRankingDataJsonHandler;
@@ -59,9 +59,7 @@ public class DashboardService implements TimeHandlerFacade {
 
     public void updatePlayersInCache() {
         log.info("DashboardService :: read ranking file and update cache");
-        if (rankingPlayerCacheHandler.loadLocalRankingFileIntoCache()) {
-            log.info("Failed to load existing ranking file into cache ");
-        }
+        rankingPlayerCache.loadPlayerIntoCache();
     }
 
     public int getCurrentCW() {
@@ -74,7 +72,7 @@ public class DashboardService implements TimeHandlerFacade {
         return getLastCalendarWeek();
     }
 
-    public String getOnlineCW() {
+   public String getOnlineCW() {
         log.debug("DashboardService :: retrieve online calendar week");
         return rankingWebService.getCalendarWeekForLastUpdate();
     }
@@ -87,21 +85,18 @@ public class DashboardService implements TimeHandlerFacade {
         return model;
     }
 
-    private void populatePlayerStatistics(DashboardRankingUIModel model) {
-        var playerRepository = rankingPlayerCacheHandler.getRankingPlayerCache();
-        if (playerRepository != null) {
-            PlayerOverview playerOverview = new PlayerOverview(
-                    playerRepository.getNumberOfPlayers(),
-                    playerRepository.getNumberOfMalePlayers(),
-                    playerRepository.getNumberOfFemalePlayers());
+   private void populatePlayerStatistics(DashboardRankingUIModel model) {
+        PlayerOverview playerOverview = new PlayerOverview(
+                rankingPlayerCache.getNumberOfPlayers(),
+                rankingPlayerCache.getNumberOfMalePlayers(),
+                rankingPlayerCache.getNumberOfFemalePlayers());
 
-            model.setNofPlayers(playerOverview.numberOfPlayer());
-            model.setNofMalePlayers(playerOverview.numberOfMalePlayer());
-            model.setNofFemalePlayers(playerOverview.numberOfFemalePlayer());
+        model.setNofPlayers(playerOverview.numberOfPlayer());
+        model.setNofMalePlayers(playerOverview.numberOfMalePlayer());
+        model.setNofFemalePlayers(playerOverview.numberOfFemalePlayer());
 
-            getRankingFile().ifPresent(rankingFile ->
-                    model.setDownloadFileName(rankingFile.getName()));
-        }
+        getRankingFile().ifPresent(rankingFile ->
+                model.setDownloadFileName(rankingFile.getName()));
     }
 
     private Optional<File> getRankingFile() {

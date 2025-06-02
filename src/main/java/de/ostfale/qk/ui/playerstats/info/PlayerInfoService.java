@@ -1,6 +1,6 @@
 package de.ostfale.qk.ui.playerstats.info;
 
-import de.ostfale.qk.data.dashboard.RankingPlayerCacheHandler;
+import de.ostfale.qk.app.cache.RankingPlayerCache;
 import de.ostfale.qk.data.player.model.FavPlayerData;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.domain.player.PlayerId;
@@ -8,31 +8,21 @@ import de.ostfale.qk.domain.player.PlayerTournamentId;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.rankingdata.PlayerDiscStatDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
-import de.ostfale.qk.ui.playerstats.matches.PlayerInfoMatchStatService;
 import de.ostfale.qk.web.async.PlayerAsyncWebService;
-import de.ostfale.qk.web.player.PlayerWebParserService;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.ToIntFunction;
 
 @ApplicationScoped
 public class PlayerInfoService {
 
     @Inject
-    RankingPlayerCacheHandler rankingPlayerCacheHandler;
-
-    @Inject
-    PlayerInfoMatchStatService playerInfoMatchStatService;
-
-    @Inject
-    PlayerWebParserService playerWebParserService;
+    RankingPlayerCache rankingPlayerCache;
 
     @Inject
     PlayerAsyncWebService playerAsyncWebService;
@@ -45,7 +35,7 @@ public class PlayerInfoService {
             Log.debugf("PlayerInfoService :: found player info in cache for player id %s", favPlayerData.playerId());
             return playerInfoDTOMap.get(favPlayerData.playerId());
         }
-        Player foundPlayer = rankingPlayerCacheHandler.getRankingPlayerCache().getPlayerByPlayerId(favPlayerData.playerId().playerId());
+        Player foundPlayer = rankingPlayerCache.getPlayerById(favPlayerData.playerId().playerId());
         var playerInfo = new PlayerInfoDTO(foundPlayer);
         playerInfo.setSingleDiscStat(mapSingleDisciplineStatistics(foundPlayer));
         playerInfo.setDoubleDiscStat(mapDoubleDisciplineStatistics(foundPlayer));
@@ -62,7 +52,7 @@ public class PlayerInfoService {
             Log.debugf("PlayerInfoService :: found player info in cache for player id %s", playerIdObject.playerId());
             return playerInfoDTOMap.get(playerIdObject);
         }
-        Player foundPlayer = rankingPlayerCacheHandler.getRankingPlayerCache().getPlayerByPlayerId(playerId);
+        Player foundPlayer = rankingPlayerCache.getPlayerById(playerId);
         var playerInfo = new PlayerInfoDTO(foundPlayer);
         playerInfo.setSingleDiscStat(mapSingleDisciplineStatistics(foundPlayer));
         playerInfo.setDoubleDiscStat(mapDoubleDisciplineStatistics(foundPlayer));
@@ -87,17 +77,11 @@ public class PlayerInfoService {
 
     public List<PlayerInfoDTO> getPlayerInfoList() {
         Log.debug("PlayerInfoService :: map all players from cache into PlayerInfoDTOs ");
-        var rankingPlayerCache = rankingPlayerCacheHandler.getRankingPlayerCache();
-        if (rankingPlayerCache != null) {
-            var result = rankingPlayerCache.players().stream().map(PlayerInfoDTO::new).toList();
-            Log.debugf("Found %d players in cache", result.size());
-            return result;
-        }
-        return List.of();
+        return rankingPlayerCache.getPlayerList().stream().map(PlayerInfoDTO::new).toList();
     }
 
     public PlayerInfoDTO getPlayerInfosForPlayerName(String playerName) {
-        List<Player> foundPlayers = rankingPlayerCacheHandler.getRankingPlayerCache().getPlayerByName(playerName);
+        List<Player> foundPlayers = rankingPlayerCache.getPlayerByName(playerName);
         if (foundPlayers.size() == 1) {
             return getPlayerInfoDTO(foundPlayers.getFirst().getPlayerId());
         }
@@ -111,7 +95,7 @@ public class PlayerInfoService {
                         info.tournaments(),
                         info.rankingPoints(),
                         info.rankingPosition(),
-                        calculatePlayersRanking(player, Player::getSinglePoints, "single")))
+                        rankingPlayerCache.calculatePlayerRanking(player, Player::getSinglePoints, "single")))
                 .orElse(new PlayerDiscStatDTO(0, 0, 0, 0));
     }
 
@@ -121,7 +105,7 @@ public class PlayerInfoService {
                         info.tournaments(),
                         info.rankingPoints(),
                         info.rankingPosition(),
-                        calculatePlayersRanking(player, Player::getDoublePoints, "double")))
+                        rankingPlayerCache.calculatePlayerRanking(player, Player::getDoublePoints, "double")))
                 .orElse(new PlayerDiscStatDTO(0, 0, 0, 0));
     }
 
@@ -131,19 +115,7 @@ public class PlayerInfoService {
                         info.tournaments(),
                         info.rankingPoints(),
                         info.rankingPosition(),
-                        calculatePlayersRanking(player, Player::getMixedPoints, "mixed")))
+                        rankingPlayerCache.calculatePlayerRanking(player, Player::getMixedPoints, "mixed")))
                 .orElse(new PlayerDiscStatDTO(0, 0, 0, 0));
-    }
-
-    private Integer calculatePlayersRanking(Player player, ToIntFunction<Player> pointsExtractor, String rankingType) {
-        Log.debugf("PlayerInfoService :: calculate ranking for player %s", player.getFullName());
-        List<Player> filteredPlayers = rankingPlayerCacheHandler.getRankingPlayerCache()
-                .filterByGenderAndAgeClass(player.getPlayerInfo().getAgeClassGeneral(), player.getGender().getDisplayName());
-        var sortedPlayers = filteredPlayers.stream()
-                .sorted(Comparator.comparingInt(pointsExtractor).reversed())
-                .toList();
-        int rank = sortedPlayers.indexOf(player) + 1;
-        Log.debugf("Calculated %s ranking for player %s is %d", rankingType, player.getFullName(), rank);
-        return rank;
     }
 }

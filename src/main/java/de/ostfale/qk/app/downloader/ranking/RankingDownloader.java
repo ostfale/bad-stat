@@ -1,10 +1,10 @@
 package de.ostfale.qk.app.downloader.ranking;
 
-import de.ostfale.qk.data.dashboard.model.DashboardRankingData;
 import de.ostfale.qk.data.dashboard.DashboardRankingDataJsonHandler;
+import de.ostfale.qk.data.dashboard.model.DashboardRankingData;
+import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import org.jboss.logging.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,13 +16,11 @@ import java.util.Objects;
 @Singleton
 public class RankingDownloader implements RankingFacade {
 
-    private static final Logger log = Logger.getLogger(RankingDownloader.class);
-
     @Inject
     DashboardRankingDataJsonHandler dashboardRankingDataJsonHandler;
 
     public boolean downloadLastCWRankingFile() {
-        log.info("RankingDownloader :: download last CW ranking file");
+        Log.info("RankingDownloader :: download last CW ranking file");
         int lastCW = getLastCalendarWeek();
         int lastYear = getCalendarYearFromLastWeek();
         String targetFilePath = getApplicationRankingDir() + SEP + prepareRankingFileName(lastCW, lastYear);
@@ -31,7 +29,7 @@ public class RankingDownloader implements RankingFacade {
     }
 
     public boolean downloadCurrentCWRankingFile() {
-        log.info("RankingDownloader :: download current CW ranking file");
+        Log.info("RankingDownloader :: download current CW ranking file");
         int currentCW = getActualCalendarWeek();
         int currentYear = getActualCalendarYear();
         String targetFilePath = getApplicationRankingDir() + SEP + prepareRankingFileName(currentCW, currentYear);
@@ -39,9 +37,9 @@ public class RankingDownloader implements RankingFacade {
     }
 
     private boolean downloadRankingFile(String targetFilePath, String targetUrl) {
-        log.info("RankingDownloader :: download ranking file");
+        Log.info("RankingDownloader :: download ranking file");
         if (!deleteAllFiles(getApplicationRankingDir())) {
-            log.error("RankingDownloader :: could not delete existing ranking files");
+            Log.error("RankingDownloader :: could not delete existing ranking files");
             return false;
         }
         try {
@@ -49,7 +47,7 @@ public class RankingDownloader implements RankingFacade {
             downloadIntoFile(url, targetFilePath);
             updateConfigurationInfo();
         } catch (IOException e) {
-            log.errorf("RankingDownloader :: Malformed URL: %s", targetUrl);
+            Log.errorf("RankingDownloader :: Malformed URL: %s", targetUrl);
             resetConfigurationInfo();
             return false;
         }
@@ -57,7 +55,7 @@ public class RankingDownloader implements RankingFacade {
     }
 
     private void resetConfigurationInfo() {
-        log.info("RankingDownloader :: reset configuration info");
+        Log.info("RankingDownloader :: reset configuration info");
         DashboardRankingData dashboardRankingData = dashboardRankingDataJsonHandler.readDashboardRankingData();
         dashboardRankingData.setLastRankingFileDownload(null);
         dashboardRankingData.setRankingFileName(null);
@@ -65,7 +63,7 @@ public class RankingDownloader implements RankingFacade {
     }
 
     private void updateConfigurationInfo() {
-        log.info("RankingDownloader :: update configuration info");
+        Log.info("RankingDownloader :: update configuration info");
         DashboardRankingData dashboardRankingData = dashboardRankingDataJsonHandler.readDashboardRankingData();
         dashboardRankingData.setLastRankingFileDownload(LocalDateTime.now());
         dashboardRankingData.setRankingFileName(getRankingFiles().getFirst().getName());
@@ -75,13 +73,13 @@ public class RankingDownloader implements RankingFacade {
     public String getCalendarWeekFromRankingFile(File aFile) {
         Objects.requireNonNull(aFile, "Ranking file must not be null");
         var fileName = aFile.getName();
-        log.debugf("RankingFile Download :: get calendar week for file name: %s", fileName);
+        Log.debugf("RankingFile Download :: get calendar week for file name: %s", fileName);
         return getCalenderWeekFromRankingFileName(fileName);
     }
 
     public List<File> getRankingFiles() {
         var rankingDir = getApplicationRankingDir();
-        log.debugf("RankingFile Download :: ranking dir: %s", rankingDir);
+        Log.debugf("RankingFile Download :: ranking dir: %s", rankingDir);
         return readAllFiles(rankingDir);
     }
 }
