@@ -77,5 +77,4 @@ public class ApplicationInitializer implements FileSystemFacade {
             throw new RuntimeException(errorMessage, e);
         }
     }
-
 }

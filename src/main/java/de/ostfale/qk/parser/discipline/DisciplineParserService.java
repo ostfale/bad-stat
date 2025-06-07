@@ -1,6 +1,5 @@
 package de.ostfale.qk.parser.discipline;
 
-import de.ostfale.qk.domain.discipline.AgeClass;
 import de.ostfale.qk.parser.HtmlParser;
 import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.ParsedComponent;
@@ -16,22 +15,18 @@ import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlElement;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Singleton
 public class DisciplineParserService implements DisciplineParser {
-
-    private static final int MINIMUM_DISCIPLINE_PARTS = 2;
-    private static final int EXPECTED_DISCIPLINE_PARTS = 3;
-    private static final int MAX_AGE_GROUP_LENGTH = 3;
-    private static final String[] AGE_GROUP_PREFIXES = {"U", "O"};
-
     @Inject
     HtmlParser htmlParser;
 
     @Inject
     MatchParser matchParser;
+
+    @Inject
+    DisciplineAgeParserService ageParserService;
 
     @Override
     public List<DisciplineParserModel> parseDisciplines(HtmlElement moduleCard) throws HtmlParserException {
@@ -43,7 +38,7 @@ public class DisciplineParserService implements DisciplineParser {
             List<HtmlElement> disciplineHeaderElements = htmlParser.getAllDisciplineInfos(moduleCard);
             for (HtmlElement disciplineHeaderElement : disciplineHeaderElements) {
                 // read discipline type and age class
-                DisciplineParserModel disciplineDTO = getDisciplineInfos(disciplineHeaderElement);
+                DisciplineParserModel disciplineDTO = ageParserService.parseDisciplineInfos(disciplineHeaderElement.asNormalizedText());
                 disciplineList.add(disciplineDTO);
             }
 
@@ -121,75 +116,5 @@ public class DisciplineParserService implements DisciplineParser {
         }
         Log.error("Wrong discipline mode detected");
         return false;
-    }
-
-    private DisciplineParserModel getDisciplineInfos(HtmlElement headerElement) {
-        String[] disciplineParts = headerElement.asNormalizedText().split(" ");
-
-        if (disciplineParts.length < MINIMUM_DISCIPLINE_PARTS) {
-            Log.warnf("DisciplineParserService :: Invalid discipline format: %s",
-                    String.join(" ", disciplineParts));
-            return createDefaultDisciplineModel();
-        }
-        return parseDisciplineParts(disciplineParts);
-    }
-
-    private DisciplineParserModel parseDisciplineParts(String[] parts) {
-        String disciplineName;
-        String ageGroup = AgeClass.UOX.name();
-
-        if (parts.length >= EXPECTED_DISCIPLINE_PARTS && containsAgeClassMarker(parts)) {
-            return parseFullDisciplineFormat(parts);
-        } else if (parts.length == MINIMUM_DISCIPLINE_PARTS) {
-            return parseShortDisciplineFormat(parts);
-        } else {
-            Log.warnf("DisciplineParserService :: no info about age class found: %s", String.join(" ", parts));
-            disciplineName = parts[1] + " " + parts[2];
-            return new DisciplineParserModel(disciplineName, ageGroup);
-        }
-    }
-
-    private DisciplineParserModel parseFullDisciplineFormat(String[] parts) {
-        String disciplineName;
-        String ageGroup;
-
-        if (startsWithAgeGroupPrefix(parts[2])) {
-            disciplineName = parts[1];
-            ageGroup = parts[2];
-        } else {
-            disciplineName = parts[2];
-            ageGroup = parts[1];
-        }
-
-        return new DisciplineParserModel(disciplineName, ageGroup);
-    }
-
-    private DisciplineParserModel parseShortDisciplineFormat(String[] parts) {
-        if (!startsWithAgeGroupPrefix(parts[1])) {
-            return new DisciplineParserModel(parts[1], AgeClass.UOX.name());
-        }
-
-        String ageGroup = parts[1];
-        String disciplineName = parts[1];
-
-        if (ageGroup.length() > MAX_AGE_GROUP_LENGTH) {
-            Log.warnf("DisciplineParserService :: discipline age group is longer than 3 chars: %s", ageGroup);
-            disciplineName = ageGroup.substring(MAX_AGE_GROUP_LENGTH);
-            ageGroup = ageGroup.substring(0, MAX_AGE_GROUP_LENGTH);
-        }
-
-        return new DisciplineParserModel(disciplineName, ageGroup);
-    }
-
-    private boolean startsWithAgeGroupPrefix(String text) {
-        return Arrays.stream(AGE_GROUP_PREFIXES).anyMatch(text::startsWith);
-    }
-
-    private DisciplineParserModel createDefaultDisciplineModel() {
-        return new DisciplineParserModel("", AgeClass.UOX.name());
-    }
-
-    private boolean containsAgeClassMarker(String[] rawData) {
-        return Arrays.stream(rawData).anyMatch(rawDataElement -> rawDataElement.startsWith("U") || rawDataElement.startsWith("O"));
     }
 }

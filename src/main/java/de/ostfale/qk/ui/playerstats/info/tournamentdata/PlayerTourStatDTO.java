@@ -36,10 +36,10 @@ public class PlayerTourStatDTO {
 
     public List<String> getTournamentsStatisticAsString() {
         List<String> tournamentsStatistic = new ArrayList<>();
-        tournamentsStatistic.add(yearPlayedTournaments.toString() + " / " + yearDownloadedTournaments.toString());
-        tournamentsStatistic.add(yearMinusOnePlayedTournaments.toString() + " / " + yearMinusOneDownloadedTournaments.toString());
-        tournamentsStatistic.add(yearMinusTwoPlayedTournaments.toString() + " / " + yearMinusTwoDownloadedTournaments.toString());
-        tournamentsStatistic.add(yearMinusThreePlayedTournaments.toString() + " / " + yearMinusThreeDownloadedTournaments.toString());
+        tournamentsStatistic.add(yearPlayedTournaments.toString() + " | " + yearDownloadedTournaments.toString());
+        tournamentsStatistic.add(yearMinusOnePlayedTournaments.toString() + "  | " + yearMinusOneDownloadedTournaments.toString());
+        tournamentsStatistic.add(yearMinusTwoPlayedTournaments.toString() + " | " + yearMinusTwoDownloadedTournaments.toString());
+        tournamentsStatistic.add(yearMinusThreePlayedTournaments.toString() + " | " + yearMinusThreeDownloadedTournaments.toString());
         return tournamentsStatistic;
     }
 

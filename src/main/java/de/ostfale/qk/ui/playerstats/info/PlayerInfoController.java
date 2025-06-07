@@ -10,6 +10,7 @@ import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerStringConverter;
 import de.ostfale.qk.ui.playerstats.info.filter.PlayerTextSearchComponent;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoMasterDTO;
+import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTournamentsService;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsController;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsHandler;
@@ -302,6 +303,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         updateDynamicPlayerInfo(playerInfo);
         setPlayersMasterData(playerInfo);
         updateDynamicPlayerInfo(playerInfo);
+        updatePlayerMatchesStatsForYear(playerInfo.getPlayerTourStatDTO());
     }
 
     public void updateDynamicPlayerInfo(PlayerInfoDTO playerInfoDTO) {
@@ -326,6 +328,15 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         Log.debugf("UI :: Update player matches statistics for player %s ", playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerName());
         var uiModel = playerTournamentsService.readPlayerTournamentsForLastFourYears(playerInfoDTO);
         playerTourStatsController.updateTreeTable(uiModel);
+    }
+
+    // TODO separate into own component
+    private void updatePlayerMatchesStatsForYear(PlayerTourStatDTO playerTourStatDTO) {
+        var stats = playerTourStatDTO.getTournamentsStatisticAsString();
+        lblYear.setText(stats.getFirst());
+        lblYearMinusOne.setText(stats.get(1));
+        lblYearMinusTwo.setText(stats.get(2));
+        lblYearMinusThree.setText(stats.get(3));
     }
 
     public void updatePlayerMatchesStatsForYear(FavPlayerData favPlayerData) {
