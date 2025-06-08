@@ -21,6 +21,7 @@ public class DisciplineAgeParserService {
     private static final String SPLIT_DELIMITER = "\\s+";
     private static final int EXPECTED_DISCIPLINE_PARTS = 3;
     private static final int TOO_LONG_TOKEN_FOR_DISCIPLINE = 5;
+    private static final int TOO_SHORT_TOKEN_FOR_DISCIPLINE = 2;
     private static final String[] AGE_GROUP_PREFIXES = {"U", "O"};
     private static final Set<String> AGE_CATEGORY_PREFIXES = Set.of("U", "O");
 
@@ -51,6 +52,13 @@ public class DisciplineAgeParserService {
             Log.debugf("DisciplineAgeParserService :: Parse discipline infos with %d parts ", disciplineParts.length);
             return createDisciplineModelDefault(disciplineParts);
         }
+
+        if (disciplineParts.length == TOO_SHORT_TOKEN_FOR_DISCIPLINE) {
+            Log.warnf("DisciplineAgeParserService :: Invalid discipline age format : %s (too few parts)", disciplineToken);
+            var discipline = Discipline.lookup(disciplineParts[1]);
+            return new DisciplineParserModel(discipline, UOX);
+        }
+
         Log.errorf("DisciplineAgeParserService :: Could not parse discipline infos: %s", disciplineToken);
         return null;
     }
@@ -65,12 +73,7 @@ public class DisciplineAgeParserService {
     }
 
     private DisciplineParserModel createDisciplineParserModel(DisciplineAgeModel disciplineAge) {
-        var displayString = disciplineAge.discipline().getDisplayString() + " " + disciplineAge.ageClass().name();
-        return new DisciplineParserModel(
-                displayString.trim(),
-                disciplineAge.discipline(),
-                disciplineAge.ageClass()
-        );
+        return new DisciplineParserModel(disciplineAge.discipline(), disciplineAge.ageClass());
     }
 
     private DisciplineAgeModel parseStandardDisciplineInfos(String[] disciplineParts) {

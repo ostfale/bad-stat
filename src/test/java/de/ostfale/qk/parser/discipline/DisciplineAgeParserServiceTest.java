@@ -52,6 +52,7 @@ class DisciplineAgeParserServiceTest {
             "Konkurrenz: U13MX,MIXED,U13",
             "Konkurrenz: U11 [SG] Mädcheneinzel Samstag,SINGLE,U11",
             "Konkurrenz: U11 Mädcheneinzel Samstag,SINGLE,U11",
+            "Konkurrenz: DD,DOUBLE,UOX",
     })
     @DisplayName("Test discipline token from HTMLElement header split result")
     void testDisciplineTokenSplitResult(String token, Discipline expectedDiscipline, AgeClass expectedAgeClass) {

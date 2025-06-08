@@ -71,11 +71,11 @@ class TournamentParserTest extends BaseTest {
         // given
         var expectedTournamentDisciplinesSize = 3;
         var expectedTournamentDisciplineAgeGroup = "U15";
-        var expectedTournamentFirstDisciplineName = "JD U15";
+        var expectedTournamentFirstDisciplineName = "Doppel U15";
         var expectedTournamentFirstDiscipline = "DOUBLE";
-        var expectedTournamentSecondDisciplineName = "JE U15";
+        var expectedTournamentSecondDisciplineName = "Einzel U15";
         var expectedTournamentSecondDiscipline = "SINGLE";
-        var expectedTournamentThirdDisciplineName = "MX U15";
+        var expectedTournamentThirdDisciplineName = "Mixed U15";
         var expectedTournamentThirdDiscipline = "MIXED";
 
 

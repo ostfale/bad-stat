@@ -14,16 +14,10 @@ public class DisciplineParserModel {
     private final AgeClass ageClass;
     private final List<Match> matches = new ArrayList<>();
 
-    public DisciplineParserModel(String disciplineName, Discipline discipline, AgeClass ageClass) {
-        this.disciplineName = disciplineName;
+    public DisciplineParserModel(Discipline discipline, AgeClass ageClass) {
+        this.disciplineName = discipline.getDisplayString() + " " + ageClass.name();
         this.discipline = discipline;
         this.ageClass = ageClass;
-    }
-
-    public DisciplineParserModel(String disciplineName, String ageClass) {
-        this.disciplineName = disciplineName + " " + ageClass;
-        this.discipline = Discipline.lookup(disciplineName);
-        this.ageClass = AgeClass.fromString(ageClass);
     }
 
     public void addMatch(Match match) {
