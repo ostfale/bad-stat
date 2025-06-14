@@ -1,4 +1,6 @@
 quarkus:
+  jacoco:
+    report: true
   banner:
     enabled: true
     path: banner.txt

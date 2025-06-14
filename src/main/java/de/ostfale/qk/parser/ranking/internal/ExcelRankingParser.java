@@ -1,7 +1,7 @@
 package de.ostfale.qk.parser.ranking.internal;
 
 import de.ostfale.qk.domain.player.*;
-import de.ostfale.qk.domain.discipline.Discipline;
+import de.ostfale.qk.domain.discipline.DisciplineType;
 import de.ostfale.qk.parser.ranking.api.RankingParser;
 import jakarta.inject.Singleton;
 import org.apache.poi.ss.usermodel.*;
@@ -115,11 +115,11 @@ public class ExcelRankingParser implements RankingParser {
 
     private void updatePlayerRankingInformation(Row row, Player player) {
         String disciplineString = extractCellValue(row, RankingFileColIndex.DISCIPLINE_INDEX);
-        Discipline discipline = Discipline.lookup(disciplineString);
+        DisciplineType disciplineType = DisciplineType.lookup(disciplineString);
 
         RankingInformation rankingInfo = createRankingInformation(row);
 
-        switch (discipline) {
+        switch (disciplineType) {
             case SINGLE -> player.setSingleRankingInformation(rankingInfo);
             case DOUBLE -> player.setDoubleRankingInformation(rankingInfo);
             case MIXED -> player.setMixedRankingInformation(rankingInfo);
@@ -172,7 +172,7 @@ public class ExcelRankingParser implements RankingParser {
             Group group = Group.lookup(stateGroup);
 
             String disciplineString = extractCellValue(row, RankingFileColIndex.DISCIPLINE_INDEX);
-            Discipline discipline = Discipline.lookup(disciplineString);
+            DisciplineType disciplineType = DisciplineType.lookup(disciplineString);
 
             String ranking = extractCellValue(row, RankingFileColIndex.RANKING_INDEX);
             Integer rankingInt = Integer.parseInt(ranking);
@@ -189,7 +189,7 @@ public class ExcelRankingParser implements RankingParser {
             RankingPlayer existingOrNewRankingPlayer = getOrCreatePlayer(playerId, firstName, lastName, genderType, birthYear, ageClassGeneral,
                     ageClassDetail, clubName, districtName, stateName, group, playerMap);
 
-            switch (discipline) {
+            switch (disciplineType) {
                 case SINGLE ->
                         existingOrNewRankingPlayer.setSinglePointsAndRanking(points, rankingInt, ageRankingInt, noOfTournaments);
                 case DOUBLE ->

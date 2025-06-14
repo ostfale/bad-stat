@@ -1,6 +1,6 @@
 package de.ostfale.qk.parser.match.internal.model;
 
-import de.ostfale.qk.domain.discipline.Discipline;
+import de.ostfale.qk.domain.discipline.DisciplineType;
 import de.ostfale.qk.parser.player.PlayerRawModel;
 import de.ostfale.qk.parser.set.SetRawModel;
 import org.jboss.logging.Logger;
@@ -13,7 +13,7 @@ public abstract class MatchRawModel implements Match {
 
     private static final Logger log = Logger.getLogger(MatchRawModel.class);
 
-    public abstract Discipline getDiscipline();
+    public abstract DisciplineType getDiscipline();
 
     public abstract List<String> getPlayerNames();
 

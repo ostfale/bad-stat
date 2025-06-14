@@ -1,6 +1,6 @@
 package de.ostfale.qk.parser.match.api;
 
-import de.ostfale.qk.domain.discipline.Discipline;
+import de.ostfale.qk.domain.discipline.DisciplineType;
 import de.ostfale.qk.parser.match.internal.model.Match;
 import de.ostfale.qk.parser.match.internal.model.MatchInfoRawModel;
 import org.htmlunit.html.HtmlElement;
@@ -17,5 +17,5 @@ public interface MatchParser {
 
     MatchInfoRawModel parseMatchGroupInfo(HtmlElement matchGroup);
 
-    List<Match> parseMatchDiscipline(Discipline discipline, List<HtmlElement> matchGroups);
+    List<Match> parseMatchDiscipline(DisciplineType disciplineType, List<HtmlElement> matchGroups);
 }

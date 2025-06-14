@@ -15,7 +15,7 @@ import de.ostfale.qk.parser.match.internal.model.MixedMatchRawModel;
 
 @DisplayName("Test reading the mixed match information ")
 @Tag("unittest")
-public class MatchParserMixedTest extends BaseParserTest {
+public class MatchOldParserMixedTest extends BaseParserTest {
 
     MatchParserService parser = new MatchParserService();
 

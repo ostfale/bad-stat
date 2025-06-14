@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("Test reading general match information ")
 @Tag("unittest")
 @QuarkusTest
-public class MatchParserInfoTest extends BaseParserTest {
+public class MatchOldParserInfoTest extends BaseParserTest {
 
     @Inject
     MatchParserService parser;

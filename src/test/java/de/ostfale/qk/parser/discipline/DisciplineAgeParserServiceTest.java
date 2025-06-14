@@ -1,7 +1,7 @@
 package de.ostfale.qk.parser.discipline;
 
 import de.ostfale.qk.domain.discipline.AgeClass;
-import de.ostfale.qk.domain.discipline.Discipline;
+import de.ostfale.qk.domain.discipline.DisciplineType;
 import de.ostfale.qk.parser.discipline.model.DisciplineAgeModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,9 +55,9 @@ class DisciplineAgeParserServiceTest {
             "Konkurrenz: DD,DOUBLE,UOX",
     })
     @DisplayName("Test discipline token from HTMLElement header split result")
-    void testDisciplineTokenSplitResult(String token, Discipline expectedDiscipline, AgeClass expectedAgeClass) {
+    void testDisciplineTokenSplitResult(String token, DisciplineType expectedDisciplineType, AgeClass expectedAgeClass) {
         var result = parser.parseDisciplineInfos(token);
-        assertThat(result.getDiscipline()).isEqualTo(expectedDiscipline);
+        assertThat(result.getDiscipline()).isEqualTo(expectedDisciplineType);
         assertThat(result.getAgeClass()).isEqualTo(expectedAgeClass);
     }
 }

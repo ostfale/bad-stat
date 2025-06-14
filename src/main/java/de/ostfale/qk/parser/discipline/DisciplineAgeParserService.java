@@ -1,7 +1,7 @@
 package de.ostfale.qk.parser.discipline;
 
 import de.ostfale.qk.domain.discipline.AgeClass;
-import de.ostfale.qk.domain.discipline.Discipline;
+import de.ostfale.qk.domain.discipline.DisciplineType;
 import de.ostfale.qk.parser.discipline.model.DisciplineAgeModel;
 import de.ostfale.qk.parser.discipline.model.DisciplineParserModel;
 import io.quarkus.logging.Log;
@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static de.ostfale.qk.domain.discipline.AgeClass.*;
-import static de.ostfale.qk.domain.discipline.Discipline.*;
+import static de.ostfale.qk.domain.discipline.DisciplineType.*;
 
 @ApplicationScoped
 public class DisciplineAgeParserService {
@@ -37,7 +37,7 @@ public class DisciplineAgeParserService {
             Log.warnf("DisciplineAgeParserService :: Invalid discipline age format : %s (without spaces)", disciplineToken);
             var ageToken = disciplineParts[1].substring(0, 3);
             var discToken = disciplineParts[1].substring(3);
-            return createDisciplineParserModel(new DisciplineAgeModel(Discipline.lookup(discToken), AgeClass.fromString(ageToken)));
+            return createDisciplineParserModel(new DisciplineAgeModel(DisciplineType.lookup(discToken), AgeClass.fromString(ageToken)));
         }
 
         if (!hasAgeCategoryPrefix(disciplineParts) || containsHyphen(disciplineParts)) {
@@ -55,7 +55,7 @@ public class DisciplineAgeParserService {
 
         if (disciplineParts.length == TOO_SHORT_TOKEN_FOR_DISCIPLINE) {
             Log.warnf("DisciplineAgeParserService :: Invalid discipline age format : %s (too few parts)", disciplineToken);
-            var discipline = Discipline.lookup(disciplineParts[1]);
+            var discipline = DisciplineType.lookup(disciplineParts[1]);
             return new DisciplineParserModel(discipline, UOX);
         }
 
@@ -73,18 +73,18 @@ public class DisciplineAgeParserService {
     }
 
     private DisciplineParserModel createDisciplineParserModel(DisciplineAgeModel disciplineAge) {
-        return new DisciplineParserModel(disciplineAge.discipline(), disciplineAge.ageClass());
+        return new DisciplineParserModel(disciplineAge.disciplineType(), disciplineAge.ageClass());
     }
 
     private DisciplineAgeModel parseStandardDisciplineInfos(String[] disciplineParts) {
         Log.debugf("DisciplineAgeParserService :: Parse standard discipline infos with %S parts ", String.join(" ", disciplineParts));
         if (startsWithAgeGroupPrefix(disciplineParts[2])) {
             var ageToken = AgeClass.fromString(disciplineParts[2]);
-            var discToken = Discipline.lookup(disciplineParts[1]);
+            var discToken = DisciplineType.lookup(disciplineParts[1]);
             return new DisciplineAgeModel(discToken, ageToken);
         } else {
             var ageToken = AgeClass.fromString(disciplineParts[1]);
-            var discToken = Discipline.lookup(disciplineParts[2]);
+            var discToken = DisciplineType.lookup(disciplineParts[2]);
             return new DisciplineAgeModel(discToken, ageToken);
         }
     }

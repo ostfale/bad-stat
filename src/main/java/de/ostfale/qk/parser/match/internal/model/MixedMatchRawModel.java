@@ -1,6 +1,6 @@
 package de.ostfale.qk.parser.match.internal.model;
 
-import de.ostfale.qk.domain.discipline.Discipline;
+import de.ostfale.qk.domain.discipline.DisciplineType;
 import de.ostfale.qk.parser.player.PlayerRawModel;
 import de.ostfale.qk.parser.set.SetRawModel;
 
@@ -40,8 +40,8 @@ public class MixedMatchRawModel extends MatchRawModel {
     }
 
     @Override
-    public Discipline getDiscipline() {
-        return Discipline.MIXED;
+    public DisciplineType getDiscipline() {
+        return DisciplineType.MIXED;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package de.ostfale.qk.parser.web.tournament;
 
 import de.ostfale.qk.domain.tournament.TournamentInfo;
+import de.ostfale.qk.parser.HtmlParserException;
+import de.ostfale.qk.parser.ParsedComponent;
 import de.ostfale.qk.parser.web.HtmlStructureParser;
 import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
@@ -13,21 +15,30 @@ import java.time.format.DateTimeFormatter;
 @Singleton
 public class WebTournamentInfoParser {
 
+    private static final Integer TOURNAMENT_DEFAULT_YEAR = 1970;
+    private static final String TOURNAMENT_DATE_SEPARATOR = "bis";
+    private static final String TOURNAMENT_DATE_FORMAT = "dd.MM.yyyy";
+
     @Inject
     HtmlStructureParser htmlStructureParser;
 
-    public TournamentInfo parseTournamentInfo(HtmlElement content) {
+    public TournamentInfo parseTournamentInfo(HtmlElement content) throws HtmlParserException {
         Log.debug("WebTournamentInfoParser :: Parsing tournament info");
-        var tournamentName = extractTournamentName(content);
 
-        OrgLoc tournamentOrganisationAndLocation = extractTournamentOrganisation(content);
-        var tournamentOrganisation = tournamentOrganisationAndLocation.organisation();
-        var tournamentLocation = tournamentOrganisationAndLocation.location();
+        try {
+            var tournamentName = extractTournamentName(content);
 
-        DateYear tournamentDateAndYear = extractTournamentDate(content);
-        var tournamentDate = tournamentDateAndYear.date();
-        var tournamentYear = tournamentDateAndYear.getYear();
-        return new TournamentInfo(tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate, tournamentYear);
+            OrgLoc tournamentOrganisationAndLocation = extractTournamentOrganisation(content);
+            var tournamentOrganisation = tournamentOrganisationAndLocation.organisation();
+            var tournamentLocation = tournamentOrganisationAndLocation.location();
+
+            DateYear tournamentDateAndYear = extractTournamentDate(content);
+            var tournamentDate = tournamentDateAndYear.date();
+            var tournamentYear = tournamentDateAndYear.getYear();
+            return new TournamentInfo(tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate, tournamentYear);
+        } catch (Exception e) {
+            throw new HtmlParserException(ParsedComponent.TOURNAMENT_INFO, e);
+        }
     }
 
     private String extractTournamentName(HtmlElement content) {
@@ -73,16 +84,16 @@ public class WebTournamentInfoParser {
     ) {
         public int getYear() {
             if (date == null || date.isEmpty()) {
-                return 1970;
+                return TOURNAMENT_DEFAULT_YEAR;
             }
 
-            if (date.contains("bis")) {
-                var splitFromTo = date.split("bis");
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            if (date.contains(TOURNAMENT_DATE_SEPARATOR)) {
+                var splitFromTo = date.split(TOURNAMENT_DATE_SEPARATOR);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TOURNAMENT_DATE_FORMAT, java.util.Locale.GERMANY);
                 var result = LocalDate.parse(splitFromTo[0].trim(), formatter);
                 return result.getYear();
             }
-            return 1970;
+            return TOURNAMENT_DEFAULT_YEAR;
         }
     }
 }

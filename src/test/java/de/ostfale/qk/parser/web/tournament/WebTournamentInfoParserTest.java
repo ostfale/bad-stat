@@ -1,6 +1,7 @@
 package de.ostfale.qk.parser.web.tournament;
 
 import de.ostfale.qk.parser.BaseParserTest;
+import de.ostfale.qk.parser.HtmlParserException;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlElement;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("Test web tournament info parser")
 class WebTournamentInfoParserTest extends BaseParserTest {
 
-    private static final String TEST_FILE_NAME = "tournaments/TournamentInfoHeader.html";
+            private static final String TEST_FILE_NAME = "tournaments/TournamentInfoHeader.html";
 
     @Inject
     WebTournamentInfoParser sut;
@@ -31,7 +32,7 @@ class WebTournamentInfoParserTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test parsing tournament info")
-    void testParseTournamentInfo() {
+    void testParseTournamentInfo() throws HtmlParserException {
         // given
         var expectedTournamentName = "VICTOR International Junior Cup 2025";
         var expectedOrganisation = "HAM - TSG Bergedorf";

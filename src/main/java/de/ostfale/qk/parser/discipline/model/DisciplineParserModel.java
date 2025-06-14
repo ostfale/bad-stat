@@ -1,7 +1,7 @@
 package de.ostfale.qk.parser.discipline.model;
 
 import de.ostfale.qk.domain.discipline.AgeClass;
-import de.ostfale.qk.domain.discipline.Discipline;
+import de.ostfale.qk.domain.discipline.DisciplineType;
 import de.ostfale.qk.parser.match.internal.model.Match;
 
 import java.util.ArrayList;
@@ -10,13 +10,13 @@ import java.util.List;
 public class DisciplineParserModel {
 
     private final String disciplineName;
-    private final Discipline discipline;
+    private final DisciplineType disciplineType;
     private final AgeClass ageClass;
     private final List<Match> matches = new ArrayList<>();
 
-    public DisciplineParserModel(Discipline discipline, AgeClass ageClass) {
-        this.disciplineName = discipline.getDisplayString() + " " + ageClass.name();
-        this.discipline = discipline;
+    public DisciplineParserModel(DisciplineType disciplineType, AgeClass ageClass) {
+        this.disciplineName = disciplineType.getDisplayString() + " " + ageClass.name();
+        this.disciplineType = disciplineType;
         this.ageClass = ageClass;
     }
 
@@ -28,8 +28,8 @@ public class DisciplineParserModel {
         return disciplineName;
     }
 
-    public Discipline getDiscipline() {
-        return discipline;
+    public DisciplineType getDiscipline() {
+        return disciplineType;
     }
 
     public AgeClass getAgeClass() {

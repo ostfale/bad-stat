@@ -1,6 +1,6 @@
 package de.ostfale.qk.parser.match.internal;
 
-import de.ostfale.qk.domain.discipline.Discipline;
+import de.ostfale.qk.domain.discipline.DisciplineType;
 import de.ostfale.qk.parser.match.api.MatchParser;
 import de.ostfale.qk.parser.match.internal.model.*;
 import de.ostfale.qk.parser.player.PlayerRawModel;
@@ -196,8 +196,8 @@ public class MatchParserService implements MatchParser {
 
 
     @Override
-    public List<Match> parseMatchDiscipline(Discipline discipline, List<HtmlElement> matchGroups) {
-        log.debugf("Read all matches for discipline: {}", discipline);
+    public List<Match> parseMatchDiscipline(DisciplineType disciplineType, List<HtmlElement> matchGroups) {
+        log.debugf("Read all matches for discipline: {}", disciplineType);
         for (HtmlElement matchGroup : matchGroups) {
             var result = parseSingleMatch(matchGroup);
             System.out.println("dd");

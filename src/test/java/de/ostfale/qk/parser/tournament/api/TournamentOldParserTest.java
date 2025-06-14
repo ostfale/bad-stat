@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("Read all Information DM 2024")
 @QuarkusTest
 @Tag("unittest")
-class TournamentParserTest extends BaseTest {
+class TournamentOldParserTest extends BaseTest {
 
     @Inject
     TournamentParserService parser;
