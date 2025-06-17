@@ -22,17 +22,17 @@ public class WebTournamentInfoParser {
     @Inject
     HtmlStructureParser htmlStructureParser;
 
-    public TournamentInfo parseTournamentInfo(HtmlElement content) throws HtmlParserException {
+    public TournamentInfo parseTournamentInfo(HtmlElement moduleCard) throws HtmlParserException {
         Log.debug("WebTournamentInfoParser :: Parsing tournament info");
 
         try {
-            var tournamentName = extractTournamentName(content);
+            var tournamentName = extractTournamentName(moduleCard);
 
-            OrgLoc tournamentOrganisationAndLocation = extractTournamentOrganisation(content);
+            OrgLoc tournamentOrganisationAndLocation = extractTournamentOrganisation(moduleCard);
             var tournamentOrganisation = tournamentOrganisationAndLocation.organisation();
             var tournamentLocation = tournamentOrganisationAndLocation.location();
 
-            DateYear tournamentDateAndYear = extractTournamentDate(content);
+            DateYear tournamentDateAndYear = extractTournamentDate(moduleCard);
             var tournamentDate = tournamentDateAndYear.date();
             var tournamentYear = tournamentDateAndYear.getYear();
             return new TournamentInfo(tournamentName, tournamentOrganisation, tournamentLocation, tournamentDate, tournamentYear);
@@ -57,7 +57,7 @@ public class WebTournamentInfoParser {
 
             if (location.contains("[")) {
                 Log.tracef("WebTournamentInfoParser :: Location contains '[' -> will be removed");
-                location = location.substring(0, location.indexOf("["));
+                location = location.substring(0, location.indexOf("[")).trim();
             }
 
             Log.debugf("WebTournamentInfoParser :: Parsing tournament organisation and location -> %s | %s", organisation, location);

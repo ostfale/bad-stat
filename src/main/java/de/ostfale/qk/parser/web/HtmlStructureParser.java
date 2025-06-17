@@ -40,10 +40,36 @@ public class HtmlStructureParser implements HtmlStructureElements {
     /* DISCIPLINE INFORMATION */
 
     // within a module__card will be 1-3 disciplines with a separate header
+    String DISCIPLINES_MATCHES_INFO = ".//h4[contains(@class, 'module-divider')]";
+
     public List<HtmlElement> getAllDisciplineInfos(HtmlElement tournament) {
         Log.debugf("Parsing all discipline header info elements");
         List<HtmlElement> disciplines = tournament.getByXPath(DISCIPLINES_MATCHES_INFO);
         Log.debugf("Found {} discipline header info elements", disciplines.size());
         return disciplines;
     }
+
+    public List<HtmlElement> getAllDisciplineMatches(HtmlElement module_card) {
+        Log.debug("HtmlStructureParser :: Parsing all disciplines and return container with all matches for a discipline");
+        List<HtmlElement> disciplineMatchesContainer = module_card.getByXPath(DISCIPLINES_ALL_MATCHES);
+        Log.debugf("Found {} discipline matches", disciplineMatchesContainer.size());
+        return disciplineMatchesContainer;
+    }
+
+    // check the existence of a group phase within the discipline
+    public List<HtmlElement> getEliminationGroupContainerList(HtmlElement discipline) {
+        Log.debug("HtmlStructureParser ::Parsing discipline all matches in elimination and group phase");
+        return discipline.getByXPath(DISCIPLINE_MODE);
+    }
+
+    /* MATCH INFORMATION */
+
+    // read match with the general info and the match result
+    public List<HtmlElement> getAllMatchesForMatchGroupContainer(HtmlElement matchGroup) {
+        Log.debug("HtmlStructureParser ::Extract all match elements for a match group");
+        List<HtmlElement> matches = matchGroup.getByXPath(DISCIPLINES_MATCHES);
+        Log.debugf("HtmlStructureParser :: Found %d matches in match group", matches.size());
+        return matches;
+    }
+
 }

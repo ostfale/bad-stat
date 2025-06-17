@@ -31,10 +31,10 @@ public class WebTournamentParser extends BaseWebParser {
         List<HtmlElement> tournamentElements = htmlStructureParser.getAllTournaments(content);
         List<Tournament> allTournaments = new ArrayList<>();
 
-        for (HtmlElement tournamentElement : tournamentElements) {
-            TournamentInfo tournamentInfo = tournamentInfoParser.parseTournamentInfo(tournamentElement);
+        for (HtmlElement moduleCard : tournamentElements) {
+            TournamentInfo tournamentInfo = tournamentInfoParser.parseTournamentInfo(moduleCard);
             var tournament = new Tournament(tournamentInfo);
-            webDisciplineParser.parseDisciplines(tournament,tournamentElement);
+            webDisciplineParser.parseDisciplines(tournament,moduleCard);
             allTournaments.add(tournament);
         }
         return allTournaments;

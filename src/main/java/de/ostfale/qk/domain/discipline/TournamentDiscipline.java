@@ -7,10 +7,15 @@ import java.util.List;
 
 public abstract class TournamentDiscipline implements Discipline {
 
-    protected final List<Match> treeMatches = new ArrayList<>();
+    protected final List<Match> eliminationMatches = new ArrayList<>();
     protected final List<Match> groupMatches = new ArrayList<>();
 
     protected AgeClass disciplineAgeClass = AgeClass.UOX;
+    protected DisciplineOrder disciplineOrder = DisciplineOrder.NO_ORDER;
+
+    // provide discipline name (h5) and group name (for combined tournaments)
+    protected String disciplineName;
+    protected String groupName;
 
     @Override
     public DisciplineType getDisciplineType() {
@@ -19,7 +24,7 @@ public abstract class TournamentDiscipline implements Discipline {
 
     @Override
     public boolean hasTreeMatches() {
-        return !treeMatches.isEmpty();
+        return !eliminationMatches.isEmpty();
     }
 
     @Override
@@ -32,11 +37,28 @@ public abstract class TournamentDiscipline implements Discipline {
         return hasTreeMatches() || hasGroupMatches();
     }
 
+    @Override
+    public DisciplineOrder getDisciplineOrder() {
+        return disciplineOrder;
+    }
+
+    public void setDisciplineOrder(DisciplineOrder disciplineOrder) {
+        this.disciplineOrder = disciplineOrder;
+    }
+
     public AgeClass getDisciplineAgeClass() {
         return disciplineAgeClass;
     }
 
     public void setDisciplineAgeClass(AgeClass disciplineAgeClass) {
         this.disciplineAgeClass = disciplineAgeClass;
+    }
+
+    public String getDisciplineName() {
+        return disciplineName;
+    }
+
+    public String getGroupName() {
+        return groupName;
     }
 }

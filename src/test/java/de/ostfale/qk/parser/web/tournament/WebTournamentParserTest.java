@@ -33,7 +33,6 @@ class WebTournamentParserTest extends BaseParserTest {
         content = page.getActiveElement();
     }
 
-
     @Test
     @DisplayName("Test parsing all tournaments for a year")
     void testParseAllTournaments() throws HtmlParserException {

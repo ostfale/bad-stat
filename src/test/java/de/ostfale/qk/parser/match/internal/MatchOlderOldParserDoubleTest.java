@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Test reading double match information")
 @Tag("unittest")
 @QuarkusTest
-class MatchOldParserDoubleTest extends BaseParserTest {
+class MatchOlderOldParserDoubleTest extends BaseParserTest {
 
     @Inject
     MatchParserService parser;

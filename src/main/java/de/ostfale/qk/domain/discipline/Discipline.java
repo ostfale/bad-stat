@@ -9,4 +9,6 @@ public interface Discipline {
     boolean hasTreeMatches();
 
     boolean hasGroupMatches();
+
+   DisciplineOrder getDisciplineOrder();
 }

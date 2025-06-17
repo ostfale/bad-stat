@@ -1,9 +1,6 @@
 package de.ostfale.qk.parser.web.discipline;
 
-import de.ostfale.qk.domain.discipline.AgeClass;
-import de.ostfale.qk.domain.discipline.Discipline;
-import de.ostfale.qk.domain.discipline.DisciplineType;
-import de.ostfale.qk.domain.discipline.TournamentDiscipline;
+import de.ostfale.qk.domain.discipline.*;
 import de.ostfale.qk.domain.tournament.Tournament;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -70,6 +67,7 @@ public class WebDisciplineInfoParser {
             Discipline discipline = tournament.getDisciplineByType(disciplineAndAge.disciplineType);
             if (discipline instanceof TournamentDiscipline tournamentDiscipline) {
                 tournamentDiscipline.setDisciplineAgeClass(disciplineAndAge.ageClass());
+                tournamentDiscipline.setDisciplineOrder(tournament.getNextDisciplineOrder());
             }
         } catch (IllegalArgumentException e) {
             Log.warnf("WebDisciplineInfoParser :: Invalid discipline type: %s", disciplineAndAge.disciplineType);
