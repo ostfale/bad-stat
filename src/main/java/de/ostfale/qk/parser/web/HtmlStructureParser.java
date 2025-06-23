@@ -36,7 +36,6 @@ public class HtmlStructureParser implements HtmlStructureElements {
         return element.getFirstByXPath(TOURNAMENT_DATE_ELEMENT);
     }
 
-
     /* DISCIPLINE INFORMATION */
 
     // within a module__card will be 1-3 disciplines with a separate header
@@ -49,27 +48,42 @@ public class HtmlStructureParser implements HtmlStructureElements {
         return disciplines;
     }
 
+    // list all matches for a discipline -> elimination (1 element) + group (2 elements)
+    String DISCIPLINE_ALL_MATCHES = ".//ol[contains(@class, 'match-group')]";
+
     public List<HtmlElement> getAllDisciplineMatches(HtmlElement module_card) {
         Log.debug("HtmlStructureParser :: Parsing all disciplines and return container with all matches for a discipline");
-        List<HtmlElement> disciplineMatchesContainer = module_card.getByXPath(DISCIPLINES_ALL_MATCHES);
+        List<HtmlElement> disciplineMatchesContainer = module_card.getByXPath(DISCIPLINE_ALL_MATCHES);
         Log.debugf("Found {} discipline matches", disciplineMatchesContainer.size());
         return disciplineMatchesContainer;
     }
 
-    // check the existence of a group phase within the discipline
-    public List<HtmlElement> getEliminationGroupContainerList(HtmlElement discipline) {
+    // extract name before the matches which can be the name of the discipline or the name of a group in combined tournament
+    String DISCIPLINE_MODE = ".//h5[contains(@class, 'module-divider')]";
+
+    public List<HtmlElement> getDisciplineOrGroupName(HtmlElement discipline) {
         Log.debug("HtmlStructureParser ::Parsing discipline all matches in elimination and group phase");
         return discipline.getByXPath(DISCIPLINE_MODE);
     }
 
     /* MATCH INFORMATION */
 
-    // read match with the general info and the match result
+    // read match with the general info and the match result -> returns a list of single match containers
+    String DISCIPLINE_MATCH = ".//li[contains(@class, 'match-group__item')]";
+
     public List<HtmlElement> getAllMatchesForMatchGroupContainer(HtmlElement matchGroup) {
         Log.debug("HtmlStructureParser ::Extract all match elements for a match group");
-        List<HtmlElement> matches = matchGroup.getByXPath(DISCIPLINES_MATCHES);
+        List<HtmlElement> matches = matchGroup.getByXPath(DISCIPLINE_MATCH);
         Log.debugf("HtmlStructureParser :: Found %d matches in match group", matches.size());
         return matches;
+    }
+
+   // read round name
+   final String MATCH_ROUND_NAME = ".//li[contains(@class, 'match__header-title-item')]";
+
+    public HtmlElement getMatchRoundNameElement(HtmlElement element) {
+        Log.debugf("HtmlStructureParser :: Parsing match header info -> round name element");
+        return element.getFirstByXPath(MATCH_ROUND_NAME);
     }
 
 }

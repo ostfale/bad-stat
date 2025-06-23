@@ -24,17 +24,16 @@ public class WebDisciplineParser {
 
     public void parseDisciplines(Tournament tournament, HtmlElement moduleCardElement) {
         Log.debugf("WebDisciplineParser :: parse disciplines website -> Tournament %s", tournament.getTournamentInfo().tournamentName());
+        List<HtmlElement> disciplineOrGroupName = htmlStructureParser.getDisciplineOrGroupName(moduleCardElement);
         List<HtmlElement> disciplineElements = htmlStructureParser.getAllDisciplineInfos(moduleCardElement);
-        List<HtmlElement> matchGroupElements = htmlStructureParser.getEliminationGroupContainerList(moduleCardElement);
         disciplineElements.forEach(disciplineElement -> webDisciplineInfoParser.parseDisciplineInfos(tournament, disciplineElement));
 
-        if (disciplineElements.size() == matchGroupElements.size()) {
+        if (disciplineElements.size() == disciplineOrGroupName.size()) {
             Log.debugf("WebDisciplineParser :: Pure elimination disciplines found for tournament: %s", tournament.getTournamentInfo().tournamentName());
-            webMatchParser.parseEliminationMatches(tournament, matchGroupElements);
-            Log.debugf("WebDisciplineParser :: Pure elimination disciplines parsed for tournament: %s", tournament.getTournamentInfo().tournamentName());
-        } else if (disciplineElements.size() < matchGroupElements.size()) {
+            webMatchParser.parseEliminationMatches(tournament, moduleCardElement);
+        } else if (disciplineElements.size() < disciplineOrGroupName.size()) {
             Log.debugf("WebDisciplineParser :: Combined elimination disciplines found for tournament: %s", tournament.getTournamentInfo().tournamentName());
-            webMatchParser.parseCombinedMatches(tournament,matchGroupElements);
+            webMatchParser.parseCombinedMatches(tournament,moduleCardElement);
         }
     }
 }

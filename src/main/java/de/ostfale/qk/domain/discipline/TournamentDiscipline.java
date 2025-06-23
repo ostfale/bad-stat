@@ -15,7 +15,7 @@ public abstract class TournamentDiscipline implements Discipline {
 
     // provide discipline name (h5) and group name (for combined tournaments)
     protected String disciplineName;
-    protected String groupName;
+    protected String groupName = "";
 
     @Override
     public DisciplineType getDisciplineType() {
@@ -40,6 +40,22 @@ public abstract class TournamentDiscipline implements Discipline {
     @Override
     public DisciplineOrder getDisciplineOrder() {
         return disciplineOrder;
+    }
+
+    public List<Match> getEliminationMatches() {
+        return eliminationMatches;
+    }
+
+    public List<Match> getGroupMatches() {
+        return groupMatches;
+    }
+
+    public void addEliminationMatch(Match match) {
+        eliminationMatches.add(match);
+    }
+
+    public void addGroupMatch(Match match) {
+        groupMatches.add(match);
     }
 
     public void setDisciplineOrder(DisciplineOrder disciplineOrder) {

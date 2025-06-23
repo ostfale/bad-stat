@@ -24,6 +24,18 @@ public class Tournament {
         return disciplines;
     }
 
+    public SingleDiscipline getSingleDiscipline() {
+        return (SingleDiscipline) getDisciplineByType(DisciplineType.SINGLE);
+    }
+
+    public DoubleDiscipline getDoubleDiscipline() {
+        return (DoubleDiscipline) getDisciplineByType(DisciplineType.DOUBLE);
+    }
+
+    public MixedDiscipline getMixedDiscipline() {
+        return (MixedDiscipline) getDisciplineByType(DisciplineType.MIXED);
+    }
+
     public Discipline getDisciplineByType(DisciplineType disciplineType) {
         return disciplines.stream()
                 .filter(discipline -> discipline.getDisciplineType() == disciplineType)

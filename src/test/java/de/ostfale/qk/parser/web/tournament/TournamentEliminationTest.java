@@ -1,5 +1,8 @@
 package de.ostfale.qk.parser.web.tournament;
 
+import de.ostfale.qk.domain.discipline.DoubleDiscipline;
+import de.ostfale.qk.domain.discipline.MixedDiscipline;
+import de.ostfale.qk.domain.discipline.SingleDiscipline;
 import de.ostfale.qk.parser.BaseParserTest;
 import de.ostfale.qk.parser.HtmlParserException;
 import io.quarkus.test.junit.QuarkusTest;
@@ -9,6 +12,8 @@ import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -63,6 +68,75 @@ public class TournamentEliminationTest extends BaseParserTest {
                 () -> assertThat(result.tournamentLocation()).isEqualTo(expectedLocation),
                 () -> assertThat(result.tournamentDate()).isEqualTo(expectedDate),
                 () -> assertThat(result.tournamentYear()).isEqualTo(expectedYear)
+        );
+    }
+
+    @Test
+    @DisplayName("Test parsing a single match")
+    void testParseSingleMatch() throws HtmlParserException {
+        // given
+        var expectedRoundNames = List.of("Round of 32", "Round of 16");
+
+        // when
+        var result = sut.parseAllYearlyTournamentsForPlayer(content);
+        var tournament = result.getFirst();
+        SingleDiscipline singleDiscipline = tournament.getSingleDiscipline();
+
+        // then
+        assertAll("Test single tournament results",
+                () -> assertThat(singleDiscipline.hasMatches()).isTrue(),
+                () -> assertThat(singleDiscipline.hasGroupMatches()).isFalse(),
+                () -> assertThat(singleDiscipline.hasTreeMatches()).isTrue(),
+                () -> assertThat(singleDiscipline.getEliminationMatches().size()).isEqualTo(2),
+                () -> assertThat(singleDiscipline.getEliminationMatches().getFirst().getRoundName()).isEqualTo(expectedRoundNames.getFirst()),
+                () -> assertThat(singleDiscipline.getEliminationMatches().get(1).getRoundName()).isEqualTo(expectedRoundNames.get(1))
+
+        );
+    }
+
+    @Test
+    @DisplayName("Test parsing a double match")
+    void testParseDoubleMatch() throws HtmlParserException {
+        // given
+        var expectedRoundNames = List.of("Round of 16", "Quarter final");
+
+        // when
+        var result = sut.parseAllYearlyTournamentsForPlayer(content);
+        var tournament = result.getFirst();
+        DoubleDiscipline doubleDiscipline = tournament.getDoubleDiscipline();
+
+        // then
+        assertAll("Test single tournament results",
+                () -> assertThat(doubleDiscipline.hasMatches()).isTrue(),
+                () -> assertThat(doubleDiscipline.hasGroupMatches()).isFalse(),
+                () -> assertThat(doubleDiscipline.hasTreeMatches()).isTrue(),
+                () -> assertThat(doubleDiscipline.getEliminationMatches().size()).isEqualTo(2),
+                () -> assertThat(doubleDiscipline.getEliminationMatches().getFirst().getRoundName()).isEqualTo(expectedRoundNames.getFirst()),
+                () -> assertThat(doubleDiscipline.getEliminationMatches().get(1).getRoundName()).isEqualTo(expectedRoundNames.get(1))
+
+        );
+    }
+
+    @Test
+    @DisplayName("Test parsing a mixed match")
+    void testParseMixedMatch() throws HtmlParserException {
+        // given
+        var expectedRoundNames = List.of("Round of 32", "Round of 16", "Quarter final");
+
+        // when
+        var result = sut.parseAllYearlyTournamentsForPlayer(content);
+        var tournament = result.getFirst();
+        MixedDiscipline mixedDiscipline = tournament.getMixedDiscipline();
+
+        // then
+        assertAll("Test single tournament results",
+                () -> assertThat(mixedDiscipline.hasMatches()).isTrue(),
+                () -> assertThat(mixedDiscipline.hasGroupMatches()).isFalse(),
+                () -> assertThat(mixedDiscipline.hasTreeMatches()).isTrue(),
+                () -> assertThat(mixedDiscipline.getEliminationMatches().size()).isEqualTo(3),
+                () -> assertThat(mixedDiscipline.getEliminationMatches().getFirst().getRoundName()).isEqualTo(expectedRoundNames.getFirst()),
+                () -> assertThat(mixedDiscipline.getEliminationMatches().get(1).getRoundName()).isEqualTo(expectedRoundNames.get(1)),
+                () -> assertThat(mixedDiscipline.getEliminationMatches().get(2).getRoundName()).isEqualTo(expectedRoundNames.get(2))
         );
     }
 }

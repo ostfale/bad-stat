@@ -1,12 +1,20 @@
 package de.ostfale.qk.domain.match;
 
+import de.ostfale.qk.domain.set.MatchSet;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class DisciplineMatch implements Match {
 
     private String matchDate;
+    private String roundName;
     private String playerOneName;
     private String playerTwoName;
     private String teamPlayerOneName;
     private String teamPlayerTwoName;
+
+    private final List<MatchSet> matchSets = new ArrayList<>();
 
     @Override
     public String getFirstPlayerTeamName() {
@@ -20,12 +28,17 @@ public class DisciplineMatch implements Match {
 
     @Override
     public String getRoundName() {
-        return "";
+        return roundName;
     }
 
     @Override
     public String getMatchDate() {
         return matchDate != null ? matchDate : "";
+    }
+
+    @Override
+    public List<MatchSet> getMatchSets() {
+        return matchSets;
     }
 
     public void setMatchDate(String matchDate) {
@@ -62,5 +75,9 @@ public class DisciplineMatch implements Match {
 
     public void setTeamPlayerTwoName(String teamPlayerTwoName) {
         this.teamPlayerTwoName = teamPlayerTwoName;
+    }
+
+    public void setRoundName(String roundName) {
+        this.roundName = roundName;
     }
 }
