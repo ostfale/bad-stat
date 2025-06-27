@@ -7,23 +7,31 @@ import java.util.List;
 
 public class DisciplineMatch implements Match {
 
+    private static final String PLAYER_SEPARATOR = " / ";
+
     private String matchDate;
     private String roundName;
     private String playerOneName;
     private String playerTwoName;
-    private String teamPlayerOneName;
-    private String teamPlayerTwoName;
+    private String partnerOneName = null;
+    private String partnerTwoName = null;
 
     private final List<MatchSet> matchSets = new ArrayList<>();
 
     @Override
-    public String getFirstPlayerTeamName() {
-        return "";
+    public String getFirstPlayerOrWithPartnerName() {
+        if (partnerOneName != null) {
+            return playerOneName + PLAYER_SEPARATOR + partnerOneName;
+        }
+        return playerOneName;
     }
 
     @Override
-    public String getSecondPlayerTeamName() {
-        return "";
+    public String getSecondPlayerOrWithPartnerName() {
+        if (partnerTwoName != null) {
+            return playerTwoName + PLAYER_SEPARATOR + partnerTwoName;
+        }
+        return playerTwoName;
     }
 
     @Override
@@ -61,20 +69,20 @@ public class DisciplineMatch implements Match {
         this.playerTwoName = playerTwoName;
     }
 
-    public String getTeamPlayerOneName() {
-        return teamPlayerOneName;
+    public String getPartnerOneName() {
+        return partnerOneName;
     }
 
-    public void setTeamPlayerOneName(String teamPlayerOneName) {
-        this.teamPlayerOneName = teamPlayerOneName;
+    public void setPartnerOneName(String partnerOneName) {
+        this.partnerOneName = partnerOneName;
     }
 
-    public String getTeamPlayerTwoName() {
-        return teamPlayerTwoName;
+    public String getPartnerTwoName() {
+        return partnerTwoName;
     }
 
-    public void setTeamPlayerTwoName(String teamPlayerTwoName) {
-        this.teamPlayerTwoName = teamPlayerTwoName;
+    public void setPartnerTwoName(String partnerTwoName) {
+        this.partnerTwoName = partnerTwoName;
     }
 
     public void setRoundName(String roundName) {

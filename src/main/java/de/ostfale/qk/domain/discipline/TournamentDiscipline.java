@@ -23,7 +23,7 @@ public abstract class TournamentDiscipline implements Discipline {
     }
 
     @Override
-    public boolean hasTreeMatches() {
+    public boolean hasEliminationMatches() {
         return !eliminationMatches.isEmpty();
     }
 
@@ -34,7 +34,7 @@ public abstract class TournamentDiscipline implements Discipline {
 
     @Override
     public boolean hasMatches() {
-        return hasTreeMatches() || hasGroupMatches();
+        return hasEliminationMatches() || hasGroupMatches();
     }
 
     @Override

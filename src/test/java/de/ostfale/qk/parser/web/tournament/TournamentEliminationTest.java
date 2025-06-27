@@ -86,7 +86,7 @@ public class TournamentEliminationTest extends BaseParserTest {
         assertAll("Test single tournament results",
                 () -> assertThat(singleDiscipline.hasMatches()).isTrue(),
                 () -> assertThat(singleDiscipline.hasGroupMatches()).isFalse(),
-                () -> assertThat(singleDiscipline.hasTreeMatches()).isTrue(),
+                () -> assertThat(singleDiscipline.hasEliminationMatches()).isTrue(),
                 () -> assertThat(singleDiscipline.getEliminationMatches().size()).isEqualTo(2),
                 () -> assertThat(singleDiscipline.getEliminationMatches().getFirst().getRoundName()).isEqualTo(expectedRoundNames.getFirst()),
                 () -> assertThat(singleDiscipline.getEliminationMatches().get(1).getRoundName()).isEqualTo(expectedRoundNames.get(1))
@@ -109,7 +109,7 @@ public class TournamentEliminationTest extends BaseParserTest {
         assertAll("Test single tournament results",
                 () -> assertThat(doubleDiscipline.hasMatches()).isTrue(),
                 () -> assertThat(doubleDiscipline.hasGroupMatches()).isFalse(),
-                () -> assertThat(doubleDiscipline.hasTreeMatches()).isTrue(),
+                () -> assertThat(doubleDiscipline.hasEliminationMatches()).isTrue(),
                 () -> assertThat(doubleDiscipline.getEliminationMatches().size()).isEqualTo(2),
                 () -> assertThat(doubleDiscipline.getEliminationMatches().getFirst().getRoundName()).isEqualTo(expectedRoundNames.getFirst()),
                 () -> assertThat(doubleDiscipline.getEliminationMatches().get(1).getRoundName()).isEqualTo(expectedRoundNames.get(1))
@@ -132,7 +132,7 @@ public class TournamentEliminationTest extends BaseParserTest {
         assertAll("Test single tournament results",
                 () -> assertThat(mixedDiscipline.hasMatches()).isTrue(),
                 () -> assertThat(mixedDiscipline.hasGroupMatches()).isFalse(),
-                () -> assertThat(mixedDiscipline.hasTreeMatches()).isTrue(),
+                () -> assertThat(mixedDiscipline.hasEliminationMatches()).isTrue(),
                 () -> assertThat(mixedDiscipline.getEliminationMatches().size()).isEqualTo(3),
                 () -> assertThat(mixedDiscipline.getEliminationMatches().getFirst().getRoundName()).isEqualTo(expectedRoundNames.getFirst()),
                 () -> assertThat(mixedDiscipline.getEliminationMatches().get(1).getRoundName()).isEqualTo(expectedRoundNames.get(1)),

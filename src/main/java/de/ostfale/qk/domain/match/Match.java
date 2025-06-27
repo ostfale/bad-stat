@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface Match {
 
-    String getFirstPlayerTeamName();
+    String getFirstPlayerOrWithPartnerName();
 
-    String getSecondPlayerTeamName();
+    String getSecondPlayerOrWithPartnerName();
 
     String getRoundName();
 

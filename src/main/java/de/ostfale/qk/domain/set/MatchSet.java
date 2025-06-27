@@ -9,6 +9,18 @@ public class MatchSet {
     private int firstValue;
     private int secondValue;
     private boolean isRegularSet = true;
+    private String nonRegularResult;
+
+    public MatchSet(SetNo setNumber, int firstValue, int secondValue) {
+        this.setNumber = setNumber;
+        this.firstValue = firstValue;
+        this.secondValue = secondValue;
+    }
+
+    public MatchSet(String nonRegularResult) {
+        this.nonRegularResult = nonRegularResult;
+        this.isRegularSet = false;
+    }
 
     public String getDisplayString() {
         String firstValueString = firstValue < 10 ? " " + firstValue : String.valueOf(firstValue);
@@ -46,6 +58,14 @@ public class MatchSet {
 
     public void setRegularSet(boolean regularSet) {
         isRegularSet = regularSet;
+    }
+
+    public String getNonRegularResult() {
+        return nonRegularResult;
+    }
+
+    public void setNonRegularResult(String nonRegularResult) {
+        this.nonRegularResult = nonRegularResult;
     }
 
     @Override

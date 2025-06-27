@@ -6,7 +6,7 @@ public interface Discipline {
 
     boolean hasMatches();
 
-    boolean hasTreeMatches();
+    boolean hasEliminationMatches();
 
     boolean hasGroupMatches();
 

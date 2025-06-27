@@ -86,4 +86,12 @@ public class HtmlStructureParser implements HtmlStructureElements {
         return element.getFirstByXPath(MATCH_ROUND_NAME);
     }
 
+    // read match information -> player, sets, irregular results
+    final String MATCH_BODY = ".//div[contains(@class, 'match__body')]";
+
+    public HtmlElement getMatchBodyElement(HtmlElement element) {
+        Log.debugf("HtmlStructureParser :: Parsing match body info -> player, sets, irregular results");
+        return element.getFirstByXPath(MATCH_BODY);
+    }
+
 }
