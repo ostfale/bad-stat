@@ -1,48 +1,56 @@
 package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.domain.match.DisciplineMatch;
+import de.ostfale.qk.parser.BaseParser;
 import de.ostfale.qk.parser.match.api.WebMatchParser;
 import de.ostfale.qk.parser.player.MatchPlayerParser;
 import de.ostfale.qk.parser.set.MatchSetParser;
 import de.ostfale.qk.parser.web.HtmlStructureParser;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlElement;
 
 
 @ApplicationScoped
-public class WebMatchParserService implements WebMatchParser {
+public class WebMatchParserService implements WebMatchParser, BaseParser {
 
-    @Inject
-    HtmlStructureParser htmlStructureParser;
+    private final HtmlStructureParser htmlStructureParser;
 
-    @Inject
-    MatchSetParser matchSetParser;
+    private final MatchSetParser matchSetParser;
 
-    @Inject
-    MatchPlayerParser matchPlayerParser;
+    private final MatchPlayerParser matchPlayerParser;
+
+    public WebMatchParserService(HtmlStructureParser htmlStructureParser, MatchSetParser matchSetParser, MatchPlayerParser matchPlayerParser) {
+        this.htmlStructureParser = htmlStructureParser;
+        this.matchSetParser = matchSetParser;
+        this.matchPlayerParser = matchPlayerParser;
+    }
 
     @Override
     public DisciplineMatch parseSingleMatch(HtmlElement matchGroupElement) {
         Log.debug("WebMatchParserService :: parse single match website");
-        DisciplineMatch disciplineMatch =  parseMatchCommon(matchGroupElement);
-        parseMatchData(disciplineMatch,matchGroupElement);
-
-
+        DisciplineMatch disciplineMatch = parseMatchCommon(matchGroupElement);
+        parseMatchData(disciplineMatch, matchGroupElement);
+        matchPlayerParser.parseMatchPlayers(disciplineMatch, matchGroupElement);
         return disciplineMatch;
     }
 
     @Override
     public DisciplineMatch parseDoubleMatch(HtmlElement matchGroupElement) {
         Log.debug("WebMatchParserService :: parse double match website");
-        return parseMatchCommon(matchGroupElement);
+        DisciplineMatch disciplineMatch = parseMatchCommon(matchGroupElement);
+        parseMatchData(disciplineMatch, matchGroupElement);
+        matchPlayerParser.parseMatchPlayers(disciplineMatch, matchGroupElement);
+        return disciplineMatch;
     }
 
     @Override
     public DisciplineMatch parseMixedMatch(HtmlElement matchGroupElement) {
         Log.debug("WebMatchParserService :: parse mixed match website");
-        return parseMatchCommon(matchGroupElement);
+        DisciplineMatch disciplineMatch = parseMatchCommon(matchGroupElement);
+        parseMatchData(disciplineMatch, matchGroupElement);
+        matchPlayerParser.parseMatchPlayers(disciplineMatch, matchGroupElement);
+        return disciplineMatch;
     }
 
     private DisciplineMatch parseMatchCommon(HtmlElement matchGroupElement) {
@@ -56,6 +64,5 @@ public class WebMatchParserService implements WebMatchParser {
     private void parseMatchData(DisciplineMatch disciplineMatch, HtmlElement matchGroupElement) {
         var matchSets = matchSetParser.parseMatchSets(matchGroupElement);
         disciplineMatch.getMatchSets().addAll(matchSets);
-        System.out.println("dddd");
     }
 }

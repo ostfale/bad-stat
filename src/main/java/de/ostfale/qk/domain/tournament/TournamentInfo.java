@@ -7,4 +7,7 @@ public record TournamentInfo(
         String tournamentDate,
         Integer tournamentYear
 ) {
+    public TournamentInfo() {
+        this("", "", "", "", 1970);
+    }
 }

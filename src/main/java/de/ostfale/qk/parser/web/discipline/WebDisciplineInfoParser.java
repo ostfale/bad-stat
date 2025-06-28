@@ -24,7 +24,6 @@ public class WebDisciplineInfoParser {
     private static final String[] AGE_GROUP_PREFIXES = {"U", "O"};
     private static final Set<String> AGE_CATEGORY_PREFIXES = Set.of("U", "O");
 
-
     public void parseDisciplineInfos(Tournament tournament, HtmlElement disciplineToken) {
         String headerToken = disciplineToken.asNormalizedText();
         Log.infof("WebDisciplineInfoParser :: Parse discipline infos: %s", headerToken);

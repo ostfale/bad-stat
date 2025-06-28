@@ -3,27 +3,30 @@ package de.ostfale.qk.parser.web.discipline;
 import de.ostfale.qk.domain.discipline.*;
 import de.ostfale.qk.domain.match.DisciplineMatch;
 import de.ostfale.qk.domain.tournament.Tournament;
+import de.ostfale.qk.parser.BaseParser;
 import de.ostfale.qk.parser.match.api.WebMatchParser;
 import de.ostfale.qk.parser.web.HtmlStructureParser;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlElement;
 
 import java.util.Comparator;
 import java.util.List;
 
 @ApplicationScoped
-public class WebDisciplineParser {
+public class WebDisciplineParser implements BaseParser {
 
-    @Inject
-    HtmlStructureParser htmlStructureParser;
+    private final HtmlStructureParser htmlStructureParser;
 
-    @Inject
-    WebDisciplineInfoParser webDisciplineInfoParser;
+    private final WebDisciplineInfoParser webDisciplineInfoParser;
 
-    @Inject
-    WebMatchParser webMatchParser;
+    private final WebMatchParser webMatchParser;
+
+    public WebDisciplineParser(HtmlStructureParser htmlStructureParser, WebDisciplineInfoParser webDisciplineInfoParser, WebMatchParser webMatchParser) {
+        this.htmlStructureParser = htmlStructureParser;
+        this.webDisciplineInfoParser = webDisciplineInfoParser;
+        this.webMatchParser = webMatchParser;
+    }
 
     public void parseDisciplines(Tournament tournament, HtmlElement moduleCardElement) {
         Log.debugf("WebDisciplineParser :: parse disciplines website -> Tournament %s", tournament.getTournamentInfo().tournamentName());
@@ -36,7 +39,7 @@ public class WebDisciplineParser {
             parseEliminationMatches(tournament, moduleCardElement);
         } else if (disciplineElements.size() < disciplineOrGroupName.size()) {
             Log.debugf("WebDisciplineParser :: Combined elimination disciplines found for tournament: %s", tournament.getTournamentInfo().tournamentName());
-            parseCombinedMatches(tournament,moduleCardElement);
+            parseCombinedMatches(tournament, moduleCardElement);
         }
     }
 
