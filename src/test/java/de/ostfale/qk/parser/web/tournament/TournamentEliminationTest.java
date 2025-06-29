@@ -25,7 +25,7 @@ public class TournamentEliminationTest extends BaseParserTest {
     private static final String TEST_FILE_NAME = "tournaments/TournamentEliminationVB25.html";
 
     @Inject
-    WebTournamentParser sut;
+    WebTournamentParserService sut;
 
     private HtmlElement content;
 

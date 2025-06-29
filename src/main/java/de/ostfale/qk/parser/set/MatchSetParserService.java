@@ -1,8 +1,7 @@
 package de.ostfale.qk.parser.set;
 
 import de.ostfale.qk.domain.set.MatchSet;
-import de.ostfale.qk.parser.BaseParser;
-import de.ostfale.qk.parser.web.HtmlStructureParser;
+import de.ostfale.qk.parser.web.match.MatchParser;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.htmlunit.html.HtmlElement;
@@ -12,15 +11,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class MatchSetParser implements BaseParser {
+public class MatchSetParserService implements MatchParser {
 
     private static final String MATCH_RAST = "Rast";
-
-    HtmlStructureParser htmlStructureParser;
-
-    public MatchSetParser(HtmlStructureParser htmlStructureParser) {
-        this.htmlStructureParser = htmlStructureParser;
-    }
 
     public List<MatchSet> parseMatchSets(HtmlElement matchGroupElement) {
         Log.debug("MatchSetParser :: parse match set");
@@ -30,7 +23,6 @@ public class MatchSetParser implements BaseParser {
             MatchSet matchSet = new MatchSet(MATCH_RAST);
             return List.of(matchSet);
         }
-
 
         List<Integer> setScores = extractNumbersFromStrings(List.of(rawSetScores));
 

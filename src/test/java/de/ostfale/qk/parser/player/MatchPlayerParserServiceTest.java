@@ -2,6 +2,7 @@ package de.ostfale.qk.parser.player;
 
 import de.ostfale.qk.domain.match.DisciplineMatch;
 import de.ostfale.qk.parser.BaseParserTest;
+import de.ostfale.qk.parser.web.player.MatchPlayerParserService;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,15 +14,15 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Tag("unittest")
 @DisplayName("Test parsing of players in a match")
-class MatchPlayerParserTest extends BaseParserTest {
+class MatchPlayerParserServiceTest extends BaseParserTest {
 
-    private MatchPlayerParser sut;
+    private MatchPlayerParserService sut;
 
     private DisciplineMatch disciplineMatch;
 
     @BeforeEach
     void setUp() {
-        sut = new MatchPlayerParser();
+        sut = new MatchPlayerParserService();
         disciplineMatch = new DisciplineMatch();
     }
 

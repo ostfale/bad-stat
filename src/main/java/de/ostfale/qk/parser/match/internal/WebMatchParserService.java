@@ -1,11 +1,10 @@
 package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.domain.match.DisciplineMatch;
-import de.ostfale.qk.parser.BaseParser;
 import de.ostfale.qk.parser.match.api.WebMatchParser;
-import de.ostfale.qk.parser.player.MatchPlayerParser;
-import de.ostfale.qk.parser.set.MatchSetParser;
-import de.ostfale.qk.parser.web.HtmlStructureParser;
+import de.ostfale.qk.parser.set.MatchSetParserService;
+import de.ostfale.qk.parser.web.BaseParser;
+import de.ostfale.qk.parser.web.player.MatchPlayerParserService;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.htmlunit.html.HtmlElement;
@@ -14,16 +13,13 @@ import org.htmlunit.html.HtmlElement;
 @ApplicationScoped
 public class WebMatchParserService implements WebMatchParser, BaseParser {
 
-    private final HtmlStructureParser htmlStructureParser;
+    private final MatchSetParserService matchSetParserService;
 
-    private final MatchSetParser matchSetParser;
+    private final MatchPlayerParserService matchPlayerParserService;
 
-    private final MatchPlayerParser matchPlayerParser;
-
-    public WebMatchParserService(HtmlStructureParser htmlStructureParser, MatchSetParser matchSetParser, MatchPlayerParser matchPlayerParser) {
-        this.htmlStructureParser = htmlStructureParser;
-        this.matchSetParser = matchSetParser;
-        this.matchPlayerParser = matchPlayerParser;
+    public WebMatchParserService( MatchSetParserService matchSetParserService, MatchPlayerParserService matchPlayerParserService) {
+        this.matchSetParserService = matchSetParserService;
+        this.matchPlayerParserService = matchPlayerParserService;
     }
 
     @Override
@@ -31,7 +27,7 @@ public class WebMatchParserService implements WebMatchParser, BaseParser {
         Log.debug("WebMatchParserService :: parse single match website");
         DisciplineMatch disciplineMatch = parseMatchCommon(matchGroupElement);
         parseMatchData(disciplineMatch, matchGroupElement);
-        matchPlayerParser.parseMatchPlayers(disciplineMatch, matchGroupElement);
+        matchPlayerParserService.parseMatchPlayers(disciplineMatch, matchGroupElement);
         return disciplineMatch;
     }
 
@@ -40,7 +36,7 @@ public class WebMatchParserService implements WebMatchParser, BaseParser {
         Log.debug("WebMatchParserService :: parse double match website");
         DisciplineMatch disciplineMatch = parseMatchCommon(matchGroupElement);
         parseMatchData(disciplineMatch, matchGroupElement);
-        matchPlayerParser.parseMatchPlayers(disciplineMatch, matchGroupElement);
+        matchPlayerParserService.parseMatchPlayers(disciplineMatch, matchGroupElement);
         return disciplineMatch;
     }
 
@@ -49,7 +45,7 @@ public class WebMatchParserService implements WebMatchParser, BaseParser {
         Log.debug("WebMatchParserService :: parse mixed match website");
         DisciplineMatch disciplineMatch = parseMatchCommon(matchGroupElement);
         parseMatchData(disciplineMatch, matchGroupElement);
-        matchPlayerParser.parseMatchPlayers(disciplineMatch, matchGroupElement);
+        matchPlayerParserService.parseMatchPlayers(disciplineMatch, matchGroupElement);
         return disciplineMatch;
     }
 
@@ -62,7 +58,7 @@ public class WebMatchParserService implements WebMatchParser, BaseParser {
     }
 
     private void parseMatchData(DisciplineMatch disciplineMatch, HtmlElement matchGroupElement) {
-        var matchSets = matchSetParser.parseMatchSets(matchGroupElement);
+        var matchSets = matchSetParserService.parseMatchSets(matchGroupElement);
         disciplineMatch.getMatchSets().addAll(matchSets);
     }
 }

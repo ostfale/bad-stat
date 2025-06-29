@@ -5,9 +5,8 @@ import de.ostfale.qk.domain.tournament.TournamentInfo;
 import de.ostfale.qk.parser.BaseParserTest;
 import de.ostfale.qk.parser.match.api.WebMatchParser;
 import de.ostfale.qk.parser.match.internal.WebMatchParserService;
-import de.ostfale.qk.parser.player.MatchPlayerParser;
-import de.ostfale.qk.parser.set.MatchSetParser;
-import de.ostfale.qk.parser.web.HtmlStructureParser;
+import de.ostfale.qk.parser.set.MatchSetParserService;
+import de.ostfale.qk.parser.web.player.MatchPlayerParserService;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,18 +18,17 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Tag("unittest")
 @DisplayName("Test parsing of disciplines from web page")
-class WebDisciplineParserTest extends BaseParserTest {
+class WebDisciplineParserServiceTest extends BaseParserTest {
 
-    private WebDisciplineParser sut;
+    private WebDisciplineParserService sut;
 
     @BeforeEach
     void setUp() {
-        HtmlStructureParser htmlStructureParser = new HtmlStructureParser();
-        WebDisciplineInfoParser webDisciplineInfoParser = new WebDisciplineInfoParser();
-        MatchSetParser matchSetParser = new MatchSetParser(htmlStructureParser);
-        MatchPlayerParser matchPlayerParser = new MatchPlayerParser();
-        WebMatchParser webMatchParser = new WebMatchParserService(htmlStructureParser, matchSetParser, matchPlayerParser);
-        sut = new WebDisciplineParser(htmlStructureParser, webDisciplineInfoParser, webMatchParser);
+        WebDisciplineInfoParserService webDisciplineInfoParserService = new WebDisciplineInfoParserService();
+        MatchSetParserService matchSetParserService = new MatchSetParserService();
+        MatchPlayerParserService matchPlayerParserService = new MatchPlayerParserService();
+        WebMatchParser webMatchParser = new WebMatchParserService(matchSetParserService, matchPlayerParserService);
+        sut = new WebDisciplineParserService(webDisciplineInfoParserService, webMatchParser);
     }
 
     @Test

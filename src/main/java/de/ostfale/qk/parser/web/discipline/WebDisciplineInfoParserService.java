@@ -15,7 +15,7 @@ import static de.ostfale.qk.domain.discipline.AgeClass.*;
 import static de.ostfale.qk.domain.discipline.DisciplineType.*;
 
 @ApplicationScoped
-public class WebDisciplineInfoParser {
+public class WebDisciplineInfoParserService implements WebDisciplineParser {
 
     private static final String SPLIT_DELIMITER = "\\s+";
     private static final int EXPECTED_DISCIPLINE_PARTS = 3;

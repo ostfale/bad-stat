@@ -1,21 +1,15 @@
-package de.ostfale.qk.parser;
+package de.ostfale.qk.parser.web.match;
 
+import de.ostfale.qk.parser.web.BaseParser;
 import de.ostfale.qk.parser.web.HtmlStructureParser;
 import io.quarkus.logging.Log;
 import org.htmlunit.html.HtmlElement;
 
 import java.util.Objects;
 
-public interface BaseParser {
+public interface MatchParser extends BaseParser {
 
     String MATCH_RESULT_SEPARATOR = "\n";
-
-    default boolean isNumeric(String str) {
-        if (str == null || str.isEmpty()) {
-            return false;
-        }
-        return str.trim().matches("\\d+");
-    }
 
     default String[] extractMatchBodyElements(HtmlElement matchGroupElement) {
         Log.debug("BaseParser :: extractMatchBodyElements");
@@ -23,4 +17,6 @@ public interface BaseParser {
         HtmlElement matchBody = new HtmlStructureParser().getMatchBodyElement(matchGroupElement);
         return matchBody.asNormalizedText().split(MATCH_RESULT_SEPARATOR);
     }
+
+
 }

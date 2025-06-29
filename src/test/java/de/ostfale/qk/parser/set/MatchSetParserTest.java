@@ -1,7 +1,6 @@
 package de.ostfale.qk.parser.set;
 
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.web.HtmlStructureParser;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,12 +14,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("Test match set results")
 class MatchSetParserTest extends BaseParserTest {
 
-    private MatchSetParser sut;
+    private MatchSetParserService sut;
 
     @BeforeEach
     void setUp() {
-        HtmlStructureParser htmlStructureParser = new HtmlStructureParser();
-        sut = new MatchSetParser(htmlStructureParser);
+        sut = new MatchSetParserService();
     }
 
     @Test

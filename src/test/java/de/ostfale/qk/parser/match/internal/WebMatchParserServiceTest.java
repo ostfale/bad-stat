@@ -1,9 +1,8 @@
 package de.ostfale.qk.parser.match.internal;
 
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.player.MatchPlayerParser;
-import de.ostfale.qk.parser.set.MatchSetParser;
-import de.ostfale.qk.parser.web.HtmlStructureParser;
+import de.ostfale.qk.parser.set.MatchSetParserService;
+import de.ostfale.qk.parser.web.player.MatchPlayerParserService;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,10 +20,9 @@ class WebMatchParserServiceTest extends BaseParserTest {
 
     @BeforeEach
     void setUp() {
-        HtmlStructureParser htmlStructureParser = new HtmlStructureParser();
-        MatchSetParser matchSetParser = new MatchSetParser(htmlStructureParser);
-        MatchPlayerParser matchPlayerParser = new MatchPlayerParser();
-        sut = new WebMatchParserService(htmlStructureParser, matchSetParser, matchPlayerParser);
+        MatchSetParserService matchSetParserService = new MatchSetParserService();
+        MatchPlayerParserService matchPlayerParserService = new MatchPlayerParserService();
+        sut = new WebMatchParserService(matchSetParserService, matchPlayerParserService);
     }
 
     @Test

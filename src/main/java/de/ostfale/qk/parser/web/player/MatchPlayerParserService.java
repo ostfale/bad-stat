@@ -1,8 +1,8 @@
-package de.ostfale.qk.parser.player;
+package de.ostfale.qk.parser.web.player;
 
 import de.ostfale.qk.domain.match.DisciplineMatch;
 import de.ostfale.qk.domain.match.MatchResultType;
-import de.ostfale.qk.parser.BaseParser;
+import de.ostfale.qk.parser.web.match.MatchParser;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.htmlunit.html.HtmlElement;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @ApplicationScoped
-public class MatchPlayerParser implements BaseParser {
+public class MatchPlayerParserService implements MatchParser {
 
     private static final String WINNER_MARKER = "W";
     private static final String LOSER_MARKER = "L";

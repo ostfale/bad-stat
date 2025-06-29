@@ -18,12 +18,12 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @QuarkusTest
 @DisplayName("Test web tournament parser for a yearly tournament collection")
-class WebTournamentParserTest extends BaseParserTest {
+class WebTournamentParserServiceTest extends BaseParserTest {
 
     private static final String TEST_FILE_NAME = "tournaments/Tournaments2025VB.html";
 
     @Inject
-    WebTournamentParser sut;
+    WebTournamentParserService sut;
 
     private HtmlElement content;
 
