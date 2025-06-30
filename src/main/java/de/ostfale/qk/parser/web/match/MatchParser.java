@@ -17,6 +17,4 @@ public interface MatchParser extends BaseParser {
         HtmlElement matchBody = new HtmlStructureParser().getMatchBodyElement(matchGroupElement);
         return matchBody.asNormalizedText().split(MATCH_RESULT_SEPARATOR);
     }
-
-
 }
