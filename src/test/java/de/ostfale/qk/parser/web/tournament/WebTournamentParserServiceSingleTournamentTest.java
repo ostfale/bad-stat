@@ -1,5 +1,6 @@
 package de.ostfale.qk.parser.web.tournament;
 
+import de.ostfale.qk.domain.discipline.AgeClass;
 import de.ostfale.qk.parser.BaseParserTest;
 import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.match.api.WebMatchParser;
@@ -69,6 +70,37 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
                 () -> assertThat(result.getFirst().getTournamentInfo().tournamentDate()).isEqualTo(expectedTournamentDate),
                 () -> assertThat(result.getFirst().getTournamentInfo().tournamentLocation()).isEqualTo(expectedTournamentLocation),
                 () -> assertThat(result.getFirst().getTournamentInfo().tournamentOrganizer()).isEqualTo(expectedTournamentOrganisation)
+        );
+    }
+
+    @Test
+    @DisplayName("Test single discipline matches")
+    void testSingleMatchStandard() throws HtmlParserException {
+        // given
+        HtmlPage page = loadHtmlPage(TEST_FILE_NAME);
+        var expectedNumberOfEliminationMatches = 3;
+        var expectedNumberOfGroupMatches = 0;
+        var expepectedDisciplineAgeClass = AgeClass.U17;
+        var expectedFirstMatchRoundName = "Round of 32";
+        var playerOneName = "Victoria Braun";
+
+        // when
+        var result = sut.parseAllYearlyTournamentsForPlayer(page.getActiveElement());
+        var tournament = result.getFirst();
+        var singleDiscipline = tournament.getSingleDiscipline();
+        var firstMatch = singleDiscipline.getEliminationMatches().getFirst();
+        var firstMatchSets = 1;
+
+        // then
+        assertAll("Test all data for single matches",
+                () -> assertThat(singleDiscipline).isNotNull(),
+                () -> assertThat(singleDiscipline.getEliminationMatches().size()).isEqualTo(expectedNumberOfEliminationMatches),
+                () -> assertThat(singleDiscipline.getGroupMatches().size()).isEqualTo(expectedNumberOfGroupMatches),
+                () -> assertThat(singleDiscipline.getDisciplineAgeClass()).isEqualTo(expepectedDisciplineAgeClass),
+                () -> assertThat(firstMatch.getRoundName()).isEqualTo(expectedFirstMatchRoundName),
+                () -> assertThat(firstMatch.getFirstPlayerOrWithPartnerName()).isEqualTo(playerOneName),
+                () -> assertThat(firstMatch.getMatchSets().size()).isEqualTo(firstMatchSets),
+                () -> assertThat(firstMatch.getMatchSets().getFirst().isRegularSet()).isFalse()
         );
     }
 }

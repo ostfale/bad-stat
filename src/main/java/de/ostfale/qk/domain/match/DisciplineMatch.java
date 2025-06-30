@@ -49,6 +49,10 @@ public class DisciplineMatch implements Match {
         return matchSets;
     }
 
+    public List<String> getSetResults() {
+        return matchSets.stream().map(MatchSet::getDisplayString).toList();
+    }
+
     public void setMatchDate(String matchDate) {
         this.matchDate = matchDate;
     }

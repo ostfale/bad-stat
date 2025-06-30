@@ -42,10 +42,12 @@ public abstract class TournamentDiscipline implements Discipline {
         return disciplineOrder;
     }
 
+    @Override
     public List<Match> getEliminationMatches() {
         return eliminationMatches;
     }
 
+    @Override
     public List<Match> getGroupMatches() {
         return groupMatches;
     }

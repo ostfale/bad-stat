@@ -6,3 +6,4 @@ public class SingleDiscipline extends TournamentDiscipline {
         return DisciplineType.SINGLE;
     }
 }
+

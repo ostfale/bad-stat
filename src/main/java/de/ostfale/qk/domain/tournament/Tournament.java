@@ -3,6 +3,7 @@ package de.ostfale.qk.domain.tournament;
 import de.ostfale.qk.domain.discipline.*;
 import io.quarkus.logging.Log;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,11 @@ public class Tournament {
 
     public List<Discipline> getDisciplines() {
         return disciplines;
+    }
+
+    public List<Discipline> getDisciplinesSortedByOrder() {
+        Log.debugf("Tournament :: getDisciplinesSortedByOrder");
+        return disciplines.stream().sorted(Comparator.comparing(Discipline::getDisciplineOrder)).toList();
     }
 
     public SingleDiscipline getSingleDiscipline() {
