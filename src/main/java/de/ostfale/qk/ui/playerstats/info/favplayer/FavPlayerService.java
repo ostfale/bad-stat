@@ -5,6 +5,7 @@ import de.ostfale.qk.data.player.model.FavPlayerData;
 import de.ostfale.qk.data.player.model.FavPlayerListData;
 import de.ostfale.qk.data.player.model.FavPlayerYearStat;
 import de.ostfale.qk.domain.player.PlayerId;
+import de.ostfale.qk.domain.tournament.Tournament;
 import de.ostfale.qk.domain.tournament.TournamentMatchesListDTO;
 import de.ostfale.qk.ui.playerstats.info.PlayerInfoService;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
@@ -13,6 +14,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
+import java.util.List;
 
 @ApplicationScoped
 public class FavPlayerService {
@@ -71,6 +74,18 @@ public class FavPlayerService {
         if (!removed) {
             Log.warnf("Player not found in favorites: %s", playerName);
         }
+    }
+
+    public void updateDownloadedTournaments(List<Tournament> allTournaments, String playerId, int year) {
+        Log.debugf("FavPlayerService :: Update downloaded tournaments  -> persisting %d tournaments", allTournaments.size());
+
+        var playerIdObj = new PlayerId(playerId);
+        FavPlayerData favPlayerData = favoritePlayerListData.getFavPlayerDataByPlayerId(playerIdObj);
+
+        if (favPlayerData == null) {
+            return;
+        }
+
     }
 
     public void updateDownloadedTournaments(TournamentMatchesListDTO tournamentMatchesListDTO) {

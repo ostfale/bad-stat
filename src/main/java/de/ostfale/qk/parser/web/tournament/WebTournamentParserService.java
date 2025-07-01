@@ -7,6 +7,7 @@ import de.ostfale.qk.parser.web.discipline.WebDisciplineParserService;
 import io.quarkus.logging.Log;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlPage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @Singleton
 public class WebTournamentParserService implements WebTournamentParser {
 
+    // TODO separate interfaces
     private final WebTournamentInfoParser tournamentInfoParser;
 
     private final WebDisciplineParserService webDisciplineParserService;
@@ -23,9 +25,9 @@ public class WebTournamentParserService implements WebTournamentParser {
         this.webDisciplineParserService = webDisciplineParserService;
     }
 
-    public List<Tournament> parseAllYearlyTournamentsForPlayer(HtmlElement content) throws HtmlParserException {
+    public List<Tournament> parseAllYearlyTournamentsForPlayer(HtmlPage content) throws HtmlParserException {
         Log.debug("WebTournamentParser :: parse all yearly tournaments website -> HtmlElement");
-        List<HtmlElement> tournamentElements = htmlStructureParser.getAllTournaments(content);
+        List<HtmlElement> tournamentElements = htmlStructureParser.getAllTournaments(content.getActiveElement());
         List<Tournament> allTournaments = new ArrayList<>();
 
         for (HtmlElement moduleCard : tournamentElements) {

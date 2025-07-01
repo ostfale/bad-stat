@@ -7,7 +7,6 @@ import de.ostfale.qk.parser.BaseParserTest;
 import de.ostfale.qk.parser.HtmlParserException;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,12 +26,12 @@ public class TournamentEliminationTest extends BaseParserTest {
     @Inject
     WebTournamentParserService sut;
 
-    private HtmlElement content;
+    private HtmlPage content;
 
     @BeforeEach
     void setUp() {
         HtmlPage page = loadHtmlPage(TEST_FILE_NAME);
-        content = page.getActiveElement();
+        content = page;
     }
 
     @Test

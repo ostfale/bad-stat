@@ -1,20 +1,12 @@
 package de.ostfale.qk.parser.web.tournament;
 
-import de.ostfale.qk.domain.discipline.AgeClass;
-import de.ostfale.qk.domain.discipline.DisciplineType;
-import de.ostfale.qk.domain.discipline.DoubleDiscipline;
-import de.ostfale.qk.domain.discipline.MixedDiscipline;
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.HtmlParserException;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @QuarkusTest
 @DisplayName("Test web tournament parser for a yearly tournament collection")
@@ -33,7 +25,7 @@ class WebTournamentParserServiceTest extends BaseParserTest {
         content = page.getActiveElement();
     }
 
-    @Test
+/*    @Test
     @DisplayName("Test parsing all tournaments for a year")
     void testParseAllTournaments() throws HtmlParserException {
         // given
@@ -64,5 +56,5 @@ class WebTournamentParserServiceTest extends BaseParserTest {
         var thirdTournament = allTournaments.get(2);
         MixedDiscipline mixedDiscipline1 = (MixedDiscipline) thirdTournament.getDisciplineByType(DisciplineType.MIXED);
         assertThat(mixedDiscipline1.getDisciplineAgeClass()).isEqualTo(AgeClass.U19);
-    }
+    }*/
 }

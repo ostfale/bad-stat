@@ -44,7 +44,7 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
         var expectedNumberOfTournaments = 1;
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(page.getActiveElement());
+        var result = sut.parseAllYearlyTournamentsForPlayer(page);
 
         // then
         assertThat(result.size()).isEqualTo(expectedNumberOfTournaments);
@@ -61,7 +61,7 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
         var expectedTournamentOrganisation = "Deutscher Badminton Verband (U19)";
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(page.getActiveElement());
+        var result = sut.parseAllYearlyTournamentsForPlayer(page);
 
         // then
         assertAll("Test tournament header data",
@@ -85,7 +85,7 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
         var playerOneName = "Victoria Braun";
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(page.getActiveElement());
+        var result = sut.parseAllYearlyTournamentsForPlayer(page);
         var tournament = result.getFirst();
         var singleDiscipline = tournament.getSingleDiscipline();
         var firstMatch = singleDiscipline.getEliminationMatches().getFirst();

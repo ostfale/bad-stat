@@ -1,13 +1,16 @@
 package de.ostfale.qk.web.internal;
 
+import de.ostfale.qk.domain.tournament.Tournament;
+import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.tournament.TournamentParser;
 import de.ostfale.qk.parser.tournament.model.TournamentParserModel;
 import de.ostfale.qk.parser.tournament.model.TournamentYearParserModel;
+import de.ostfale.qk.parser.web.tournament.WebTournamentParserService;
 import de.ostfale.qk.web.common.CookieDialogHandler;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlPage;
-import org.jboss.logging.Logger;
 
 import java.time.Year;
 import java.util.List;
@@ -15,7 +18,8 @@ import java.util.List;
 @ApplicationScoped
 public class TournamentWebService extends BaseWebService {
 
-    private static final Logger log = Logger.getLogger(TournamentWebService.class);
+    @Inject
+    WebTournamentParserService webTournamentParserService;
 
     @Inject
     TournamentParser parser;
@@ -25,7 +29,7 @@ public class TournamentWebService extends BaseWebService {
 
     @Override
     public Integer getNumberOfTournamentsForYearAndPlayer(Integer year, String playerTournamentsId) {
-        log.debugf("Get number of tournaments for year %d and player tournament id %s", year, playerTournamentsId);
+        Log.debugf("Get number of tournaments for year %d and player tournament id %s", year, playerTournamentsId);
 
         String tournamentsURI = null;
         if (year == Year.now().getValue()) {
@@ -34,17 +38,32 @@ public class TournamentWebService extends BaseWebService {
             tournamentsURI = preparePlayerTournamentsUrl(playerTournamentsId, year.toString());
         }
 
-        log.debugf("Load tournaments page %s", tournamentsURI);
+        Log.debugf("Load tournaments page %s", tournamentsURI);
         HtmlPage tournamentPage = cookieDialogHandler.loadWebsite(tournamentsURI);
         return parser.parseNofTournaments(tournamentPage.getActiveElement());
     }
 
     @Override
     public List<TournamentParserModel> getTournamentsForYearAndPlayer(Integer year, String playerTournamentId) {
-        log.debugf("WebService :: Get tournaments for year %d and player tournament id %s", year, playerTournamentId);
+        Log.debugf("WebService :: Get tournaments for year %d and player tournament id %s", year, playerTournamentId);
         String tournamentsURI = preparePlayerTournamentsUrl(playerTournamentId, year.toString());
         HtmlPage tournamentPage = cookieDialogHandler.loadWebsite(tournamentsURI);
         TournamentYearParserModel tournamentYearParserModel = parser.parseTournamentYear(year.toString(), tournamentPage.getActiveElement());
         return tournamentYearParserModel.tournaments();
+    }
+
+    @Override
+    public List<Tournament> scrapeAllTournamentsForPlayerAndYear(Integer year, String playerTournamentId) {
+        String tournamentsURI = preparePlayerTournamentsUrl(playerTournamentId, year.toString());
+        HtmlPage tournamentPage = cookieDialogHandler.loadWebsite(tournamentsURI);
+
+        try {
+            List<Tournament> tournaments = webTournamentParserService.parseAllYearlyTournamentsForPlayer(tournamentPage);
+            Log.debugf("TournamentWebService :: Successfully scraped %d tournaments for player %s and year %d", tournaments.size(), playerTournamentId, year);
+            return tournaments;
+        } catch (HtmlParserException e) {
+            Log.errorf("TournamentWebService :: Failed to parse tournaments page %s", e);
+            throw new RuntimeException(e);
+        }
     }
 }
