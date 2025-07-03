@@ -85,8 +85,10 @@ public class FavPlayerService {
         if (favPlayerData == null) {
             return;
         }
-
+        YearStatUpdate yearStatUpdate = new YearStatUpdate(year, allTournaments.size(), favPlayerData.playerName());
+        updatePlayerYearStatistics(favPlayerData, yearStatUpdate);
     }
+
 
     public void updateDownloadedTournaments(TournamentMatchesListDTO tournamentMatchesListDTO) {
         Log.debugf("FavPlayerService :: Update downloaded tournaments for player %s", tournamentMatchesListDTO.getPlayerName());
@@ -101,6 +103,8 @@ public class FavPlayerService {
         YearStatUpdate yearStatUpdate = createYearStatUpdate(tournamentMatchesListDTO);
         updatePlayerYearStatistics(favPlayerData, yearStatUpdate);
     }
+
+
 
     private YearStatUpdate createYearStatUpdate(TournamentMatchesListDTO tournamentMatchesListDTO) {
         int year = Integer.parseInt(tournamentMatchesListDTO.getTournamentYear());

@@ -1,5 +1,6 @@
 package de.ostfale.qk.domain.discipline;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.ostfale.qk.domain.match.Match;
 
 import java.util.ArrayList;
@@ -22,21 +23,25 @@ public abstract class TournamentDiscipline implements Discipline {
         throw new UnsupportedOperationException("TournamentDiscipline does not support getDisciplineType()");
     }
 
+    @JsonIgnore
     @Override
     public boolean hasEliminationMatches() {
         return !eliminationMatches.isEmpty();
     }
 
+    @JsonIgnore
     @Override
     public boolean hasGroupMatches() {
         return !groupMatches.isEmpty();
     }
 
+    @JsonIgnore
     @Override
     public boolean hasMatches() {
         return hasEliminationMatches() || hasGroupMatches();
     }
 
+    @JsonIgnore
     @Override
     public DisciplineOrder getDisciplineOrder() {
         return disciplineOrder;
@@ -52,10 +57,12 @@ public abstract class TournamentDiscipline implements Discipline {
         return groupMatches;
     }
 
+    @JsonIgnore
     public void addEliminationMatch(Match match) {
         eliminationMatches.add(match);
     }
 
+    @JsonIgnore
     public void addGroupMatch(Match match) {
         groupMatches.add(match);
     }

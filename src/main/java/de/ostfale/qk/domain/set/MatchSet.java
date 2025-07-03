@@ -1,9 +1,12 @@
 package de.ostfale.qk.domain.set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import de.ostfale.qk.parser.set.SetNo;
 
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MatchSet {
     private SetNo setNumber;
     private int firstValue;
@@ -22,10 +25,14 @@ public class MatchSet {
         this.isRegularSet = false;
     }
 
+    @JsonIgnore
     public String getDisplayString() {
-        String firstValueString = firstValue < 10 ? " " + firstValue : String.valueOf(firstValue);
-        String secondValueString = secondValue < 10 ? " " + secondValue : String.valueOf(secondValue);
-        return String.format("[Satz %d] %s : %s", setNumber.getSetNo(), firstValueString, secondValueString);
+        if (isRegularSet) {
+            String firstValueString = firstValue < 10 ? " " + firstValue : String.valueOf(firstValue);
+            String secondValueString = secondValue < 10 ? " " + secondValue : String.valueOf(secondValue);
+            return String.format("[Satz %d] %s : %s", setNumber.getSetNo(), firstValueString, secondValueString);
+        }
+        return "";
     }
 
     public SetNo getSetNumber() {

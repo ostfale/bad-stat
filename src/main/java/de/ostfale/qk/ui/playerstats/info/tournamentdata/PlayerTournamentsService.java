@@ -4,9 +4,11 @@ import de.ostfale.qk.data.player.PlayerTournamentMatchesJsonHandler;
 import de.ostfale.qk.domain.converter.TournamentMatchesDTOToUIConverter;
 import de.ostfale.qk.domain.converter.TournamentMatchesParserModelToDTOConverter;
 import de.ostfale.qk.domain.converter.TournamentModelToUIConverter;
+import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.domain.tournament.Tournament;
 import de.ostfale.qk.domain.tournament.TournamentMatchesDTO;
 import de.ostfale.qk.domain.tournament.TournamentMatchesListDTO;
+import de.ostfale.qk.domain.tournament.TournamentYearWrapper;
 import de.ostfale.qk.parser.tournament.model.TournamentParserModel;
 import de.ostfale.qk.ui.playerstats.info.favplayer.FavPlayerService;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
@@ -17,6 +19,7 @@ import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.util.Collections;
 import java.util.List;
 
 @ApplicationScoped
@@ -45,26 +48,32 @@ public class PlayerTournamentsService {
 
         var playerMasterData = player.getPlayerInfoMasterDataDTO();
         List<Tournament> tournaments = fetchTournamentsFromWebService(year, playerMasterData.getPlayerTournamentId());
-       // var allTournamentInUiFormat = tournaments.stream().map(tournamentModelToUIConverter::convertTo).toList();
-        favPlayerService.updateDownloadedTournaments(tournaments, playerMasterData.getPlayerId(), year);
 
-        System.out.println("dddddddd");
+        String playerName = playerMasterData.getPlayerName();
+        PlayerId playerId = new PlayerId(playerMasterData.getPlayerId());
+        TournamentYearWrapper tournamentYearWrapper = new TournamentYearWrapper(playerName, playerId, year, tournaments);
+
+        favPlayerService.updateDownloadedTournaments(tournaments, playerMasterData.getPlayerId(), year);
+        playerTournamentMatchesJsonHandler.saveToFile(tournamentYearWrapper);
+
 
         //  var tournamentDTOs = convertToTournamentDTOs(tournaments);
         // var tournamentMatchesList = createTournamentMatchesList(year, playerMasterData, tournamentDTOs);
         //   playerTournamentMatchesJsonHandler.saveToFile(tournamentMatchesList);
+        // var allTournamentInUiFormat = tournaments.stream().map(tournamentModelToUIConverter::convertTo).toList();
     }
 
 
     public List<PlayerMatchStatisticsUIModel> readPlayerTournamentsForLastFourYears(PlayerInfoDTO player) {
         Log.debugf("PlayerTournamentsService ::Reading tournaments for player %s for last four years", player.toString());
         var playerMasterData = player.getPlayerInfoMasterDataDTO();
-        List<TournamentMatchesListDTO> allPlayerFiles = playerTournamentMatchesJsonHandler.readFromFile(playerMasterData.getPlayerName(), playerMasterData.getPlayerId());
+        List<TournamentYearWrapper> allPlayerFiles = playerTournamentMatchesJsonHandler.readFromFile(playerMasterData.getPlayerName(), playerMasterData.getPlayerId());
         Log.debugf("PlayerTournamentsService ::Found %d tournaments for player %s for last four years", allPlayerFiles.size(), playerMasterData.getPlayerName());
-        return allPlayerFiles.stream()
-                .flatMap(tournamentList -> tournamentList.getTournamentMatchesList().stream())
+       /* return allPlayerFiles.stream()
+                .flatMap(tournamentList -> tournamentList.tournaments().stream())
                 .map(uiConverter::convertTo)
-                .toList();
+                .toList();*/
+        return Collections.emptyList();
     }
 
     private List<Tournament> fetchTournamentsFromWebService(int year, String playerTournamentId) {

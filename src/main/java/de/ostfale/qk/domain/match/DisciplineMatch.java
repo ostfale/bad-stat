@@ -1,10 +1,14 @@
 package de.ostfale.qk.domain.match;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import de.ostfale.qk.domain.set.MatchSet;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonInclude(Include.NON_NULL)
 public class DisciplineMatch implements Match {
 
     private static final String PLAYER_SEPARATOR = " / ";
@@ -12,12 +16,13 @@ public class DisciplineMatch implements Match {
     private String matchDate;
     private String roundName;
     private String playerOneName;
-    private String playerTwoName;
     private String partnerOneName = null;
+    private String playerTwoName;
     private String partnerTwoName = null;
 
     private final List<MatchSet> matchSets = new ArrayList<>();
 
+    @JsonIgnore
     @Override
     public String getFirstPlayerOrWithPartnerName() {
         if (partnerOneName != null) {
@@ -26,6 +31,7 @@ public class DisciplineMatch implements Match {
         return playerOneName;
     }
 
+    @JsonIgnore
     @Override
     public String getSecondPlayerOrWithPartnerName() {
         if (partnerTwoName != null) {
@@ -49,6 +55,7 @@ public class DisciplineMatch implements Match {
         return matchSets;
     }
 
+    @JsonIgnore
     public List<String> getSetResults() {
         return matchSets.stream().map(MatchSet::getDisplayString).toList();
     }

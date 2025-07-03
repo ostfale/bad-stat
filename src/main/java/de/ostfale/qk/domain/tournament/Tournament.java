@@ -1,5 +1,6 @@
 package de.ostfale.qk.domain.tournament;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.ostfale.qk.domain.discipline.*;
 import io.quarkus.logging.Log;
 
@@ -25,6 +26,7 @@ public class Tournament {
         return disciplines;
     }
 
+    @JsonIgnore
     public List<Discipline> getDisciplinesSortedByOrder() {
         Log.debugf("Tournament :: getDisciplinesSortedByOrder");
         return disciplines.stream().sorted(Comparator.comparing(Discipline::getDisciplineOrder)).toList();
@@ -42,6 +44,7 @@ public class Tournament {
         return (MixedDiscipline) getDisciplineByType(DisciplineType.MIXED);
     }
 
+    @JsonIgnore
     public Discipline getDisciplineByType(DisciplineType disciplineType) {
         return disciplines.stream()
                 .filter(discipline -> discipline.getDisciplineType() == disciplineType)
@@ -49,6 +52,7 @@ public class Tournament {
                 .orElseThrow(() -> new IllegalArgumentException("DisciplineType " + disciplineType + " is not supported."));
     }
 
+    @JsonIgnore
     public DisciplineOrder getNextDisciplineOrder() {
         Log.debugf("Tournament :: getNextDisciplineOrder");
 
