@@ -3,7 +3,7 @@ package de.ostfale.qk.parser.web.discipline;
 import de.ostfale.qk.domain.discipline.*;
 import de.ostfale.qk.domain.match.DisciplineMatch;
 import de.ostfale.qk.domain.tournament.Tournament;
-import de.ostfale.qk.parser.match.internal.WebMatchParserService;
+import de.ostfale.qk.parser.web.match.WebMatchParserService;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -84,7 +84,7 @@ public class WebDisciplineParserService implements WebDisciplineParser{
                 }
                 case MIXED -> {
                     Log.debugf("WebMatchParser :: Parse mixed matches for -> Tournament %s", tournament.getTournamentInfo().tournamentName());
-                    DisciplineMatch mixedMatch = webMatchParserService.parseDoubleMatch(disciplineMatch);
+                    DisciplineMatch mixedMatch = webMatchParserService.parseMixedMatch(disciplineMatch);
                     MixedDiscipline mixedDiscipline = tournament.getMixedDiscipline();
                     mixedDiscipline.addEliminationMatch(mixedMatch);
                 }

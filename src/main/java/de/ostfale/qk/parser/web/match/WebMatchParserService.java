@@ -1,8 +1,7 @@
-package de.ostfale.qk.parser.match.internal;
+package de.ostfale.qk.parser.web.match;
 
 import de.ostfale.qk.domain.match.DisciplineMatch;
-import de.ostfale.qk.parser.match.api.WebMatchParser;
-import de.ostfale.qk.parser.set.MatchSetParserService;
+import de.ostfale.qk.parser.web.set.MatchSetParserService;
 import de.ostfale.qk.parser.web.BaseParser;
 import de.ostfale.qk.parser.web.player.MatchPlayerParserService;
 import io.quarkus.logging.Log;

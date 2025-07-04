@@ -1,4 +1,4 @@
-package de.ostfale.qk.parser.set;
+package de.ostfale.qk.parser.web.set;
 
 import de.ostfale.qk.domain.set.MatchSet;
 import de.ostfale.qk.domain.set.SetNumber;
