@@ -1,18 +1,12 @@
 package de.ostfale.qk.ui.playerstats.info.tournamentdata;
 
 import de.ostfale.qk.data.player.PlayerTournamentMatchesJsonHandler;
-import de.ostfale.qk.domain.converter.TournamentMatchesDTOToUIConverter;
-import de.ostfale.qk.domain.converter.TournamentMatchesParserModelToDTOConverter;
 import de.ostfale.qk.domain.converter.TournamentModelToUIConverter;
 import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.domain.tournament.Tournament;
-import de.ostfale.qk.domain.tournament.TournamentMatchesDTO;
-import de.ostfale.qk.domain.tournament.TournamentMatchesListDTO;
 import de.ostfale.qk.domain.tournament.TournamentYearWrapper;
-import de.ostfale.qk.parser.tournament.model.TournamentParserModel;
 import de.ostfale.qk.ui.playerstats.info.favplayer.FavPlayerService;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
-import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoMasterDTO;
 import de.ostfale.qk.ui.playerstats.matches.PlayerMatchStatisticsUIModel;
 import de.ostfale.qk.web.internal.TournamentWebService;
 import io.quarkus.logging.Log;
@@ -30,11 +24,6 @@ public class PlayerTournamentsService {
     @Inject
     TournamentModelToUIConverter tournamentModelToUIConverter;
 
-    @Inject
-    TournamentMatchesParserModelToDTOConverter converter;
-
-    @Inject
-    TournamentMatchesDTOToUIConverter uiConverter;
 
     @Inject
     PlayerTournamentMatchesJsonHandler playerTournamentMatchesJsonHandler;
@@ -84,23 +73,5 @@ public class PlayerTournamentsService {
         return tournamentWebService.scrapeAllTournamentsForPlayerAndYear(year, playerTournamentId);
     }
 
-    private List<TournamentMatchesDTO> convertToTournamentDTOs(List<TournamentParserModel> tournaments) {
-        return tournaments.stream()
-                .map(converter::convertTo)
-                .toList();
-    }
 
-    private TournamentMatchesListDTO createTournamentMatchesList(
-            int year,
-            PlayerInfoMasterDTO playerMasterData,
-            List<TournamentMatchesDTO> tournamentDTOs) {
-
-        var matchesList = new TournamentMatchesListDTO();
-        matchesList.setPlayerId(playerMasterData.getPlayerId());
-        matchesList.setPlayerName(playerMasterData.getPlayerName());
-        matchesList.setTournamentYear(String.valueOf(year));
-        matchesList.getTournamentMatchesList().addAll(tournamentDTOs);
-
-        return matchesList;
-    }
 }

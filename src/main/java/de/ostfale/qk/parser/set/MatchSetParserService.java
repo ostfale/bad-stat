@@ -1,6 +1,7 @@
 package de.ostfale.qk.parser.set;
 
 import de.ostfale.qk.domain.set.MatchSet;
+import de.ostfale.qk.domain.set.SetNumber;
 import de.ostfale.qk.parser.web.match.MatchParser;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -45,7 +46,7 @@ public class MatchSetParserService implements MatchParser {
     }
 
     private MatchSet createSingleMatchSet(int setIndex, List<Integer> setScores) {
-        SetNo setNumber = SetNo.values()[setIndex];
+        SetNumber setNumber = SetNumber.values()[setIndex];
         int firstPlayerScore = setScores.get(setIndex * 2);
         int secondPlayerScore = setScores.get(setIndex * 2 + 1);
 

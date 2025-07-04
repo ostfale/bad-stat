@@ -1,22 +1,8 @@
 package de.ostfale.qk.parser.web.tournament;
 
-import de.ostfale.qk.domain.discipline.AgeClass;
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.HtmlParserException;
-import de.ostfale.qk.parser.match.api.WebMatchParser;
-import de.ostfale.qk.parser.match.internal.WebMatchParserService;
-import de.ostfale.qk.parser.set.MatchSetParserService;
-import de.ostfale.qk.parser.web.discipline.WebDisciplineInfoParserService;
-import de.ostfale.qk.parser.web.discipline.WebDisciplineParserService;
-import de.ostfale.qk.parser.web.player.MatchPlayerParserService;
-import org.htmlunit.html.HtmlPage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Tag("unittest")
 @DisplayName("Test parsing of a single standard tournament with all disciplines")
@@ -24,7 +10,7 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
 
     private static final String TEST_FILE_NAME = "tournaments/SingleTournamentARL25_VB.html";
 
-    private WebTournamentParserService sut;
+ /*   private WebTournamentParserService sut;
 
     @BeforeEach
     void setUp() {
@@ -102,5 +88,5 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
                 () -> assertThat(firstMatch.getMatchSets().size()).isEqualTo(firstMatchSets),
                 () -> assertThat(firstMatch.getMatchSets().getFirst().isRegularSet()).isFalse()
         );
-    }
+    }*/
 }

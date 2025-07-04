@@ -2,19 +2,18 @@ package de.ostfale.qk.domain.set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import de.ostfale.qk.parser.set.SetNo;
 
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MatchSet {
-    private SetNo setNumber;
+    private SetNumber setNumber;
     private int firstValue;
     private int secondValue;
     private boolean isRegularSet = true;
     private String nonRegularResult;
 
-    public MatchSet(SetNo setNumber, int firstValue, int secondValue) {
+    public MatchSet(SetNumber setNumber, int firstValue, int secondValue) {
         this.setNumber = setNumber;
         this.firstValue = firstValue;
         this.secondValue = secondValue;
@@ -38,11 +37,11 @@ public class MatchSet {
         return "";
     }
 
-    public SetNo getSetNumber() {
+    public SetNumber getSetNumber() {
         return setNumber;
     }
 
-    public void setSetNumber(SetNo setNumber) {
+    public void setSetNumber(SetNumber setNumber) {
         this.setNumber = setNumber;
     }
 

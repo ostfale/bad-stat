@@ -2,9 +2,6 @@ package de.ostfale.qk.web.internal;
 
 import de.ostfale.qk.domain.tournament.Tournament;
 import de.ostfale.qk.parser.HtmlParserException;
-import de.ostfale.qk.parser.tournament.TournamentParser;
-import de.ostfale.qk.parser.tournament.model.TournamentParserModel;
-import de.ostfale.qk.parser.tournament.model.TournamentYearParserModel;
 import de.ostfale.qk.parser.web.tournament.WebTournamentParserService;
 import de.ostfale.qk.web.common.CookieDialogHandler;
 import io.quarkus.logging.Log;
@@ -22,9 +19,6 @@ public class TournamentWebService extends BaseWebService {
     WebTournamentParserService webTournamentParserService;
 
     @Inject
-    TournamentParser parser;
-
-    @Inject
     CookieDialogHandler cookieDialogHandler;
 
     @Override
@@ -40,16 +34,8 @@ public class TournamentWebService extends BaseWebService {
 
         Log.debugf("Load tournaments page %s", tournamentsURI);
         HtmlPage tournamentPage = cookieDialogHandler.loadWebsite(tournamentsURI);
-        return parser.parseNofTournaments(tournamentPage.getActiveElement());
-    }
-
-    @Override
-    public List<TournamentParserModel> getTournamentsForYearAndPlayer(Integer year, String playerTournamentId) {
-        Log.debugf("WebService :: Get tournaments for year %d and player tournament id %s", year, playerTournamentId);
-        String tournamentsURI = preparePlayerTournamentsUrl(playerTournamentId, year.toString());
-        HtmlPage tournamentPage = cookieDialogHandler.loadWebsite(tournamentsURI);
-        TournamentYearParserModel tournamentYearParserModel = parser.parseTournamentYear(year.toString(), tournamentPage.getActiveElement());
-        return tournamentYearParserModel.tournaments();
+        return 42;
+        //return parser.parseNofTournaments(tournamentPage.getActiveElement());
     }
 
     @Override

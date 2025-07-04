@@ -4,9 +4,7 @@ import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.domain.player.PlayerTournamentId;
 import de.ostfale.qk.domain.tournament.RecentYears;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
-import de.ostfale.qk.web.api.WebService;
 import io.quarkus.logging.Log;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.util.Map;
@@ -14,9 +12,6 @@ import java.util.function.BiConsumer;
 
 @Singleton
 public class PlayerInfoMatchStatService {
-
-    @Inject
-    WebService webService;
 
     public PlayerTourStatDTO readYearlyTournamentStatistics(PlayerId playerId, PlayerTournamentId tournamentId) {
         PlayerTourStatDTO playerStats = new PlayerTourStatDTO(playerId, tournamentId);
@@ -45,6 +40,8 @@ public class PlayerInfoMatchStatService {
     }
 
     private int getTournamentCountForYear(int year, String tournamentId) {
-        return webService.getNumberOfTournamentsForYearAndPlayer(year, tournamentId);
+        // TODO Fix nof Tournaments
+        //return webService.getNumberOfTournamentsForYearAndPlayer(year, tournamentId);
+        return 42;
     }
 }

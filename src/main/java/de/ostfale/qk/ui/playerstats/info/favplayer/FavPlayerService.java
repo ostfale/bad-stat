@@ -6,7 +6,6 @@ import de.ostfale.qk.data.player.model.FavPlayerListData;
 import de.ostfale.qk.data.player.model.FavPlayerYearStat;
 import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.domain.tournament.Tournament;
-import de.ostfale.qk.domain.tournament.TournamentMatchesListDTO;
 import de.ostfale.qk.ui.playerstats.info.PlayerInfoService;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import io.quarkus.logging.Log;
@@ -87,31 +86,6 @@ public class FavPlayerService {
         }
         YearStatUpdate yearStatUpdate = new YearStatUpdate(year, allTournaments.size(), favPlayerData.playerName());
         updatePlayerYearStatistics(favPlayerData, yearStatUpdate);
-    }
-
-
-    public void updateDownloadedTournaments(TournamentMatchesListDTO tournamentMatchesListDTO) {
-        Log.debugf("FavPlayerService :: Update downloaded tournaments for player %s", tournamentMatchesListDTO.getPlayerName());
-
-        var playerId = new PlayerId(tournamentMatchesListDTO.getPlayerId());
-        FavPlayerData favPlayerData = favoritePlayerListData.getFavPlayerDataByPlayerId(playerId);
-
-        if (favPlayerData == null) {
-            return;
-        }
-
-        YearStatUpdate yearStatUpdate = createYearStatUpdate(tournamentMatchesListDTO);
-        updatePlayerYearStatistics(favPlayerData, yearStatUpdate);
-    }
-
-
-
-    private YearStatUpdate createYearStatUpdate(TournamentMatchesListDTO tournamentMatchesListDTO) {
-        int year = Integer.parseInt(tournamentMatchesListDTO.getTournamentYear());
-        int loadedMatches = tournamentMatchesListDTO.getTournamentMatchesList().size();
-        String playerName = tournamentMatchesListDTO.getPlayerName();
-
-        return new YearStatUpdate(year, loadedMatches, playerName);
     }
 
     private void updatePlayerYearStatistics(FavPlayerData favPlayerData, YearStatUpdate update) {

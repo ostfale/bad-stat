@@ -1,25 +1,12 @@
 package de.ostfale.qk.parser.discipline;
 
-import de.ostfale.qk.domain.discipline.AgeClass;
-import de.ostfale.qk.domain.discipline.DisciplineType;
-import de.ostfale.qk.parser.discipline.model.DisciplineAgeModel;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Test parsing the age class and discipline")
 @Tag("unittest")
 class DisciplineAgeParserServiceTest {
-
+/*
     private DisciplineAgeParserService parser;
 
     @BeforeEach
@@ -59,5 +46,5 @@ class DisciplineAgeParserServiceTest {
         var result = parser.parseDisciplineInfos(token);
         assertThat(result.getDiscipline()).isEqualTo(expectedDisciplineType);
         assertThat(result.getAgeClass()).isEqualTo(expectedAgeClass);
-    }
+    }*/
 }

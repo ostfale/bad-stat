@@ -3,9 +3,10 @@ package de.ostfale.qk.parser.web.discipline;
 import de.ostfale.qk.domain.discipline.*;
 import de.ostfale.qk.domain.match.DisciplineMatch;
 import de.ostfale.qk.domain.tournament.Tournament;
-import de.ostfale.qk.parser.match.api.WebMatchParser;
+import de.ostfale.qk.parser.match.internal.WebMatchParserService;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlElement;
 
 import java.util.Comparator;
@@ -16,11 +17,11 @@ public class WebDisciplineParserService implements WebDisciplineParser{
 
     private final WebDisciplineInfoParserService webDisciplineInfoParserService;
 
-    private final WebMatchParser webMatchParser;
+    @Inject
+    WebMatchParserService webMatchParserService;
 
-    public WebDisciplineParserService(WebDisciplineInfoParserService webDisciplineInfoParserService, WebMatchParser webMatchParser) {
+    public WebDisciplineParserService(WebDisciplineInfoParserService webDisciplineInfoParserService) {
         this.webDisciplineInfoParserService = webDisciplineInfoParserService;
-        this.webMatchParser = webMatchParser;
     }
 
     public void parseDisciplines(Tournament tournament, HtmlElement moduleCardElement) {
@@ -71,19 +72,19 @@ public class WebDisciplineParserService implements WebDisciplineParser{
                 case SINGLE -> {
                     Log.debugf("WebMatchParser :: Parse single matches for -> Tournament %s", tournament.getTournamentInfo().tournamentName());
 
-                    DisciplineMatch singleMatch = webMatchParser.parseSingleMatch(disciplineMatch);
+                    DisciplineMatch singleMatch = webMatchParserService.parseSingleMatch(disciplineMatch);
                     SingleDiscipline singleDiscipline = tournament.getSingleDiscipline();
                     singleDiscipline.addEliminationMatch(singleMatch);
                 }
                 case DOUBLE -> {
                     Log.debugf("WebMatchParser :: Parse double matches for -> Tournament %s", tournament.getTournamentInfo().tournamentName());
-                    DisciplineMatch doubleMatch = webMatchParser.parseDoubleMatch(disciplineMatch);
+                    DisciplineMatch doubleMatch = webMatchParserService.parseDoubleMatch(disciplineMatch);
                     DoubleDiscipline doubleDiscipline = tournament.getDoubleDiscipline();
                     doubleDiscipline.addEliminationMatch(doubleMatch);
                 }
                 case MIXED -> {
                     Log.debugf("WebMatchParser :: Parse mixed matches for -> Tournament %s", tournament.getTournamentInfo().tournamentName());
-                    DisciplineMatch mixedMatch = webMatchParser.parseDoubleMatch(disciplineMatch);
+                    DisciplineMatch mixedMatch = webMatchParserService.parseDoubleMatch(disciplineMatch);
                     MixedDiscipline mixedDiscipline = tournament.getMixedDiscipline();
                     mixedDiscipline.addEliminationMatch(mixedMatch);
                 }
