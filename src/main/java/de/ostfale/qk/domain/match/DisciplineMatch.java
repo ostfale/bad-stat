@@ -22,6 +22,9 @@ public class DisciplineMatch implements Match {
 
     private final List<MatchSet> matchSets = new ArrayList<>();
 
+    public DisciplineMatch() {
+    }
+
     @JsonIgnore
     @Override
     public String getFirstPlayerOrWithPartnerName() {

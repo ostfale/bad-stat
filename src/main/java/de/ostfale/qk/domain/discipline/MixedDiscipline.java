@@ -1,9 +1,10 @@
 package de.ostfale.qk.domain.discipline;
 
-public class MixedDiscipline extends TournamentDiscipline{
+public class MixedDiscipline extends TournamentDiscipline {
 
     @Override
     public DisciplineType getDisciplineType() {
-        return DisciplineType.MIXED;
+        disciplineType = DisciplineType.MIXED;
+        return disciplineType;
     }
 }

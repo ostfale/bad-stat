@@ -19,7 +19,6 @@ import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.util.Collections;
 import java.util.List;
 
 @ApplicationScoped
@@ -55,26 +54,30 @@ public class PlayerTournamentsService {
 
         favPlayerService.updateDownloadedTournaments(tournaments, playerMasterData.getPlayerId(), year);
         playerTournamentMatchesJsonHandler.saveToFile(tournamentYearWrapper);
-
-
-        //  var tournamentDTOs = convertToTournamentDTOs(tournaments);
-        // var tournamentMatchesList = createTournamentMatchesList(year, playerMasterData, tournamentDTOs);
-        //   playerTournamentMatchesJsonHandler.saveToFile(tournamentMatchesList);
-        // var allTournamentInUiFormat = tournaments.stream().map(tournamentModelToUIConverter::convertTo).toList();
     }
 
 
     public List<PlayerMatchStatisticsUIModel> readPlayerTournamentsForLastFourYears(PlayerInfoDTO player) {
         Log.debugf("PlayerTournamentsService ::Reading tournaments for player %s for last four years", player.toString());
         var playerMasterData = player.getPlayerInfoMasterDataDTO();
-        List<TournamentYearWrapper> allPlayerFiles = playerTournamentMatchesJsonHandler.readFromFile(playerMasterData.getPlayerName(), playerMasterData.getPlayerId());
-        Log.debugf("PlayerTournamentsService ::Found %d tournaments for player %s for last four years", allPlayerFiles.size(), playerMasterData.getPlayerName());
-       /* return allPlayerFiles.stream()
-                .flatMap(tournamentList -> tournamentList.tournaments().stream())
-                .map(uiConverter::convertTo)
-                .toList();*/
-        return Collections.emptyList();
+        List<TournamentYearWrapper> tournamentYearWrappers = playerTournamentMatchesJsonHandler.readFromFile(
+                playerMasterData.getPlayerName(),
+                playerMasterData.getPlayerId()
+        );
+        Log.debugf("PlayerTournamentsService ::Found %d tournaments for player %s for last four years",
+                tournamentYearWrappers.size(),
+                playerMasterData.getPlayerName());
+
+        return convertTournamentsToUIModels(tournamentYearWrappers);
     }
+
+    private List<PlayerMatchStatisticsUIModel> convertTournamentsToUIModels(List<TournamentYearWrapper> tournamentYearWrappers) {
+        return tournamentYearWrappers.stream()
+                .flatMap(wrapper -> wrapper.tournaments().stream())
+                .map(tournamentModelToUIConverter::convertTo)
+                .toList();
+    }
+
 
     private List<Tournament> fetchTournamentsFromWebService(int year, String playerTournamentId) {
         // return tournamentWebService.getTournamentsForYearAndPlayer(year, playerTournamentId);

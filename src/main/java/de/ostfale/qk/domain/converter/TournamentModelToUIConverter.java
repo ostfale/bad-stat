@@ -30,8 +30,8 @@ public class TournamentModelToUIConverter implements Converter<Tournament, Playe
         Log.trace("TournamentModelToUIConverter :: Convert domain discipline model to UI model");
         if (discipline.hasEliminationMatches()) {
             Log.trace("TournamentModelToUIConverter :: Convert domain discipline model to UI model with elimination matches");
-            String disciplineName = discipline.getDisciplineType().name();
-            List<Match> eliminationMatches = discipline.getEliminationMatches();
+            String disciplineName = discipline.getDisciplineType().getDisplayString();
+            List<DisciplineMatch> eliminationMatches = discipline.getEliminationMatches();
             for (Match match : eliminationMatches) {
                 if (match instanceof DisciplineMatch disciplineMatch) {
                     uiModel.getMatchDetails().add(convertTo(disciplineMatch, disciplineName));

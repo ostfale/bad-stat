@@ -1,15 +1,15 @@
 package de.ostfale.qk.domain.discipline;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.ostfale.qk.domain.match.Match;
+import de.ostfale.qk.domain.match.DisciplineMatch;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class TournamentDiscipline implements Discipline {
+public class TournamentDiscipline implements Discipline {
 
-    protected final List<Match> eliminationMatches = new ArrayList<>();
-    protected final List<Match> groupMatches = new ArrayList<>();
+    protected final List<DisciplineMatch> eliminationMatches = new ArrayList<>();
+    protected final List<DisciplineMatch> groupMatches = new ArrayList<>();
 
     protected AgeClass disciplineAgeClass = AgeClass.UOX;
     protected DisciplineOrder disciplineOrder = DisciplineOrder.NO_ORDER;
@@ -17,10 +17,14 @@ public abstract class TournamentDiscipline implements Discipline {
     // provide discipline name (h5) and group name (for combined tournaments)
     protected String disciplineName;
     protected String groupName = "";
+    protected DisciplineType disciplineType;
+
+    public TournamentDiscipline() {
+    }
 
     @Override
     public DisciplineType getDisciplineType() {
-        throw new UnsupportedOperationException("TournamentDiscipline does not support getDisciplineType()");
+        return disciplineType;
     }
 
     @JsonIgnore
@@ -48,24 +52,25 @@ public abstract class TournamentDiscipline implements Discipline {
     }
 
     @Override
-    public List<Match> getEliminationMatches() {
+    public List<DisciplineMatch> getEliminationMatches() {
         return eliminationMatches;
     }
 
     @Override
-    public List<Match> getGroupMatches() {
+    public List<DisciplineMatch> getGroupMatches() {
         return groupMatches;
     }
 
     @JsonIgnore
-    public void addEliminationMatch(Match match) {
+    public void addEliminationMatch(DisciplineMatch match) {
         eliminationMatches.add(match);
     }
 
     @JsonIgnore
-    public void addGroupMatch(Match match) {
+    public void addGroupMatch(DisciplineMatch match) {
         groupMatches.add(match);
     }
+
 
     public void setDisciplineOrder(DisciplineOrder disciplineOrder) {
         this.disciplineOrder = disciplineOrder;

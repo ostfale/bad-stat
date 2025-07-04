@@ -25,6 +25,9 @@ public class MatchSet {
         this.isRegularSet = false;
     }
 
+    public MatchSet() {
+    }
+
     @JsonIgnore
     public String getDisplayString() {
         if (isRegularSet) {

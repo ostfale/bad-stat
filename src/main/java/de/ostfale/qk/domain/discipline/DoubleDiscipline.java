@@ -4,6 +4,7 @@ public class DoubleDiscipline extends TournamentDiscipline{
 
     @Override
     public DisciplineType getDisciplineType() {
-        return DisciplineType.DOUBLE;
+        disciplineType= DisciplineType.DOUBLE;
+        return disciplineType;
     }
 }

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.quarkus.logging.Log;
 import jakarta.inject.Singleton;
-import org.jboss.logging.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -14,12 +14,11 @@ import java.util.Optional;
 
 @Singleton
 public class ConfiguredObjectMapper {
-    Logger log = Logger.getLogger(ConfiguredObjectMapper.class);
 
     private final ObjectMapper objectMapper;
 
     public ConfiguredObjectMapper() {
-        log.debug("Create configured object mapper");
+        Log.debug("Create configured object mapper");
         this.objectMapper = new ObjectMapper();
         configureMapper(this.objectMapper);
     }
@@ -37,7 +36,8 @@ public class ConfiguredObjectMapper {
         try {
             return Optional.of(objectMapper.readValue(jsonString, target));
         } catch (JsonProcessingException e) {
-            log.errorf("Could not map json string to class %s", target.getName(), e);
+            Log.errorf("Could not map json string to class %s", target.getName(), e);
+            System.out.println("XXXXXXXXXXXXXXX: " + e.getMessage());
             return Optional.empty();
         }
     }
@@ -46,7 +46,7 @@ public class ConfiguredObjectMapper {
         try {
             return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
         } catch (Exception e) {
-            log.error("Error serializing object to pretty JSON string", e);
+            Log.error("Error serializing object to pretty JSON string", e);
             return "";
         }
     }
@@ -57,7 +57,7 @@ public class ConfiguredObjectMapper {
             List<T> list = objectMapper.readValue(jsonString, collectionType);
             return Optional.of(list);
         } catch (JsonProcessingException e) {
-            log.errorf("Could not map json string to list of %s", elementType.getName(), e);
+            Log.errorf("Could not map json string to list of %s", elementType.getName(), e);
             return Optional.empty();
         }
     }
@@ -68,11 +68,10 @@ public class ConfiguredObjectMapper {
             Map<String, T> map = objectMapper.readValue(jsonString, mapType);
             return Optional.of(map);
         } catch (JsonProcessingException e) {
-            log.errorf("Could not map json string to map with value type %s", valueType.getName(), e);
+            Log.errorf("Could not map json string to map with value type %s", valueType.getName(), e);
             return Optional.empty();
         }
     }
-
 
     public Object getObjectMapper() {
         return objectMapper;

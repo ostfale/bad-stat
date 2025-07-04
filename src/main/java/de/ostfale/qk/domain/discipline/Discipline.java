@@ -1,9 +1,11 @@
 package de.ostfale.qk.domain.discipline;
 
-import de.ostfale.qk.domain.match.Match;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import de.ostfale.qk.domain.match.DisciplineMatch;
 
 import java.util.List;
 
+@JsonDeserialize(as = TournamentDiscipline.class)
 public interface Discipline {
 
     DisciplineType getDisciplineType();
@@ -16,7 +18,7 @@ public interface Discipline {
 
    DisciplineOrder getDisciplineOrder();
 
-   List<Match> getEliminationMatches();
+   List<DisciplineMatch> getEliminationMatches();
 
-   List<Match> getGroupMatches();
+   List<DisciplineMatch> getGroupMatches();
 }

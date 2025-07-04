@@ -11,35 +11,43 @@ import java.util.Map;
 public class Tournament {
 
     private final TournamentInfo tournamentInfo;
-    private final List<Discipline> disciplines;
+    private final List<TournamentDiscipline> disciplines;
 
     public Tournament(TournamentInfo tournamentInfo) {
         this.disciplines = List.of(new SingleDiscipline(), new DoubleDiscipline(), new MixedDiscipline());
         this.tournamentInfo = tournamentInfo;
     }
 
+    public Tournament() {
+        this.disciplines = List.of(new SingleDiscipline(), new DoubleDiscipline(), new MixedDiscipline());
+        this.tournamentInfo = new TournamentInfo();
+    }
+
     public TournamentInfo getTournamentInfo() {
         return tournamentInfo;
     }
 
-    public List<Discipline> getDisciplines() {
+    public List<TournamentDiscipline> getDisciplines() {
         return disciplines;
     }
 
     @JsonIgnore
-    public List<Discipline> getDisciplinesSortedByOrder() {
+    public List<TournamentDiscipline> getDisciplinesSortedByOrder() {
         Log.debugf("Tournament :: getDisciplinesSortedByOrder");
         return disciplines.stream().sorted(Comparator.comparing(Discipline::getDisciplineOrder)).toList();
     }
 
+    @JsonIgnore
     public SingleDiscipline getSingleDiscipline() {
         return (SingleDiscipline) getDisciplineByType(DisciplineType.SINGLE);
     }
 
+    @JsonIgnore
     public DoubleDiscipline getDoubleDiscipline() {
         return (DoubleDiscipline) getDisciplineByType(DisciplineType.DOUBLE);
     }
 
+    @JsonIgnore
     public MixedDiscipline getMixedDiscipline() {
         return (MixedDiscipline) getDisciplineByType(DisciplineType.MIXED);
     }
