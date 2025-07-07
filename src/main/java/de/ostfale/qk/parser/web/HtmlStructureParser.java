@@ -38,16 +38,6 @@ public class HtmlStructureParser implements HtmlStructureElements {
 
     /* DISCIPLINE INFORMATION */
 
-    // within a module__card will be 1-3 disciplines with a separate header
-    String DISCIPLINES_MATCHES_INFO = ".//h4[contains(@class, 'module-divider')]";
-
-    public List<HtmlElement> getAllDisciplineInfos(HtmlElement tournament) {
-        Log.debugf("Parsing all discipline header info elements");
-        List<HtmlElement> disciplines = tournament.getByXPath(DISCIPLINES_MATCHES_INFO);
-        Log.debugf("Found {} discipline header info elements", disciplines.size());
-        return disciplines;
-    }
-
     // list all matches for a discipline -> elimination (1 element) + group (2 elements)
     String DISCIPLINE_ALL_MATCHES = ".//ol[contains(@class, 'match-group')]";
 

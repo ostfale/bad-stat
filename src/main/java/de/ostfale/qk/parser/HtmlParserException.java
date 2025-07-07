@@ -15,6 +15,12 @@ public class HtmlParserException extends Exception {
         this.exception = e;
     }
 
+    public HtmlParserException(ParsedComponent parsedComponent, String message) {
+        super(message);
+        this.parsedComponent = parsedComponent;
+        this.exception = new Exception(message);
+    }
+
     public String getParserError() {
         var stacktraceAsString = Arrays.stream(getStackTrace())
                 .limit(5)

@@ -1,10 +1,12 @@
 package de.ostfale.qk.parser.web.discipline;
 
-import de.ostfale.qk.domain.discipline.*;
-import de.ostfale.qk.domain.tournament.Tournament;
+import de.ostfale.qk.domain.discipline.AgeClass;
+import de.ostfale.qk.domain.discipline.DisciplineInfo;
+import de.ostfale.qk.domain.discipline.DisciplineType;
+import de.ostfale.qk.parser.HtmlParserException;
+import de.ostfale.qk.parser.ParsedComponent;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.htmlunit.html.HtmlElement;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,6 +19,7 @@ import static de.ostfale.qk.domain.discipline.DisciplineType.*;
 @ApplicationScoped
 public class WebDisciplineInfoParserService implements WebDisciplineParser {
 
+    private static final String EMPTY_STRING = "";
     private static final String SPLIT_DELIMITER = "\\s+";
     private static final int EXPECTED_DISCIPLINE_PARTS = 3;
     private static final int TOO_LONG_TOKEN_FOR_DISCIPLINE = 5;
@@ -24,53 +27,36 @@ public class WebDisciplineInfoParserService implements WebDisciplineParser {
     private static final String[] AGE_GROUP_PREFIXES = {"U", "O"};
     private static final Set<String> AGE_CATEGORY_PREFIXES = Set.of("U", "O");
 
-    public void parseDisciplineInfos(Tournament tournament, HtmlElement disciplineToken) {
-        String headerToken = disciplineToken.asNormalizedText();
-        Log.infof("WebDisciplineInfoParser :: Parse discipline infos: %s", headerToken);
+    public DisciplineInfo extractDisciplineHeaderInfo(String disciplineInfoString) throws HtmlParserException {
+        Log.infof("WebDisciplineInfoParser :: Parse discipline infos: %s", disciplineInfoString);
+        String[] splitToken = fixAndSplitHeaderToken(disciplineInfoString);
 
-        // fix input string
-        headerToken = headerToken.replace("[SG]", "");  // example: Konkurrenz: U11 [SG] Mädcheneinzel Samstag
-
-        String[] disciplineParts = headerToken.split(SPLIT_DELIMITER);
-
-        if (tokenWithoutSpaces(disciplineParts)) {
-            Log.warnf("WebDisciplineInfoParser :: Invalid discipline age format : %s (without spaces)", disciplineToken);
-            var ageToken = disciplineParts[1].substring(0, 3);
-            var discToken = disciplineParts[1].substring(3);
-            var ageAndDisc = createDisciplineParserModel(new DisciplineAndAge(DisciplineType.lookup(discToken), AgeClass.fromString(ageToken)));
-            processTournamentDisciplines(tournament, ageAndDisc);
+        var result = checkTokenAgainstMap(disciplineInfoString);
+        if (result != null) {
+            Log.infof("WebDisciplineInfoParser :: Found discipline info in map: %s", result);
+            return result;
         }
 
-        if (!hasAgeCategoryPrefix(disciplineParts) || containsHyphen(disciplineParts)) {
-            Log.warnf("WebDisciplineInfoParser :: Invalid discipline age format : %s (read from map)", disciplineToken);
-            var mapSearchResult = getDisciplineAndAgeByToken(headerToken);
-            if (mapSearchResult != null) {
-                processTournamentDisciplines(tournament, mapSearchResult);
+        if (splitToken.length == TOO_SHORT_TOKEN_FOR_DISCIPLINE) {
+            Log.warnf("DisciplineAgeParserService :: Invalid discipline age format : %s (too few parts)", splitToken.length);
+            var discipline = DisciplineType.lookup(splitToken[1]);
+            if (discipline != null) {
+                return new DisciplineInfo(disciplineInfoString, UOX, discipline);
             }
         }
 
-        if (disciplineParts.length >= EXPECTED_DISCIPLINE_PARTS) {
-            Log.debugf("WebDisciplineInfoParser :: Parse discipline infos with %d parts ", disciplineParts.length);
-            processTournamentDisciplines(tournament, parseStandardDisciplineInfos(disciplineParts));
+        if (splitToken.length >= EXPECTED_DISCIPLINE_PARTS && !containsHyphen(splitToken)) {
+            Log.debugf("WebDisciplineInfoParser :: Parse discipline infos with %d parts ", splitToken.length);
+            DisciplineAndAge disciplineAndAge = parseStandardDisciplineInfos(splitToken);
+            return new DisciplineInfo(disciplineInfoString, disciplineAndAge.ageClass(), disciplineAndAge.disciplineType());
         }
-
-        if (disciplineParts.length == TOO_SHORT_TOKEN_FOR_DISCIPLINE) {
-            Log.warnf("DisciplineAgeParserService :: Invalid discipline age format : %s (too few parts)", disciplineToken);
-            var discipline = DisciplineType.lookup(disciplineParts[1]);
-            processTournamentDisciplines(tournament, new DisciplineAndAge(discipline, UOX));
-        }
+        var errorMessage = String.format("Invalid discipline age format : %s (read from string)", disciplineInfoString);
+        throw new HtmlParserException(ParsedComponent.DISCIPLINE_INFO, errorMessage);
     }
 
-    private void processTournamentDisciplines(Tournament tournament, DisciplineAndAge disciplineAndAge) {
-        try {
-            Discipline discipline = tournament.getDisciplineByType(disciplineAndAge.disciplineType);
-            if (discipline instanceof TournamentDiscipline tournamentDiscipline) {
-                tournamentDiscipline.setDisciplineAgeClass(disciplineAndAge.ageClass());
-                tournamentDiscipline.setDisciplineOrder(tournament.getNextDisciplineOrder());
-            }
-        } catch (IllegalArgumentException e) {
-            Log.warnf("WebDisciplineInfoParser :: Invalid discipline type: %s", disciplineAndAge.disciplineType);
-        }
+    private String[] fixAndSplitHeaderToken(String headerToken) {
+        var result = headerToken.replace("[SG]", EMPTY_STRING);
+        return result.split(SPLIT_DELIMITER);
     }
 
     private DisciplineAndAge parseStandardDisciplineInfos(String[] disciplineParts) {
@@ -86,12 +72,12 @@ public class WebDisciplineInfoParserService implements WebDisciplineParser {
         }
     }
 
-    private DisciplineAndAge getDisciplineAndAgeByToken(String token) {
-        return IRREGULAR_DISC_AGE.get(token);
-    }
-
-    private DisciplineAndAge createDisciplineParserModel(DisciplineAndAge disciplineAge) {
-        return new DisciplineAndAge(disciplineAge.disciplineType(), disciplineAge.ageClass());
+    private DisciplineInfo checkTokenAgainstMap(String token) {
+        var result = IRREGULAR_DISC_AGE.get(token);
+        if (result != null) {
+            return new DisciplineInfo(token, result.ageClass, result.disciplineType);
+        }
+        return null;
     }
 
     private boolean startsWithAgeGroupPrefix(String ageToken) {
@@ -132,6 +118,11 @@ public class WebDisciplineInfoParserService implements WebDisciplineParser {
         put("Konkurrenz: U15B Jungeneinzel", new DisciplineAndAge(SINGLE, U15));
         put("Konkurrenz: JD-U15 A", new DisciplineAndAge(DOUBLE, U15));
         put("Konkurrenz: MD-U15 A", new DisciplineAndAge(DOUBLE, U15));
+        put("Konkurrenz: Mixed Doubles U15", new DisciplineAndAge(MIXED, U15));
+        put("Konkurrenz: Girls Doubles U15", new DisciplineAndAge(DOUBLE, U15));
+        put("Konkurrenz: Boys Doubles U15", new DisciplineAndAge(DOUBLE, U15));
+        put("Konkurrenz: Girls Singles U15", new DisciplineAndAge(SINGLE, U15));
+        put("Konkurrenz: Boys Singles U15", new DisciplineAndAge(SINGLE, U15));
 
         put("Konkurrenz: HE-U17 A", new DisciplineAndAge(SINGLE, U17));
         put("Konkurrenz: DE-U17 A", new DisciplineAndAge(SINGLE, U17));

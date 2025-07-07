@@ -22,7 +22,7 @@ public class TournamentModelToUIConverter implements Converter<Tournament, Playe
         uiModel.setTournamentName(tournament.getTournamentInfo().tournamentName());
         uiModel.setTournamentLocation(tournament.getTournamentInfo().tournamentLocation());
         uiModel.setTournamentDate(tournament.getTournamentInfo().tournamentDate());
-        tournament.getDisciplinesSortedByOrder().forEach(discipline -> convertTo(discipline, uiModel));
+    //    tournament.getDisciplinesSortedByOrder().forEach(discipline -> convertTo(discipline, uiModel));
         return uiModel;
     }
 

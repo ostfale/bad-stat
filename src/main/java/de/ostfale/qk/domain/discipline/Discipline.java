@@ -8,15 +8,19 @@ import java.util.List;
 @JsonDeserialize(as = TournamentDiscipline.class)
 public interface Discipline {
 
+    DisciplineInfo getDisciplineInfo();
+
     DisciplineType getDisciplineType();
+
+    void addEliminationMatch(DisciplineMatch match);
+
+//  check
 
     boolean hasMatches();
 
     boolean hasEliminationMatches();
 
     boolean hasGroupMatches();
-
-   DisciplineOrder getDisciplineOrder();
 
    List<DisciplineMatch> getEliminationMatches();
 

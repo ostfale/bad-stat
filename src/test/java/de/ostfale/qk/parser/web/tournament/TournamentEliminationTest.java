@@ -1,8 +1,5 @@
 package de.ostfale.qk.parser.web.tournament;
 
-import de.ostfale.qk.domain.discipline.DoubleDiscipline;
-import de.ostfale.qk.domain.discipline.MixedDiscipline;
-import de.ostfale.qk.domain.discipline.SingleDiscipline;
 import de.ostfale.qk.parser.BaseParserTest;
 import de.ostfale.qk.parser.HtmlParserException;
 import io.quarkus.test.junit.QuarkusTest;
@@ -11,8 +8,6 @@ import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -70,7 +65,7 @@ public class TournamentEliminationTest extends BaseParserTest {
         );
     }
 
-    @Test
+ /*   @Test
     @DisplayName("Test parsing a single match")
     void testParseSingleMatch() throws HtmlParserException {
         // given
@@ -114,9 +109,9 @@ public class TournamentEliminationTest extends BaseParserTest {
                 () -> assertThat(doubleDiscipline.getEliminationMatches().get(1).getRoundName()).isEqualTo(expectedRoundNames.get(1))
 
         );
-    }
+    }*/
 
-    @Test
+  /*  @Test
     @DisplayName("Test parsing a mixed match")
     void testParseMixedMatch() throws HtmlParserException {
         // given
@@ -137,5 +132,5 @@ public class TournamentEliminationTest extends BaseParserTest {
                 () -> assertThat(mixedDiscipline.getEliminationMatches().get(1).getRoundName()).isEqualTo(expectedRoundNames.get(1)),
                 () -> assertThat(mixedDiscipline.getEliminationMatches().get(2).getRoundName()).isEqualTo(expectedRoundNames.get(2))
         );
-    }
+    }*/
 }

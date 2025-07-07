@@ -15,6 +15,8 @@ public abstract class BaseParserTest {
 
     protected final WebClient webClient = ConfiguredWebClient.getWebClient();
 
+    protected HtmlPage content;
+
     protected HtmlPage loadHtmlPage(String fileName) {
         try {
             var htmlString = readFileToString(fileName);

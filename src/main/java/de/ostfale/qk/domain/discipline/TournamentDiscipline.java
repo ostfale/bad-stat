@@ -8,23 +8,27 @@ import java.util.List;
 
 public class TournamentDiscipline implements Discipline {
 
-    protected final List<DisciplineMatch> eliminationMatches = new ArrayList<>();
-    protected final List<DisciplineMatch> groupMatches = new ArrayList<>();
+    private DisciplineInfo disciplineInfo;
 
-    protected AgeClass disciplineAgeClass = AgeClass.UOX;
-    protected DisciplineOrder disciplineOrder = DisciplineOrder.NO_ORDER;
+    private final List<DisciplineMatch> eliminationMatches = new ArrayList<>();
+    private final List<DisciplineMatch> groupMatches = new ArrayList<>();
 
     // provide discipline name (h5) and group name (for combined tournaments)
-    protected String disciplineName;
-    protected String groupName = "";
-    protected DisciplineType disciplineType;
+    private String disciplineName ="";
+    private String groupName = "";
 
     public TournamentDiscipline() {
     }
 
     @Override
+    public DisciplineInfo getDisciplineInfo() {
+        return disciplineInfo;
+    }
+
+    @JsonIgnore
+    @Override
     public DisciplineType getDisciplineType() {
-        return disciplineType;
+        return disciplineInfo.disciplineType() != null ? disciplineInfo.disciplineType() : null;
     }
 
     @JsonIgnore
@@ -43,12 +47,6 @@ public class TournamentDiscipline implements Discipline {
     @Override
     public boolean hasMatches() {
         return hasEliminationMatches() || hasGroupMatches();
-    }
-
-    @JsonIgnore
-    @Override
-    public DisciplineOrder getDisciplineOrder() {
-        return disciplineOrder;
     }
 
     @Override
@@ -71,17 +69,21 @@ public class TournamentDiscipline implements Discipline {
         groupMatches.add(match);
     }
 
-
-    public void setDisciplineOrder(DisciplineOrder disciplineOrder) {
-        this.disciplineOrder = disciplineOrder;
+    public void setDisciplineInfo(DisciplineInfo disciplineInfo) {
+        this.disciplineInfo = disciplineInfo;
     }
 
+    @JsonIgnore
     public AgeClass getDisciplineAgeClass() {
-        return disciplineAgeClass;
+        return disciplineInfo.ageClass();
     }
 
-    public void setDisciplineAgeClass(AgeClass disciplineAgeClass) {
-        this.disciplineAgeClass = disciplineAgeClass;
+    public void setDisciplineName(String disciplineName) {
+        this.disciplineName = disciplineName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public String getDisciplineName() {

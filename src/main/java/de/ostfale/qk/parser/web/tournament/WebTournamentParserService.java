@@ -5,14 +5,14 @@ import de.ostfale.qk.domain.tournament.TournamentInfo;
 import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.web.discipline.WebDisciplineParserService;
 import io.quarkus.logging.Log;
-import jakarta.inject.Singleton;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class WebTournamentParserService implements WebTournamentParser {
 
     // TODO separate interfaces

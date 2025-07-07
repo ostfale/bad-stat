@@ -10,7 +10,7 @@ class WebDisciplineParserServiceTest extends BaseParserTest {
 
     private WebDisciplineParserService sut;
 
-  /*  @BeforeEach
+ /*   @BeforeEach
     void setUp() {
         WebDisciplineInfoParserService webDisciplineInfoParserService = new WebDisciplineInfoParserService();
         MatchSetParserService matchSetParserService = new MatchSetParserService();
