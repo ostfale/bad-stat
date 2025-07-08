@@ -3,7 +3,7 @@ package de.ostfale.qk.domain.discipline;
 import java.util.Set;
 
 public enum DisciplineType {
-    SINGLE("Einzel"), DOUBLE("Doppel"), MIXED("Mixed");
+    SINGLE("Einzel"), DOUBLE("Doppel"), MIXED("Mixed"), UNKNOWN("Unbekannt");
 
     private static final Set<String> SINGLE_CODES = Set.of(
             "JE", "DE", "HE", "ME", "HE-A", "BS",

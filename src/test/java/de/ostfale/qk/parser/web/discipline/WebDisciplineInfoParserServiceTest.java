@@ -34,10 +34,35 @@ class WebDisciplineInfoParserServiceTest {
     })
     @DisplayName("Test extraction of age class and discipline from given header strings")
     void testDisciplineAgeClassAndTypeExtractionFromHeaderStrings(String phrase, String expectedDisciplineType, String expectedAgeClass) throws HtmlParserException {
-        // given
-
         // when
         DisciplineInfo result = sut.extractDisciplineHeaderInfo(phrase);
+        // then
+        assertAll("Test header string interpretation",
+                () -> assertThat(result.originalString()).isEqualTo(phrase),
+                () -> assertThat(result.disciplineType().getDisplayString()).isEqualTo(expectedDisciplineType),
+                () -> assertThat(result.ageClass().name()).isEqualTo(expectedAgeClass)
+        );
+    }
+
+    @ParameterizedTest(name = "Test extraction of age class and discipline from given subheader string {0}")
+    @CsvSource({
+            "ME U17, Einzel, U17",
+            "MD U19, Doppel, U19",
+            "MX U17 A,Mixed,U17",
+            "U19A Mixed,Mixed,U19",
+            "Gruppe B,Unbekannt,UOX",
+            "DD,Doppel,UOX",
+            "DE,Einzel,UOX",
+            "MX LK1,Mixed,UOX",
+            "Mixed Doubles,Mixed,UOX",
+            "Women's Doubles,Doppel,UOX",
+            "Women's Singles,Einzel,UOX",
+            "Mixed Doubles U15,Mixed,U15"
+    })
+    @DisplayName("Test extraction of age class and discipline from given sub header strings")
+    void testDisciplineAgeClassAndTypeExtractionFromSubHeaderStrings(String phrase, String expectedDisciplineType, String expectedAgeClass) throws HtmlParserException {
+        // when
+        DisciplineInfo result = sut.extractDisciplineSubHeaderInfo(phrase);
         // then
         assertAll("Test header string interpretation",
                 () -> assertThat(result.originalString()).isEqualTo(phrase),

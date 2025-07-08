@@ -1,6 +1,7 @@
 package de.ostfale.qk.parser.web.discipline;
 
 import de.ostfale.qk.domain.discipline.Discipline;
+import de.ostfale.qk.domain.discipline.DisciplineInfo;
 import de.ostfale.qk.domain.discipline.DisciplineType;
 import de.ostfale.qk.domain.discipline.TournamentDiscipline;
 import de.ostfale.qk.domain.match.DisciplineMatch;
@@ -33,6 +34,7 @@ public class WebDisciplineParserService implements WebDisciplineParser{
 
         List<HtmlElement> disciplineInfoElements = extractDisciplineInfo(moduleCardElement);
         List<HtmlElement> disciplineSubInfoElements = extractDisciplineSubString(moduleCardElement);
+        var disciplineSubInfos = extractSubHeaderInformation(disciplineSubInfoElements);
 
         if (disciplineInfoElements.size() == disciplineSubInfoElements.size()) {
             Log.debugf("WebDisciplineParser :: Pure elimination disciplines found for tournament: %s", tournament.getTournamentInfo().tournamentName());
@@ -41,6 +43,16 @@ public class WebDisciplineParserService implements WebDisciplineParser{
             Log.debugf("WebDisciplineParser :: Combined elimination disciplines found for tournament: %s", tournament.getTournamentInfo().tournamentName());
             parseCombinedMatches(tournament, moduleCardElement);
         }
+    }
+
+    private List<DisciplineInfo> extractSubHeaderInformation(List<HtmlElement> subHeaderElementList) throws HtmlParserException {
+        Log.debugf("WebDisciplineParser :: extract sub header information");
+        List<DisciplineInfo> disciplineInfos = new ArrayList<>();
+        for(HtmlElement subHeaderElement : subHeaderElementList) {
+            var subHeaderInfo = webDisciplineInfoParserService.extractDisciplineSubHeaderInfo(subHeaderElement.asNormalizedText());
+            disciplineInfos.add(subHeaderInfo);
+        }
+        return disciplineInfos;
     }
 
     private List<TournamentDiscipline> extractAllDisciplinesWithInfo(HtmlElement moduleCardElement) throws HtmlParserException {

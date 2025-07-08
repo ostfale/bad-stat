@@ -20,10 +20,12 @@ import static de.ostfale.qk.domain.discipline.DisciplineType.*;
 public class WebDisciplineInfoParserService implements WebDisciplineParser {
 
     private static final String EMPTY_STRING = "";
+    private static final String GROUP_STRING = "Gruppe";
     private static final String SPLIT_DELIMITER = "\\s+";
     private static final int EXPECTED_DISCIPLINE_PARTS = 3;
     private static final int TOO_LONG_TOKEN_FOR_DISCIPLINE = 5;
     private static final int TOO_SHORT_TOKEN_FOR_DISCIPLINE = 2;
+    private static final int SUBHEADER_DEFAULT_TOKEN_NUMBER = 2;
     private static final String[] AGE_GROUP_PREFIXES = {"U", "O"};
     private static final Set<String> AGE_CATEGORY_PREFIXES = Set.of("U", "O");
 
@@ -47,11 +49,38 @@ public class WebDisciplineInfoParserService implements WebDisciplineParser {
 
         if (splitToken.length >= EXPECTED_DISCIPLINE_PARTS && !containsHyphen(splitToken)) {
             Log.debugf("WebDisciplineInfoParser :: Parse discipline infos with %d parts ", splitToken.length);
-            DisciplineAndAge disciplineAndAge = parseStandardDisciplineInfos(splitToken);
+            DisciplineAndAge disciplineAndAge = parseStandardDisciplineInfos(splitToken[1], splitToken[2]);
             return new DisciplineInfo(disciplineInfoString, disciplineAndAge.ageClass(), disciplineAndAge.disciplineType());
         }
         var errorMessage = String.format("Invalid discipline age format : %s (read from string)", disciplineInfoString);
         throw new HtmlParserException(ParsedComponent.DISCIPLINE_INFO, errorMessage);
+    }
+
+    public DisciplineInfo extractDisciplineSubHeaderInfo(String disciplineSubstring) throws HtmlParserException {
+        Log.infof("WebDisciplineInfoParser :: Parse discipline header format: %s", disciplineSubstring);
+
+        if (disciplineSubstring.startsWith(GROUP_STRING)) {
+            Log.debugf("WebDisciplineInfoParser :: Parse discipline infos with group string: %s", disciplineSubstring);
+            return new DisciplineInfo(disciplineSubstring);
+        }
+
+        String[] splitToken = disciplineSubstring.split(SPLIT_DELIMITER);
+
+        var result = checkTokenAgainstSubHeaderMap(disciplineSubstring);
+        if (result != null) {
+            Log.infof("WebDisciplineInfoParser :: Found discipline info in map: %s", result);
+            return result;
+        }
+
+        if (splitToken.length >= SUBHEADER_DEFAULT_TOKEN_NUMBER) {
+            var disciplineAndAge = parseStandardDisciplineInfos(splitToken[0], splitToken[1]);
+            return new DisciplineInfo(disciplineSubstring, disciplineAndAge.ageClass(), disciplineAndAge.disciplineType());
+        }
+
+
+        var errorMessage = String.format("Invalid discipline subheader format : %s", disciplineSubstring);
+        throw new HtmlParserException(ParsedComponent.DISCIPLINE_SUB_INFO, errorMessage);
+
     }
 
     private String[] fixAndSplitHeaderToken(String headerToken) {
@@ -59,17 +88,25 @@ public class WebDisciplineInfoParserService implements WebDisciplineParser {
         return result.split(SPLIT_DELIMITER);
     }
 
-    private DisciplineAndAge parseStandardDisciplineInfos(String[] disciplineParts) {
-        Log.debugf("WebDisciplineInfoParser :: Parse standard discipline infos with %S parts ", String.join(" ", disciplineParts));
-        if (startsWithAgeGroupPrefix(disciplineParts[2])) {
-            var ageToken = AgeClass.fromString(disciplineParts[2]);
-            var discToken = DisciplineType.lookup(disciplineParts[1]);
+    private DisciplineAndAge parseStandardDisciplineInfos(String firstDisciplinePart, String secondDisciplinePart) {
+        Log.debugf("WebDisciplineInfoParser :: Parse standard discipline infos with %S parts ", firstDisciplinePart + " " + secondDisciplinePart);
+        if (startsWithAgeGroupPrefix(secondDisciplinePart)) {
+            var ageToken = AgeClass.fromString(secondDisciplinePart);
+            var discToken = DisciplineType.lookup(firstDisciplinePart);
             return new DisciplineAndAge(discToken, ageToken);
         } else {
-            var ageToken = AgeClass.fromString(disciplineParts[1]);
-            var discToken = DisciplineType.lookup(disciplineParts[2]);
+            var ageToken = AgeClass.fromString(firstDisciplinePart);
+            var discToken = DisciplineType.lookup(secondDisciplinePart);
             return new DisciplineAndAge(discToken, ageToken);
         }
+    }
+
+    private DisciplineInfo checkTokenAgainstSubHeaderMap(String token) {
+        var result = DISCIPLINE_SUB_HEADER_MAPPING.get(token);
+        if (result != null) {
+            return new DisciplineInfo(token, result.ageClass(), result.disciplineType());
+        }
+        return null;
     }
 
     private DisciplineInfo checkTokenAgainstMap(String token) {
