@@ -33,7 +33,8 @@ public class WebTournamentParserService implements WebTournamentParser {
         for (HtmlElement moduleCard : tournamentElements) {
             TournamentInfo tournamentInfo = tournamentInfoParser.parseTournamentInfo(moduleCard);
             var tournament = new Tournament(tournamentInfo);
-            webDisciplineParserService.parseDisciplines(tournament,moduleCard);
+            var result = webDisciplineParserService.parseTournamentDisciplines(moduleCard);
+            tournament.getDisciplines().addAll(result);
             allTournaments.add(tournament);
         }
         return allTournaments;

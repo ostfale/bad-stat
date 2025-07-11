@@ -46,6 +46,19 @@ public interface WebDisciplineParser extends BaseParser {
         return moduleCard.getByXPath(DISCIPLINE_DISPLAY_STRING_ELEMENT);
     }
 
+    String DISCIPLINE_ALL_MATCHES = ".//ol[contains(@class, 'match-group')]";
+
+    /**
+     * Within a moduleCard element there are also elements ('match-groups') which contain a group of matches for this discipline in
+     * an elimination phase or group matches within a group phase before the elimination
+     *
+     * @param moduleCard a HtmlElement representing the tournament's matches
+     * @return a list of HtmlElements which represents each a group of matches for a discipline of group
+     */
+    default List<HtmlElement> extractAllDisciplinesMatchElements(HtmlElement moduleCard) {
+        Log.debug("HtmlStructureParser :: Parsing all disciplines and return container with all matches for all disciplines (whole tournament");
+        return moduleCard.getByXPath(DISCIPLINE_ALL_MATCHES);
+    }
 
     Map<String, DisciplineMapping> DISCIPLINE_SUB_HEADER_MAPPING = Map.ofEntries(
             Map.entry("DD", new DisciplineMapping(DOUBLE, UOX)),
