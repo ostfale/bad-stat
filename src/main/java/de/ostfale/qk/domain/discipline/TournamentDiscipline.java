@@ -43,12 +43,6 @@ public class TournamentDiscipline implements Discipline {
         return !groupMatches.isEmpty();
     }
 
-    @JsonIgnore
-    @Override
-    public boolean hasMatches() {
-        return hasEliminationMatches() || hasGroupMatches();
-    }
-
     @Override
     public List<DisciplineMatch> getEliminationMatches() {
         return eliminationMatches;
@@ -57,16 +51,6 @@ public class TournamentDiscipline implements Discipline {
     @Override
     public List<DisciplineMatch> getGroupMatches() {
         return groupMatches;
-    }
-
-    @JsonIgnore
-    public void addEliminationMatch(DisciplineMatch match) {
-        eliminationMatches.add(match);
-    }
-
-    @JsonIgnore
-    public void addGroupMatch(DisciplineMatch match) {
-        groupMatches.add(match);
     }
 
     public void setDisciplineInfo(DisciplineInfo disciplineInfo) {
@@ -90,6 +74,7 @@ public class TournamentDiscipline implements Discipline {
         return disciplineName;
     }
 
+    @Override
     public String getGroupName() {
         return groupName;
     }

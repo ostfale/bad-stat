@@ -27,7 +27,7 @@ class WebDisciplineInfoParserServiceTest {
             "Konkurrenz: MX-U17 A, Mixed, U17",
             "Konkurrenz: ME U15, Einzel, U15",
             "Konkurrenz: U19A Mixed,Mixed,U19",
-            "Konkurrenz: DD,Doppel,UOX",
+            "DD,Doppel,UOX",
             "Konkurrenz: Mixed Doubles,Mixed,UOX",
             "Konkurrenz: MX U15 A,Mixed,U15",
             "Konkurrenz: Mixed Doubles U15,Mixed,U15"
@@ -36,6 +36,7 @@ class WebDisciplineInfoParserServiceTest {
     void testDisciplineAgeClassAndTypeExtractionFromHeaderStrings(String phrase, String expectedDisciplineType, String expectedAgeClass) throws HtmlParserException {
         // when
         DisciplineInfo result = sut.extractDisciplineHeaderInfo(phrase);
+
         // then
         assertAll("Test header string interpretation",
                 () -> assertThat(result.originalString()).isEqualTo(phrase),
@@ -63,6 +64,7 @@ class WebDisciplineInfoParserServiceTest {
     void testDisciplineAgeClassAndTypeExtractionFromSubHeaderStrings(String phrase, String expectedDisciplineType, String expectedAgeClass) throws HtmlParserException {
         // when
         DisciplineInfo result = sut.extractDisciplineSubHeaderInfo(phrase);
+
         // then
         assertAll("Test header string interpretation",
                 () -> assertThat(result.originalString()).isEqualTo(phrase),

@@ -14,6 +14,7 @@ import java.util.List;
 public class TournamentModelToUIConverter implements Converter<Tournament, PlayerMatchStatisticsUIModel> {
 
     private static final String EMPTY_STRING = "";
+    private static final String GROUP_FORMAT = "%s (%s)";
 
     @Override
     public PlayerMatchStatisticsUIModel convertTo(Tournament tournament) {
@@ -22,22 +23,42 @@ public class TournamentModelToUIConverter implements Converter<Tournament, Playe
         uiModel.setTournamentName(tournament.getTournamentInfo().tournamentName());
         uiModel.setTournamentLocation(tournament.getTournamentInfo().tournamentLocation());
         uiModel.setTournamentDate(tournament.getTournamentInfo().tournamentDate());
-    //    tournament.getDisciplinesSortedByOrder().forEach(discipline -> convertTo(discipline, uiModel));
+        tournament.getDisciplines().forEach(discipline -> convertTo(discipline, uiModel));
         return uiModel;
     }
 
+
     private void convertTo(Discipline discipline, PlayerMatchStatisticsUIModel uiModel) {
-        Log.trace("TournamentModelToUIConverter :: Convert domain discipline model to UI model");
+        Log.trace("TournamentModelToUIConverter :: Converting discipline model to UI model");
+        String baseDisciplineName = discipline.getDisciplineType().getDisplayString();
+
         if (discipline.hasEliminationMatches()) {
-            Log.trace("TournamentModelToUIConverter :: Convert domain discipline model to UI model with elimination matches");
-            String disciplineName = discipline.getDisciplineType().getDisplayString();
-            List<DisciplineMatch> eliminationMatches = discipline.getEliminationMatches();
-            for (Match match : eliminationMatches) {
-                if (match instanceof DisciplineMatch disciplineMatch) {
-                    uiModel.getMatchDetails().add(convertTo(disciplineMatch, disciplineName));
-                } else {
-                    Log.warnf("TournamentModelToUIConverter :: Match is not a discipline match: %s", match.getClass().getName());
-                }
+            processMatches(discipline.getEliminationMatches(), baseDisciplineName, uiModel);
+        }
+
+        if (discipline.hasGroupMatches()) {
+            String disciplineName = formatDisciplineNameWithGroup(baseDisciplineName, discipline.getGroupName());
+            processMatches(discipline.getGroupMatches(), disciplineName, uiModel);
+        }
+    }
+
+    private String formatDisciplineNameWithGroup(String disciplineName, String groupName) {
+        return groupName.isEmpty() ? disciplineName :
+                String.format(GROUP_FORMAT, disciplineName, groupName);
+    }
+
+    private void processMatches(List<DisciplineMatch> matches, String disciplineName, PlayerMatchStatisticsUIModel uiModel) {
+        Log.tracef("TournamentModelToUIConverter :: Processing %d matches for discipline: %s", matches.size(), disciplineName);
+        convertMatches(uiModel, matches, disciplineName);
+    }
+
+
+    private void convertMatches(PlayerMatchStatisticsUIModel uiModel, List<DisciplineMatch> matchList, String disciplineName) {
+        for (Match match : matchList) {
+            if (match instanceof DisciplineMatch disciplineMatch) {
+                uiModel.getMatchDetails().add(convertTo(disciplineMatch, disciplineName));
+            } else {
+                Log.warnf("TournamentModelToUIConverter :: Match is not a discipline match: %s", match.getClass().getName());
             }
         }
     }

@@ -1,44 +1,43 @@
 package de.ostfale.qk.parser.web.tournament;
 
 import de.ostfale.qk.parser.BaseParserTest;
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-import org.htmlunit.html.HtmlElement;
+import de.ostfale.qk.parser.HtmlParserException;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-@QuarkusTest
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 @DisplayName("Test web tournament parser for a yearly tournament collection")
 class WebTournamentParserServiceTest extends BaseParserTest {
 
     private static final String TEST_FILE_NAME = "tournaments/Tournaments2025VB.html";
 
-    @Inject
     WebTournamentParserService sut;
 
-    private HtmlElement content;
+    private HtmlPage page;
 
     @BeforeEach
     void setUp() {
-        HtmlPage page = loadHtmlPage(TEST_FILE_NAME);
-        content = page.getActiveElement();
+        page = loadHtmlPage(TEST_FILE_NAME);
+        sut = prepareWebTournamentParser();
     }
 
-/*    @Test
+    @Test
     @DisplayName("Test parsing all tournaments for a year")
     void testParseAllTournaments() throws HtmlParserException {
         // given
         var expectedNumberOfTournaments = 9;
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(content);
+        var result = sut.parseAllYearlyTournamentsForPlayer(page);
 
         // then
         assertThat(result.size()).isEqualTo(expectedNumberOfTournaments);
     }
 
-    @Test
+ /*   @Test
     @DisplayName("Test Discipline header information for age class")
     void testDisciplineHeaders() throws HtmlParserException{
         // when

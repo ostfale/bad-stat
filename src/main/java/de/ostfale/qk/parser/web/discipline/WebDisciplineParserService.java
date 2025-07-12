@@ -26,56 +26,52 @@ public class WebDisciplineParserService implements WebDisciplineParser {
 
     public List<TournamentDiscipline> parseTournamentDisciplines(HtmlElement moduleCardElement) throws HtmlParserException {
         Log.debugf("WebDisciplineParser :: parse tournament matches for all disciplines");
+        DisciplineType currentDisciplineType;
 
-        List<TournamentDiscipline> tournamentDisciplines = extractAllDisciplinesWithInfo(moduleCardElement);
-        List<DisciplineInfo> disciplineSubInfoList = extractSubHeaderInformation(extractDisciplineSubString(moduleCardElement));
+        List<HtmlElement> disciplineSubInfoElements = extractDisciplineSubString(moduleCardElement);
         List<HtmlElement> disciplineMatchesList = extractAllDisciplinesMatchElements(moduleCardElement);
 
-        for (int currentIndex = 0; currentIndex < tournamentDisciplines.size(); currentIndex++) {
-            processDiscipline(
-                    tournamentDisciplines.get(currentIndex),
-                    disciplineSubInfoList,
-                    disciplineMatchesList,
-                    currentIndex
-            );
+        List<TournamentDiscipline> tournamentDisciplines = extractAllDisciplinesWithInfo(moduleCardElement);
+        List<DisciplineInfo> disciplineSubInfoList = extractSubHeaderInformation(disciplineSubInfoElements);
+
+        for (int disciplineIndex = 0; disciplineIndex < tournamentDisciplines.size(); disciplineIndex++) {
+            TournamentDiscipline currentTournamentDiscipline = tournamentDisciplines.get(disciplineIndex);
+            currentDisciplineType = tournamentDisciplines.get(disciplineIndex).getDisciplineType();
+            Log.debugf("WebDisciplineParserService :: parse tournament matches for discipline type %s", currentDisciplineType.name());
+
+            DisciplineInfo currentDisciplineSubInfo = disciplineSubInfoList.get(disciplineIndex);
+            DisciplineInfo nextDisciplineSubInfo;
+            int nextDisciplineIndex = disciplineIndex + 1;
+            if (nextDisciplineIndex < disciplineSubInfoList.size()) {
+                Log.debugf("WebDisciplineParserService :: found next sub info type %s", currentDisciplineType.name());
+                nextDisciplineSubInfo = disciplineSubInfoList.get(disciplineIndex + 1);
+            } else {
+                Log.debugf("WebDisciplineParserService :: no next sub info type found");
+                nextDisciplineSubInfo = null;
+            }
+
+            /* Start parsing the matches and differentiate between elimination and group matches  */
+
+            // first case (default): general discipline type is the same as subheader discipline type
+            if (currentDisciplineType == currentDisciplineSubInfo.disciplineType()) {
+                Log.debugf("WebDisciplineParserService :: current discipline type is the same as subheader discipline type -> %s", currentDisciplineType.name());
+                currentTournamentDiscipline.setDisciplineName(currentDisciplineSubInfo.originalString());
+                var disciplineMatchGroupElement = disciplineMatchesList.get(disciplineIndex);
+                var matches = processMatches(currentDisciplineType, disciplineMatchGroupElement);
+                currentTournamentDiscipline.getEliminationMatches().addAll(matches);
+            }
+
+            // check if next subheader is  a group match -> discipline type will stay the same
+            if (nextDisciplineSubInfo != null && nextDisciplineSubInfo.isGroupSubHeader()) {
+                Log.debugf("WebDisciplineParserService :: next discipline type is the same as subheader discipline type -> %s", nextDisciplineSubInfo.disciplineType().name());
+                currentTournamentDiscipline.setDisciplineName(currentDisciplineSubInfo.originalString());
+                currentTournamentDiscipline.setGroupName(nextDisciplineSubInfo.originalString());
+                var disciplineMatchGroupElement = disciplineMatchesList.get(nextDisciplineIndex);
+                var matches = processMatches(currentDisciplineType, disciplineMatchGroupElement);
+                currentTournamentDiscipline.getGroupMatches().addAll(matches);
+            }
         }
         return tournamentDisciplines;
-    }
-
-    private void processDiscipline(TournamentDiscipline discipline, List<DisciplineInfo> disciplineSubInfoList, List<HtmlElement> disciplineMatchesList, int currentIndex) {
-        DisciplineType disciplineType = discipline.getDisciplineType();
-        Log.debugf("Processing discipline type: %s", disciplineType.name());
-
-        DisciplineInfo currentSubInfo = disciplineSubInfoList.get(currentIndex);
-        DisciplineInfo nextSubInfo = getNextDisciplineSubInfo(disciplineSubInfoList, currentIndex);
-
-        processEliminationMatches(discipline, disciplineType, currentSubInfo, disciplineMatchesList.get(currentIndex));
-        processGroupMatches(discipline, disciplineType, currentSubInfo, nextSubInfo, disciplineMatchesList, currentIndex);
-    }
-
-    private void processEliminationMatches(TournamentDiscipline discipline, DisciplineType disciplineType, DisciplineInfo currentSubInfo, HtmlElement matchElement) {
-        if (disciplineType == currentSubInfo.disciplineType()) {
-            Log.debugf("Processing elimination matches for: %s", disciplineType.name());
-            discipline.setDisciplineName(currentSubInfo.originalString());
-            discipline.getEliminationMatches().addAll(processMatches(disciplineType, matchElement));
-        }
-    }
-
-    private void processGroupMatches(TournamentDiscipline discipline, DisciplineType disciplineType, DisciplineInfo currentSubInfo,
-                                     DisciplineInfo nextSubInfo, List<HtmlElement> matchesList, int currentIndex) {
-        if (nextSubInfo != null && nextSubInfo.isGroupSubHeader()) {
-            Log.debugf("Processing group matches for: %s", disciplineType.name());
-            discipline.setDisciplineName(currentSubInfo.originalString());
-            discipline.setGroupName(nextSubInfo.originalString());
-
-            var groupMatchElement = matchesList.get(currentIndex + 1);
-            discipline.getGroupMatches().addAll(processMatches(disciplineType, groupMatchElement));
-        }
-    }
-
-    private DisciplineInfo getNextDisciplineSubInfo(List<DisciplineInfo> subInfoList, int currentIndex) {
-        int nextIndex = currentIndex + 1;
-        return nextIndex < subInfoList.size() ? subInfoList.get(nextIndex) : null;
     }
 
 

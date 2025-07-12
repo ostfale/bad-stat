@@ -114,6 +114,13 @@ public class WebDisciplineInfoParserService implements WebDisciplineParser {
         if (result != null) {
             return new DisciplineInfo(token, result.ageClass, result.disciplineType);
         }
+
+        String fixedToken = token.replace("Konkurrenz:", EMPTY_STRING).trim();
+        var foundMapping = DISCIPLINE_SUB_HEADER_MAPPING.get(fixedToken);
+        if (foundMapping != null) {
+            return new DisciplineInfo(fixedToken, foundMapping.ageClass(), foundMapping.disciplineType());
+        }
+
         return null;
     }
 

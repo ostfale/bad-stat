@@ -35,6 +35,11 @@ public class DisciplineMatch implements Match {
     }
 
     @JsonIgnore
+    public String prepareRoundNameForGroupMatch(String groupName) {
+        return roundName + " (" + groupName + ")";
+    }
+
+    @JsonIgnore
     @Override
     public String getSecondPlayerOrWithPartnerName() {
         if (partnerTwoName != null) {

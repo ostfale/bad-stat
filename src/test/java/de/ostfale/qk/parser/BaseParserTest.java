@@ -1,5 +1,12 @@
 package de.ostfale.qk.parser;
 
+import de.ostfale.qk.parser.web.discipline.WebDisciplineInfoParserService;
+import de.ostfale.qk.parser.web.discipline.WebDisciplineParserService;
+import de.ostfale.qk.parser.web.match.WebMatchParserService;
+import de.ostfale.qk.parser.web.player.MatchPlayerParserService;
+import de.ostfale.qk.parser.web.set.MatchSetParserService;
+import de.ostfale.qk.parser.web.tournament.WebTournamentInfoParser;
+import de.ostfale.qk.parser.web.tournament.WebTournamentParserService;
 import de.ostfale.qk.web.common.ConfiguredWebClient;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlPage;
@@ -35,5 +42,20 @@ public abstract class BaseParserTest {
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = Objects.requireNonNull(classLoader.getResource(fileName), "file not found! " + fileName);
         return new File(resource.toURI());
+    }
+
+
+    protected WebTournamentParserService prepareWebTournamentParser() {
+
+        MatchSetParserService matchSetParserService = new MatchSetParserService();
+        MatchPlayerParserService matchPlayerParserService = new MatchPlayerParserService();
+
+        WebMatchParserService webMatchParserService = new WebMatchParserService(matchSetParserService, matchPlayerParserService);
+        WebDisciplineInfoParserService webDisciplineInfoParserService = new WebDisciplineInfoParserService();
+
+        WebDisciplineParserService webDisciplineParserService = new WebDisciplineParserService(webDisciplineInfoParserService,webMatchParserService);
+        WebTournamentInfoParser webTournamentInfoParser = new WebTournamentInfoParser();
+
+        return new WebTournamentParserService(webTournamentInfoParser,webDisciplineParserService);
     }
 }

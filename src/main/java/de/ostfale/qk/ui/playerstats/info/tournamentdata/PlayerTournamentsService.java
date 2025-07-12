@@ -45,7 +45,6 @@ public class PlayerTournamentsService {
         playerTournamentMatchesJsonHandler.saveToFile(tournamentYearWrapper);
     }
 
-
     public List<PlayerMatchStatisticsUIModel> readPlayerTournamentsForLastFourYears(PlayerInfoDTO player) {
         Log.debugf("PlayerTournamentsService ::Reading tournaments for player %s for last four years", player.toString());
         var playerMasterData = player.getPlayerInfoMasterDataDTO();
@@ -67,11 +66,7 @@ public class PlayerTournamentsService {
                 .toList();
     }
 
-
     private List<Tournament> fetchTournamentsFromWebService(int year, String playerTournamentId) {
-        // return tournamentWebService.getTournamentsForYearAndPlayer(year, playerTournamentId);
         return tournamentWebService.scrapeAllTournamentsForPlayerAndYear(year, playerTournamentId);
     }
-
-
 }

@@ -12,11 +12,10 @@ public interface Discipline {
 
     DisciplineType getDisciplineType();
 
-    void addEliminationMatch(DisciplineMatch match);
+    String getGroupName();
+
 
 //  check
-
-    boolean hasMatches();
 
     boolean hasEliminationMatches();
 

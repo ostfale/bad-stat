@@ -13,7 +13,6 @@ import org.htmlunit.html.HtmlElement;
 public class WebMatchParserService implements WebMatchParser, BaseParser {
 
     private final MatchSetParserService matchSetParserService;
-
     private final MatchPlayerParserService matchPlayerParserService;
 
     public WebMatchParserService( MatchSetParserService matchSetParserService, MatchPlayerParserService matchPlayerParserService) {

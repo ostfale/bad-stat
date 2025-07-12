@@ -31,7 +31,7 @@ public interface WebDisciplineParser extends BaseParser {
         return disciplines;
     }
 
-    String DISCIPLINE_DISPLAY_STRING_ELEMENT = "//h5[contains(@class, 'module-divider')]";
+    String DISCIPLINE_DISPLAY_STRING_ELEMENT = ".//h5[contains(@class, 'module-divider')]";
 
     /**
      * A discipline can have a group phase which is the second sequence after the elimination phase
@@ -60,6 +60,7 @@ public interface WebDisciplineParser extends BaseParser {
         return moduleCard.getByXPath(DISCIPLINE_ALL_MATCHES);
     }
 
+    // TODO use only one map and integrate map from parser
     Map<String, DisciplineMapping> DISCIPLINE_SUB_HEADER_MAPPING = Map.ofEntries(
             Map.entry("DD", new DisciplineMapping(DOUBLE, UOX)),
             Map.entry("DE", new DisciplineMapping(SINGLE, UOX)),
