@@ -9,12 +9,9 @@ import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
-import static de.ostfale.qk.domain.discipline.AgeClass.*;
-import static de.ostfale.qk.domain.discipline.DisciplineType.*;
+import static de.ostfale.qk.domain.discipline.AgeClass.UOX;
 
 @ApplicationScoped
 public class WebDisciplineInfoParserService implements WebDisciplineParser {
@@ -110,17 +107,11 @@ public class WebDisciplineInfoParserService implements WebDisciplineParser {
     }
 
     private DisciplineInfo checkTokenAgainstMap(String token) {
-        var result = IRREGULAR_DISC_AGE.get(token);
-        if (result != null) {
-            return new DisciplineInfo(token, result.ageClass, result.disciplineType);
-        }
-
         String fixedToken = token.replace("Konkurrenz:", EMPTY_STRING).trim();
         var foundMapping = DISCIPLINE_SUB_HEADER_MAPPING.get(fixedToken);
         if (foundMapping != null) {
             return new DisciplineInfo(fixedToken, foundMapping.ageClass(), foundMapping.disciplineType());
         }
-
         return null;
     }
 
@@ -141,57 +132,6 @@ public class WebDisciplineInfoParserService implements WebDisciplineParser {
     private boolean tokenWithoutSpaces(String[] tokens) {
         return (tokens[1].length() == TOO_LONG_TOKEN_FOR_DISCIPLINE && hasAgeCategoryPrefix(tokens));
     }
-
-    static final Map<String, DisciplineAndAge> IRREGULAR_DISC_AGE = new HashMap<>() {{
-        put("Konkurrenz: JE-U9 A", new DisciplineAndAge(SINGLE, U9));
-        put("Konkurrenz: ME-U9 A", new DisciplineAndAge(SINGLE, U9));
-
-        put("Konkurrenz: JE-U11 A", new DisciplineAndAge(SINGLE, U11));
-        put("Konkurrenz: ME-U11 A", new DisciplineAndAge(SINGLE, U11));
-        put("Konkurrenz: MD-U11 A", new DisciplineAndAge(DOUBLE, U11));
-        put("Konkurrenz: JD-U11 A", new DisciplineAndAge(DOUBLE, U11));
-
-        put("Konkurrenz: JE-U13 A", new DisciplineAndAge(SINGLE, U13));
-        put("Konkurrenz: ME-U13 A", new DisciplineAndAge(SINGLE, U13));
-        put("Konkurrenz: U13B Mädcheneinzel", new DisciplineAndAge(SINGLE, U13));
-        put("Konkurrenz: MD-U13 A", new DisciplineAndAge(DOUBLE, U13));
-        put("Konkurrenz: JD-U13 A", new DisciplineAndAge(DOUBLE, U13));
-        put("Konkurrenz: MX-U13 A", new DisciplineAndAge(MIXED, U13));
-
-        put("Konkurrenz: JE-U15 A", new DisciplineAndAge(SINGLE, U15));
-        put("Konkurrenz: U15B Jungeneinzel", new DisciplineAndAge(SINGLE, U15));
-        put("Konkurrenz: JD-U15 A", new DisciplineAndAge(DOUBLE, U15));
-        put("Konkurrenz: MD-U15 A", new DisciplineAndAge(DOUBLE, U15));
-        put("Konkurrenz: Mixed Doubles U15", new DisciplineAndAge(MIXED, U15));
-        put("Konkurrenz: Girls Doubles U15", new DisciplineAndAge(DOUBLE, U15));
-        put("Konkurrenz: Boys Doubles U15", new DisciplineAndAge(DOUBLE, U15));
-        put("Konkurrenz: Girls Singles U15", new DisciplineAndAge(SINGLE, U15));
-        put("Konkurrenz: Boys Singles U15", new DisciplineAndAge(SINGLE, U15));
-
-        put("Konkurrenz: HE-U17 A", new DisciplineAndAge(SINGLE, U17));
-        put("Konkurrenz: DE-U17 A", new DisciplineAndAge(SINGLE, U17));
-        put("Konkurrenz: HD-U17 A", new DisciplineAndAge(DOUBLE, U17));
-        put("Konkurrenz: DD-U17 A", new DisciplineAndAge(DOUBLE, U17));
-        put("Konkurrenz: MX-U17 A", new DisciplineAndAge(MIXED, U17));
-
-        put("Konkurrenz: HE-U19 A", new DisciplineAndAge(SINGLE, U19));
-        put("Konkurrenz: DE-U19 A", new DisciplineAndAge(SINGLE, U19));
-        put("Konkurrenz: HD-U19 A", new DisciplineAndAge(DOUBLE, U19));
-        put("Konkurrenz: DD-U19 A", new DisciplineAndAge(DOUBLE, U19));
-        put("Konkurrenz: MX-U19 A", new DisciplineAndAge(MIXED, U19));
-
-        put("Konkurrenz: HE-U22 A", new DisciplineAndAge(SINGLE, U22));
-        put("Konkurrenz: DE-U22 A", new DisciplineAndAge(SINGLE, U22));
-        put("Konkurrenz: HD-U22 A", new DisciplineAndAge(DOUBLE, U22));
-        put("Konkurrenz: DD-U22 A", new DisciplineAndAge(DOUBLE, U22));
-        put("Konkurrenz: MX-U22 A", new DisciplineAndAge(MIXED, U22));
-
-        put("Konkurrenz: Mixed Doubles", new DisciplineAndAge(MIXED, UOX));
-        put("Konkurrenz: Men's Singles", new DisciplineAndAge(SINGLE, UOX));
-        put("Konkurrenz: Men's Doubles", new DisciplineAndAge(DOUBLE, UOX));
-        put("Konkurrenz: Women's Singles", new DisciplineAndAge(SINGLE, UOX));
-        put("Konkurrenz: Women's Doubles", new DisciplineAndAge(DOUBLE, UOX));
-    }};
 
     private record DisciplineAndAge(DisciplineType disciplineType, AgeClass ageClass) {
     }

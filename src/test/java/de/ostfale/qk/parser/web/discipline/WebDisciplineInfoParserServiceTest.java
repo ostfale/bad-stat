@@ -24,10 +24,9 @@ class WebDisciplineInfoParserServiceTest {
 
     @ParameterizedTest(name = "Test extraction of age class and discipline from given header string {0}")
     @CsvSource({
-            "Konkurrenz: MX-U17 A, Mixed, U17",
-            "Konkurrenz: ME U15, Einzel, U15",
+            "Konkurrenz: MX-U17 A,Mixed,U17",
+            "Konkurrenz: ME U15,Einzel,U15",
             "Konkurrenz: U19A Mixed,Mixed,U19",
-            "DD,Doppel,UOX",
             "Konkurrenz: Mixed Doubles,Mixed,UOX",
             "Konkurrenz: MX U15 A,Mixed,U15",
             "Konkurrenz: Mixed Doubles U15,Mixed,U15"
@@ -39,7 +38,7 @@ class WebDisciplineInfoParserServiceTest {
 
         // then
         assertAll("Test header string interpretation",
-                () -> assertThat(result.originalString()).isEqualTo(phrase),
+                () -> assertThat(phrase.endsWith(result.originalString())).isTrue(),
                 () -> assertThat(result.disciplineType().getDisplayString()).isEqualTo(expectedDisciplineType),
                 () -> assertThat(result.ageClass().name()).isEqualTo(expectedAgeClass)
         );

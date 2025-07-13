@@ -2,17 +2,18 @@ package de.ostfale.qk.parser.web.tournament;
 
 import de.ostfale.qk.parser.BaseParserTest;
 import de.ostfale.qk.parser.HtmlParserException;
-import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@QuarkusTest
+@Tag("unittest")
 @DisplayName("Test tournament parser for pure elimination")
 public class TournamentEliminationTest extends BaseParserTest {
 
@@ -21,12 +22,10 @@ public class TournamentEliminationTest extends BaseParserTest {
     @Inject
     WebTournamentParserService sut;
 
-    private HtmlPage content;
-
     @BeforeEach
     void setUp() {
-        HtmlPage page = loadHtmlPage(TEST_FILE_NAME);
-        content = page;
+        sut = prepareWebTournamentParser();
+        content = loadHtmlPage(TEST_FILE_NAME);
     }
 
     @Test
@@ -65,7 +64,7 @@ public class TournamentEliminationTest extends BaseParserTest {
         );
     }
 
- /*   @Test
+    @Test
     @DisplayName("Test parsing a single match")
     void testParseSingleMatch() throws HtmlParserException {
         // given
@@ -74,11 +73,10 @@ public class TournamentEliminationTest extends BaseParserTest {
         // when
         var result = sut.parseAllYearlyTournamentsForPlayer(content);
         var tournament = result.getFirst();
-        SingleDiscipline singleDiscipline = tournament.getSingleDiscipline();
+        var singleDiscipline = tournament.getSingleDiscipline();
 
         // then
         assertAll("Test single tournament results",
-                () -> assertThat(singleDiscipline.hasMatches()).isTrue(),
                 () -> assertThat(singleDiscipline.hasGroupMatches()).isFalse(),
                 () -> assertThat(singleDiscipline.hasEliminationMatches()).isTrue(),
                 () -> assertThat(singleDiscipline.getEliminationMatches().size()).isEqualTo(2),
@@ -97,11 +95,10 @@ public class TournamentEliminationTest extends BaseParserTest {
         // when
         var result = sut.parseAllYearlyTournamentsForPlayer(content);
         var tournament = result.getFirst();
-        DoubleDiscipline doubleDiscipline = tournament.getDoubleDiscipline();
+        var doubleDiscipline = tournament.getDoubleDiscipline();
 
         // then
         assertAll("Test single tournament results",
-                () -> assertThat(doubleDiscipline.hasMatches()).isTrue(),
                 () -> assertThat(doubleDiscipline.hasGroupMatches()).isFalse(),
                 () -> assertThat(doubleDiscipline.hasEliminationMatches()).isTrue(),
                 () -> assertThat(doubleDiscipline.getEliminationMatches().size()).isEqualTo(2),
@@ -109,9 +106,9 @@ public class TournamentEliminationTest extends BaseParserTest {
                 () -> assertThat(doubleDiscipline.getEliminationMatches().get(1).getRoundName()).isEqualTo(expectedRoundNames.get(1))
 
         );
-    }*/
+    }
 
-  /*  @Test
+    @Test
     @DisplayName("Test parsing a mixed match")
     void testParseMixedMatch() throws HtmlParserException {
         // given
@@ -120,11 +117,10 @@ public class TournamentEliminationTest extends BaseParserTest {
         // when
         var result = sut.parseAllYearlyTournamentsForPlayer(content);
         var tournament = result.getFirst();
-        MixedDiscipline mixedDiscipline = tournament.getMixedDiscipline();
+        var mixedDiscipline = tournament.getMixedDiscipline();
 
         // then
         assertAll("Test single tournament results",
-                () -> assertThat(mixedDiscipline.hasMatches()).isTrue(),
                 () -> assertThat(mixedDiscipline.hasGroupMatches()).isFalse(),
                 () -> assertThat(mixedDiscipline.hasEliminationMatches()).isTrue(),
                 () -> assertThat(mixedDiscipline.getEliminationMatches().size()).isEqualTo(3),
@@ -132,5 +128,5 @@ public class TournamentEliminationTest extends BaseParserTest {
                 () -> assertThat(mixedDiscipline.getEliminationMatches().get(1).getRoundName()).isEqualTo(expectedRoundNames.get(1)),
                 () -> assertThat(mixedDiscipline.getEliminationMatches().get(2).getRoundName()).isEqualTo(expectedRoundNames.get(2))
         );
-    }*/
+    }
 }

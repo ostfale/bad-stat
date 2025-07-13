@@ -3,17 +3,17 @@ package de.ostfale.qk.parser.web.tournament;
 
 import de.ostfale.qk.parser.BaseParserTest;
 import de.ostfale.qk.parser.HtmlParserException;
-import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@QuarkusTest
+@Tag("unittest")
 @DisplayName("Test tournament with elimination and  group matches for female single discipline")
 public class TournamentEliminationGroupTest extends BaseParserTest {
 
@@ -24,6 +24,7 @@ public class TournamentEliminationGroupTest extends BaseParserTest {
 
     @BeforeEach
     void setUp() {
+        sut = prepareWebTournamentParser();
         content = loadHtmlPage(TEST_FILE_NAME);
     }
 

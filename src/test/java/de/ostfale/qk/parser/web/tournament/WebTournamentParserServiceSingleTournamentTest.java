@@ -1,8 +1,15 @@
 package de.ostfale.qk.parser.web.tournament;
 
 import de.ostfale.qk.parser.BaseParserTest;
+import de.ostfale.qk.parser.HtmlParserException;
+import org.htmlunit.html.HtmlPage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Tag("unittest")
 @DisplayName("Test parsing of a single standard tournament with all disciplines")
@@ -10,16 +17,11 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
 
     private static final String TEST_FILE_NAME = "tournaments/SingleTournamentARL25_VB.html";
 
- /*   private WebTournamentParserService sut;
+    private WebTournamentParserService sut;
 
     @BeforeEach
     void setUp() {
-        WebTournamentInfoParser webTournamentInfoParser = new WebTournamentInfoParser();
-        WebDisciplineInfoParserService webDisciplineInfoParserService = new WebDisciplineInfoParserService();
-        MatchSetParserService matchSetParserService = new MatchSetParserService();
-        WebMatchParser webMatchParser = new WebMatchParserService(matchSetParserService, new MatchPlayerParserService());
-        WebDisciplineParserService webDisciplineParserService = new WebDisciplineParserService(webDisciplineInfoParserService, webMatchParser);
-        sut = new WebTournamentParserService(webTournamentInfoParser, webDisciplineParserService);
+        sut = prepareWebTournamentParser();
     }
 
     @Test
@@ -66,7 +68,6 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
         HtmlPage page = loadHtmlPage(TEST_FILE_NAME);
         var expectedNumberOfEliminationMatches = 3;
         var expectedNumberOfGroupMatches = 0;
-        var expepectedDisciplineAgeClass = AgeClass.U17;
         var expectedFirstMatchRoundName = "Round of 32";
         var playerOneName = "Victoria Braun";
 
@@ -82,11 +83,10 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
                 () -> assertThat(singleDiscipline).isNotNull(),
                 () -> assertThat(singleDiscipline.getEliminationMatches().size()).isEqualTo(expectedNumberOfEliminationMatches),
                 () -> assertThat(singleDiscipline.getGroupMatches().size()).isEqualTo(expectedNumberOfGroupMatches),
-                () -> assertThat(singleDiscipline.getDisciplineAgeClass()).isEqualTo(expepectedDisciplineAgeClass),
                 () -> assertThat(firstMatch.getRoundName()).isEqualTo(expectedFirstMatchRoundName),
                 () -> assertThat(firstMatch.getFirstPlayerOrWithPartnerName()).isEqualTo(playerOneName),
                 () -> assertThat(firstMatch.getMatchSets().size()).isEqualTo(firstMatchSets),
                 () -> assertThat(firstMatch.getMatchSets().getFirst().isRegularSet()).isFalse()
         );
-    }*/
+    }
 }

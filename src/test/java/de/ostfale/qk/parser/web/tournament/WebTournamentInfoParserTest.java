@@ -2,22 +2,22 @@ package de.ostfale.qk.parser.web.tournament;
 
 import de.ostfale.qk.parser.BaseParserTest;
 import de.ostfale.qk.parser.HtmlParserException;
-import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@QuarkusTest
+@Tag("unittest")
 @DisplayName("Test web tournament info parser")
 class WebTournamentInfoParserTest extends BaseParserTest {
 
-            private static final String TEST_FILE_NAME = "tournaments/TournamentInfoHeader.html";
+    private static final String TEST_FILE_NAME = "tournaments/TournamentInfoHeader.html";
 
     @Inject
     WebTournamentInfoParser sut;
@@ -26,6 +26,7 @@ class WebTournamentInfoParserTest extends BaseParserTest {
 
     @BeforeEach
     void setUp() {
+        sut = prepareWebTournamentInfoParser();
         HtmlPage page = loadHtmlPage(TEST_FILE_NAME);
         content = page.getActiveElement();
     }

@@ -1,12 +1,10 @@
 package de.ostfale.qk.app.config;
 
-import org.jboss.logging.Logger;
+import io.quarkus.logging.Log;
 
 import java.time.LocalDateTime;
 
 public class AppConfiguration {
-
-    Logger log = Logger.getLogger(AppConfiguration.class);
 
     private LocalDateTime lastRankingDownload;
     private LocalDateTime lastTournamentDownload;
@@ -34,7 +32,7 @@ public class AppConfiguration {
     }
 
     public void setLastRankingDownload(LocalDateTime lastRankingDownload) {
-        log.debugf("Set last ranking download to %s", lastRankingDownload);
+        Log.debugf("Set last ranking download to %s", lastRankingDownload);
         this.lastRankingDownload = lastRankingDownload;
     }
 
@@ -43,7 +41,7 @@ public class AppConfiguration {
     }
 
     public void setLastTournamentDownload(LocalDateTime lastTournamentDownload) {
-        log.debugf("Set last tournament download to %s", lastTournamentDownload);
+        Log.debugf("Set last tournament download to %s", lastTournamentDownload);
         this.lastTournamentDownload = lastTournamentDownload;
     }
 }

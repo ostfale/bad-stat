@@ -44,18 +44,24 @@ public abstract class BaseParserTest {
         return new File(resource.toURI());
     }
 
+    protected WebTournamentInfoParser prepareWebTournamentInfoParser() {
+        return new WebTournamentInfoParser();
+    }
 
     protected WebTournamentParserService prepareWebTournamentParser() {
 
+        WebDisciplineParserService webDisciplineParserService = prepareWebDisciplineParser() ;
+        WebTournamentInfoParser webTournamentInfoParser = prepareWebTournamentInfoParser();
+
+        return new WebTournamentParserService(webTournamentInfoParser,webDisciplineParserService);
+    }
+
+    protected WebDisciplineParserService prepareWebDisciplineParser() {
         MatchSetParserService matchSetParserService = new MatchSetParserService();
         MatchPlayerParserService matchPlayerParserService = new MatchPlayerParserService();
 
         WebMatchParserService webMatchParserService = new WebMatchParserService(matchSetParserService, matchPlayerParserService);
         WebDisciplineInfoParserService webDisciplineInfoParserService = new WebDisciplineInfoParserService();
-
-        WebDisciplineParserService webDisciplineParserService = new WebDisciplineParserService(webDisciplineInfoParserService,webMatchParserService);
-        WebTournamentInfoParser webTournamentInfoParser = new WebTournamentInfoParser();
-
-        return new WebTournamentParserService(webTournamentInfoParser,webDisciplineParserService);
+        return new WebDisciplineParserService(webDisciplineInfoParserService,webMatchParserService);
     }
 }

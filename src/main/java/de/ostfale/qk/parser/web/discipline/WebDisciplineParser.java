@@ -9,8 +9,7 @@ import org.htmlunit.html.HtmlElement;
 import java.util.List;
 import java.util.Map;
 
-import static de.ostfale.qk.domain.discipline.AgeClass.U15;
-import static de.ostfale.qk.domain.discipline.AgeClass.UOX;
+import static de.ostfale.qk.domain.discipline.AgeClass.*;
 import static de.ostfale.qk.domain.discipline.DisciplineType.*;
 
 public interface WebDisciplineParser extends BaseParser {
@@ -60,8 +59,52 @@ public interface WebDisciplineParser extends BaseParser {
         return moduleCard.getByXPath(DISCIPLINE_ALL_MATCHES);
     }
 
-    // TODO use only one map and integrate map from parser
     Map<String, DisciplineMapping> DISCIPLINE_SUB_HEADER_MAPPING = Map.ofEntries(
+            Map.entry("JE-U9 A", new DisciplineMapping(SINGLE, U9)),
+            Map.entry("ME-U9 A", new DisciplineMapping(SINGLE, U9)),
+
+            Map.entry("JE-U11 A", new DisciplineMapping(SINGLE, U11)),
+            Map.entry("ME-U11 A", new DisciplineMapping(SINGLE, U11)),
+            Map.entry("MD-U11 A", new DisciplineMapping(DOUBLE, U11)),
+            Map.entry("JD-U11 A", new DisciplineMapping(DOUBLE, U11)),
+
+            Map.entry("JE-U13 A", new DisciplineMapping(SINGLE, U13)),
+            Map.entry("ME-U13 A", new DisciplineMapping(SINGLE, U13)),
+            Map.entry("MD-U13 A", new DisciplineMapping(DOUBLE, U13)),
+            Map.entry("JD-U13 A", new DisciplineMapping(DOUBLE, U13)),
+            Map.entry("MX-U13 A", new DisciplineMapping(MIXED, U13)),
+            Map.entry("U13B Mädcheneinzel", new DisciplineMapping(SINGLE, U13)),
+
+            Map.entry("JE-U15 A", new DisciplineMapping(SINGLE, U15)),
+            Map.entry("ME-U15 A", new DisciplineMapping(SINGLE, U15)),
+            Map.entry("MD-U15 A", new DisciplineMapping(DOUBLE, U15)),
+            Map.entry("JD-U15 A", new DisciplineMapping(DOUBLE, U15)),
+            Map.entry("MX-U15 A", new DisciplineMapping(MIXED, U15)),
+            Map.entry("U15B Jungeneinzel", new DisciplineMapping(SINGLE, U15)),
+            Map.entry("Boys Singles U15", new DisciplineMapping(SINGLE, U15)),
+            Map.entry("Boys Doubles U15", new DisciplineMapping(DOUBLE, U15)),
+            Map.entry("Girls Doubles U15", new DisciplineMapping(DOUBLE, U15)),
+            Map.entry("Girls Singles U15", new DisciplineMapping(SINGLE, U15)),
+            Map.entry("Mixed Doubles U15", new DisciplineMapping(MIXED, U15)),
+
+            Map.entry("JE-U17 A", new DisciplineMapping(SINGLE, U17)),
+            Map.entry("ME-U17 A", new DisciplineMapping(SINGLE, U17)),
+            Map.entry("MD-U17 A", new DisciplineMapping(DOUBLE, U17)),
+            Map.entry("JD-U17 A", new DisciplineMapping(DOUBLE, U17)),
+            Map.entry("MX-U17 A", new DisciplineMapping(MIXED, U17)),
+
+            Map.entry("JE-U19 A", new DisciplineMapping(SINGLE, U19)),
+            Map.entry("ME-U19 A", new DisciplineMapping(SINGLE, U19)),
+            Map.entry("MD-U19 A", new DisciplineMapping(DOUBLE, U19)),
+            Map.entry("JD-U19 A", new DisciplineMapping(DOUBLE, U19)),
+            Map.entry("MX-U19 A", new DisciplineMapping(MIXED, U19)),
+
+            Map.entry("HE-U22 A", new DisciplineMapping(SINGLE, U22)),
+            Map.entry("DE-U22 A", new DisciplineMapping(SINGLE, U22)),
+            Map.entry("HD-U22 A", new DisciplineMapping(DOUBLE, U22)),
+            Map.entry("DD-U22 A", new DisciplineMapping(DOUBLE, U22)),
+            Map.entry("MX-U22 A", new DisciplineMapping(MIXED, U22)),
+
             Map.entry("DD", new DisciplineMapping(DOUBLE, UOX)),
             Map.entry("DE", new DisciplineMapping(SINGLE, UOX)),
             Map.entry("HE", new DisciplineMapping(SINGLE, UOX)),
@@ -72,8 +115,7 @@ public interface WebDisciplineParser extends BaseParser {
             Map.entry("Men's Singles", new DisciplineMapping(SINGLE, UOX)),
             Map.entry("Men's Doubles", new DisciplineMapping(DOUBLE, UOX)),
             Map.entry("Women's Singles", new DisciplineMapping(SINGLE, UOX)),
-            Map.entry("Women's Doubles", new DisciplineMapping(DOUBLE, UOX)),
-            Map.entry("Mixed Doubles U15", new DisciplineMapping(MIXED, U15))
+            Map.entry("Women's Doubles", new DisciplineMapping(DOUBLE, UOX))
     );
 
     record DisciplineMapping(DisciplineType disciplineType, AgeClass ageClass) {
