@@ -30,7 +30,7 @@ class MatchPlayerParserServiceTest extends BaseParserTest {
     @DisplayName("Test retrieving players from a standard single match")
     void testExtractingSinglePlayersStandardMatch() {
         // given
-        String testFileName = "matches/SingleMatchStandard.html";
+        String testFileName = "matches/SingleMatchStandardFirstPlayerWins.html";
         HtmlPage page = loadHtmlPage(testFileName);
 
         var expectedPlayerOneName = "Victoria Braun";
@@ -73,7 +73,7 @@ class MatchPlayerParserServiceTest extends BaseParserTest {
     @DisplayName("Test retrieving players from a standard double match")
     void testExtractingDoublePlayersStandardMatch() {
         // given
-        String testFileName = "matches/DoubleMatchStandard.html";
+        String testFileName = "matches/DoubleMatchStandardSecondTeamWins.html";
         HtmlPage page = loadHtmlPage(testFileName);
 
         var expectedPlayerOneName = "Yara Metzlaff";
@@ -123,4 +123,6 @@ class MatchPlayerParserServiceTest extends BaseParserTest {
                 () -> assertThat(disciplineMatch.getSecondPlayerOrWithPartnerName()).isEqualTo(expectedTeamTwoName)
         );
     }
+
+
 }

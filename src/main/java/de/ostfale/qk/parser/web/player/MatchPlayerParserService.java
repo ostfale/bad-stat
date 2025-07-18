@@ -26,7 +26,8 @@ public class MatchPlayerParserService implements MatchParser {
         final int DOUBLES_MIXED_PLAYER_COUNT_BYE = 3;
         final int DOUBLES_MIXED_PLAYER_COUNT = 4;
 
-        String[] matchBodyElements = extractMatchBodyElements(matchGroupElement);
+        String[] matchBodyElements = extractMatchBodyElements1(matchGroupElement);
+
         List<PlayerNames> playerNames = Arrays.stream(matchBodyElements)
                 .filter(this::isValidPlayerString)
                 .map(PlayerNames::new)
@@ -37,6 +38,12 @@ public class MatchPlayerParserService implements MatchParser {
             return;
         }
 
+        if (containsWalkoverPlayer(playerNames)) {
+            Log.debug("MatchPlayerParser :: Match contains walkover player");
+            handleMatchWithWalkover(disciplineMatch, playerNames);
+            return;
+        }
+
         int playerCount = playerNames.size();
         switch (playerCount) {
             case SINGLES_PLAYER_COUNT -> handleSinglesMatch(disciplineMatch, playerNames);
@@ -44,6 +51,14 @@ public class MatchPlayerParserService implements MatchParser {
             case DOUBLES_MIXED_PLAYER_COUNT_BYE ->handleDoubleMixedMatchWithBye(disciplineMatch, playerNames);
             default -> Log.error("MatchPlayerParser :: Invalid number of players: " + playerCount);
         }
+    }
+
+    private void handleMatchWithWalkover(DisciplineMatch disciplineMatch, List<PlayerNames> playerNames) {
+    }
+
+    private boolean containsWalkoverPlayer(List<PlayerNames> players) {
+        return players.stream()
+                .anyMatch(player -> player.name().equalsIgnoreCase(MatchResultType.WALKOVER.getDisplayName()));
     }
 
     private boolean containsByePlayer(List<PlayerNames> players) {
@@ -104,6 +119,11 @@ public class MatchPlayerParserService implements MatchParser {
                 && !str.equalsIgnoreCase(RETIRED_MARKER)
                 && !str.equalsIgnoreCase(H2H_MARKER)
                 && !isNumeric(str);
+    }
+
+    @Override
+    public DisciplineMatch parseMatch(HtmlElement matchGroupElement) {
+        return null;
     }
 
     private record PlayerNames(

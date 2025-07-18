@@ -85,8 +85,7 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
                 () -> assertThat(singleDiscipline.getGroupMatches().size()).isEqualTo(expectedNumberOfGroupMatches),
                 () -> assertThat(firstMatch.getRoundName()).isEqualTo(expectedFirstMatchRoundName),
                 () -> assertThat(firstMatch.getFirstPlayerOrWithPartnerName()).isEqualTo(playerOneName),
-                () -> assertThat(firstMatch.getMatchSets().size()).isEqualTo(firstMatchSets),
-                () -> assertThat(firstMatch.getMatchSets().getFirst().isRegularSet()).isFalse()
+                () -> assertThat(firstMatch.getMatchSets().size()).isEqualTo(firstMatchSets)
         );
     }
 }

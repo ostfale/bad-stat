@@ -2,6 +2,7 @@ package de.ostfale.qk.ui.playerstats.info;
 
 import de.ostfale.qk.data.player.model.FavPlayerData;
 import de.ostfale.qk.domain.tournament.RecentYears;
+import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
 import de.ostfale.qk.ui.playerstats.info.favplayer.FavPlayerService;
@@ -192,31 +193,31 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     }
 
     @FXML
-    void downloadThisYearsTournaments(ActionEvent event) {
+    void downloadThisYearsTournaments(ActionEvent event) throws HtmlParserException {
         int year = Year.now().getValue();
         loadTournamentDataForYear(year);
     }
 
     @FXML
-    void downloadThisYearMinusOneTournaments(ActionEvent event) {
+    void downloadThisYearMinusOneTournaments(ActionEvent event) throws HtmlParserException {
         int year = Year.now().minusYears(1).getValue();
         loadTournamentDataForYear(year);
     }
 
     @FXML
-    void downloadThisYearMinusTwoTournaments(ActionEvent event) {
+    void downloadThisYearMinusTwoTournaments(ActionEvent event) throws HtmlParserException {
         int year = Year.now().minusYears(2).getValue();
         loadTournamentDataForYear(year);
     }
 
     @FXML
-    void downloadThisYearMinusThreeTournaments(ActionEvent event) {
+    void downloadThisYearMinusThreeTournaments(ActionEvent event) throws HtmlParserException {
         int year = Year.now().minusYears(3).getValue();
         loadTournamentDataForYear(year);
     }
 
     @FXML
-    void addToFavorites(ActionEvent event) {
+    void addToFavorites(ActionEvent event) throws HtmlParserException {
         Log.debug("Add player to favorites");
         favPlayerService.addFavPlayer(tfSearchPlayer.getText());
         updateFavorites();
@@ -231,7 +232,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     }
 
     @FXML
-    void viewPlayerInfo(ActionEvent event) {
+    void viewPlayerInfo(ActionEvent event) throws HtmlParserException {
         Log.debugf("View player info");
         resetFavoriteCombobox();
         updatePlayerInfoUI();
@@ -258,7 +259,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         btnDownloadMinusThree.disableProperty().bind(dataModelFavPlayer.currentObjectProperty().isNull());
     }
 
-    private void loadTournamentDataForYear(int year) {
+    private void loadTournamentDataForYear(int year) throws HtmlParserException {
         FavPlayerData currentSelectedPlayer = cbPlayer.getSelectionModel().getSelectedItem();
         var playerInfo = playerInfoService.getPlayerInfoDTO(currentSelectedPlayer.playerId());
         playerTournamentsService.loadAndSavePlayerTournamentsForYear(year, playerInfo);
@@ -295,7 +296,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
         dataModelFavPlayer.updateModel(favoritePlayers, cbPlayer);
     }
 
-    private void updatePlayerInfoUI() {
+    private void updatePlayerInfoUI() throws HtmlParserException {
         String searchedPlayerName = tfSearchPlayer.getText();
         PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayerName(searchedPlayerName);
         Log.debugf("Update player info for : %s", playerInfo.getPlayerInfoMasterDataDTO().getPlayerName());

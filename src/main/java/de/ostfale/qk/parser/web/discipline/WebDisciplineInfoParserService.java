@@ -17,7 +17,8 @@ import static de.ostfale.qk.domain.discipline.AgeClass.UOX;
 public class WebDisciplineInfoParserService implements WebDisciplineParser {
 
     private static final String EMPTY_STRING = "";
-    private static final String GROUP_STRING = "Gruppe";
+    private static final String GROUP_STRING_DE = "Gruppe";
+    private static final String GROUP_STRING_EN = "Group";
     private static final String SPLIT_DELIMITER = "\\s+";
     private static final int EXPECTED_DISCIPLINE_PARTS = 3;
     private static final int TOO_LONG_TOKEN_FOR_DISCIPLINE = 5;
@@ -56,7 +57,7 @@ public class WebDisciplineInfoParserService implements WebDisciplineParser {
     public DisciplineInfo extractDisciplineSubHeaderInfo(String disciplineSubstring) throws HtmlParserException {
         Log.infof("WebDisciplineInfoParser :: Parse discipline header format: %s", disciplineSubstring);
 
-        if (disciplineSubstring.startsWith(GROUP_STRING)) {
+        if (disciplineSubstring.startsWith(GROUP_STRING_DE) || disciplineSubstring.startsWith(GROUP_STRING_EN)) {
             Log.debugf("WebDisciplineInfoParser :: Parse discipline infos with group string: %s", disciplineSubstring);
             return new DisciplineInfo(disciplineSubstring);
         }

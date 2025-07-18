@@ -5,6 +5,7 @@ import de.ostfale.qk.data.player.model.FavPlayerData;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.domain.player.PlayerTournamentId;
+import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.rankingdata.PlayerDiscStatDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
@@ -45,7 +46,7 @@ public class PlayerInfoService {
         return playerInfo;
     }
 
-    public PlayerInfoDTO getPlayerInfoDTO(PlayerId playerIdObject) {
+    public PlayerInfoDTO getPlayerInfoDTO(PlayerId playerIdObject) throws HtmlParserException {
         String playerId = playerIdObject.playerId();
         Log.debugf("PlayerInfoService :: get player info for player id %s", playerIdObject.playerId());
         if (playerInfoDTOMap.containsKey(playerIdObject)) {
@@ -80,7 +81,7 @@ public class PlayerInfoService {
         return rankingPlayerCache.getPlayerList().stream().map(PlayerInfoDTO::new).toList();
     }
 
-    public PlayerInfoDTO getPlayerInfosForPlayerName(String playerName) {
+    public PlayerInfoDTO getPlayerInfosForPlayerName(String playerName) throws HtmlParserException {
         List<Player> foundPlayers = rankingPlayerCache.getPlayerByName(playerName);
         if (foundPlayers.size() == 1) {
             return getPlayerInfoDTO(foundPlayers.getFirst().getPlayerId());

@@ -39,4 +39,10 @@ public class WebTournamentParserService implements WebTournamentParser {
         }
         return allTournaments;
     }
+
+    public Integer getNumberOfTournaments(HtmlPage content) {
+        Log.debug("WebTournamentParser :: get number of tournaments website ");
+        List<HtmlElement> tournamentElements = htmlStructureParser.getAllTournaments(content.getActiveElement());
+        return tournamentElements.size();
+    }
 }

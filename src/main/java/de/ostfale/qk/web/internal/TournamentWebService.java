@@ -22,7 +22,7 @@ public class TournamentWebService extends BaseWebService {
     CookieDialogHandler cookieDialogHandler;
 
     @Override
-    public Integer getNumberOfTournamentsForYearAndPlayer(Integer year, String playerTournamentsId) {
+    public Integer getNumberOfTournamentsForYearAndPlayer(Integer year, String playerTournamentsId) throws HtmlParserException {
         Log.debugf("Get number of tournaments for year %d and player tournament id %s", year, playerTournamentsId);
 
         String tournamentsURI = null;
@@ -34,8 +34,7 @@ public class TournamentWebService extends BaseWebService {
 
         Log.debugf("Load tournaments page %s", tournamentsURI);
         HtmlPage tournamentPage = cookieDialogHandler.loadWebsite(tournamentsURI);
-        return 42;
-        //return parser.parseNofTournaments(tournamentPage.getActiveElement());
+        return webTournamentParserService.getNumberOfTournaments(tournamentPage);
     }
 
     @Override

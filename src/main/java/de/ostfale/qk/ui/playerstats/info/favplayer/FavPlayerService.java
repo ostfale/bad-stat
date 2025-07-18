@@ -6,6 +6,7 @@ import de.ostfale.qk.data.player.model.FavPlayerListData;
 import de.ostfale.qk.data.player.model.FavPlayerYearStat;
 import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.domain.tournament.Tournament;
+import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.ui.playerstats.info.PlayerInfoService;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import io.quarkus.logging.Log;
@@ -50,7 +51,7 @@ public class FavPlayerService {
         favoritePlayerListData.addFavoritePlayer(player);
     }
 
-    public void addFavPlayer(String playerName) {
+    public void addFavPlayer(String playerName) throws HtmlParserException {
         PlayerInfoDTO playerInfoDTO = playerInfoService.getPlayerInfosForPlayerName(playerName);
         if (playerInfoDTO != null) {
             addFavPlayer(playerInfoDTO);

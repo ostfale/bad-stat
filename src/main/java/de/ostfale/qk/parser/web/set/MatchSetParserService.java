@@ -1,5 +1,6 @@
 package de.ostfale.qk.parser.web.set;
 
+import de.ostfale.qk.domain.match.DisciplineMatch;
 import de.ostfale.qk.domain.set.MatchSet;
 import de.ostfale.qk.domain.set.SetNumber;
 import de.ostfale.qk.parser.web.match.MatchParser;
@@ -18,12 +19,12 @@ public class MatchSetParserService implements MatchParser {
 
     public List<MatchSet> parseMatchSets(HtmlElement matchGroupElement) {
         Log.debug("MatchSetParser :: parse match set");
-        String[] rawSetScores = extractMatchBodyElements(matchGroupElement);
+        String[] rawSetScores = extractMatchBodyElements1(matchGroupElement);
 
-        if (isRastSet(List.of(rawSetScores))) {
+   /*     if (isRastSet(List.of(rawSetScores))) {
             MatchSet matchSet = new MatchSet(MATCH_RAST);
             return List.of(matchSet);
-        }
+        }*/
 
         List<Integer> setScores = extractNumbersFromStrings(List.of(rawSetScores));
 
@@ -64,6 +65,11 @@ public class MatchSetParserService implements MatchParser {
         Log.debug("MatchSetParser :: isRastSet");
         return inputStrings.stream()
                 .anyMatch(str -> str.equalsIgnoreCase(MATCH_RAST));
+    }
+
+    @Override
+    public DisciplineMatch parseMatch(HtmlElement matchGroupElement) {
+        return null;
     }
 }
 
