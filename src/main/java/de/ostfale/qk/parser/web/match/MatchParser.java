@@ -1,6 +1,7 @@
 package de.ostfale.qk.parser.web.match;
 
 import de.ostfale.qk.domain.match.DisciplineMatch;
+import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.web.BaseParser;
 import de.ostfale.qk.parser.web.HtmlStructureParser;
 import io.quarkus.logging.Log;
@@ -10,7 +11,7 @@ import java.util.Objects;
 
 public interface MatchParser extends BaseParser {
 
-    DisciplineMatch parseMatch(HtmlElement matchGroupElement);
+    DisciplineMatch parseMatch(HtmlElement matchGroupElement) throws HtmlParserException;
 
     String MATCH_RESULT_SEPARATOR = "\n";
 
