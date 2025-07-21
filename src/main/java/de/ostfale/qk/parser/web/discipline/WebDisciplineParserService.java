@@ -5,7 +5,7 @@ import de.ostfale.qk.domain.discipline.DisciplineType;
 import de.ostfale.qk.domain.discipline.TournamentDiscipline;
 import de.ostfale.qk.domain.match.DisciplineMatch;
 import de.ostfale.qk.parser.HtmlParserException;
-import de.ostfale.qk.parser.web.match.WebMatchParserService;
+import de.ostfale.qk.parser.web.match.MatchParserService;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.htmlunit.html.HtmlElement;
@@ -13,15 +13,17 @@ import org.htmlunit.html.HtmlElement;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.ostfale.qk.domain.discipline.DisciplineType.*;
+
 @ApplicationScoped
 public class WebDisciplineParserService implements WebDisciplineParser {
 
     private final WebDisciplineInfoParserService webDisciplineInfoParserService;
-    private final WebMatchParserService webMatchParserService;
+    private final MatchParserService matchParserService;
 
-    public WebDisciplineParserService(WebDisciplineInfoParserService webDisciplineInfoParserService, WebMatchParserService webMatchParserService) {
+    public WebDisciplineParserService(MatchParserService matchParserService,WebDisciplineInfoParserService webDisciplineInfoParserService) {
+        this.matchParserService = matchParserService;
         this.webDisciplineInfoParserService = webDisciplineInfoParserService;
-        this.webMatchParserService = webMatchParserService;
     }
 
     public List<TournamentDiscipline> parseTournamentDisciplines(HtmlElement moduleCardElement) throws HtmlParserException {
@@ -75,7 +77,7 @@ public class WebDisciplineParserService implements WebDisciplineParser {
     }
 
 
-    private List<DisciplineMatch> processMatches(DisciplineType disciplineType, HtmlElement disciplineMatchGroupElement) {
+    private List<DisciplineMatch> processMatches(DisciplineType disciplineType, HtmlElement disciplineMatchGroupElement) throws HtmlParserException {
         Log.debugf("WebDisciplineParser :: process matches ->  DisciplineType %s", disciplineType.name());
         List<DisciplineMatch> matches = new ArrayList<>();
         List<HtmlElement> disciplineMatches = htmlStructureParser.getAllMatchesForMatchGroupContainer(disciplineMatchGroupElement);
@@ -83,17 +85,17 @@ public class WebDisciplineParserService implements WebDisciplineParser {
             switch (disciplineType) {
                 case SINGLE -> {
                     Log.debug("WebMatchParser :: Parse single matches!");
-                    DisciplineMatch singleMatch = webMatchParserService.parseSingleMatch(disciplineMatch);
+                    DisciplineMatch singleMatch = matchParserService.parseMatch(SINGLE,disciplineMatch);
                     matches.add(singleMatch);
                 }
                 case DOUBLE -> {
                     Log.debug("WebMatchParser :: Parse double matches!");
-                    DisciplineMatch doubleMatch = webMatchParserService.parseDoubleMatch(disciplineMatch);
+                    DisciplineMatch doubleMatch = matchParserService.parseMatch(DOUBLE,disciplineMatch);
                     matches.add(doubleMatch);
                 }
                 case MIXED -> {
                     Log.debug("WebMatchParser :: Parse mixed matches");
-                    DisciplineMatch mixedMatch = webMatchParserService.parseMixedMatch(disciplineMatch);
+                    DisciplineMatch mixedMatch = matchParserService.parseMatch(MIXED,disciplineMatch);
                     matches.add(mixedMatch);
                 }
                 default -> {

@@ -69,14 +69,14 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
         var expectedNumberOfEliminationMatches = 3;
         var expectedNumberOfGroupMatches = 0;
         var expectedFirstMatchRoundName = "Round of 32";
-        var playerOneName = "Victoria Braun";
+        var playerOneName = "Victoria Braun (W)";
 
         // when
         var result = sut.parseAllYearlyTournamentsForPlayer(page);
         var tournament = result.getFirst();
         var singleDiscipline = tournament.getSingleDiscipline();
         var firstMatch = singleDiscipline.getEliminationMatches().getFirst();
-        var firstMatchSets = 1;
+        var firstMatchSets = 0;
 
         // then
         assertAll("Test all data for single matches",

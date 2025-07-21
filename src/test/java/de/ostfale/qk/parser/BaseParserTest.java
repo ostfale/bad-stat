@@ -2,9 +2,8 @@ package de.ostfale.qk.parser;
 
 import de.ostfale.qk.parser.web.discipline.WebDisciplineInfoParserService;
 import de.ostfale.qk.parser.web.discipline.WebDisciplineParserService;
-import de.ostfale.qk.parser.web.match.WebMatchParserService;
-import de.ostfale.qk.parser.web.player.MatchPlayerParserService;
-import de.ostfale.qk.parser.web.set.MatchSetParserService;
+import de.ostfale.qk.parser.web.match.MatchParserService;
+import de.ostfale.qk.parser.web.set.SetParserService;
 import de.ostfale.qk.parser.web.tournament.WebTournamentInfoParser;
 import de.ostfale.qk.parser.web.tournament.WebTournamentParserService;
 import de.ostfale.qk.web.common.ConfiguredWebClient;
@@ -57,11 +56,9 @@ public abstract class BaseParserTest {
     }
 
     protected WebDisciplineParserService prepareWebDisciplineParser() {
-        MatchSetParserService matchSetParserService = new MatchSetParserService();
-        MatchPlayerParserService matchPlayerParserService = new MatchPlayerParserService();
-
-        WebMatchParserService webMatchParserService = new WebMatchParserService(matchSetParserService, matchPlayerParserService);
         WebDisciplineInfoParserService webDisciplineInfoParserService = new WebDisciplineInfoParserService();
-        return new WebDisciplineParserService(webDisciplineInfoParserService,webMatchParserService);
+        SetParserService setParserService = new SetParserService();
+        MatchParserService matchParserService = new MatchParserService(setParserService);
+        return new WebDisciplineParserService(matchParserService,webDisciplineInfoParserService);
     }
 }
