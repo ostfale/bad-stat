@@ -20,6 +20,8 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
     private static final String SINGLE_MATCH_STANDARD_FIRST_WINS = "matches/SingleMatchStandardFirstPlayerWins.html";
     private static final String SINGLE_MATCH_STANDARD_SECOND_WINS = "matches/SingleMatchStandardSecondPlayerWins.html";
     private static final String SINGLE_MATCH_RAST = "matches/SingleMatchRast.html";
+    private static final String SINGLE_MATCH_SECOND_PLAYER_RAST = "matches/SingleMatchSecondPlayerHasRast.html";
+    private static final String SINGLE_MATCH_SECOND_PLAYER_WINS_BOY = "matches/SingleMatchBoysSecondPlayerWins.html";
 
     private MatchParser sut;
 
@@ -75,6 +77,29 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
     }
 
     @Test
+    @DisplayName("Test a single standard boys match -> second player wins")
+    void testSingleStandardMatchBoysSecondWins() throws HtmlParserException {
+        // given
+        HtmlPage page = loadHtmlPage(SINGLE_MATCH_SECOND_PLAYER_WINS_BOY);
+        var expectedRoundName = "Round of 16";
+        var expectedPlayerOneName = "Nils Barion";
+        var expectedPlayerTwoName = "Frederik Volkert (W)";
+        var expectedNumberOfSets = 2;
+
+        // when
+        var result = sut.parseMatch(SINGLE, page.getActiveElement());
+
+        // then
+        assertAll("Test all standard match data",
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.getRoundName()).isEqualTo(expectedRoundName),
+                () -> assertThat(result.getPlayerOneName()).isEqualTo(expectedPlayerOneName),
+                () -> assertThat(result.getPlayerTwoName()).isEqualTo(expectedPlayerTwoName),
+                () -> assertThat(result.getMatchSets().size()).isEqualTo(expectedNumberOfSets)
+        );
+    }
+
+    @Test
     @DisplayName("Test a single match with Rast status")
     void testSingleMatchRast() throws HtmlParserException {
         // given
@@ -93,6 +118,26 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
                 () -> assertThat(result.getFirstPlayerOrWithPartnerName()).isEqualTo(expectedPlayerOneName),
                 () -> assertThat(result.getSecondPlayerOrWithPartnerName()).isEqualTo(expectedPlayerTwoName)
         );
+    }
 
+    @Test
+    @DisplayName("Test a single match with Rast for the second player")
+    void testSingleMatchRastSecondPlayer() throws HtmlParserException {
+        // given
+        HtmlPage page = loadHtmlPage(SINGLE_MATCH_SECOND_PLAYER_RAST);
+        var expectedRoundName = "Round of 32";
+        var expectedPlayerOneName = "Rast";
+        var expectedPlayerTwoName = "Frederik Volkert (W)";
+
+        // when
+        var result = sut.parseMatch(SINGLE, page.getActiveElement());
+
+        // then
+        assertAll("Test single match rast data",
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.getRoundName()).isEqualTo(expectedRoundName),
+                () -> assertThat(result.getFirstPlayerOrWithPartnerName()).isEqualTo(expectedPlayerOneName),
+                () -> assertThat(result.getSecondPlayerOrWithPartnerName()).isEqualTo(expectedPlayerTwoName)
+        );
     }
 }

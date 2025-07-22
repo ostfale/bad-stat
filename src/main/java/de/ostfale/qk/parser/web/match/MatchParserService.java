@@ -12,7 +12,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.commons.lang3.ArrayUtils;
 import org.htmlunit.html.HtmlElement;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 @ApplicationScoped
@@ -21,8 +20,11 @@ public class MatchParserService implements MatchParser {
     private static final String WINNER_MARKER = "W";
     private static final String LOSER_MARKER = "L";
 
+    private static final int WI_LO_MARKER_INDEX_TWO = 2;
+
     private static final String BYE_MARKER = MatchResultType.BYE.getDisplayName();
     private static final int BYE_MARKER_INDEX_FIRST = 0;
+    private static final int BYE_MARKER_INDEX_SECOND = 1;
     private static final int BYE_MARKER_INDEX_FOUR = 3;
 
 
@@ -36,14 +38,17 @@ public class MatchParserService implements MatchParser {
     private static final int FIRST_DOUBLE_MIXED_PLAYER_INDEX = 0;
     private static final int FIRST_DOUBLE_MIXED_PARTNER_INDEX = 1;
 
+
+    private final MatchByeParserService matchByeParserService;
     private final SetParser setParser;
 
     public MatchParserService(SetParser setParser) {
         this.setParser = setParser;
+        this.matchByeParserService = new MatchByeParserService();
     }
 
     @Override
-    public DisciplineMatch parseMatch(DisciplineType disciplineType,HtmlElement matchGroupElement) throws HtmlParserException {
+    public DisciplineMatch parseMatch(DisciplineType disciplineType, HtmlElement matchGroupElement) throws HtmlParserException {
         Log.debug("MatchParserService :: parse match data and round name");
         DisciplineMatch disciplineMatch = new DisciplineMatch();
         String[] matchStringElements = extractMatchBodyElements(matchGroupElement);
@@ -62,7 +67,17 @@ public class MatchParserService implements MatchParser {
 
     private void parseSingleMatch(DisciplineMatch disciplineMatch, String[] matchStringElements) throws HtmlParserException {
         Log.debug("MatchParserService :: parse single match");
+
+        if (matchByeParserService.isByeMatch(matchStringElements)) {
+            handleSinglePlayerHasRast(disciplineMatch, matchStringElements);
+            return;
+        }
+
         MarkerValueAndIndex markerValueAndIndex = findWinnerLoserMarker(matchStringElements);
+        if (markerValueAndIndex.markerIndex == SINGLE_MATCH_MARKER_INDEX) {}
+
+
+
         var firstPlayerName = matchStringElements[FIRST_SINGLE_PLAYER_INDEX];
         var secondPlayerName = matchStringElements[SECOND_SINGLE_PLAYER_INDEX];
         disciplineMatch.setPlayerOneName(markerValueAndIndex.getMarkerDisplayValue(firstPlayerName));
@@ -73,7 +88,7 @@ public class MatchParserService implements MatchParser {
         Log.debug("MatchParserService :: parse double match");
         MarkerValueAndIndex markerValueAndIndex = findWinnerLoserMarker(matchStringElements);
 
-        if (isBye(matchStringElements)) {
+        if (matchByeParserService.isByeMatch(matchStringElements)) {
             handleTeamHasRast(disciplineMatch, matchStringElements);
             return;
         }
@@ -93,6 +108,17 @@ public class MatchParserService implements MatchParser {
         }
     }
 
+    private void handleSinglePlayerHasRast(DisciplineMatch disciplineMatch, String[] matchStringElements) {
+        Log.debug("MatchParserService :: handle single player has rast");
+        if (matchStringElements[BYE_MARKER_INDEX_FIRST].equalsIgnoreCase(BYE_MARKER)) {
+            disciplineMatch.setPlayerOneName(MatchResultType.BYE.getDisplayName());
+            disciplineMatch.setPlayerTwoName(matchStringElements[1] + " (W)");
+        } else {
+            disciplineMatch.setPlayerOneName(matchStringElements[0] + " (W)");
+            disciplineMatch.setPlayerTwoName(MatchResultType.BYE.getDisplayName());
+        }
+    }
+
     private void handleTeamHasRast(DisciplineMatch disciplineMatch, String[] matchStringElements) {
         Log.debug("MatchParserService :: handle double or mixed team has rast");
         if (matchStringElements[BYE_MARKER_INDEX_FIRST].equalsIgnoreCase(BYE_MARKER)) {
@@ -101,7 +127,7 @@ public class MatchParserService implements MatchParser {
             disciplineMatch.setPlayerOneName(MatchResultType.BYE.getDisplayName());
             disciplineMatch.setPlayerTwoName(firstPlayerName);
             disciplineMatch.setPartnerTwoName(secondPlayerName);
-        }else if (matchStringElements[BYE_MARKER_INDEX_FOUR].equalsIgnoreCase(BYE_MARKER)) {
+        } else if (matchStringElements[BYE_MARKER_INDEX_FOUR].equalsIgnoreCase(BYE_MARKER)) {
             var firstPlayerName = matchStringElements[0];
             var firstPartnerName = matchStringElements[1] + " (W)";
             disciplineMatch.setPlayerOneName(firstPlayerName);
@@ -114,7 +140,7 @@ public class MatchParserService implements MatchParser {
         Log.debug("MatchParserService :: parse mixed match");
         MarkerValueAndIndex markerValueAndIndex = findWinnerLoserMarker(matchStringElements);
 
-        if (isBye(matchStringElements)) {
+        if (matchByeParserService.isByeMatch(matchStringElements)) {
             handleTeamHasRast(disciplineMatch, matchStringElements);
             return;
         }
@@ -163,11 +189,6 @@ public class MatchParserService implements MatchParser {
     private boolean isWinnerOrLoserMarker(String element) {
         return element.equalsIgnoreCase(WINNER_MARKER) ||
                 element.equalsIgnoreCase(LOSER_MARKER);
-    }
-
-    private boolean isBye(String[] matchStringElements) {
-        Log.debug("MatchParserService :: isRast");
-        return Arrays.stream(matchStringElements).anyMatch(element->element.equalsIgnoreCase("Rast"));
     }
 
     private record MarkerValueAndIndex(
