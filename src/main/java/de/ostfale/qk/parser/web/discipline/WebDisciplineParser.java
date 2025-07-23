@@ -59,7 +59,7 @@ public interface WebDisciplineParser extends BaseParser {
         return moduleCard.getByXPath(DISCIPLINE_ALL_MATCHES);
     }
 
-    Map<String, DisciplineMapping> DISCIPLINE_SUB_HEADER_MAPPING = Map.ofEntries(
+    Map<String, DisciplineMapping> DISCIPLINE_SUB_HEADER_MAPPING = Map.<String, DisciplineMapping>ofEntries(
             Map.entry("JE-U9 A", new DisciplineMapping(SINGLE, U9)),
             Map.entry("ME-U9 A", new DisciplineMapping(SINGLE, U9)),
 
@@ -68,6 +68,10 @@ public interface WebDisciplineParser extends BaseParser {
             Map.entry("MD-U11 A", new DisciplineMapping(DOUBLE, U11)),
             Map.entry("JD-U11 A", new DisciplineMapping(DOUBLE, U11)),
 
+            Map.entry("U13JE", new DisciplineMapping(SINGLE, U13)),
+            Map.entry("U13MX", new DisciplineMapping(MIXED, U13)),
+            Map.entry("U13JD", new DisciplineMapping(DOUBLE, U13)),
+            Map.entry("U13MD", new DisciplineMapping(DOUBLE, U13)),
             Map.entry("JE-U13 A", new DisciplineMapping(SINGLE, U13)),
             Map.entry("ME-U13 A", new DisciplineMapping(SINGLE, U13)),
             Map.entry("MD-U13 A", new DisciplineMapping(DOUBLE, U13)),
@@ -75,6 +79,9 @@ public interface WebDisciplineParser extends BaseParser {
             Map.entry("MX-U13 A", new DisciplineMapping(MIXED, U13)),
             Map.entry("U13B Mädcheneinzel", new DisciplineMapping(SINGLE, U13)),
 
+            Map.entry("U15JE", new DisciplineMapping(SINGLE, U15)),
+            Map.entry("U15JD", new DisciplineMapping(DOUBLE, U15)),
+            Map.entry("U15MD", new DisciplineMapping(DOUBLE, U15)),
             Map.entry("JE-U15 A", new DisciplineMapping(SINGLE, U15)),
             Map.entry("ME-U15 A", new DisciplineMapping(SINGLE, U15)),
             Map.entry("MD-U15 A", new DisciplineMapping(DOUBLE, U15)),

@@ -20,6 +20,7 @@ class MatchResultAnalyzerTest {
     void testSingleStandardMatchLastWins() {
         // given
         String[] testData = new String[]{"Nils Barion", "Frederik Volkert", "W", "12", "21", "10", "21", "H2H"};
+        var expectedMatchElementList = List.of(testData);
         var expectedMarkerPosition = 2;
         var expectedMatchScores = List.of(12, 21, 10, 21);
         var expectedMarker = "W";
@@ -32,7 +33,10 @@ class MatchResultAnalyzerTest {
         assertAll("Test analyzed single match data",
                 () -> assertThat(sut.isByeMatch()).isFalse(),
                 () -> assertThat(sut.getMarkerPosition("W")).isEqualTo(expectedMarkerPosition),
+                () -> assertThat(sut.getMarkerPosition()).isEqualTo(expectedMarkerPosition),
                 () -> assertThat(sut.getMatchResultScores()).isEqualTo(expectedMatchScores),
+                () -> assertThat(sut.getMatchResultElements()).isEqualTo(testData),
+                () -> assertThat(sut.getMatchResultElementList()).isEqualTo(expectedMatchElementList),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
         );
@@ -69,6 +73,28 @@ class MatchResultAnalyzerTest {
         var expectedMarkerPosition = 1;
         var expectedMarker = "W";
         List<String> expectedPlayerNames = List.of("Victoria Braun");
+
+        // when
+        sut = new MatchResultAnalyzer(testData);
+
+        // then
+        assertAll("Test analyzed single match data",
+                () -> assertThat(sut.isByeMatch()).isTrue(),
+                () -> assertThat(sut.getMarkerPosition("W")).isEqualTo(expectedMarkerPosition),
+                () -> assertThat(sut.getMatchResultScores().size()).isEqualTo(0),
+                () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
+                () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
+        );
+    }
+
+    @Test
+    @DisplayName("Test analyzing single bye match with 'Kein Spiel' ")
+    void testSingleByeMatchWithNoGame() {
+        // given
+        String[] testData = new String[]{"Rast", "Kein Spiel", "Max Hahn", "W"};
+        var expectedMarkerPosition = 3;
+        var expectedMarker = "W";
+        List<String> expectedPlayerNames = List.of("Max Hahn");
 
         // when
         sut = new MatchResultAnalyzer(testData);
@@ -125,6 +151,52 @@ class MatchResultAnalyzerTest {
                 () -> assertThat(sut.getMatchResultScores()).isEqualTo(expectedMatchScores),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
+        );
+    }
+
+    @Test
+    @DisplayName("Test player name retrieval")
+    void testPlayerNamesWithoutMarker() {
+        // given
+        String[] testData = new String[]{"Emily Bischoff", "Victoria Braun", "L", "Sidonie Krüger", "Miya-Melayn Salaria", "18", "21", "16", "21", "H2H"};
+
+        var expectedFirstPlayerName = "Emily Bischoff";
+        var expectedSecondPlayerName = "Victoria Braun";
+        var expectedThirdPlayerName = "Sidonie Krüger";
+        var expectedFourthPlayerName = "Miya-Melayn Salaria";
+
+        // when
+        sut = new MatchResultAnalyzer(testData);
+
+        // then
+        assertAll("Test extracted player names",
+                () -> assertThat(sut.getFirstPlayerName(false)).isEqualTo(expectedFirstPlayerName),
+                () -> assertThat(sut.getSecondPlayerName(false)).isEqualTo(expectedSecondPlayerName),
+                () -> assertThat(sut.getThirdPlayerName(false)).isEqualTo(expectedThirdPlayerName),
+                () -> assertThat(sut.getFourthPlayerName(false)).isEqualTo(expectedFourthPlayerName)
+        );
+    }
+
+    @Test
+    @DisplayName("Test player name retrieval with marker")
+    void testPlayerNamesWithMarker() {
+        // given
+        String[] testData = new String[]{"Emily Bischoff", "Victoria Braun", "L", "Sidonie Krüger", "Miya-Melayn Salaria", "18", "21", "16", "21", "H2H"};
+
+        var expectedFirstPlayerName = "Emily Bischoff (L)";
+        var expectedSecondPlayerName = "Victoria Braun (L)";
+        var expectedThirdPlayerName = "Sidonie Krüger (L)";
+        var expectedFourthPlayerName = "Miya-Melayn Salaria (L)";
+
+        // when
+        sut = new MatchResultAnalyzer(testData);
+
+        // then
+        assertAll("Test extracted player names",
+                () -> assertThat(sut.getFirstPlayerName(true)).isEqualTo(expectedFirstPlayerName),
+                () -> assertThat(sut.getSecondPlayerName(true)).isEqualTo(expectedSecondPlayerName),
+                () -> assertThat(sut.getThirdPlayerName(true)).isEqualTo(expectedThirdPlayerName),
+                () -> assertThat(sut.getFourthPlayerName(true)).isEqualTo(expectedFourthPlayerName)
         );
     }
 

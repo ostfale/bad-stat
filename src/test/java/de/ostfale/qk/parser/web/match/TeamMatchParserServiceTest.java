@@ -22,6 +22,7 @@ class TeamMatchParserServiceTest extends BaseParserTest {
     private static final String DOUBLE_MATCH_STANDARD_FIRST_TEAM_LOST = "matches/DoubleMatchStandardFirstTeamLost.html";
     private static final String DOUBLE_MATCH_STANDARD_SECOND_TEAM_WINS = "matches/DoubleMatchStandardSecondTeamWins.html";
     private static final String DOUBLE_MATCH_SECOND_HAS_RAST = "matches/DoubleMatchSecondTeamHasRast.html";
+    private static final String DOUBLE_MATCH_FIRST_HAS_WALKOVER = "matches/DoubleMatchFirstTeamWalkover.html";
     private static final String MIXED_MATCH_FIRST_HAS_RAST = "matches/MixedMatchFirstTeamHasRast.html";
 
     private MatchParser sut;
@@ -167,6 +168,31 @@ class TeamMatchParserServiceTest extends BaseParserTest {
                 () -> assertThat(result.getPlayerOneName()).isEqualTo(expectedPlayerOneName),
                 () -> assertThat(result.getPartnerOneName()).isEqualTo(expectedPartnerOneName),
                 () -> assertThat(result.getPlayerTwoName()).isEqualTo(expectedPlayerTwoName)
+        );
+    }
+
+    @Test
+    @DisplayName("Test double match where first team has walkover")
+        // ["Max Hahn","Mika Sisic","W","Nikolaj Mølgaard Thomsen","Viktor Verhelst","Walkover","H2H"]
+    void testDoubleMatchFirstWalkover() throws HtmlParserException {
+        // given
+        HtmlPage page = loadHtmlPage(DOUBLE_MATCH_FIRST_HAS_WALKOVER);
+        var expectedRoundName = "Round 1";
+        var expectedPlayerOneName = "Max Hahn";
+        var expectedPartnerOneName = "Mika Sisic (W)";
+        var expectedPlayerTwoName = "Nikolaj Mølgaard Thomsen";
+        var expectedPartnerTwoName="Viktor Verhelst";
+
+        // when
+        var result = sut.parseMatch(DOUBLE, page.getActiveElement());
+
+        // then
+        assertAll("Assert data for double match walkover",
+                () -> assertThat(result.getRoundName()).isEqualTo(expectedRoundName),
+                () -> assertThat(result.getPlayerOneName()).isEqualTo(expectedPlayerOneName),
+                () -> assertThat(result.getPartnerOneName()).isEqualTo(expectedPartnerOneName),
+                () -> assertThat(result.getPlayerTwoName()).isEqualTo(expectedPlayerTwoName),
+                () -> assertThat(result.getPartnerTwoName()).isEqualTo(expectedPartnerTwoName)
         );
     }
 }

@@ -26,11 +26,19 @@ public class MatchSet {
         this.secondValue = secondValue;
     }
 
+    public MatchSet(MatchResultType matchResultType) {
+        this.matchResultType = matchResultType;
+    }
+
     public MatchSet() {
     }
 
     @JsonIgnore
     public String getDisplayString() {
+        if (matchResultType == MatchResultType.WALKOVER) {
+            return MatchResultType.WALKOVER.getDisplayName();
+        }
+
         String firstValueString = firstValue < 10 ? " " + firstValue : String.valueOf(firstValue);
         String secondValueString = secondValue < 10 ? " " + secondValue : String.valueOf(secondValue);
         return String.format("[Satz %d] %s : %s", setNumber.getSetNo(), firstValueString, secondValueString);

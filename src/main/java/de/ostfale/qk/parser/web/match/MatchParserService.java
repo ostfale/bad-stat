@@ -3,13 +3,13 @@ package de.ostfale.qk.parser.web.match;
 import de.ostfale.qk.domain.discipline.DisciplineType;
 import de.ostfale.qk.domain.match.DisciplineMatch;
 import de.ostfale.qk.domain.match.MatchResultType;
+import de.ostfale.qk.domain.set.MatchSet;
 import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.ParsedComponent;
 import de.ostfale.qk.parser.web.HtmlStructureParser;
 import de.ostfale.qk.parser.web.set.SetParser;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.apache.commons.lang3.ArrayUtils;
 import org.htmlunit.html.HtmlElement;
 
 import java.util.Objects;
@@ -17,149 +17,143 @@ import java.util.Objects;
 @ApplicationScoped
 public class MatchParserService implements MatchParser {
 
-    private static final String WINNER_MARKER = "W";
-    private static final String LOSER_MARKER = "L";
-
-    private static final int WI_LO_MARKER_INDEX_TWO = 2;
-
-    private static final String BYE_MARKER = MatchResultType.BYE.getDisplayName();
-    private static final int BYE_MARKER_INDEX_FIRST = 0;
-    private static final int BYE_MARKER_INDEX_SECOND = 1;
-    private static final int BYE_MARKER_INDEX_FOUR = 3;
-
-
-    private static final int SINGLE_MATCH_MARKER_INDEX = 1;
-    private static final int DOUBLES_MIXED_MATCH_INDEX = 2;
-    private static final int DOUBLES_MIXED_MATCH_ALT_INDEX = 4;
-
-    private static final int FIRST_SINGLE_PLAYER_INDEX = 0;
-    private static final int SECOND_SINGLE_PLAYER_INDEX = 2;
-
-    private static final int FIRST_DOUBLE_MIXED_PLAYER_INDEX = 0;
-    private static final int FIRST_DOUBLE_MIXED_PARTNER_INDEX = 1;
-
-
-    private final MatchByeParserService matchByeParserService;
+    private static final String MARKER_FORMAT = " (%s)";
     private final SetParser setParser;
 
     public MatchParserService(SetParser setParser) {
         this.setParser = setParser;
-        this.matchByeParserService = new MatchByeParserService();
     }
 
     @Override
     public DisciplineMatch parseMatch(DisciplineType disciplineType, HtmlElement matchGroupElement) throws HtmlParserException {
         Log.debug("MatchParserService :: parse match data and round name");
         DisciplineMatch disciplineMatch = new DisciplineMatch();
-        String[] matchStringElements = extractMatchBodyElements(matchGroupElement);
         disciplineMatch.setRoundName(extractMatchRoundName(matchGroupElement));
+        String[] matchStringElements = extractMatchBodyElements(matchGroupElement);
+        MatchResultAnalyzer analyzer = new MatchResultAnalyzer(matchStringElements);
         var sets = setParser.parseSets(matchStringElements);
         disciplineMatch.getMatchSets().addAll(sets);
 
         switch (disciplineType) {
-            case SINGLE -> parseSingleMatch(disciplineMatch, matchStringElements);
-            case DOUBLE -> parseDoubleMatch(disciplineMatch, matchStringElements);
-            case MIXED -> parseMixedMatch(disciplineMatch, matchStringElements);
+            case SINGLE -> parseSingleMatch(disciplineMatch, analyzer);
+            case DOUBLE, MIXED -> parseTeamMatch(disciplineMatch, analyzer);
             default -> throw new HtmlParserException(ParsedComponent.MATCH, "Unknown discipline type: " + disciplineType);
         }
         return disciplineMatch;
     }
 
-    private void parseSingleMatch(DisciplineMatch disciplineMatch, String[] matchStringElements) throws HtmlParserException {
+    private void parseSingleMatch(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
         Log.debug("MatchParserService :: parse single match");
 
-        if (matchByeParserService.isByeMatch(matchStringElements)) {
-            handleSinglePlayerHasRast(disciplineMatch, matchStringElements);
+        if (analyzer.isByeMatch()) {
+            assignSinglePlayerNamesForBye(disciplineMatch, analyzer);
             return;
         }
-
-        MarkerValueAndIndex markerValueAndIndex = findWinnerLoserMarker(matchStringElements);
-        if (markerValueAndIndex.markerIndex == SINGLE_MATCH_MARKER_INDEX) {}
-
-
-
-        var firstPlayerName = matchStringElements[FIRST_SINGLE_PLAYER_INDEX];
-        var secondPlayerName = matchStringElements[SECOND_SINGLE_PLAYER_INDEX];
-        disciplineMatch.setPlayerOneName(markerValueAndIndex.getMarkerDisplayValue(firstPlayerName));
-        disciplineMatch.setPlayerTwoName(secondPlayerName);
+        assignSinglePlayerNamesWithMarker(disciplineMatch, analyzer);
     }
 
-    private void parseDoubleMatch(DisciplineMatch disciplineMatch, String[] matchStringElements) throws HtmlParserException {
-        Log.debug("MatchParserService :: parse double match");
-        MarkerValueAndIndex markerValueAndIndex = findWinnerLoserMarker(matchStringElements);
+    private void assignSinglePlayerNamesWithMarker(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
+        Log.debug("MatchParserService :: assignSinglePlayerNamesWithMarker");
+        var marker = analyzer.getMarker();
+        var MARKER_POS_1 = analyzer.getMarkerPosition(marker) == 1;
 
-        if (matchByeParserService.isByeMatch(matchStringElements)) {
-            handleTeamHasRast(disciplineMatch, matchStringElements);
-            return;
-        }
-
-        if (markerValueAndIndex.markerIndex == DOUBLES_MIXED_MATCH_INDEX) {
-            String secondNameExtension = matchStringElements[FIRST_DOUBLE_MIXED_PARTNER_INDEX];
-            disciplineMatch.setPlayerOneName(matchStringElements[FIRST_DOUBLE_MIXED_PLAYER_INDEX]);
-            disciplineMatch.setPartnerOneName(markerValueAndIndex.getMarkerDisplayValue(secondNameExtension));
-            disciplineMatch.setPlayerTwoName(matchStringElements[3]);
-            disciplineMatch.setPartnerTwoName(matchStringElements[4]);
-        }
-        if (markerValueAndIndex.markerIndex == DOUBLES_MIXED_MATCH_ALT_INDEX) {
-            disciplineMatch.setPlayerOneName(matchStringElements[FIRST_DOUBLE_MIXED_PLAYER_INDEX]);
-            disciplineMatch.setPartnerOneName(matchStringElements[FIRST_DOUBLE_MIXED_PARTNER_INDEX]);
-            disciplineMatch.setPlayerTwoName(matchStringElements[2]);
-            disciplineMatch.setPartnerTwoName(markerValueAndIndex.getMarkerDisplayValue(matchStringElements[3]));
-        }
-    }
-
-    private void handleSinglePlayerHasRast(DisciplineMatch disciplineMatch, String[] matchStringElements) {
-        Log.debug("MatchParserService :: handle single player has rast");
-        if (matchStringElements[BYE_MARKER_INDEX_FIRST].equalsIgnoreCase(BYE_MARKER)) {
-            disciplineMatch.setPlayerOneName(MatchResultType.BYE.getDisplayName());
-            disciplineMatch.setPlayerTwoName(matchStringElements[1] + " (W)");
+        if (MARKER_POS_1) {
+            disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(true));
+            disciplineMatch.setPlayerTwoName(analyzer.getSecondPlayerName(false));
         } else {
-            disciplineMatch.setPlayerOneName(matchStringElements[0] + " (W)");
-            disciplineMatch.setPlayerTwoName(MatchResultType.BYE.getDisplayName());
+            disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(false));
+            disciplineMatch.setPlayerTwoName(analyzer.getSecondPlayerName(true));
         }
     }
 
-    private void handleTeamHasRast(DisciplineMatch disciplineMatch, String[] matchStringElements) {
-        Log.debug("MatchParserService :: handle double or mixed team has rast");
-        if (matchStringElements[BYE_MARKER_INDEX_FIRST].equalsIgnoreCase(BYE_MARKER)) {
-            var firstPlayerName = matchStringElements[1];
-            var secondPlayerName = matchStringElements[2] + " (W)";
-            disciplineMatch.setPlayerOneName(MatchResultType.BYE.getDisplayName());
-            disciplineMatch.setPlayerTwoName(firstPlayerName);
-            disciplineMatch.setPartnerTwoName(secondPlayerName);
-        } else if (matchStringElements[BYE_MARKER_INDEX_FOUR].equalsIgnoreCase(BYE_MARKER)) {
-            var firstPlayerName = matchStringElements[0];
-            var firstPartnerName = matchStringElements[1] + " (W)";
-            disciplineMatch.setPlayerOneName(firstPlayerName);
-            disciplineMatch.setPartnerOneName(firstPartnerName);
-            disciplineMatch.setPlayerTwoName(MatchResultType.BYE.getDisplayName());
-        }
-    }
+    private void parseTeamMatch(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
+        Log.debug("MatchParserService :: parse team match");
 
-    private void parseMixedMatch(DisciplineMatch disciplineMatch, String[] matchStringElements) throws HtmlParserException {
-        Log.debug("MatchParserService :: parse mixed match");
-        MarkerValueAndIndex markerValueAndIndex = findWinnerLoserMarker(matchStringElements);
-
-        if (matchByeParserService.isByeMatch(matchStringElements)) {
-            handleTeamHasRast(disciplineMatch, matchStringElements);
+        if (analyzer.isByeMatch()) {
+            assignTeamNamesForBye(disciplineMatch, analyzer);
             return;
         }
 
-        if (markerValueAndIndex.markerIndex == DOUBLES_MIXED_MATCH_INDEX) {
-            String secondNameExtension = matchStringElements[FIRST_DOUBLE_MIXED_PARTNER_INDEX];
-            disciplineMatch.setPlayerOneName(matchStringElements[FIRST_DOUBLE_MIXED_PLAYER_INDEX]);
-            disciplineMatch.setPartnerOneName(markerValueAndIndex.getMarkerDisplayValue(secondNameExtension));
-            disciplineMatch.setPlayerTwoName(matchStringElements[3]);
-            disciplineMatch.setPartnerTwoName(matchStringElements[4]);
+        if (analyzer.isWalkOverMatch()) {
+            assignTeamNamesForWalkover(disciplineMatch, analyzer);
+            return;
         }
-        if (markerValueAndIndex.markerIndex == DOUBLES_MIXED_MATCH_ALT_INDEX) {
-            disciplineMatch.setPlayerOneName(matchStringElements[FIRST_DOUBLE_MIXED_PLAYER_INDEX]);
-            disciplineMatch.setPartnerOneName(matchStringElements[FIRST_DOUBLE_MIXED_PARTNER_INDEX]);
-            disciplineMatch.setPlayerTwoName(matchStringElements[2]);
-            disciplineMatch.setPartnerTwoName(markerValueAndIndex.getMarkerDisplayValue(matchStringElements[3]));
+
+        assignTeamPlayerNamesWithMarker(disciplineMatch, analyzer);
+    }
+
+    private void assignTeamNamesForWalkover(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
+        Log.debug("MatchParserService :: assignTeamNamesForWalkover");
+
+        var MARKER_POS_2 = 2;
+        var matchMarkerPosition = analyzer.getMarkerPosition();
+
+        if (matchMarkerPosition == MARKER_POS_2) {
+            disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(false));
+            disciplineMatch.setPartnerOneName(analyzer.getSecondPlayerName(true));
+            disciplineMatch.setPlayerTwoName(analyzer.getThirdPlayerName(false));
+            disciplineMatch.setPartnerTwoName(analyzer.getFourthPlayerName(false));
+            disciplineMatch.getMatchSets().clear();
+            disciplineMatch.getMatchSets().add(new MatchSet(MatchResultType.WALKOVER));
+        } else {
+            disciplineMatch.setPlayerOneName(MatchResultType.BYE.getDisplayName());
+            disciplineMatch.setPlayerTwoName(analyzer.getFirstPlayerName(false));
+            disciplineMatch.setPartnerTwoName(analyzer.getSecondPlayerName(true));
+        }
+
+    }
+
+    private void assignTeamPlayerNamesWithMarker(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
+        Log.debug("MatchParserService :: assignTeamPlayerNamesWithMarker");
+
+        var marker = analyzer.getMarker();
+        var playerNames = analyzer.getPlayerNames();
+        var isFirstTeamMarked = analyzer.getMarkerPosition(marker) == 2;
+
+        var firstPlayer = playerNames.getFirst();
+        var secondPlayer = playerNames.get(1);
+        var thirdPlayer = playerNames.get(2);
+        var fourthPlayer = playerNames.getLast();
+
+        if (isFirstTeamMarked) {
+            secondPlayer += String.format(MARKER_FORMAT, marker);
+        } else {
+            fourthPlayer += String.format(MARKER_FORMAT, marker);
+        }
+
+        disciplineMatch.setPlayerOneName(firstPlayer);
+        disciplineMatch.setPartnerOneName(secondPlayer);
+        disciplineMatch.setPlayerTwoName(thirdPlayer);
+        disciplineMatch.setPartnerTwoName(fourthPlayer);
+    }
+
+    private void assignSinglePlayerNamesForBye(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
+        Log.debug("MatchParserService :: handle single player has rast");
+        var markerPosition = analyzer.getMarkerPosition();
+
+        if (markerPosition == 2 || markerPosition == 3) {
+            disciplineMatch.setPlayerOneName(MatchResultType.BYE.getDisplayName());
+            disciplineMatch.setPlayerTwoName(analyzer.getFirstPlayerName(true));
+        } else {
+            disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(true));
+            disciplineMatch.setPlayerTwoName(MatchResultType.BYE.getDisplayName());
         }
     }
 
+    private void assignTeamNamesForBye(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
+        Log.debug("MatchParserService :: handle team player have rast");
+        var markerPosition = analyzer.getMarkerPosition();
+
+        if (markerPosition == 2) {
+            disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(false));
+            disciplineMatch.setPartnerOneName(analyzer.getSecondPlayerName(true));
+            disciplineMatch.setPlayerTwoName(MatchResultType.BYE.getDisplayName());
+        } else {
+            disciplineMatch.setPlayerOneName(MatchResultType.BYE.getDisplayName());
+            disciplineMatch.setPlayerTwoName(analyzer.getFirstPlayerName(false));
+            disciplineMatch.setPartnerTwoName(analyzer.getSecondPlayerName(true));
+        }
+    }
 
     private String extractMatchRoundName(HtmlElement matchGroupElement) {
         Log.debug("MatchParserService :: extractMatchRoundName");
@@ -172,32 +166,5 @@ public class MatchParserService implements MatchParser {
         Objects.requireNonNull(matchGroupElement, "matchGroupElement must not be null");
         HtmlElement matchBody = new HtmlStructureParser().getMatchBodyElement(matchGroupElement);
         return matchBody.asNormalizedText().split(MATCH_RESULT_SEPARATOR);
-    }
-
-    private MarkerValueAndIndex findWinnerLoserMarker(String[] matchStringElements) throws HtmlParserException {
-        for (var element : matchStringElements) {
-            if (isWinnerOrLoserMarker(element)) {
-                return new MarkerValueAndIndex(
-                        ArrayUtils.indexOf(matchStringElements, element),
-                        element
-                );
-            }
-        }
-        throw new HtmlParserException(ParsedComponent.MATCH, "Match does not contain W-L-Marker!");
-    }
-
-    private boolean isWinnerOrLoserMarker(String element) {
-        return element.equalsIgnoreCase(WINNER_MARKER) ||
-                element.equalsIgnoreCase(LOSER_MARKER);
-    }
-
-    private record MarkerValueAndIndex(
-            int markerIndex,
-            String markerValue
-    ) {
-
-        public String getMarkerDisplayValue(String playerName) {
-            return String.format("%s (%s)", playerName, markerValue);
-        }
     }
 }
