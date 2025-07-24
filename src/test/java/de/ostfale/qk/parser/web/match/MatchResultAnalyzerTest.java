@@ -1,5 +1,6 @@
 package de.ostfale.qk.parser.web.match;
 
+import de.ostfale.qk.parser.HtmlParserException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ class MatchResultAnalyzerTest {
 
     @Test
     @DisplayName("Test analyzing single standard match ")
-    void testSingleStandardMatchLastWins() {
+    void testSingleStandardMatchLastWins() throws HtmlParserException {
         // given
         String[] testData = new String[]{"Nils Barion", "Frederik Volkert", "W", "12", "21", "10", "21", "H2H"};
         var expectedMatchElementList = List.of(testData);
@@ -32,7 +33,6 @@ class MatchResultAnalyzerTest {
         // then
         assertAll("Test analyzed single match data",
                 () -> assertThat(sut.isByeMatch()).isFalse(),
-                () -> assertThat(sut.getMarkerPosition("W")).isEqualTo(expectedMarkerPosition),
                 () -> assertThat(sut.getMarkerPosition()).isEqualTo(expectedMarkerPosition),
                 () -> assertThat(sut.getMatchResultScores()).isEqualTo(expectedMatchScores),
                 () -> assertThat(sut.getMatchResultElements()).isEqualTo(testData),
@@ -44,7 +44,7 @@ class MatchResultAnalyzerTest {
 
     @Test
     @DisplayName("Test analyzing single standard match ")
-    void testSingleStandardMatchFirstWins() {
+    void testSingleStandardMatchFirstWins() throws HtmlParserException {
         // given
         String[] testData = new String[]{"Victoria Braun", "W", "Elina Uhlmann", "21", "10", "21", "8", "H2H"};
         var expectedMarkerPosition = 1;
@@ -58,7 +58,6 @@ class MatchResultAnalyzerTest {
         // then
         assertAll("Test analyzed single match data",
                 () -> assertThat(sut.isByeMatch()).isFalse(),
-                () -> assertThat(sut.getMarkerPosition("W")).isEqualTo(expectedMarkerPosition),
                 () -> assertThat(sut.getMatchResultScores()).isEqualTo(expectedMatchScores),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
@@ -67,7 +66,7 @@ class MatchResultAnalyzerTest {
 
     @Test
     @DisplayName("Test analyzing single bye match first wins")
-    void testSingleStandardMatchByeFirst() {
+    void testSingleStandardMatchByeFirst() throws HtmlParserException {
         // given
         String[] testData = new String[]{"Victoria Braun", "W", "Rast"};
         var expectedMarkerPosition = 1;
@@ -80,7 +79,6 @@ class MatchResultAnalyzerTest {
         // then
         assertAll("Test analyzed single match data",
                 () -> assertThat(sut.isByeMatch()).isTrue(),
-                () -> assertThat(sut.getMarkerPosition("W")).isEqualTo(expectedMarkerPosition),
                 () -> assertThat(sut.getMatchResultScores().size()).isEqualTo(0),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
@@ -89,7 +87,7 @@ class MatchResultAnalyzerTest {
 
     @Test
     @DisplayName("Test analyzing single bye match with 'Kein Spiel' ")
-    void testSingleByeMatchWithNoGame() {
+    void testSingleByeMatchWithNoGame() throws HtmlParserException {
         // given
         String[] testData = new String[]{"Rast", "Kein Spiel", "Max Hahn", "W"};
         var expectedMarkerPosition = 3;
@@ -102,7 +100,6 @@ class MatchResultAnalyzerTest {
         // then
         assertAll("Test analyzed single match data",
                 () -> assertThat(sut.isByeMatch()).isTrue(),
-                () -> assertThat(sut.getMarkerPosition("W")).isEqualTo(expectedMarkerPosition),
                 () -> assertThat(sut.getMatchResultScores().size()).isEqualTo(0),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
@@ -111,7 +108,7 @@ class MatchResultAnalyzerTest {
 
     @Test
     @DisplayName("Test analyzing single bye match last wins")
-    void testSingleStandardMatchByeLast() {
+    void testSingleStandardMatchByeLast() throws HtmlParserException {
         // given
         String[] testData = new String[]{"Rast", "Frederik Volkert", "W"};
         var expectedMarkerPosition = 2;
@@ -124,7 +121,6 @@ class MatchResultAnalyzerTest {
         // then
         assertAll("Test analyzed single match data",
                 () -> assertThat(sut.isByeMatch()).isTrue(),
-                () -> assertThat(sut.getMarkerPosition("W")).isEqualTo(expectedMarkerPosition),
                 () -> assertThat(sut.getMatchResultScores().size()).isEqualTo(0),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
@@ -133,7 +129,7 @@ class MatchResultAnalyzerTest {
 
     @Test
     @DisplayName("Test analyzing double standard match winner first")
-    void testStandardDoubleMatchWinnerFirst() {
+    void testStandardDoubleMatchWinnerFirst() throws HtmlParserException {
         // given
         String[] testData = new String[]{"Emily Bischoff", "Victoria Braun", "L", "Sidonie Krüger", "Miya-Melayn Salaria", "18", "21", "16", "21", "H2H"};
         var expectedMarkerPosition = 2;
@@ -147,7 +143,6 @@ class MatchResultAnalyzerTest {
         // then
         assertAll("Test analyzed single match data",
                 () -> assertThat(sut.isByeMatch()).isFalse(),
-                () -> assertThat(sut.getMarkerPosition("L")).isEqualTo(expectedMarkerPosition),
                 () -> assertThat(sut.getMatchResultScores()).isEqualTo(expectedMatchScores),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
@@ -156,7 +151,7 @@ class MatchResultAnalyzerTest {
 
     @Test
     @DisplayName("Test player name retrieval")
-    void testPlayerNamesWithoutMarker() {
+    void testPlayerNamesWithoutMarker() throws HtmlParserException {
         // given
         String[] testData = new String[]{"Emily Bischoff", "Victoria Braun", "L", "Sidonie Krüger", "Miya-Melayn Salaria", "18", "21", "16", "21", "H2H"};
 
@@ -179,7 +174,7 @@ class MatchResultAnalyzerTest {
 
     @Test
     @DisplayName("Test player name retrieval with marker")
-    void testPlayerNamesWithMarker() {
+    void testPlayerNamesWithMarker() throws HtmlParserException {
         // given
         String[] testData = new String[]{"Emily Bischoff", "Victoria Braun", "L", "Sidonie Krüger", "Miya-Melayn Salaria", "18", "21", "16", "21", "H2H"};
 
@@ -202,7 +197,7 @@ class MatchResultAnalyzerTest {
 
     @Test
     @DisplayName("Test analyzing double standard match winner last")
-    void testStandardDoubleMatchWinnerLast() {
+    void testStandardDoubleMatchWinnerLast() throws HtmlParserException {
         // given
         String[] testData = new String[]{"Yara Metzlaff", "Wilhelmine Witthus", "Emily Bischoff", "Victoria Braun", "W", "13", "21", "21", "19", "15", "21", "H2H"};
         var expectedMarkerPosition = 4;
@@ -216,7 +211,6 @@ class MatchResultAnalyzerTest {
         // then
         assertAll("Test analyzed single match data",
                 () -> assertThat(sut.isByeMatch()).isFalse(),
-                () -> assertThat(sut.getMarkerPosition("W")).isEqualTo(expectedMarkerPosition),
                 () -> assertThat(sut.getMatchResultScores()).isEqualTo(expectedMatchScores),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
@@ -225,7 +219,7 @@ class MatchResultAnalyzerTest {
 
     @Test
     @DisplayName("Test analyzing double bye match winner last")
-    void testStandardDoubleByeMatchWinnerLast() {
+    void testStandardDoubleByeMatchWinnerLast() throws HtmlParserException {
         // given
         String[] testData = new String[]{"Rast", "Emily Bischoff", "Victoria Braun", "W"};
         var expectedMarkerPosition = 3;
@@ -238,7 +232,6 @@ class MatchResultAnalyzerTest {
         // then
         assertAll("Test analyzed single match data",
                 () -> assertThat(sut.isByeMatch()).isTrue(),
-                () -> assertThat(sut.getMarkerPosition("W")).isEqualTo(expectedMarkerPosition),
                 () -> assertThat(sut.getMatchResultScores().isEmpty()).isTrue(),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
@@ -247,7 +240,7 @@ class MatchResultAnalyzerTest {
 
     @Test
     @DisplayName("Test analyzing mixed bye match winner first")
-    void testStandardMixedByeMatchWinnerFirst() {
+    void testStandardMixedByeMatchWinnerFirst() throws HtmlParserException {
         // given
         String[] testData = new String[]{"Aarav Bhatia", "Victoria Braun", "W", "Rast"};
         var expectedMarkerPosition = 2;
@@ -260,7 +253,6 @@ class MatchResultAnalyzerTest {
         // then
         assertAll("Test analyzed single match data",
                 () -> assertThat(sut.isByeMatch()).isTrue(),
-                () -> assertThat(sut.getMarkerPosition("W")).isEqualTo(expectedMarkerPosition),
                 () -> assertThat(sut.getMatchResultScores().isEmpty()).isTrue(),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)

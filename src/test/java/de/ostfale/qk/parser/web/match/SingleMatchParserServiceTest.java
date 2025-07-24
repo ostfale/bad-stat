@@ -24,6 +24,7 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
     private static final String SINGLE_MATCH_SECOND_PLAYER_RAST = "matches/SingleMatchSecondPlayerHasRast.html";
     private static final String SINGLE_MATCH_SECOND_PLAYER_WINS_BOY = "matches/SingleMatchBoysSecondPlayerWins.html";
     private static final String SINGLE_MATCH_KEIN_SPIEL = "matches/SingleMatchKeinSpiel.html";
+    private static final String SINGLE_MATCH_WALKOVER_L = "matches/SingleWalkoverLost.html";
 
     private MatchParser sut;
 
@@ -179,6 +180,29 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
         var expectedRoundName = "Round of 32";
         var expectedPlayerOneName = "Titus von Hartrott";
         var expectedPlayerTwoName = "Max Hahn (L)";
+
+        // when
+        var result = sut.parseMatch(SINGLE, page.getActiveElement());
+
+        // then
+        assertAll("Test single match rast data",
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.getRoundName()).isEqualTo(expectedRoundName),
+                () -> assertThat(result.getFirstPlayerOrWithPartnerName()).isEqualTo(expectedPlayerOneName),
+                () -> assertThat(result.getSecondPlayerOrWithPartnerName()).isEqualTo(expectedPlayerTwoName)
+        );
+    }
+
+    @Test
+    @DisplayName("Test a single match with with 'Walkover L' combination ")
+        // ["Soheyl Safari Araghi","Walkover L","Shager Thangjam","H2H"]
+    void testSingleMatchWithWalkoverLost() throws HtmlParserException {
+        // given
+        HtmlPage page = loadHtmlPage(SINGLE_MATCH_WALKOVER_L);
+        var expectedRoundName = "Round of 16";
+        var expectedPlayerOneName = "Soheyl Safari Araghi (L)";
+        var expectedPlayerTwoName = "Shager Thangjam";
+        var expectedSetResult = "Walkover";
 
         // when
         var result = sut.parseMatch(SINGLE, page.getActiveElement());

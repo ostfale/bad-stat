@@ -54,8 +54,7 @@ public class MatchParserService implements MatchParser {
 
     private void assignSinglePlayerNamesWithMarker(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
         Log.debug("MatchParserService :: assignSinglePlayerNamesWithMarker");
-        var marker = analyzer.getMarker();
-        var MARKER_POS_1 = analyzer.getMarkerPosition(marker) == 1;
+        var MARKER_POS_1 = analyzer.getMarkerPosition() == 1;
 
         if (MARKER_POS_1) {
             disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(true));
@@ -100,7 +99,6 @@ public class MatchParserService implements MatchParser {
             disciplineMatch.setPlayerTwoName(analyzer.getFirstPlayerName(false));
             disciplineMatch.setPartnerTwoName(analyzer.getSecondPlayerName(true));
         }
-
     }
 
     private void assignTeamPlayerNamesWithMarker(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
@@ -108,7 +106,7 @@ public class MatchParserService implements MatchParser {
 
         var marker = analyzer.getMarker();
         var playerNames = analyzer.getPlayerNames();
-        var isFirstTeamMarked = analyzer.getMarkerPosition(marker) == 2;
+        var isFirstTeamMarked = analyzer.getMarkerPosition() == 2;
 
         var firstPlayer = playerNames.getFirst();
         var secondPlayer = playerNames.get(1);

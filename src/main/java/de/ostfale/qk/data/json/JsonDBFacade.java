@@ -36,7 +36,8 @@ public interface JsonDBFacade extends FileSystemFacade {
     }
 
     default String createFavPlayerTournamentMatchesFileName(String playerName, String playerId, String year) {
-        var fileName = playerId + FILE_NAME_SEPARATOR + playerName + FILE_NAME_SEPARATOR + year + JSON_SUFFIX;
+        var concatPlayerName = playerName.replaceAll(" ", "_");
+        var fileName = playerId + FILE_NAME_SEPARATOR + concatPlayerName + FILE_NAME_SEPARATOR + year + JSON_SUFFIX;
         Log.infof("JsonDBFacade :: FavPlayerTournamentMatchesFileName: %s", fileName);
         return fileName;
     }
