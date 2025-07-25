@@ -44,6 +44,11 @@ public class WebDisciplineParserService implements WebDisciplineParser {
             DisciplineInfo currentDisciplineSubInfo = disciplineSubInfoList.get(disciplineIndex);
             DisciplineInfo nextDisciplineSubInfo;
             int nextDisciplineIndex = disciplineIndex + 1;
+
+            // check if next discipline is different from the current one
+            TournamentDiscipline nextTournamentDiscipline = nextDisciplineIndex < tournamentDisciplines.size()
+                    ? tournamentDisciplines.get(nextDisciplineIndex) : null;
+
             if (nextDisciplineIndex < disciplineSubInfoList.size()) {
                 Log.debugf("WebDisciplineParserService :: found next sub info type %s", currentDisciplineType.name());
                 nextDisciplineSubInfo = disciplineSubInfoList.get(disciplineIndex + 1);
@@ -63,8 +68,22 @@ public class WebDisciplineParserService implements WebDisciplineParser {
                 currentTournamentDiscipline.getEliminationMatches().addAll(matches);
             }
 
+            if (currentDisciplineSubInfo.isGroupSubHeader()) {
+                Log.debug("WebDisciplineParserService :: current discipline type contains group only!");
+                var discipline = currentDisciplineType.getDisplayString() + " / " + currentDisciplineSubInfo.originalString();
+                currentTournamentDiscipline.setDisciplineName(discipline);
+                var disciplineMatchGroupElement = disciplineMatchesList.get(disciplineIndex);
+                var matches = processMatches(currentDisciplineType, disciplineMatchGroupElement);
+                currentTournamentDiscipline.getGroupMatches().addAll(matches);
+            }
+
             // check if next subheader is  a group match -> discipline type will stay the same
             if (nextDisciplineSubInfo != null && nextDisciplineSubInfo.isGroupSubHeader()) {
+                // if the next discipline is different from the current one, it can't be a group match of the current discipline
+                if (nextTournamentDiscipline != null && currentDisciplineType != nextTournamentDiscipline.getDisciplineType()) {
+                    continue;
+                }
+
                 Log.debugf("WebDisciplineParserService :: next discipline type is the same as subheader discipline type -> %s", nextDisciplineSubInfo.disciplineType().name());
                 currentTournamentDiscipline.setDisciplineName(currentDisciplineSubInfo.originalString());
                 currentTournamentDiscipline.setGroupName(nextDisciplineSubInfo.originalString());
@@ -75,7 +94,6 @@ public class WebDisciplineParserService implements WebDisciplineParser {
         }
         return tournamentDisciplines;
     }
-
 
     private List<DisciplineMatch> processMatches(DisciplineType disciplineType, HtmlElement disciplineMatchGroupElement) throws HtmlParserException {
         Log.debugf("WebDisciplineParser :: process matches ->  DisciplineType %s", disciplineType.name());

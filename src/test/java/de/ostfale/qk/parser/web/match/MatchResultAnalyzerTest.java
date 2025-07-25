@@ -1,5 +1,6 @@
 package de.ostfale.qk.parser.web.match;
 
+import de.ostfale.qk.domain.match.MatchResultType;
 import de.ostfale.qk.parser.HtmlParserException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -135,6 +136,7 @@ class MatchResultAnalyzerTest {
         var expectedMarkerPosition = 2;
         var expectedMatchScores = List.of(18, 21, 16, 21);
         var expectedMarker = "L";
+        var expectedMatchResultType = MatchResultType.REGULAR.getDisplayName();
         List<String> expectedPlayerNames = List.of("Emily Bischoff", "Victoria Braun", "Sidonie Krüger", "Miya-Melayn Salaria");
 
         // when
@@ -145,6 +147,8 @@ class MatchResultAnalyzerTest {
                 () -> assertThat(sut.isByeMatch()).isFalse(),
                 () -> assertThat(sut.getMatchResultScores()).isEqualTo(expectedMatchScores),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
+                () -> assertThat(sut.getMarkerPosition()).isEqualTo(expectedMarkerPosition),
+                () -> assertThat(sut.getMatchResultType()).isEqualTo(expectedMatchResultType),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
         );
     }
@@ -203,6 +207,7 @@ class MatchResultAnalyzerTest {
         var expectedMarkerPosition = 4;
         var expectedMatchScores = List.of(13, 21, 21, 19, 15, 21);
         var expectedMarker = "W";
+        var expectedMatchResultType = MatchResultType.REGULAR.getDisplayName();
         List<String> expectedPlayerNames = List.of("Yara Metzlaff", "Wilhelmine Witthus", "Emily Bischoff", "Victoria Braun");
 
         // when
@@ -213,6 +218,8 @@ class MatchResultAnalyzerTest {
                 () -> assertThat(sut.isByeMatch()).isFalse(),
                 () -> assertThat(sut.getMatchResultScores()).isEqualTo(expectedMatchScores),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
+                () -> assertThat(sut.getMarkerPosition()).isEqualTo(expectedMarkerPosition),
+                () -> assertThat(sut.getMatchResultType()).isEqualTo(expectedMatchResultType),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
         );
     }
@@ -224,6 +231,7 @@ class MatchResultAnalyzerTest {
         String[] testData = new String[]{"Rast", "Emily Bischoff", "Victoria Braun", "W"};
         var expectedMarkerPosition = 3;
         var expectedMarker = "W";
+        var expectedMatchResultType = MatchResultType.BYE.getDisplayName();
         List<String> expectedPlayerNames = List.of("Emily Bischoff", "Victoria Braun");
 
         // when
@@ -234,6 +242,8 @@ class MatchResultAnalyzerTest {
                 () -> assertThat(sut.isByeMatch()).isTrue(),
                 () -> assertThat(sut.getMatchResultScores().isEmpty()).isTrue(),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
+                () -> assertThat(sut.getMarkerPosition()).isEqualTo(expectedMarkerPosition),
+                () -> assertThat(sut.getMatchResultType()).isEqualTo(expectedMatchResultType),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
         );
     }
@@ -245,6 +255,7 @@ class MatchResultAnalyzerTest {
         String[] testData = new String[]{"Aarav Bhatia", "Victoria Braun", "W", "Rast"};
         var expectedMarkerPosition = 2;
         var expectedMarker = "W";
+        var expectedMatchResultType = MatchResultType.BYE.getDisplayName();
         List<String> expectedPlayerNames = List.of("Aarav Bhatia", "Victoria Braun");
 
         // when
@@ -255,6 +266,59 @@ class MatchResultAnalyzerTest {
                 () -> assertThat(sut.isByeMatch()).isTrue(),
                 () -> assertThat(sut.getMatchResultScores().isEmpty()).isTrue(),
                 () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
+                () -> assertThat(sut.getMarkerPosition()).isEqualTo(expectedMarkerPosition),
+                () -> assertThat(sut.getMatchResultType()).isEqualTo(expectedMatchResultType),
+                () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
+        );
+    }
+
+    @Test
+    @DisplayName("Test analyzing single match with 'Walkover L' marker")
+    void testSingleSpecialWalkoverL() throws HtmlParserException {
+        // given
+        String[] testData = new String[]{"Soheyl Safari Araghi", "Walkover L", "Shager Thangjam", "H2H"};
+        var expectedMarkerPosition = 1;
+        var expectedMarker = "L";
+        var expectedMatchResultType = MatchResultType.WALKOVER.getDisplayName();
+
+        List<String> expectedPlayerNames = List.of("Soheyl Safari Araghi", "Shager Thangjam");
+
+        // when
+        sut = new MatchResultAnalyzer(testData);
+
+        // then
+        assertAll("Test analyzed special single match data",
+                () -> assertThat(sut.isWalkOverMatch()).isTrue(),
+                () -> assertThat(sut.getMatchResultScores().isEmpty()).isTrue(),
+                () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
+                () -> assertThat(sut.getMarkerPosition()).isEqualTo(expectedMarkerPosition),
+                () -> assertThat(sut.getMatchResultType()).isEqualTo(expectedMatchResultType),
+                () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
+        );
+    }
+
+    @Test
+    @DisplayName("Test analyzing single match with 'Retired L' marker")
+    void testSingleSpecialWalkoverLWithNumbersAfterName() throws HtmlParserException {
+        // given
+        String[] testData = new String[]{"Matti Richter", "Retired L", "Bruno Seichter", "13", "20", "H2H"};
+        var expectedMarkerPosition = 1;
+        var expectedMarker = "L";
+        var expectedMatchResultType = MatchResultType.RETIRED.getDisplayName();
+        List<String> expectedPlayerNames = List.of("Matti Richter", "Bruno Seichter");
+        var expectedMatchScores = List.of(13, 20);
+
+        // when
+        sut = new MatchResultAnalyzer(testData);
+
+        // then
+        assertAll("Test analyzed special single match data",
+                () -> assertThat(sut.isRetiredMatch()).isTrue(),
+                () -> assertThat(sut.getMatchResultScores().isEmpty()).isFalse(),
+                () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
+                () -> assertThat(sut.getMatchResultScores()).isEqualTo(expectedMatchScores),
+                () -> assertThat(sut.getMarkerPosition()).isEqualTo(expectedMarkerPosition),
+                () -> assertThat(sut.getMatchResultType()).isEqualTo(expectedMatchResultType),
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
         );
     }

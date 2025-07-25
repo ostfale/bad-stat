@@ -19,13 +19,6 @@ public class MatchSet {
         this.secondValue = secondValue;
     }
 
-    public MatchSet(MatchResultType matchResultType, SetNumber setNumber, int firstValue, int secondValue) {
-        this.matchResultType = matchResultType;
-        this.setNumber = setNumber;
-        this.firstValue = firstValue;
-        this.secondValue = secondValue;
-    }
-
     public MatchSet(MatchResultType matchResultType) {
         this.matchResultType = matchResultType;
     }

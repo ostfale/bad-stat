@@ -75,7 +75,6 @@ public class WebDisciplineInfoParserService implements WebDisciplineParser {
             return new DisciplineInfo(disciplineSubstring, disciplineAndAge.ageClass(), disciplineAndAge.disciplineType());
         }
 
-
         var errorMessage = String.format("Invalid discipline subheader format : %s", disciplineSubstring);
         throw new HtmlParserException(ParsedComponent.DISCIPLINE_SUB_INFO, errorMessage);
 

@@ -3,6 +3,7 @@ package de.ostfale.qk.parser.web.set;
 import de.ostfale.qk.domain.match.MatchResultType;
 import de.ostfale.qk.domain.set.MatchSet;
 import de.ostfale.qk.parser.BaseParserTest;
+import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.web.HtmlStructureParser;
 import io.quarkus.logging.Log;
 import org.htmlunit.html.HtmlElement;
@@ -37,7 +38,7 @@ class SetParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test a regular single set ")
-    void testRegularSingleSet() {
+    void testRegularSingleSet() throws HtmlParserException {
         // given
         content = loadHtmlPage(SINGLE_REGULAR_SETS_FILE);
         String[] rawSetElements = extractMatchBodyElements(content.getActiveElement());
@@ -62,7 +63,7 @@ class SetParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test a single set with retired flag for second player without score")
-    void testRetiredForSecondPlayerWithoutScore() {
+    void testRetiredForSecondPlayerWithoutScore() throws HtmlParserException {
         // given
         content = loadHtmlPage(SINGLE_LAST_RETIRED_WITHOUT_POINT_SETS_FILE);
         String[] rawSetElements = extractMatchBodyElements(content.getActiveElement());
@@ -84,7 +85,7 @@ class SetParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test a single set with retired flag for first player")
-    void testRegularSingleSetRetiredFirstPlayer() {
+    void testRegularSingleSetRetiredFirstPlayer() throws HtmlParserException {
         // given
         content = loadHtmlPage(SINGLE_FIRST_RETIRED_SETS_FILE);
         String[] rawSetElements = extractMatchBodyElements(content.getActiveElement());
@@ -105,7 +106,7 @@ class SetParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test a single set with retired flag for second player")
-    void testRegularSingleSetRetiredSecondPlayer() {
+    void testRegularSingleSetRetiredSecondPlayer() throws HtmlParserException {
         // given
         content = loadHtmlPage(SINGLE_LAST_RETIRED_SETS_FILE);
         String[] rawSetElements = extractMatchBodyElements(content.getActiveElement());

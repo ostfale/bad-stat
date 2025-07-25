@@ -17,7 +17,6 @@ import java.util.Objects;
 @ApplicationScoped
 public class MatchParserService implements MatchParser {
 
-    private static final String MARKER_FORMAT = " (%s)";
     private final SetParser setParser;
 
     public MatchParserService(SetParser setParser) {
@@ -104,20 +103,12 @@ public class MatchParserService implements MatchParser {
     private void assignTeamPlayerNamesWithMarker(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
         Log.debug("MatchParserService :: assignTeamPlayerNamesWithMarker");
 
-        var marker = analyzer.getMarker();
-        var playerNames = analyzer.getPlayerNames();
         var isFirstTeamMarked = analyzer.getMarkerPosition() == 2;
 
-        var firstPlayer = playerNames.getFirst();
-        var secondPlayer = playerNames.get(1);
-        var thirdPlayer = playerNames.get(2);
-        var fourthPlayer = playerNames.getLast();
-
-        if (isFirstTeamMarked) {
-            secondPlayer += String.format(MARKER_FORMAT, marker);
-        } else {
-            fourthPlayer += String.format(MARKER_FORMAT, marker);
-        }
+        var firstPlayer = analyzer.getFirstPlayerName(false);
+        var secondPlayer = isFirstTeamMarked ? analyzer.getSecondPlayerName(true) : analyzer.getSecondPlayerName(false);
+        var thirdPlayer = analyzer.getThirdPlayerName(false);
+        var fourthPlayer = !isFirstTeamMarked ? analyzer.getFourthPlayerName(false) : analyzer.getFourthPlayerName(true);
 
         disciplineMatch.setPlayerOneName(firstPlayer);
         disciplineMatch.setPartnerOneName(secondPlayer);

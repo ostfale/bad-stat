@@ -14,15 +14,18 @@ public class MatchResultAnalyzer {
     private static final String LOSER_MARKER = "L";
     private static final String NO_GAME = "Kein Spiel";
     private static final String WALKOVER_L = "Walkover L";
+    private static final String RETIRED_L = "Retired L";
 
     private static final String BYE_MARKER_DE = MatchResultType.BYE.getDisplayName();
     private static final String WALKOVER_MARKER = MatchResultType.WALKOVER.getDisplayName();
+    private static final String RETIRED_MARKER = MatchResultType.RETIRED.getDisplayName();
 
     private final String[] matchResultElements;
     private final List<String> matchResultElementList;
     private final List<String> playerNames = new ArrayList<>(4);
     private final String markerValue;
     private final int markerPosition;
+    private String matchResultType = MatchResultType.REGULAR.getDisplayName();
 
     public MatchResultAnalyzer(String[] matchResultElements) throws HtmlParserException {
         Log.debugf("MatchResultAnalyzer :: init -> %s", String.join(",", matchResultElements));
@@ -32,10 +35,17 @@ public class MatchResultAnalyzer {
         this.markerPosition = extractMarkerPosition(matchResultElementList);
     }
 
+    public String getMatchResultType() {
+        return matchResultType;
+    }
+
     private int extractMarkerPosition(List<String> matchResultElementList) {
         Log.debug("MatchResultAnalyzer :: extractMarkerPosition");
         if (matchResultElementList.contains(WALKOVER_L)) {
             return matchResultElementList.indexOf(WALKOVER_L);
+        }
+        if (matchResultElementList.contains(RETIRED_L)) {
+            return matchResultElementList.indexOf(RETIRED_L);
         }
         return matchResultElementList.indexOf(markerValue);
     }
@@ -45,7 +55,9 @@ public class MatchResultAnalyzer {
         if (matchResultElementList.contains(WINNER_MARKER)) {
             return WINNER_MARKER;
         } else if (this.matchResultElementList.contains(LOSER_MARKER)
-                || this.matchResultElementList.contains(WALKOVER_L)) {
+                || this.matchResultElementList.contains(WALKOVER_L)
+                || this.matchResultElementList.contains(RETIRED_L)
+        ) {
             return LOSER_MARKER;
         }
         throw new HtmlParserException(ParsedComponent.MATCH, "Match does not contain W-L-Marker!");
@@ -53,13 +65,31 @@ public class MatchResultAnalyzer {
 
     public boolean isByeMatch() {
         Log.debug("MatchResultAnalyzer :: isByeMatch");
-        return matchResultElementList.contains(BYE_MARKER_DE);
+        var result = matchResultElementList.contains(BYE_MARKER_DE);
+        if (result) {
+            matchResultType = MatchResultType.BYE.getDisplayName();
+        }
+        return result;
     }
 
     public boolean isWalkOverMatch() {
         Log.debug("MatchResultAnalyzer :: isWalkOverMatch");
-        return matchResultElementList.contains(WALKOVER_MARKER)
+        var result = matchResultElementList.contains(WALKOVER_MARKER)
                 || matchResultElementList.contains(WALKOVER_L);
+        if (result) {
+            matchResultType = MatchResultType.WALKOVER.getDisplayName();
+        }
+        return result;
+    }
+
+    public boolean isRetiredMatch() {
+        Log.debug("MatchResultAnalyzer :: isRetiredMatch");
+        var result = matchResultElementList.contains(RETIRED_MARKER)
+                || matchResultElementList.contains(RETIRED_L);
+        if (result) {
+            matchResultType = MatchResultType.RETIRED.getDisplayName();
+        }
+        return result;
     }
 
     public String getMarker() {
@@ -148,9 +178,13 @@ public class MatchResultAnalyzer {
     }
 
     private boolean isValidName(String name) {
+        Log.infof("MatchResultAnalyzer :: isValidName -> %s", name);
         if (name == null
                 || name.isEmpty()
-                || name.equalsIgnoreCase(NO_GAME)) {
+                || name.equalsIgnoreCase(NO_GAME)
+                || name.equalsIgnoreCase(WALKOVER_L)
+                || name.equalsIgnoreCase(RETIRED_L)
+        ) {
             return false;
         }
 
@@ -164,7 +198,7 @@ public class MatchResultAnalyzer {
 
         // Check if each part starts with uppercase and contains only letters
         for (String part : nameParts) {
-            if (!part.matches("[A-Zvon][-øáäüöa-zA-Z]*")) {
+            if (!part.matches("[A-Zvonde][-øáäüößa-zA-Z]*")) {
                 return false;
             }
         }
