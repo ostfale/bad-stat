@@ -105,15 +105,13 @@ public class MatchParserService implements MatchParser {
 
         var isFirstTeamMarked = analyzer.getMarkerPosition() == 2;
 
-        var firstPlayer = analyzer.getFirstPlayerName(false);
-        var secondPlayer = isFirstTeamMarked ? analyzer.getSecondPlayerName(true) : analyzer.getSecondPlayerName(false);
-        var thirdPlayer = analyzer.getThirdPlayerName(false);
-        var fourthPlayer = !isFirstTeamMarked ? analyzer.getFourthPlayerName(false) : analyzer.getFourthPlayerName(true);
+        // First team players are always unmarked
+        disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(false));
+        disciplineMatch.setPartnerOneName(analyzer.getSecondPlayerName(isFirstTeamMarked));
 
-        disciplineMatch.setPlayerOneName(firstPlayer);
-        disciplineMatch.setPartnerOneName(secondPlayer);
-        disciplineMatch.setPlayerTwoName(thirdPlayer);
-        disciplineMatch.setPartnerTwoName(fourthPlayer);
+        // Second team players
+        disciplineMatch.setPlayerTwoName(analyzer.getThirdPlayerName(false));
+        disciplineMatch.setPartnerTwoName(analyzer.getFourthPlayerName(!isFirstTeamMarked));
     }
 
     private void assignSinglePlayerNamesForBye(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {

@@ -173,7 +173,7 @@ public class MatchResultAnalyzer {
         }
     }
 
-    private String formatNameWithMarker(String playerName) throws HtmlParserException {
+    private String formatNameWithMarker(String playerName) {
         return playerName + " (" + getMarker() + ")";
     }
 
@@ -198,10 +198,18 @@ public class MatchResultAnalyzer {
 
         // Check if each part starts with uppercase and contains only letters
         for (String part : nameParts) {
-            if (!part.matches("[A-Zvonde][-øáäüößa-zA-Z]*")) {
+            if (!containsOnlyCharacters(part)) {
                 return false;
             }
         }
         return true;
+    }
+
+    private boolean containsOnlyCharacters(String input) {
+        if (input == null || input.isEmpty()) {
+            return false;
+        }
+        return input.chars().noneMatch(Character::isDigit);
+
     }
 }
