@@ -27,7 +27,6 @@ public class HtmlParserException extends Exception {
                 .map(StackTraceElement::toString)
                 .collect(Collectors.joining("\n\t\t"));
 
-
         return "\nHtmlParserException: \n\tComponent: " + parsedComponent + "\n\tMessage: " + exception.getMessage() + "\n\tStacktrace:" + stacktraceAsString;
     }
 }

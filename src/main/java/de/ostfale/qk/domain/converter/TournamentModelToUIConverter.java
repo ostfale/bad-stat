@@ -27,13 +27,14 @@ public class TournamentModelToUIConverter implements Converter<Tournament, Playe
         return uiModel;
     }
 
-
     private void convertTo(Discipline discipline, PlayerMatchStatisticsUIModel uiModel) {
         Log.trace("TournamentModelToUIConverter :: Converting discipline model to UI model");
+        String disciplineAge = discipline.getDisciplineInfo().ageClass().name();
         String baseDisciplineName = discipline.getDisciplineType().getDisplayString();
+        String disciplineAgeName = String.format("%s (%s)", baseDisciplineName, disciplineAge);
 
         if (discipline.hasEliminationMatches()) {
-            processMatches(discipline.getEliminationMatches(), baseDisciplineName, uiModel);
+            processMatches(discipline.getEliminationMatches(), disciplineAgeName, uiModel);
         }
 
         if (discipline.hasGroupMatches()) {
@@ -51,7 +52,6 @@ public class TournamentModelToUIConverter implements Converter<Tournament, Playe
         Log.tracef("TournamentModelToUIConverter :: Processing %d matches for discipline: %s", matches.size(), disciplineName);
         convertMatches(uiModel, matches, disciplineName);
     }
-
 
     private void convertMatches(PlayerMatchStatisticsUIModel uiModel, List<DisciplineMatch> matchList, String disciplineName) {
         for (Match match : matchList) {

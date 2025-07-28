@@ -322,4 +322,60 @@ class MatchResultAnalyzerTest {
                 () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames)
         );
     }
+
+    @Test
+    @DisplayName("Test analyzing single match where first player retired in set 2")
+    void testSingleMatchFirstRetiredInSecondSet() throws HtmlParserException {
+        // given
+        String[] testData = new String[]{"Leo Hanxiang Luo", "Retired", "Soheyl Safari Araghi", "W", "19", "21", "5", "11", "H2H"};
+        var expectedMarker = "W";
+        var expectedMarkerPosition = 3;
+        var expectedRetiredPosition = 1;
+        List<String> expectedPlayerNames = List.of("Leo Hanxiang Luo", "Soheyl Safari Araghi");
+        var expectedMatchResultType = MatchResultType.RETIRED.getDisplayName();
+        var expectedMatchScores = List.of(19, 21, 5, 11);
+
+        // when
+        sut = new MatchResultAnalyzer(testData);
+
+        // then
+        assertAll("Test analyzed special single match data",
+                () -> assertThat(sut.isRetiredMatch()).isTrue(),
+                () -> assertThat(sut.getMatchResultScores().isEmpty()).isFalse(),
+                () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
+                () -> assertThat(sut.getMarkerPosition()).isEqualTo(expectedMarkerPosition),
+                () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames),
+                () -> assertThat(sut.getMatchResultType()).isEqualTo(expectedMatchResultType),
+                () -> assertThat(sut.getMatchResultScores()).isEqualTo(expectedMatchScores),
+                () -> assertThat(sut.getRetiredPosition()).isEqualTo(expectedRetiredPosition)
+        );
+    }
+
+    @Test
+    @DisplayName("Test analyzing single match where second player retired in set 2")
+    void testSingleMatchSecondRetiredInSecondSet() throws HtmlParserException {
+        // given
+        String[] testData = new String[]{"Soheyl Safari Araghi", "W", "Hannes Merget", "Retired", "23", "21", "8", "8", "H2H"};
+        var expectedMarker = "W";
+        var expectedMarkerPosition = 1;
+        var expectedRetiredPosition = 3;
+        List<String> expectedPlayerNames = List.of("Soheyl Safari Araghi","Hannes Merget");
+        var expectedMatchResultType = MatchResultType.RETIRED.getDisplayName();
+        var expectedMatchScores = List.of(23, 21, 8, 8);
+
+        // when
+        sut = new MatchResultAnalyzer(testData);
+
+        // then
+        assertAll("Test analyzed special single match data",
+                () -> assertThat(sut.isRetiredMatch()).isTrue(),
+                () -> assertThat(sut.getMatchResultScores().isEmpty()).isFalse(),
+                () -> assertThat(sut.getMarker()).isEqualTo(expectedMarker),
+                () -> assertThat(sut.getMarkerPosition()).isEqualTo(expectedMarkerPosition),
+                () -> assertThat(sut.getPlayerNames()).isEqualTo(expectedPlayerNames),
+                () -> assertThat(sut.getMatchResultType()).isEqualTo(expectedMatchResultType),
+                () -> assertThat(sut.getMatchResultScores()).isEqualTo(expectedMatchScores),
+                () -> assertThat(sut.getRetiredPosition()).isEqualTo(expectedRetiredPosition)
+        );
+    }
 }

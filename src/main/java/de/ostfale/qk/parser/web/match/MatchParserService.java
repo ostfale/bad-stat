@@ -48,6 +48,12 @@ public class MatchParserService implements MatchParser {
             assignSinglePlayerNamesForBye(disciplineMatch, analyzer);
             return;
         }
+
+        if (analyzer.isRetiredMatch()) {
+            assignTeamNamesForRetiredMatch(disciplineMatch, analyzer);
+            return;
+        }
+
         assignSinglePlayerNamesWithMarker(disciplineMatch, analyzer);
     }
 
@@ -124,6 +130,28 @@ public class MatchParserService implements MatchParser {
         } else {
             disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(true));
             disciplineMatch.setPlayerTwoName(MatchResultType.BYE.getDisplayName());
+        }
+    }
+
+    private void assignTeamNamesForRetiredMatch(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
+        Log.debug("MatchParserService :: assignTeamNamesForRetiredMatch");
+        var retiredMarkerPosition = analyzer.getRetiredPosition();
+        if (retiredMarkerPosition == 1) {
+            var firstPlayerName = analyzer.getFirstPlayerName(false);
+            disciplineMatch.setPlayerOneName(firstPlayerName + " (Retired)");
+            disciplineMatch.setPlayerTwoName(analyzer.getSecondPlayerName(true));
+            return;
+        }
+
+        if (retiredMarkerPosition == 2) {
+            disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(true));
+            disciplineMatch.setPlayerTwoName(analyzer.getSecondPlayerName(false) + " (Retired)");
+        }
+
+        if (retiredMarkerPosition == 3) {
+            var secondPlayerName = analyzer.getSecondPlayerName(false);
+            disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(true));
+            disciplineMatch.setPlayerTwoName(secondPlayerName + " (Retired)");
         }
     }
 

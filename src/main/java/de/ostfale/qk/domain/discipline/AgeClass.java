@@ -1,5 +1,7 @@
 package de.ostfale.qk.domain.discipline;
 
+import io.quarkus.logging.Log;
+
 public enum AgeClass {
     U9, U11, U13, U15, U17, U19, U22, O19, UOX;
 
@@ -9,6 +11,12 @@ public enum AgeClass {
         }
 
         String trimmedAgeClass = ageClass.trim();
+
+        if(!trimmedAgeClass.startsWith("U") && !trimmedAgeClass.startsWith("O")){
+            Log.warnf("Age class %s does not start with U or O. Using UOX as default.", ageClass);
+            return UOX;
+        }
+
         if (ageClass.length() > 3) {
             trimmedAgeClass = trimmedAgeClass.substring(0, 3);
         }

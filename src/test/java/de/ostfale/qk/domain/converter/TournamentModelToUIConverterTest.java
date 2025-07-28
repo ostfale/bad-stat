@@ -39,7 +39,7 @@ class TournamentModelToUIConverterTest extends BaseParserTest {
         var expectedTournamentDate = "07.06.2025 bis 09.06.2025";
 
         var expectedNofMatches = 6;
-        var expectedFirstMatchDisciplineName = "Mixed";
+        var expectedFirstMatchDisciplineName = "Mixed (U17)";
         var expectedLastMatchDisciplineName = "Mixed (Gruppe B)";
 
         // when

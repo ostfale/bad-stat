@@ -3,6 +3,7 @@ package de.ostfale.qk.parser.web.tournament;
 import de.ostfale.qk.domain.tournament.TournamentInfo;
 import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.ParsedComponent;
+import de.ostfale.qk.parser.web.BaseParser;
 import io.quarkus.logging.Log;
 import jakarta.inject.Singleton;
 import org.htmlunit.html.HtmlElement;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Singleton
-public class WebTournamentInfoParser implements WebTournamentParser {
+public class WebTournamentInfoParser implements BaseParser {
 
     private static final Integer TOURNAMENT_DEFAULT_YEAR = 1970;
     private static final String TOURNAMENT_DATE_SEPARATOR = "bis";

@@ -1,5 +1,7 @@
 package de.ostfale.qk.domain.discipline;
 
+import io.quarkus.logging.Log;
+
 import java.util.Set;
 
 public enum DisciplineType {
@@ -43,7 +45,8 @@ public enum DisciplineType {
         if (DOUBLE_CODES.contains(discipline)) return DOUBLE;
         if (MIXED_CODES.contains(discipline)) return MIXED;
 
-        throw new IllegalArgumentException("Unknown discipline found: " + discipline);
+        Log.errorf("Unknown discipline found: %s", discipline);
+        return UNKNOWN;
     }
 
     private static void validateDiscipline(String discipline) {

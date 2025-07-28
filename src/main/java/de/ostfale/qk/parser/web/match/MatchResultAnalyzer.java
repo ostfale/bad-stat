@@ -15,6 +15,8 @@ public class MatchResultAnalyzer {
     private static final String NO_GAME = "Kein Spiel";
     private static final String WALKOVER_L = "Walkover L";
     private static final String RETIRED_L = "Retired L";
+    private static final String RETIRED_L_DOT = "Retired. L";
+    private static final String RETIRED_DOT = "Retired.";
 
     private static final String BYE_MARKER_DE = MatchResultType.BYE.getDisplayName();
     private static final String WALKOVER_MARKER = MatchResultType.WALKOVER.getDisplayName();
@@ -25,6 +27,7 @@ public class MatchResultAnalyzer {
     private final List<String> playerNames = new ArrayList<>(4);
     private final String markerValue;
     private final int markerPosition;
+    private int retiredPosition;
     private String matchResultType = MatchResultType.REGULAR.getDisplayName();
 
     public MatchResultAnalyzer(String[] matchResultElements) throws HtmlParserException {
@@ -37,30 +40,6 @@ public class MatchResultAnalyzer {
 
     public String getMatchResultType() {
         return matchResultType;
-    }
-
-    private int extractMarkerPosition(List<String> matchResultElementList) {
-        Log.debug("MatchResultAnalyzer :: extractMarkerPosition");
-        if (matchResultElementList.contains(WALKOVER_L)) {
-            return matchResultElementList.indexOf(WALKOVER_L);
-        }
-        if (matchResultElementList.contains(RETIRED_L)) {
-            return matchResultElementList.indexOf(RETIRED_L);
-        }
-        return matchResultElementList.indexOf(markerValue);
-    }
-
-    private String extractMarkerValue(List<String> matchResultElementList) throws HtmlParserException {
-        Log.debug("MatchResultAnalyzer ::");
-        if (matchResultElementList.contains(WINNER_MARKER)) {
-            return WINNER_MARKER;
-        } else if (this.matchResultElementList.contains(LOSER_MARKER)
-                || this.matchResultElementList.contains(WALKOVER_L)
-                || this.matchResultElementList.contains(RETIRED_L)
-        ) {
-            return LOSER_MARKER;
-        }
-        throw new HtmlParserException(ParsedComponent.MATCH, "Match does not contain W-L-Marker!");
     }
 
     public boolean isByeMatch() {
@@ -82,14 +61,19 @@ public class MatchResultAnalyzer {
         return result;
     }
 
+    private static final List<String> RETIRED_MARKERS = List.of(RETIRED_MARKER, RETIRED_L, RETIRED_DOT, RETIRED_L_DOT);
+
     public boolean isRetiredMatch() {
         Log.debug("MatchResultAnalyzer :: isRetiredMatch");
-        var result = matchResultElementList.contains(RETIRED_MARKER)
-                || matchResultElementList.contains(RETIRED_L);
-        if (result) {
-            matchResultType = MatchResultType.RETIRED.getDisplayName();
-        }
-        return result;
+        return RETIRED_MARKERS.stream()
+                .filter(matchResultElementList::contains)
+                .findFirst()
+                .map(marker -> {
+                    matchResultType = MatchResultType.RETIRED.getDisplayName();
+                    retiredPosition = matchResultElementList.indexOf(marker);
+                    return true;
+                })
+                .orElse(false);
     }
 
     public String getMarker() {
@@ -112,19 +96,15 @@ public class MatchResultAnalyzer {
         return matchResultElementList;
     }
 
-    private boolean isNumeric(String str) {
-        if (str == null || str.isEmpty()) {
-            return false;
-        }
-        return str.trim().matches("\\d+");
-    }
-
     public List<String> getPlayerNames() {
         Log.debug("MatchResultAnalyzer :: getPlayerNames");
         if (playerNames.isEmpty()) {
             playerNames.addAll(matchResultElementList.stream()
                     .filter(this::isValidName)
                     .toList());
+        }
+        if (playerNames.size() == 3) {
+            Log.warnf("MatchResultAnalyzer :: Player names are not complete -> %s", playerNames);
         }
         return playerNames;
     }
@@ -143,6 +123,38 @@ public class MatchResultAnalyzer {
 
     public String getFourthPlayerName(boolean isMarked) throws HtmlParserException {
         return getPlayerName(PlayerPosition.FOURTH, isMarked);
+    }
+
+    private boolean isNumeric(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        return str.trim().matches("\\d+");
+    }
+
+    private int extractMarkerPosition(List<String> matchResultElementList) {
+        Log.debug("MatchResultAnalyzer :: extractMarkerPosition");
+        if (matchResultElementList.contains(WALKOVER_L)) {
+            return matchResultElementList.indexOf(WALKOVER_L);
+        }
+        if (matchResultElementList.contains(RETIRED_L)) {
+            return matchResultElementList.indexOf(RETIRED_L);
+        }
+        return matchResultElementList.indexOf(markerValue);
+    }
+
+    private String extractMarkerValue(List<String> matchResultElementList) throws HtmlParserException {
+        Log.debug("MatchResultAnalyzer ::");
+        if (matchResultElementList.contains(WINNER_MARKER)) {
+            return WINNER_MARKER;
+        } else if (this.matchResultElementList.contains(LOSER_MARKER)
+                || this.matchResultElementList.contains(WALKOVER_L)
+                || this.matchResultElementList.contains(RETIRED_L)
+                || this.matchResultElementList.contains(RETIRED_L_DOT)
+        ) {
+            return LOSER_MARKER;
+        }
+        throw new HtmlParserException(ParsedComponent.MATCH, "Match does not contain W-L-Marker!");
     }
 
     private String getPlayerName(PlayerPosition position, boolean isMarked) throws HtmlParserException {
@@ -173,12 +185,15 @@ public class MatchResultAnalyzer {
         }
     }
 
+    public int getRetiredPosition() {
+        return retiredPosition;
+    }
+
     private String formatNameWithMarker(String playerName) {
         return playerName + " (" + getMarker() + ")";
     }
 
     private boolean isValidName(String name) {
-        Log.infof("MatchResultAnalyzer :: isValidName -> %s", name);
         if (name == null
                 || name.isEmpty()
                 || name.equalsIgnoreCase(NO_GAME)

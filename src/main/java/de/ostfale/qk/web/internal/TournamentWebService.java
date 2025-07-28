@@ -10,7 +10,9 @@ import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlPage;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @ApplicationScoped
 public class TournamentWebService extends BaseWebService {
@@ -22,12 +24,18 @@ public class TournamentWebService extends BaseWebService {
     CookieDialogHandler cookieDialogHandler;
 
     @Override
-    public Integer getNumberOfTournamentsForYearAndPlayer(Integer year, String playerTournamentsId) throws HtmlParserException {
+    public Integer getNumberOfTournamentsForYearAndPlayer(Integer year, String playerTournamentsId) {
         Log.debugf("Get number of tournaments for year %d and player tournament id %s", year, playerTournamentsId);
 
-        String tournamentsURI = null;
+        String tournamentsURI;
         if (year == Year.now().getValue()) {
             tournamentsURI = preparePlayerTournamentsUrl(playerTournamentsId);
+            // check if the player has not played a tournament in the current year -> return 0
+            HtmlPage tournamentPage = cookieDialogHandler.loadWebsite(tournamentsURI);
+            List<Integer> yearList = webTournamentParserService.getListOfYearsWithTournaments(tournamentPage);
+            if (!Objects.equals(yearList.getFirst(), year)) {
+                return 0;
+            }
         } else {
             tournamentsURI = preparePlayerTournamentsUrl(playerTournamentsId, year.toString());
         }
@@ -41,14 +49,16 @@ public class TournamentWebService extends BaseWebService {
     public List<Tournament> scrapeAllTournamentsForPlayerAndYear(Integer year, String playerTournamentId) {
         String tournamentsURI = preparePlayerTournamentsUrl(playerTournamentId, year.toString());
         HtmlPage tournamentPage = cookieDialogHandler.loadWebsite(tournamentsURI);
-
+        List<Tournament> tournaments = new ArrayList<>();
         try {
-            List<Tournament> tournaments = webTournamentParserService.parseAllYearlyTournamentsForPlayer(tournamentPage);
+            tournaments = webTournamentParserService.parseAllYearlyTournamentsForPlayer(tournamentPage);
             Log.debugf("TournamentWebService :: Successfully scraped %d tournaments for player %s and year %d", tournaments.size(), playerTournamentId, year);
-            return tournaments;
-        } catch (HtmlParserException e) {
-            Log.errorf("TournamentWebService :: Failed to parse tournaments page %s", e);
-            throw new RuntimeException(e);
+        } catch (HtmlParserException htmlEx) {
+            Log.errorf("TournamentWebService :: Failed to parse tournaments page -> component:  %s", htmlEx.getParserError());
+        } catch (Exception e) {
+            Log.errorf("TournamentWebService :: Failed to scrape tournaments page %s ", e.getMessage());
+
         }
+        return tournaments;
     }
 }

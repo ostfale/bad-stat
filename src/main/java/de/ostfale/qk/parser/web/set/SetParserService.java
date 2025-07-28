@@ -28,9 +28,19 @@ public class SetParserService implements SetParser {
             return createMatchSetsForRetiredSet(rawSetElements);
         }
 
+        // walkover will have no points only the reference to the result type
+        if (matchResultAnalyzer.isWalkOverMatch()) {
+            return createMatchForWalkoverSet();
+        }
+
         // extract scores for a match with regular sets
         List<Integer> setScores = matchResultAnalyzer.getMatchResultScores();
         return createMatchSetsFromScores(setScores);
+    }
+
+    private List<MatchSet> createMatchForWalkoverSet() {
+        MatchSet matchSet = new MatchSet(MatchResultType.WALKOVER);
+        return List.of(matchSet);
     }
 
     private List<MatchSet> createMatchSetsForRetiredSet(String[] rawSetElements) {

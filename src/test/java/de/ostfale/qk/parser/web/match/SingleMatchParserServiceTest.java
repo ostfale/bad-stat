@@ -25,6 +25,8 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
     private static final String SINGLE_MATCH_SECOND_PLAYER_WINS_BOY = "matches/SingleMatchBoysSecondPlayerWins.html";
     private static final String SINGLE_MATCH_KEIN_SPIEL = "matches/SingleMatchKeinSpiel.html";
     private static final String SINGLE_MATCH_WALKOVER_L = "matches/SingleWalkoverLost.html";
+    private static final String SINGLE_MATCH_RETIRED_FIRST = "matches/SingleMatchFirstPlayerRetired.html";
+    private static final String SINGLE_MATCH_RETIRED_SECOND = "matches/SingleMatchSecondPlayerRetired.html";
 
     private MatchParser sut;
 
@@ -35,7 +37,7 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test a single standard match -> first player wins")
-    // ["Victoria Braun","W","Elina Uhlmann","21","10","21","8","H2H"]
+        // ["Victoria Braun","W","Elina Uhlmann","21","10","21","8","H2H"]
     void testSingleStandardMatchFirstWins() throws HtmlParserException {
         // given
         HtmlPage page = loadHtmlPage(SINGLE_MATCH_STANDARD_FIRST_WINS);
@@ -59,7 +61,7 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test a single standard match -> second player wins")
-    // ["Victoria Braun","L","Jule Jensen","13","21","21","10","18","21","H2H"]
+        // ["Victoria Braun","L","Jule Jensen","13","21","21","10","18","21","H2H"]
     void testSingleStandardMatchSecondWins() throws HtmlParserException {
         // given
         HtmlPage page = loadHtmlPage(SINGLE_MATCH_STANDARD_SECOND_WINS);
@@ -83,7 +85,7 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test a single standard boys match -> second player wins")
-    // ["Nils Barion","Frederik Volkert","W","12","21","10","21","H2H"]
+        // ["Nils Barion","Frederik Volkert","W","12","21","10","21","H2H"]
     void testSingleStandardMatchBoysSecondWins() throws HtmlParserException {
         // given
         HtmlPage page = loadHtmlPage(SINGLE_MATCH_SECOND_PLAYER_WINS_BOY);
@@ -107,7 +109,7 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test a single match with Rast status")
-    // ["Victoria Braun","W","Rast"]
+        // ["Victoria Braun","W","Rast"]
     void testSingleMatchRast() throws HtmlParserException {
         // given
         HtmlPage page = loadHtmlPage(SINGLE_MATCH_RAST);
@@ -129,7 +131,7 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test a single match with Rast for the second player")
-    // ["Rast","Frederik Volkert","W"]
+        // ["Rast","Frederik Volkert","W"]
     void testSingleMatchRastSecondPlayer() throws HtmlParserException {
         // given
         HtmlPage page = loadHtmlPage(SINGLE_MATCH_SECOND_PLAYER_RAST);
@@ -151,7 +153,7 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test a single match with 'kein Spiel' ")
-    // ["Rast","Kein Spiel","Max Hahn","W"]
+        // ["Rast","Kein Spiel","Max Hahn","W"]
     void testSingleMatchWithKeinSpiel() throws HtmlParserException {
         // given
         HtmlPage page = loadHtmlPage(SINGLE_MATCH_KEIN_SPIEL);
@@ -173,7 +175,7 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test a single match with special name with 'von' ")
-    // ["Titus von Hartrott","Max Hahn","L","21","14","21","16","H2H"]
+        // ["Titus von Hartrott","Max Hahn","L","21","14","21","16","H2H"]
     void testSingleMatchWithSpecialName() throws HtmlParserException {
         // given
         HtmlPage page = loadHtmlPage(SINGLE_MATCH_TEST);
@@ -213,6 +215,46 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
                 () -> assertThat(result.getRoundName()).isEqualTo(expectedRoundName),
                 () -> assertThat(result.getFirstPlayerOrWithPartnerName()).isEqualTo(expectedPlayerOneName),
                 () -> assertThat(result.getSecondPlayerOrWithPartnerName()).isEqualTo(expectedPlayerTwoName)
+        );
+    }
+
+    @Test
+    @DisplayName("Test single match where the first player retired")
+        // ["Leo Hanxiang Luo","Retired","Soheyl Safari Araghi","W","19","21","5","11","H2H"]
+    void testSingleMatchRetiredFirstPlayer() throws HtmlParserException {
+        // given
+        HtmlPage page = loadHtmlPage(SINGLE_MATCH_RETIRED_FIRST);
+        var expectedPlayerOneName = "Leo Hanxiang Luo (Retired)";
+        var expectedPlayerTwoName = "Soheyl Safari Araghi (W)";
+
+        // when
+        var result = sut.parseMatch(SINGLE, page.getActiveElement());
+
+        // then
+        assertAll("Test single match data for retired player",
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.getPlayerOneName()).isEqualTo(expectedPlayerOneName),
+                () -> assertThat(result.getPlayerTwoName()).isEqualTo(expectedPlayerTwoName)
+        );
+    }
+
+    @Test
+    @DisplayName("Test single match where the second player retired")
+        // ["Soheyl Safari Araghi","W",""Hannes Merget"","Retired","23","21","8","8","H2H"]
+    void testSingleMatchRetiredSecondPlayer() throws HtmlParserException {
+        // given
+        HtmlPage page = loadHtmlPage(SINGLE_MATCH_RETIRED_SECOND);
+        var expectedPlayerOneName = "Soheyl Safari Araghi (W)";
+        var expectedPlayerTwoName = "Hannes Merget (Retired)";
+
+        // when
+        var result = sut.parseMatch(SINGLE, page.getActiveElement());
+
+        // then
+        assertAll("Test single match data for retired player",
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.getPlayerOneName()).isEqualTo(expectedPlayerOneName),
+                () -> assertThat(result.getPlayerTwoName()).isEqualTo(expectedPlayerTwoName)
         );
     }
 }
