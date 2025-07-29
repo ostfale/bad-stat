@@ -8,7 +8,6 @@ import de.ostfale.qk.ui.app.DataModel;
 import de.ostfale.qk.ui.playerstats.info.favplayer.FavPlayerService;
 import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerChangeListener;
 import de.ostfale.qk.ui.playerstats.info.filter.FavPlayerStringConverter;
-import de.ostfale.qk.ui.playerstats.info.filter.PlayerTextSearchComponent;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoDTO;
 import de.ostfale.qk.ui.playerstats.info.masterdata.PlayerInfoMasterDTO;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
@@ -23,9 +22,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.time.Year;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Dependent
 @FxView("player-stat-info")
@@ -187,9 +189,21 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     public void initialize() {
         Log.info("Initialize PlayerInfoStatisticsController");
         initFavPlayerComboboxModel();
-        new PlayerTextSearchComponent(playerInfoService, tfSearchPlayer).initialize();
+     //   new PlayerTextSearchComponent(playerInfoService, tfSearchPlayer).initialize();
         initYearLabel();
         initBinding();
+        autoSearchPlayer();
+    }
+
+    private void autoSearchPlayer() {
+        Log.debug("Auto search player");
+        var fetchedPlayers = playerInfoService.getPlayerInfoList();
+        TextFields.bindAutoCompletion(tfSearchPlayer, input -> {
+            if (input.getUserText().length() < 3) return Collections.emptyList();
+            return fetchedPlayers.stream()
+                    .filter(player -> player.getPlayerInfoMasterDataDTO().getPlayerName().toLowerCase().contains(input.getUserText().toLowerCase()))
+                    .collect(Collectors.toList());
+        });
     }
 
     @FXML

@@ -1,7 +1,6 @@
 package de.ostfale.qk.web.internal;
 
 import de.ostfale.qk.domain.tournament.Tournament;
-import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.web.tournament.WebTournamentParserService;
 import de.ostfale.qk.web.common.CookieDialogHandler;
 import io.quarkus.logging.Log;
@@ -10,7 +9,6 @@ import jakarta.inject.Inject;
 import org.htmlunit.html.HtmlPage;
 
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,16 +47,9 @@ public class TournamentWebService extends BaseWebService {
     public List<Tournament> scrapeAllTournamentsForPlayerAndYear(Integer year, String playerTournamentId) {
         String tournamentsURI = preparePlayerTournamentsUrl(playerTournamentId, year.toString());
         HtmlPage tournamentPage = cookieDialogHandler.loadWebsite(tournamentsURI);
-        List<Tournament> tournaments = new ArrayList<>();
-        try {
-            tournaments = webTournamentParserService.parseAllYearlyTournamentsForPlayer(tournamentPage);
-            Log.debugf("TournamentWebService :: Successfully scraped %d tournaments for player %s and year %d", tournaments.size(), playerTournamentId, year);
-        } catch (HtmlParserException htmlEx) {
-            Log.errorf("TournamentWebService :: Failed to parse tournaments page -> component:  %s", htmlEx.getParserError());
-        } catch (Exception e) {
-            Log.errorf("TournamentWebService :: Failed to scrape tournaments page %s ", e.getMessage());
-
-        }
+        List<Tournament> tournaments;
+        tournaments = webTournamentParserService.parseAllYearlyTournamentsForPlayer(tournamentPage);
+        Log.debugf("TournamentWebService :: Successfully scraped %d tournaments for player %s and year %d", tournaments.size(), playerTournamentId, year);
         return tournaments;
     }
 }

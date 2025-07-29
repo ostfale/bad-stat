@@ -109,19 +109,19 @@ public class MatchResultAnalyzer {
         return playerNames;
     }
 
-    public String getFirstPlayerName(boolean isMarked) throws HtmlParserException {
+    public String getFirstPlayerName(boolean isMarked) {
         return getPlayerName(PlayerPosition.FIRST, isMarked);
     }
 
-    public String getSecondPlayerName(boolean isMarked) throws HtmlParserException {
+    public String getSecondPlayerName(boolean isMarked) {
         return getPlayerName(PlayerPosition.SECOND, isMarked);
     }
 
-    public String getThirdPlayerName(boolean isMarked) throws HtmlParserException {
+    public String getThirdPlayerName(boolean isMarked) {
         return getPlayerName(PlayerPosition.THIRD, isMarked);
     }
 
-    public String getFourthPlayerName(boolean isMarked) throws HtmlParserException {
+    public String getFourthPlayerName(boolean isMarked) {
         return getPlayerName(PlayerPosition.FOURTH, isMarked);
     }
 
@@ -157,7 +157,7 @@ public class MatchResultAnalyzer {
         throw new HtmlParserException(ParsedComponent.MATCH, "Match does not contain W-L-Marker!");
     }
 
-    private String getPlayerName(PlayerPosition position, boolean isMarked) throws HtmlParserException {
+    private String getPlayerName(PlayerPosition position, boolean isMarked) {
         Log.debug("MatchResultAnalyzer :: get" + position.name + "PlayerName");
         var playerName = position.getPlayerName(getPlayerNames());
         return isMarked ? formatNameWithMarker(playerName) : playerName;

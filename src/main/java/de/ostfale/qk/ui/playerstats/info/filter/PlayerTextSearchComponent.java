@@ -11,6 +11,7 @@ import org.controlsfx.control.textfield.TextFields;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PlayerTextSearchComponent {
 
@@ -19,6 +20,9 @@ public class PlayerTextSearchComponent {
     private final TextField searchField;
     private final PlayerAutoCompleteHandler autoCompleteHandler;
     private final static List<PlayerInfoDTO> playerList = new ArrayList<>();
+
+
+    private AutoCompletionBinding<String> autoCompletionBinding;
 
     public PlayerTextSearchComponent(PlayerInfoService aPlayerInfoService, TextField searchField) {
         Log.debug("Initialize PlayerTextSearchComponent");
@@ -42,10 +46,12 @@ public class PlayerTextSearchComponent {
                 return request -> {
                     String searchText = request.getUserText().toLowerCase();
 
-                    if (searchText.isEmpty()) {
+                    if (searchText.length() < 3) {
                         return List.of();
                     }
-                    return filterPlayersByName(searchText);
+                    var dd = filterPlayersByName(searchText);
+                    Log.debugf("PlayerAutoCompleteHandler :: Found %d players for search text: %s", dd.size(), searchText);
+                    return dd;
                 };
             }
 
@@ -58,7 +64,7 @@ public class PlayerTextSearchComponent {
 
                 return playerList.stream()
                         .filter(player -> player.getPlayerInfoMasterDataDTO().getPlayerName().toLowerCase().contains(searchText))
-                        .toList();
+                        .collect(Collectors.toSet());
             }
         }
 }

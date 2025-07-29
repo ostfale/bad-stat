@@ -26,17 +26,28 @@ public class WebTournamentParserService implements BaseParser {
         this.webDisciplineParserService = webDisciplineParserService;
     }
 
-    public List<Tournament> parseAllYearlyTournamentsForPlayer(HtmlPage content) throws HtmlParserException {
+    public List<Tournament> parseAllYearlyTournamentsForPlayer(HtmlPage content) {
         Log.debug("WebTournamentParser :: parse all yearly tournaments website -> HtmlElement");
         List<HtmlElement> tournamentElements = htmlStructureParser.getAllTournaments(content.getActiveElement());
         List<Tournament> allTournaments = new ArrayList<>();
 
+
         for (HtmlElement moduleCard : tournamentElements) {
-            TournamentInfo tournamentInfo = tournamentInfoParser.parseTournamentInfo(moduleCard);
-            var tournament = new Tournament(tournamentInfo);
-            var result = webDisciplineParserService.parseTournamentDisciplines(moduleCard);
-            tournament.getDisciplines().addAll(result);
-            allTournaments.add(tournament);
+            try {
+                TournamentInfo tournamentInfo = tournamentInfoParser.parseTournamentInfo(moduleCard);
+                Log.infof("WebTournamentParser :: Parsing tournament info -> %s", tournamentInfo.tournamentName());
+                var tournament = new Tournament(tournamentInfo);
+                var result = webDisciplineParserService.parseTournamentDisciplines(moduleCard);
+                tournament.getDisciplines().addAll(result);
+                allTournaments.add(tournament);
+            }
+            catch (HtmlParserException parserException) {
+                Log.errorf("TournamentWebService :: Failed to parse tournaments page -> component:  %s", parserException.getParserError());
+            }
+            catch (Exception e) {
+                Log.errorf("TournamentWebService :: Failed to scrape tournaments page %s ", e.getMessage());
+
+            }
         }
         return allTournaments;
     }
