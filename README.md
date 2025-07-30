@@ -16,4 +16,4 @@ Alle Daten zu den Spielern sind im Internet verteilt natürlich auf zufinden. In
 
 # Screenshots
 
-![Overview](D:\dev\quarkus\bad-stat\help_img\bad-stat-overview.png)
+![Overview](.\help_img\bad-stat-overview.png)
