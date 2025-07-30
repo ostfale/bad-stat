@@ -187,16 +187,15 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @FXML
     public void initialize() {
-        Log.info("Initialize PlayerInfoStatisticsController");
+        Log.debug("PlayerInfoController :: Initialize PlayerInfoStatisticsController");
         initFavPlayerComboboxModel();
-     //   new PlayerTextSearchComponent(playerInfoService, tfSearchPlayer).initialize();
         initYearLabel();
         initBinding();
         autoSearchPlayer();
     }
 
     private void autoSearchPlayer() {
-        Log.debug("Auto search player");
+        Log.debug("PlayerInfoController :: Auto search player");
         var fetchedPlayers = playerInfoService.getPlayerInfoList();
         TextFields.bindAutoCompletion(tfSearchPlayer, input -> {
             if (input.getUserText().length() < 3) return Collections.emptyList();
@@ -232,7 +231,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @FXML
     void addToFavorites(ActionEvent event) throws HtmlParserException {
-        Log.debug("Add player to favorites");
+        Log.debug("PlayerInfoController :: Add player to favorites");
         favPlayerService.addFavPlayer(tfSearchPlayer.getText());
         updateFavorites();
         tfSearchPlayer.clear();
@@ -240,21 +239,21 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     @FXML
     void removeFromFavorites(ActionEvent actionEvent) {
-        Log.debug("Remove player from favorites");
+        Log.debug("PlayerInfoController :: Remove player from favorites");
         favPlayerService.removeFavoritePlayer(tfSearchPlayer.getText());
         updateFavorites();
     }
 
     @FXML
     void viewPlayerInfo(ActionEvent event) throws HtmlParserException {
-        Log.debugf("View player info");
+        Log.debugf("PlayerInfoController :: View player info");
         resetFavoriteCombobox();
         updatePlayerInfoUI();
     }
 
     @FXML
     void updateFavoritesWebData(ActionEvent event) {
-        Log.debug("Update favorites web data");
+        Log.debug("PlayerInfoController :: Update favorites web data");
     }
 
     public void clearPlayerSearchField() {
@@ -283,7 +282,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     // TODO check selected player from dataModel
     private void initFavPlayerComboboxModel() {
-        Log.debug("Initialize DataModel for player combobox");
+        Log.debug("PlayerInfoController :: Initialize DataModel for player combobox");
         List<FavPlayerData> favPlayers = favPlayerService.getFavoritePlayerListData().getFavoritePlayers().stream().toList();
 
         dataModelFavPlayer.setStringConverter(new FavPlayerStringConverter());
@@ -340,7 +339,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     }
 
     public void updateTreeMatchStatistics(PlayerInfoDTO playerInfoDTO) {
-        Log.debugf("UI :: Update player matches statistics for player %s ", playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerName());
+        Log.debugf("PlayerInfoController :: Update player matches statistics for player %s ", playerInfoDTO.getPlayerInfoMasterDataDTO().getPlayerName());
         var uiModel = playerTournamentsService.readPlayerTournamentsForLastFourYears(playerInfoDTO);
         playerTourStatsController.updateTreeTable(uiModel);
     }
@@ -355,7 +354,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     }
 
     public void updatePlayerMatchesStatsForYear(FavPlayerData favPlayerData) {
-        Log.debugf("UI :: Update player matches statistics for player %s ", favPlayerData.playerName());
+        Log.debugf("PlayerInfoController :: Update player matches statistics for player %s ", favPlayerData.playerName());
         lblYear.setText(favPlayerData.getPlayerTournamentsStatForYear(RecentYears.CURRENT_YEAR.getValue()));
         lblYearMinusOne.setText(favPlayerData.getPlayerTournamentsStatForYear(RecentYears.YEAR_MINUS_1.getValue()));
         lblYearMinusTwo.setText(favPlayerData.getPlayerTournamentsStatForYear(RecentYears.YEAR_MINUS_2.getValue()));
@@ -363,7 +362,7 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     }
 
     public void updatePlayerMasterData(PlayerInfoMasterDTO playerInfoMasterDTO) {
-        Log.debugf("UI :: Update player master data for player %s ", playerInfoMasterDTO.getPlayerName());
+        Log.debugf("PlayerInfoController :: Update player master data for player %s ", playerInfoMasterDTO.getPlayerName());
         lblName.setText(playerInfoMasterDTO.getPlayerName());
         lblPlayerId.setText(playerInfoMasterDTO.getPlayerId());
         lblBirthYear.setText(String.valueOf(playerInfoMasterDTO.getBirthYear()));
