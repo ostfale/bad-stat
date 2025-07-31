@@ -1,7 +1,6 @@
 package de.ostfale.qk.parser.web.tournament;
 
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.HtmlParserException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -10,10 +9,10 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @Tag("unittest")
-@DisplayName("Test tournament double with elimination and group phase")
-public class TournamentCombinedElimGroupDoubleTest extends BaseParserTest {
+@DisplayName("Test Forza Cup 2025 Bischoff parsing with groups")
+public class TestForzaCup25Bischoff extends BaseParserTest {
 
-    private static final String TEST_FILE_NAME = "tournaments/CombinedElimGroupDoubleVictorHahn.html";
+    private static final String TEST_FILE_NAME = "tournaments/ForzaCupBischoff25.html";
 
     private WebTournamentParserService sut;
 
@@ -25,7 +24,7 @@ public class TournamentCombinedElimGroupDoubleTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test parsing a single tournament")
-    void testParseAllTournaments() throws HtmlParserException {
+    void testParseAllTournaments() {
         // given
         var expectedNumberOfTournaments = 1;
 

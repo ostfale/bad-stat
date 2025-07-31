@@ -80,9 +80,9 @@ public class WebDisciplineParserService implements WebDisciplineParser {
             // check if next subheader is  a group match -> discipline type will stay the same
             if (nextDisciplineSubInfo != null && nextDisciplineSubInfo.isGroupSubHeader()) {
                 // if the next discipline is different from the current one, it can't be a group match of the current discipline
-                if (nextTournamentDiscipline != null && currentDisciplineType != nextTournamentDiscipline.getDisciplineType()) {
+               /* if (nextTournamentDiscipline != null && currentDisciplineType != nextTournamentDiscipline.getDisciplineType()) {
                     continue;
-                }
+                }*/
 
                 Log.debugf("WebDisciplineParserService :: next discipline type is the same as subheader discipline type -> %s", nextDisciplineSubInfo.disciplineType().name());
                 currentTournamentDiscipline.setDisciplineName(currentDisciplineSubInfo.originalString());

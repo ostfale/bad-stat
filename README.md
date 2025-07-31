@@ -12,7 +12,12 @@ Alle Daten zu den Spielern sind im Internet verteilt natürlich auf zufinden. In
 ## Wie? 
 `bad-stat`ist ein persönliches Hobbyprojekt, entstanden aus der langjährigen Erfahrung mit unserem Sohn, sowohl im nationalen als auch internationalen Bereich. Für mich ist es ein Lernprojekt mit einer (für mich) neuen Technologie ([Quarkus](https://quarkus.io/)) und der Herausforderung, maschinell erstellte HTML Seiten zu parsen. :-)
 
-
+## Womit?
+Jetzt wird es ein wenig technisch :-)
++ Java
++ Quarkus
++ HtmlUnit
++ JavaFX
 
 # Screenshots
 
