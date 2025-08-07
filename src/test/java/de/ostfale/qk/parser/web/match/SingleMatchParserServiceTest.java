@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import static de.ostfale.qk.domain.discipline.DisciplineType.SINGLE;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Tag("unittest")
 @DisplayName("Test parsing all types of single matches")
@@ -57,6 +58,35 @@ public class SingleMatchParserServiceTest extends BaseParserTest {
                 () -> assertThat(result.getPlayerTwoName()).isEqualTo(expectedPlayerTwoName),
                 () -> assertThat(result.getMatchSets().size()).isEqualTo(expectedNumberOfSets)
         );
+    }
+
+    @Test
+    @DisplayName("Test players for a single standard  match - first player")
+    void testMatchPlayersForSingleStandardMatchFirst() throws HtmlParserException {
+        // given
+        HtmlPage page = loadHtmlPage(SINGLE_MATCH_STANDARD_FIRST_WINS);
+        String currentPlayerName = "Victoria Braun";
+
+        // when
+        var result = sut.parseMatch(currentPlayerName, page.getActiveElement());
+
+        // then
+        assertAll("Test match player data",
+                () -> assertThat(result.isSingleMatch()).isTrue(),
+                () -> assertThat(result.firstPlayerName()).isEqualTo(currentPlayerName),
+                () -> assertThat(result.secondPlayerName()).isNull()
+        );
+    }
+
+    @Test
+    @DisplayName("If current player is not part of the match throw exception")
+    void testThrowingExceptionForUnknownPlayer() {
+        // given
+        HtmlPage page = loadHtmlPage(SINGLE_MATCH_STANDARD_FIRST_WINS);
+        String currentPlayerName = "Emily Bischoff";
+
+        // when & then
+        assertThrows(HtmlParserException.class, () -> sut.parseMatch(currentPlayerName, page.getActiveElement()));
     }
 
     @Test

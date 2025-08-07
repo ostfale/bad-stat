@@ -35,9 +35,9 @@ public class PlayerTournamentsService {
         Log.debugf("PlayerTournamentsService :: Loading tournaments for player %s for year %d", player.toString(), year);
 
         var playerMasterData = player.getPlayerInfoMasterDataDTO();
-        List<Tournament> tournaments = fetchTournamentsFromWebService(year, playerMasterData.getPlayerTournamentId());
-
         String playerName = playerMasterData.getPlayerName();
+        List<Tournament> tournaments = fetchTournamentsFromWebService(playerName,year, playerMasterData.getPlayerTournamentId());
+
         PlayerId playerId = new PlayerId(playerMasterData.getPlayerId());
         TournamentYearWrapper tournamentYearWrapper = new TournamentYearWrapper(playerName, playerId, year, tournaments);
 
@@ -66,7 +66,7 @@ public class PlayerTournamentsService {
                 .toList();
     }
 
-    private List<Tournament> fetchTournamentsFromWebService(int year, String playerTournamentId) {
-        return tournamentWebService.scrapeAllTournamentsForPlayerAndYear(year, playerTournamentId);
+    private List<Tournament> fetchTournamentsFromWebService(String playerName, int year, String playerTournamentId) {
+        return tournamentWebService.scrapeAllTournamentsForPlayerAndYear(playerName,year, playerTournamentId);
     }
 }

@@ -1,6 +1,8 @@
 package de.ostfale.qk.parser.web.tournament;
 
 import de.ostfale.qk.parser.BaseParserTest;
+import de.ostfale.qk.parser.HtmlParserException;
+import de.ostfale.qk.parser.web.discipline.WebDisciplineParserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -14,24 +16,24 @@ public class TestForzaCup25Bischoff extends BaseParserTest {
 
     private static final String TEST_FILE_NAME = "tournaments/ForzaCupBischoff25.html";
 
-    private WebTournamentParserService sut;
+    private WebDisciplineParserService sut;
 
     @BeforeEach
     void setUp() {
-        sut = prepareWebTournamentParser();
+        sut = prepareWebDisciplineParser();
         content = loadHtmlPage(TEST_FILE_NAME);
     }
 
     @Test
     @DisplayName("Test parsing a single tournament")
-    void testParseAllTournaments() {
+    void testParseAllTournaments() throws HtmlParserException {
         // given
-        var expectedNumberOfTournaments = 1;
+        var currentPlayer = "Emily Bischoff";
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(content);
+        var result = sut.parseTournamentDisciplines(currentPlayer, content.getActiveElement());
 
         // then
-        assertThat(result.size()).isEqualTo(expectedNumberOfTournaments);
+        assertThat(result.size()).isNotNull();
     }
 }

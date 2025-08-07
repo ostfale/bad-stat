@@ -26,18 +26,17 @@ public class WebTournamentParserService implements BaseParser {
         this.webDisciplineParserService = webDisciplineParserService;
     }
 
-    public List<Tournament> parseAllYearlyTournamentsForPlayer(HtmlPage content) {
+    public List<Tournament> parseAllYearlyTournamentsForPlayer(String currentPlayer, HtmlPage content) {
         Log.debug("WebTournamentParser :: parse all yearly tournaments website -> HtmlElement");
         List<HtmlElement> tournamentElements = htmlStructureParser.getAllTournaments(content.getActiveElement());
         List<Tournament> allTournaments = new ArrayList<>();
-
 
         for (HtmlElement moduleCard : tournamentElements) {
             try {
                 TournamentInfo tournamentInfo = tournamentInfoParser.parseTournamentInfo(moduleCard);
                 Log.infof("WebTournamentParser :: Parsing tournament info -> %s", tournamentInfo.tournamentName());
                 var tournament = new Tournament(tournamentInfo);
-                var result = webDisciplineParserService.parseTournamentDisciplines(moduleCard);
+                var result = webDisciplineParserService.parseTournamentDisciplines(currentPlayer,moduleCard);
                 tournament.getDisciplines().addAll(result);
                 allTournaments.add(tournament);
             }

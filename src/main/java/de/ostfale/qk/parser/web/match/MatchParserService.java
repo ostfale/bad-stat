@@ -41,6 +41,39 @@ public class MatchParserService implements MatchParser {
         return disciplineMatch;
     }
 
+    @Override
+    public MatchPlayers parseMatch(String currentPlayer, HtmlElement matchGroupElement) throws HtmlParserException {
+        Log.debug("MatchParserService :: analyze match data");
+        String[] matchStringElements = extractMatchBodyElements(matchGroupElement);
+        MatchResultAnalyzer analyzer = new MatchResultAnalyzer(matchStringElements);
+        var playerNames = analyzer.getPlayerNames();
+        if (!playerNames.contains(currentPlayer)) {
+            Log.errorf("MatchParserService :: player %s is not part of the match", currentPlayer);
+            throw new HtmlParserException(ParsedComponent.MATCH, "Current player is not part of the match: " + currentPlayer);
+        }
+
+        if (playerNames.size() == 2) {
+            Log.debug("MatchParserService :: Found single match");
+            return new MatchPlayers(currentPlayer);
+        }
+
+        if (playerNames.size() == 4) {
+            Log.debug("MatchParserService :: Found team match");
+            int playerOneIndex = playerNames.indexOf(currentPlayer);
+            switch (playerOneIndex) {
+                case 0:
+                    return new MatchPlayers(currentPlayer, playerNames.get(1));
+                case 1:
+                    return new MatchPlayers(playerNames.get(0), currentPlayer);
+                case 2:
+                    return new MatchPlayers(currentPlayer, playerNames.get(3));
+                case 3:
+                    return new MatchPlayers(playerNames.get(2), currentPlayer);
+            }
+        }
+        throw new HtmlParserException(ParsedComponent.MATCH, "Wrong number of player in the match: " + playerNames.size());
+    }
+
     private void parseSingleMatch(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
         Log.debug("MatchParserService :: parse single match");
 
@@ -59,7 +92,7 @@ public class MatchParserService implements MatchParser {
 
     private void assignSinglePlayerNamesWithMarker(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
         Log.debug("MatchParserService :: assignSinglePlayerNamesWithMarker");
-        var MARKER_POS_1 = analyzer.getMarkerPosition() == 1;
+        var MARKER_POS_1 = analyzer.getMatchMarkerPosition() == 1;
 
         if (MARKER_POS_1) {
             disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(true));
@@ -90,7 +123,7 @@ public class MatchParserService implements MatchParser {
         Log.debug("MatchParserService :: assignTeamNamesForWalkover");
 
         var MARKER_POS_2 = 2;
-        var matchMarkerPosition = analyzer.getMarkerPosition();
+        var matchMarkerPosition = analyzer.getMatchMarkerPosition();
 
         if (matchMarkerPosition == MARKER_POS_2) {
             disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(false));
@@ -109,7 +142,7 @@ public class MatchParserService implements MatchParser {
     private void assignTeamPlayerNamesWithMarker(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
         Log.debug("MatchParserService :: assignTeamPlayerNamesWithMarker");
 
-        var isFirstTeamMarked = analyzer.getMarkerPosition() == 2;
+        var isFirstTeamMarked = analyzer.getMatchMarkerPosition() == 2;
 
         // First team players are always unmarked
         disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(false));
@@ -122,7 +155,7 @@ public class MatchParserService implements MatchParser {
 
     private void assignSinglePlayerNamesForBye(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
         Log.debug("MatchParserService :: handle single player has rast");
-        var markerPosition = analyzer.getMarkerPosition();
+        var markerPosition = analyzer.getMatchMarkerPosition();
 
         if (markerPosition == 2 || markerPosition == 3) {
             disciplineMatch.setPlayerOneName(MatchResultType.BYE.getDisplayName());
@@ -157,7 +190,7 @@ public class MatchParserService implements MatchParser {
 
     private void assignTeamNamesForBye(DisciplineMatch disciplineMatch, MatchResultAnalyzer analyzer) throws HtmlParserException {
         Log.debug("MatchParserService :: handle team player have rast");
-        var markerPosition = analyzer.getMarkerPosition();
+        var markerPosition = analyzer.getMatchMarkerPosition();
 
         if (markerPosition == 2) {
             disciplineMatch.setPlayerOneName(analyzer.getFirstPlayerName(false));

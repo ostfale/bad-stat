@@ -9,6 +9,7 @@ import org.htmlunit.html.HtmlElement;
 public interface MatchParser extends BaseParser {
 
     DisciplineMatch parseMatch(DisciplineType disciplineType,HtmlElement matchGroupElement) throws HtmlParserException;
+    MatchPlayers parseMatch(String currentPlayer, HtmlElement matchGroupElement) throws HtmlParserException;
 
     String MATCH_RESULT_SEPARATOR = "\n";
 }

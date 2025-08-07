@@ -2,7 +2,6 @@ package de.ostfale.qk.domain.converter;
 
 import de.ostfale.qk.domain.tournament.Tournament;
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.web.tournament.WebTournamentParserService;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,9 +29,10 @@ class TournamentModelToUIConverterTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test converting a combined tournament into UI display format")
-    void testConvertingCombinedTournament() throws HtmlParserException {
+    void testConvertingCombinedTournament() {
         // given
-        Tournament tournament = parser.parseAllYearlyTournamentsForPlayer(page).getFirst();
+        var playerName = "Victoria Braun";
+        Tournament tournament = parser.parseAllYearlyTournamentsForPlayer(playerName, page).getFirst();
 
         var expectedTournamentName = "VICTOR International Junior Cup (HAM, U09-U19, U22) 2025";
         var expectedTournamentLocation = "Hamburg";

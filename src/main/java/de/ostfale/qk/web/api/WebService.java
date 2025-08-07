@@ -9,5 +9,5 @@ public interface WebService extends WebUrlFacade {
 
     Integer getNumberOfTournamentsForYearAndPlayer(Integer year, String playerTournamentId) throws HtmlParserException;
 
-    List<Tournament> scrapeAllTournamentsForPlayerAndYear(Integer year, String playerTournamentId);
+    List<Tournament> scrapeAllTournamentsForPlayerAndYear(String playerName, Integer year, String playerTournamentId);
 }

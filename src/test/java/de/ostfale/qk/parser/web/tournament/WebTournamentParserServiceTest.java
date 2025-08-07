@@ -3,7 +3,6 @@ package de.ostfale.qk.parser.web.tournament;
 import de.ostfale.qk.domain.discipline.AgeClass;
 import de.ostfale.qk.domain.discipline.DisciplineType;
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.HtmlParserException;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,13 +28,14 @@ class WebTournamentParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test parsing all tournaments for a year")
-    void testParseAllTournaments() throws HtmlParserException {
+    void testParseAllTournaments() {
         // given
         HtmlPage page = loadHtmlPage(TEST_FILE_NAME);
         var expectedNumberOfTournaments = 9;
+        var playerName = "Victoria Braun";
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(page);
+        var result = sut.parseAllYearlyTournamentsForPlayer(playerName, page);
 
         // then
         assertThat(result.size()).isEqualTo(expectedNumberOfTournaments);
@@ -43,10 +43,13 @@ class WebTournamentParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test Discipline header information for age class")
-    void testDisciplineHeaders() throws HtmlParserException {
+    void testDisciplineHeaders() {
+        // given
+        String playerName = "Victoria Braun";
+
         // when
         HtmlPage page = loadHtmlPage(TEST_FILE_NAME);
-        var allTournaments = sut.parseAllYearlyTournamentsForPlayer(page);
+        var allTournaments = sut.parseAllYearlyTournamentsForPlayer(playerName, page);
 
         // then
         var firstTournament = allTournaments.getFirst();
@@ -60,7 +63,7 @@ class WebTournamentParserServiceTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test retrieving the available years for player with tournaments")
-    void testPlayerTournamentYearsAvailable() throws HtmlParserException {
+    void testPlayerTournamentYearsAvailable() {
         // given
         HtmlPage page = loadHtmlPage(TEST_AVAILABLE_TOURNAMENT_YEARS);
         var expectedNumberOfYears = 5;
@@ -75,6 +78,5 @@ class WebTournamentParserServiceTest extends BaseParserTest {
                 () -> assertThat(result.size()).isEqualTo(expectedNumberOfYears),
                 () -> assertThat(result).isEqualTo(expectedListOfYears)
         );
-
     }
 }

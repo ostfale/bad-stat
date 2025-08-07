@@ -6,6 +6,7 @@ import de.ostfale.qk.domain.discipline.TournamentDiscipline;
 import de.ostfale.qk.domain.match.DisciplineMatch;
 import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.parser.web.match.MatchParserService;
+import de.ostfale.qk.parser.web.match.MatchPlayers;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.htmlunit.html.HtmlElement;
@@ -21,14 +22,25 @@ public class WebDisciplineParserService implements WebDisciplineParser {
     private final WebDisciplineInfoParserService webDisciplineInfoParserService;
     private final MatchParserService matchParserService;
 
-    public WebDisciplineParserService(MatchParserService matchParserService,WebDisciplineInfoParserService webDisciplineInfoParserService) {
+    public WebDisciplineParserService(MatchParserService matchParserService, WebDisciplineInfoParserService webDisciplineInfoParserService) {
         this.matchParserService = matchParserService;
         this.webDisciplineInfoParserService = webDisciplineInfoParserService;
     }
 
-    public List<TournamentDiscipline> parseTournamentDisciplines(HtmlElement moduleCardElement) throws HtmlParserException {
-        Log.debugf("WebDisciplineParser :: parse tournament matches for all disciplines");
-        DisciplineType currentDisciplineType;
+    private List<MatchPlayers> getMatchPlayersForAllMatches(String currentPlayer, List<HtmlElement> allMatchGroups) throws HtmlParserException {
+        List<MatchPlayers> matchPlayersList = new ArrayList<>();
+        for (HtmlElement matchGroupElement : allMatchGroups) {
+            //    Log.debug("WebDisciplineParserService :: get match players for match group with player -> %s", currentPlayer);
+            List<HtmlElement> disciplineMatches = htmlStructureParser.getAllMatchesForMatchGroupContainer(matchGroupElement);
+            var lastMatch = disciplineMatches.getLast();
+            var matchPlayer = matchParserService.parseMatch(currentPlayer, lastMatch);
+            matchPlayersList.add(matchPlayer);
+        }
+        return matchPlayersList;
+    }
+
+    public List<TournamentDiscipline> parseTournamentDisciplines(String currentPlayer, HtmlElement moduleCardElement) throws HtmlParserException {
+        Log.debugf("WebDisciplineParser :: parse tournament matches for all disciplines for player: %s", currentPlayer);
 
         List<HtmlElement> disciplineSubInfoElements = extractDisciplineSubString(moduleCardElement);
         List<HtmlElement> disciplineMatchesList = extractAllDisciplinesMatchElements(moduleCardElement);
@@ -36,26 +48,15 @@ public class WebDisciplineParserService implements WebDisciplineParser {
         List<TournamentDiscipline> tournamentDisciplines = extractAllDisciplinesWithInfo(moduleCardElement);
         List<DisciplineInfo> disciplineSubInfoList = extractSubHeaderInformation(disciplineSubInfoElements);
 
+        var matchPlayersList = getMatchPlayersForAllMatches(currentPlayer, disciplineMatchesList);
+
+        int subInfoIndex = 0;
         for (int disciplineIndex = 0; disciplineIndex < tournamentDisciplines.size(); disciplineIndex++) {
             TournamentDiscipline currentTournamentDiscipline = tournamentDisciplines.get(disciplineIndex);
-            currentDisciplineType = tournamentDisciplines.get(disciplineIndex).getDisciplineType();
+            DisciplineType currentDisciplineType = tournamentDisciplines.get(disciplineIndex).getDisciplineType();
             Log.debugf("WebDisciplineParserService :: parse tournament matches for discipline type %s", currentDisciplineType.name());
 
-            DisciplineInfo currentDisciplineSubInfo = disciplineSubInfoList.get(disciplineIndex);
-            DisciplineInfo nextDisciplineSubInfo;
-            int nextDisciplineIndex = disciplineIndex + 1;
-
-            // check if next discipline is different from the current one
-            TournamentDiscipline nextTournamentDiscipline = nextDisciplineIndex < tournamentDisciplines.size()
-                    ? tournamentDisciplines.get(nextDisciplineIndex) : null;
-
-            if (nextDisciplineIndex < disciplineSubInfoList.size()) {
-                Log.debugf("WebDisciplineParserService :: found next sub info type %s", currentDisciplineType.name());
-                nextDisciplineSubInfo = disciplineSubInfoList.get(disciplineIndex + 1);
-            } else {
-                Log.debugf("WebDisciplineParserService :: no next sub info type found");
-                nextDisciplineSubInfo = null;
-            }
+            DisciplineInfo currentDisciplineSubInfo = disciplineSubInfoList.get(subInfoIndex);
 
             /* Start parsing the matches and differentiate between elimination and group matches  */
 
@@ -63,9 +64,20 @@ public class WebDisciplineParserService implements WebDisciplineParser {
             if (currentDisciplineType == currentDisciplineSubInfo.disciplineType()) {
                 Log.debugf("WebDisciplineParserService :: current discipline type is the same as subheader discipline type -> %s", currentDisciplineType.name());
                 currentTournamentDiscipline.setDisciplineName(currentDisciplineSubInfo.originalString());
-                var disciplineMatchGroupElement = disciplineMatchesList.get(disciplineIndex);
+                var disciplineMatchGroupElement = disciplineMatchesList.get(subInfoIndex++);
                 var matches = processMatches(currentDisciplineType, disciplineMatchGroupElement);
                 currentTournamentDiscipline.getEliminationMatches().addAll(matches);
+            }
+
+            if (isNextMatchGroupSameDisciplineType(matchPlayersList, subInfoIndex-1)) {
+                Log.debug("WebDisciplineParserService :: next match group has same match players as current one!");
+                currentDisciplineSubInfo = disciplineSubInfoList.get(subInfoIndex);
+                currentTournamentDiscipline.setDisciplineName(currentDisciplineSubInfo.originalString());
+                currentTournamentDiscipline.setGroupName(currentDisciplineSubInfo.originalString());
+                var disciplineMatchGroupElement = disciplineMatchesList.get(subInfoIndex++);
+                var matches = processMatches(currentDisciplineType, disciplineMatchGroupElement);
+                currentTournamentDiscipline.getGroupMatches().addAll(matches);
+                continue;
             }
 
             if (currentDisciplineSubInfo.isGroupSubHeader()) {
@@ -76,23 +88,20 @@ public class WebDisciplineParserService implements WebDisciplineParser {
                 var matches = processMatches(currentDisciplineType, disciplineMatchGroupElement);
                 currentTournamentDiscipline.getGroupMatches().addAll(matches);
             }
-
-            // check if next subheader is  a group match -> discipline type will stay the same
-            if (nextDisciplineSubInfo != null && nextDisciplineSubInfo.isGroupSubHeader()) {
-                // if the next discipline is different from the current one, it can't be a group match of the current discipline
-               /* if (nextTournamentDiscipline != null && currentDisciplineType != nextTournamentDiscipline.getDisciplineType()) {
-                    continue;
-                }*/
-
-                Log.debugf("WebDisciplineParserService :: next discipline type is the same as subheader discipline type -> %s", nextDisciplineSubInfo.disciplineType().name());
-                currentTournamentDiscipline.setDisciplineName(currentDisciplineSubInfo.originalString());
-                currentTournamentDiscipline.setGroupName(nextDisciplineSubInfo.originalString());
-                var disciplineMatchGroupElement = disciplineMatchesList.get(nextDisciplineIndex);
-                var matches = processMatches(currentDisciplineType, disciplineMatchGroupElement);
-                currentTournamentDiscipline.getGroupMatches().addAll(matches);
-            }
         }
         return tournamentDisciplines;
+    }
+
+    private boolean isNextMatchGroupSameDisciplineType(List<MatchPlayers> matchPlayersList, int currentDisciplineIndex) {
+        var isCurrentAndNextMatchGroupSameDisciplineType = false;
+        MatchPlayers currentMatchPlayer = matchPlayersList.get(currentDisciplineIndex);
+        int nextDisciplineIndex = currentDisciplineIndex + 1;
+        if (nextDisciplineIndex < matchPlayersList.size()) {
+            MatchPlayers nextMatchPlayer = matchPlayersList.get(nextDisciplineIndex);
+            isCurrentAndNextMatchGroupSameDisciplineType = currentMatchPlayer.equals(nextMatchPlayer);
+        }
+        Log.debugf("WebDisciplineParser :: is current and next match group same discipline type -> %s", isCurrentAndNextMatchGroupSameDisciplineType);
+        return isCurrentAndNextMatchGroupSameDisciplineType;
     }
 
     private List<DisciplineMatch> processMatches(DisciplineType disciplineType, HtmlElement disciplineMatchGroupElement) throws HtmlParserException {
@@ -103,17 +112,17 @@ public class WebDisciplineParserService implements WebDisciplineParser {
             switch (disciplineType) {
                 case SINGLE -> {
                     Log.debug("WebMatchParser :: Parse single matches!");
-                    DisciplineMatch singleMatch = matchParserService.parseMatch(SINGLE,disciplineMatch);
+                    DisciplineMatch singleMatch = matchParserService.parseMatch(SINGLE, disciplineMatch);
                     matches.add(singleMatch);
                 }
                 case DOUBLE -> {
                     Log.debug("WebMatchParser :: Parse double matches!");
-                    DisciplineMatch doubleMatch = matchParserService.parseMatch(DOUBLE,disciplineMatch);
+                    DisciplineMatch doubleMatch = matchParserService.parseMatch(DOUBLE, disciplineMatch);
                     matches.add(doubleMatch);
                 }
                 case MIXED -> {
                     Log.debug("WebMatchParser :: Parse mixed matches");
-                    DisciplineMatch mixedMatch = matchParserService.parseMatch(MIXED,disciplineMatch);
+                    DisciplineMatch mixedMatch = matchParserService.parseMatch(MIXED, disciplineMatch);
                     matches.add(mixedMatch);
                 }
                 default -> {

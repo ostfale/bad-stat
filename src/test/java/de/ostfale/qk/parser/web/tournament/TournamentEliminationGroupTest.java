@@ -2,7 +2,6 @@ package de.ostfale.qk.parser.web.tournament;
 
 
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.HtmlParserException;
 import jakarta.inject.Inject;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,12 +29,13 @@ public class TournamentEliminationGroupTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test parsing a single tournament")
-    void testParseAllTournaments() throws HtmlParserException {
+    void testParseAllTournaments() {
         // given
+        var playerName = "Victoria Braun";
         var expectedNumberOfTournaments = 1;
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(content);
+        var result = sut.parseAllYearlyTournamentsForPlayer(playerName, content);
 
         // then
         AssertionsForClassTypes.assertThat(result.size()).isEqualTo(expectedNumberOfTournaments);
@@ -43,8 +43,10 @@ public class TournamentEliminationGroupTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test tournament header information")
-    void testParseTournamentInfo() throws HtmlParserException {
+    void testParseTournamentInfo() {
         // given
+        var playerName = "Victoria Braun";
+
         var expectedTournamentName = "VICTOR International Junior Cup (HAM, U09-U19, U22) 2025";
         var expectedOrganisation = "HAM - TSG Bergedorf";
         var expectedLocation = "Hamburg";
@@ -52,7 +54,7 @@ public class TournamentEliminationGroupTest extends BaseParserTest {
         var expectedYear = 2025;
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(content);
+        var result = sut.parseAllYearlyTournamentsForPlayer(playerName, content);
         var tInfo = result.getFirst().getTournamentInfo();
 
         // then

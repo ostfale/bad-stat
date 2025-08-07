@@ -1,7 +1,6 @@
 package de.ostfale.qk.parser.web.tournament;
 
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.HtmlParserException;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,13 +25,14 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test parsing all tournaments for a year")
-    void testParseAllTournaments() throws HtmlParserException {
+    void testParseAllTournaments() {
         // given
+        var playerName = "Victoria Braun";
         HtmlPage page = loadHtmlPage(TEST_FILE_NAME);
         var expectedNumberOfTournaments = 1;
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(page);
+        var result = sut.parseAllYearlyTournamentsForPlayer(playerName, page);
 
         // then
         assertThat(result.size()).isEqualTo(expectedNumberOfTournaments);
@@ -40,8 +40,9 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test tournament header information details")
-    void testTournamentHeaderInfo() throws HtmlParserException {
+    void testTournamentHeaderInfo() {
         // given
+        var playerName = "Victoria Braun";
         HtmlPage page = loadHtmlPage(TEST_FILE_NAME);
         var expectedTournamentName = "5. DBV A-RLT U17 und U19 Kleinblittersdorf 2025";
         var expectedTournamentDate = "28.06.2025 bis 29.06.2025";
@@ -49,7 +50,7 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
         var expectedTournamentOrganisation = "Deutscher Badminton Verband (U19)";
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(page);
+        var result = sut.parseAllYearlyTournamentsForPlayer(playerName, page);
 
         // then
         assertAll("Test tournament header data",
@@ -63,8 +64,9 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test single discipline matches")
-    void testSingleMatchStandard() throws HtmlParserException {
+    void testSingleMatchStandard() {
         // given
+        var playerName = "Victoria Braun";
         HtmlPage page = loadHtmlPage(TEST_FILE_NAME);
         var expectedNumberOfEliminationMatches = 3;
         var expectedNumberOfGroupMatches = 0;
@@ -72,7 +74,7 @@ class WebTournamentParserServiceSingleTournamentTest extends BaseParserTest {
         var playerOneName = "Victoria Braun (W)";
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(page);
+        var result = sut.parseAllYearlyTournamentsForPlayer(playerName, page);
         var tournament = result.getFirst();
         var singleDiscipline = tournament.getSingleDiscipline();
         var firstMatch = singleDiscipline.getEliminationMatches().getFirst();

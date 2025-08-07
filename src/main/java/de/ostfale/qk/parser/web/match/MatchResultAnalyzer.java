@@ -12,80 +12,14 @@ public class MatchResultAnalyzer {
 
     private static final String WINNER_MARKER = "W";
     private static final String LOSER_MARKER = "L";
-    private static final String NO_GAME = "Kein Spiel";
-    private static final String WALKOVER_L = "Walkover L";
-    private static final String RETIRED_L = "Retired L";
-    private static final String RETIRED_L_DOT = "Retired. L";
-    private static final String RETIRED_DOT = "Retired.";
-
-    private static final String BYE_MARKER_DE = MatchResultType.BYE.getDisplayName();
-    private static final String WALKOVER_MARKER = MatchResultType.WALKOVER.getDisplayName();
-    private static final String RETIRED_MARKER = MatchResultType.RETIRED.getDisplayName();
 
     private final String[] matchResultElements;
-    private final List<String> matchResultElementList;
-    private final List<String> playerNames = new ArrayList<>(4);
-    private final String markerValue;
-    private final int markerPosition;
-    private int retiredPosition;
-    private String matchResultType = MatchResultType.REGULAR.getDisplayName();
 
-    public MatchResultAnalyzer(String[] matchResultElements) throws HtmlParserException {
+    private final List<String> playerNames = new ArrayList<>(4);
+
+    public MatchResultAnalyzer(String[] matchResultElements) {
         Log.debugf("MatchResultAnalyzer :: init -> %s", String.join(",", matchResultElements));
         this.matchResultElements = matchResultElements;
-        this.matchResultElementList = List.of(matchResultElements);
-        this.markerValue = extractMarkerValue(matchResultElementList);
-        this.markerPosition = extractMarkerPosition(matchResultElementList);
-    }
-
-    public String getMatchResultType() {
-        return matchResultType;
-    }
-
-    public boolean isByeMatch() {
-        Log.debug("MatchResultAnalyzer :: isByeMatch");
-        var result = matchResultElementList.contains(BYE_MARKER_DE);
-        if (result) {
-            matchResultType = MatchResultType.BYE.getDisplayName();
-        }
-        return result;
-    }
-
-    public boolean isWalkOverMatch() {
-        Log.debug("MatchResultAnalyzer :: isWalkOverMatch");
-        var result = matchResultElementList.contains(WALKOVER_MARKER)
-                || matchResultElementList.contains(WALKOVER_L);
-        if (result) {
-            matchResultType = MatchResultType.WALKOVER.getDisplayName();
-        }
-        return result;
-    }
-
-    private static final List<String> RETIRED_MARKERS = List.of(RETIRED_MARKER, RETIRED_L, RETIRED_DOT, RETIRED_L_DOT);
-
-    public boolean isRetiredMatch() {
-        Log.debug("MatchResultAnalyzer :: isRetiredMatch");
-        return RETIRED_MARKERS.stream()
-                .filter(matchResultElementList::contains)
-                .findFirst()
-                .map(marker -> {
-                    matchResultType = MatchResultType.RETIRED.getDisplayName();
-                    retiredPosition = matchResultElementList.indexOf(marker);
-                    return true;
-                })
-                .orElse(false);
-    }
-
-    public String getMarker() {
-        return markerValue;
-    }
-
-    public int getMarkerPosition() {
-        return markerPosition;
-    }
-
-    public List<Integer> getMatchResultScores() {
-        return matchResultElementList.stream().filter(this::isNumeric).map(Integer::parseInt).toList();
     }
 
     public String[] getMatchResultElements() {
@@ -93,35 +27,76 @@ public class MatchResultAnalyzer {
     }
 
     public List<String> getMatchResultElementList() {
-        return matchResultElementList;
+        return List.of(matchResultElements);
+    }
+
+    public String getMatchResultType() {
+        var matchResultType = MatchResultType.REGULAR.getDisplayName();
+
+        if (isWalkOverMatch()) {
+            matchResultType = MatchResultType.WALKOVER.getDisplayName();
+        }
+
+        if (isRetiredMatch()) {
+            matchResultType = MatchResultType.RETIRED.getDisplayName();
+        }
+
+        if (isByeMatch()) {
+            matchResultType = MatchResultType.BYE.getDisplayName();
+        }
+
+        Log.debugf("MatchResultAnalyzer :: getMatchResultType -> %s", matchResultType);
+        return matchResultType;
+    }
+
+    public boolean isByeMatch() {
+        var result = getMatchResultElementList().stream()
+                .anyMatch(item -> MatchResultType.getByeList().contains(item));
+        Log.debugf("MatchResultAnalyzer :: isByeMatch -> %s", result);
+        return result;
+    }
+
+    public boolean isWalkOverMatch() {
+        var result = getMatchResultElementList().stream()
+                .anyMatch(item -> MatchResultType.getWalkoverList().contains(item));
+        Log.debugf("MatchResultAnalyzer :: isWalkOverMatch -> %s", result);
+        return result;
+    }
+
+    public boolean isRetiredMatch() {
+        var result = getMatchResultElementList().stream()
+                .anyMatch(item -> MatchResultType.getRetiredList().contains(item));
+        Log.debugf("MatchResultAnalyzer :: isRetiredMatch -> %s", result);
+        return result;
+    }
+
+    public List<Integer> getMatchResultScores() {
+        return getMatchResultElementList().stream().filter(this::isNumeric).map(Integer::parseInt).toList();
     }
 
     public List<String> getPlayerNames() {
-        Log.debug("MatchResultAnalyzer :: getPlayerNames");
-        if (playerNames.isEmpty()) {
-            playerNames.addAll(matchResultElementList.stream()
-                    .filter(this::isValidName)
-                    .toList());
-        }
-        if (playerNames.size() == 3) {
-            Log.warnf("MatchResultAnalyzer :: Player names are not complete -> %s", playerNames);
-        }
-        return playerNames;
+        var result = getMatchResultElementList().stream()
+                .filter(this::isValidName)
+                .toList();
+
+        Log.debugf("MatchResultAnalyzer :: getPlayerNames -> %s", result);
+        return result;
+
     }
 
-    public String getFirstPlayerName(boolean isMarked) {
+    public String getFirstPlayerName(boolean isMarked) throws HtmlParserException {
         return getPlayerName(PlayerPosition.FIRST, isMarked);
     }
 
-    public String getSecondPlayerName(boolean isMarked) {
+    public String getSecondPlayerName(boolean isMarked) throws HtmlParserException {
         return getPlayerName(PlayerPosition.SECOND, isMarked);
     }
 
-    public String getThirdPlayerName(boolean isMarked) {
+    public String getThirdPlayerName(boolean isMarked) throws HtmlParserException {
         return getPlayerName(PlayerPosition.THIRD, isMarked);
     }
 
-    public String getFourthPlayerName(boolean isMarked) {
+    public String getFourthPlayerName(boolean isMarked) throws HtmlParserException {
         return getPlayerName(PlayerPosition.FOURTH, isMarked);
     }
 
@@ -132,32 +107,43 @@ public class MatchResultAnalyzer {
         return str.trim().matches("\\d+");
     }
 
-    private int extractMarkerPosition(List<String> matchResultElementList) {
-        Log.debug("MatchResultAnalyzer :: extractMarkerPosition");
-        if (matchResultElementList.contains(WALKOVER_L)) {
-            return matchResultElementList.indexOf(WALKOVER_L);
+    public int getMatchMarkerPosition() throws HtmlParserException {
+
+        var markerValue = getMatchResultElementList().stream()
+                .filter(item -> MatchResultType.getAllMatchMarkerTypes().contains(item))
+                .findFirst().orElse(null);
+
+        if (markerValue != null) {
+            var positionIndex = getMatchResultElementList().indexOf(markerValue);
+            Log.debugf("MatchResultAnalyzer :: extractMarkerPosition -> %s -> %d", markerValue, positionIndex);
+            return positionIndex;
         }
-        if (matchResultElementList.contains(RETIRED_L)) {
-            return matchResultElementList.indexOf(RETIRED_L);
-        }
-        return matchResultElementList.indexOf(markerValue);
+
+        throw new HtmlParserException(ParsedComponent.MATCH, "Could not find any W-L marker position!");
     }
 
-    private String extractMarkerValue(List<String> matchResultElementList) throws HtmlParserException {
-        Log.debug("MatchResultAnalyzer ::");
-        if (matchResultElementList.contains(WINNER_MARKER)) {
+    public String getMatchMarker() throws HtmlParserException {
+        if (hasWinnerMarker()) {
             return WINNER_MARKER;
-        } else if (this.matchResultElementList.contains(LOSER_MARKER)
-                || this.matchResultElementList.contains(WALKOVER_L)
-                || this.matchResultElementList.contains(RETIRED_L)
-                || this.matchResultElementList.contains(RETIRED_L_DOT)
-        ) {
+        }
+        if (hasLoserMarker()) {
             return LOSER_MARKER;
         }
         throw new HtmlParserException(ParsedComponent.MATCH, "Match does not contain W-L-Marker!");
     }
 
-    private String getPlayerName(PlayerPosition position, boolean isMarked) {
+    private boolean hasWinnerMarker() {
+        return getMatchResultElementList().stream()
+                .anyMatch(item -> MatchResultType.getWinnerMarkerList().contains(item));
+    }
+
+    private boolean hasLoserMarker() {
+        return getMatchResultElementList().stream()
+                .anyMatch(item -> MatchResultType.getLoserMarkerList().contains(item));
+    }
+
+
+    private String getPlayerName(PlayerPosition position, boolean isMarked) throws HtmlParserException {
         Log.debug("MatchResultAnalyzer :: get" + position.name + "PlayerName");
         var playerName = position.getPlayerName(getPlayerNames());
         return isMarked ? formatNameWithMarker(playerName) : playerName;
@@ -185,21 +171,27 @@ public class MatchResultAnalyzer {
         }
     }
 
-    public int getRetiredPosition() {
-        return retiredPosition;
+    public int getRetiredPosition() throws HtmlParserException {
+        var result = getMatchResultElementList().stream()
+                .filter(item -> MatchResultType.getRetiredList().contains(item))
+                .findFirst().orElse(null);
+
+        if (result != null) {
+            var positionIndex = getMatchResultElementList().indexOf(result);
+            Log.debugf("MatchResultAnalyzer :: extractRetiredPosition -> %s -> %d", result, positionIndex);
+            return positionIndex;
+        }
+        throw new HtmlParserException(ParsedComponent.MATCH, "Could not find any Retired marker position!");
+
     }
 
-    private String formatNameWithMarker(String playerName) {
-        return playerName + " (" + getMarker() + ")";
+    private String formatNameWithMarker(String playerName) throws HtmlParserException {
+        return playerName + " (" + getMatchMarker() + ")";
     }
 
     private boolean isValidName(String name) {
-        if (name == null
-                || name.isEmpty()
-                || name.equalsIgnoreCase(NO_GAME)
-                || name.equalsIgnoreCase(WALKOVER_L)
-                || name.equalsIgnoreCase(RETIRED_L)
-        ) {
+
+        if (MatchResultType.getAllMatchResultTypes().contains(name)) {
             return false;
         }
 
@@ -225,6 +217,5 @@ public class MatchResultAnalyzer {
             return false;
         }
         return input.chars().noneMatch(Character::isDigit);
-
     }
 }

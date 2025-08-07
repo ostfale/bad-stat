@@ -44,11 +44,11 @@ public class TournamentWebService extends BaseWebService {
     }
 
     @Override
-    public List<Tournament> scrapeAllTournamentsForPlayerAndYear(Integer year, String playerTournamentId) {
+    public List<Tournament> scrapeAllTournamentsForPlayerAndYear(String playerName, Integer year, String playerTournamentId) {
         String tournamentsURI = preparePlayerTournamentsUrl(playerTournamentId, year.toString());
         HtmlPage tournamentPage = cookieDialogHandler.loadWebsite(tournamentsURI);
         List<Tournament> tournaments;
-        tournaments = webTournamentParserService.parseAllYearlyTournamentsForPlayer(tournamentPage);
+        tournaments = webTournamentParserService.parseAllYearlyTournamentsForPlayer(playerName,tournamentPage);
         Log.debugf("TournamentWebService :: Successfully scraped %d tournaments for player %s and year %d", tournaments.size(), playerTournamentId, year);
         return tournaments;
     }

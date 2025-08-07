@@ -1,7 +1,6 @@
 package de.ostfale.qk.parser.web.tournament;
 
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.HtmlParserException;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,12 +23,13 @@ public class TournamentSingleGroupOnlyTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test parsing a single tournament")
-    void testParseAllTournaments() throws HtmlParserException {
+    void testParseAllTournaments() {
         // given
+        var playerName = "Max Hahn";
         var expectedNumberOfTournaments = 1;
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(content);
+        var result = sut.parseAllYearlyTournamentsForPlayer(playerName, content);
 
         // then
         AssertionsForClassTypes.assertThat(result.size()).isEqualTo(expectedNumberOfTournaments);

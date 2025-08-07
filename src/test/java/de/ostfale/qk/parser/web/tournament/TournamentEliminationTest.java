@@ -1,7 +1,6 @@
 package de.ostfale.qk.parser.web.tournament;
 
 import de.ostfale.qk.parser.BaseParserTest;
-import de.ostfale.qk.parser.HtmlParserException;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,12 +29,13 @@ public class TournamentEliminationTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test parsing a single tournament")
-    void testParseAllTournaments() throws HtmlParserException {
+    void testParseAllTournaments() {
         // given
         var expectedNumberOfTournaments = 1;
+        var playerName = "Victoria Braun";
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(content);
+        var result = sut.parseAllYearlyTournamentsForPlayer(playerName, content);
 
         // then
         assertThat(result.size()).isEqualTo(expectedNumberOfTournaments);
@@ -43,8 +43,9 @@ public class TournamentEliminationTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test tournament header information")
-    void testParseTournamentInfo() throws HtmlParserException {
+    void testParseTournamentInfo() {
         // given
+        var playerName = "Victoria Braun";
         var expectedTournamentName = "3. DBV A-RLT U15 und U17 Maintal 2025";
         var expectedOrganisation = "Deutscher Badminton Verband (U19)";
         var expectedLocation = "Maintal";
@@ -52,7 +53,7 @@ public class TournamentEliminationTest extends BaseParserTest {
         var expectedYear = 2025;
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(content).getFirst().getTournamentInfo();
+        var result = sut.parseAllYearlyTournamentsForPlayer(playerName, content).getFirst().getTournamentInfo();
 
         // then
         assertAll("Test content of tournament info header",
@@ -66,12 +67,13 @@ public class TournamentEliminationTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test parsing a single match")
-    void testParseSingleMatch() throws HtmlParserException {
+    void testParseSingleMatch() {
         // given
+        var playerName = "Victoria Braun";
         var expectedRoundNames = List.of("Round of 32", "Round of 16");
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(content);
+        var result = sut.parseAllYearlyTournamentsForPlayer(playerName, content);
         var tournament = result.getFirst();
         var singleDiscipline = tournament.getSingleDiscipline();
 
@@ -88,12 +90,13 @@ public class TournamentEliminationTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test parsing a double match")
-    void testParseDoubleMatch() throws HtmlParserException {
+    void testParseDoubleMatch() {
         // given
+        var playerName = "Victoria Braun";
         var expectedRoundNames = List.of("Round of 16", "Quarter final");
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(content);
+        var result = sut.parseAllYearlyTournamentsForPlayer(playerName, content);
         var tournament = result.getFirst();
         var doubleDiscipline = tournament.getDoubleDiscipline();
 
@@ -110,12 +113,13 @@ public class TournamentEliminationTest extends BaseParserTest {
 
     @Test
     @DisplayName("Test parsing a mixed match")
-    void testParseMixedMatch() throws HtmlParserException {
+    void testParseMixedMatch() {
         // given
+        var playerName = "Victoria Braun";
         var expectedRoundNames = List.of("Round of 32", "Round of 16", "Quarter final");
 
         // when
-        var result = sut.parseAllYearlyTournamentsForPlayer(content);
+        var result = sut.parseAllYearlyTournamentsForPlayer(playerName, content);
         var tournament = result.getFirst();
         var mixedDiscipline = tournament.getMixedDiscipline();
 

@@ -33,13 +33,14 @@ class WebDisciplineParserServiceTest extends BaseParserTest {
     @DisplayName("Test complete tournament with only elimination matches")
     void testEliminationTournamentMatchesOnly() throws HtmlParserException {
         // given
+        var currentPlayer = "Victoria Braun";
         var expectedNumberOfDisciplines = 3;
         var expectedNumberOfMixedMatches = 3;
         var expectedNumberOfDoubleMatches = 2;
         var expectedNumberOfSingleMatches = 2;
 
         // when
-        List<TournamentDiscipline> result = sut.parseTournamentDisciplines(content.getActiveElement());
+        List<TournamentDiscipline> result = sut.parseTournamentDisciplines(currentPlayer, content.getActiveElement());
 
         // then
         assertAll("Verify extraction of a complete tournament",

@@ -64,6 +64,26 @@ class TeamMatchParserServiceTest extends BaseParserTest {
     }
 
     @Test
+    @DisplayName("Test players for a team standard double match - first double")
+    void testMatchPlayersForTeamStandardFirstDoubleMatch() throws HtmlParserException {
+        // given
+        HtmlPage page = loadHtmlPage(DOUBLE_MATCH_STANDARD_FIRST_TEAM_WINS);
+        String currentPlayerName = "Emily Bischoff";
+        String partnerPlayerName = "Victoria Braun";
+
+        // when
+        var result = sut.parseMatch(currentPlayerName, page.getActiveElement());
+
+        // then
+        assertAll("Test match player data",
+                () -> assertThat(result.isSingleMatch()).isFalse(),
+                () -> assertThat(result.firstPlayerName()).isEqualTo(currentPlayerName),
+                () -> assertThat(result.secondPlayerName()).isEqualTo(partnerPlayerName)
+        );
+    }
+
+
+    @Test
     @DisplayName("Test a double standard match -> second team wins")
     void testDoubleStandardMatchSecondWins() throws HtmlParserException {
         // given
@@ -91,6 +111,25 @@ class TeamMatchParserServiceTest extends BaseParserTest {
                 () -> assertThat(result.getMatchSets().size()).isEqualTo(expectedNumberOfSets),
                 () -> assertThat(result.getFirstPlayerOrWithPartnerName()).isEqualTo(expectedFirstTeamName),
                 () -> assertThat(result.getSecondPlayerOrWithPartnerName()).isEqualTo(expectedSecondTeamName)
+        );
+    }
+
+    @Test
+    @DisplayName("Test players for a team standard double match - second double")
+    void testMatchPlayersForTeamStandardSecondDoubleMatch() throws HtmlParserException {
+        // given
+        HtmlPage page = loadHtmlPage(DOUBLE_MATCH_STANDARD_SECOND_TEAM_WINS);
+        String currentPlayerName = "Emily Bischoff";
+        String partnerPlayerName = "Victoria Braun";
+
+        // when
+        var result = sut.parseMatch(currentPlayerName, page.getActiveElement());
+
+        // then
+        assertAll("Test match player data",
+                () -> assertThat(result.isSingleMatch()).isFalse(),
+                () -> assertThat(result.firstPlayerName()).isEqualTo(currentPlayerName),
+                () -> assertThat(result.secondPlayerName()).isEqualTo(partnerPlayerName)
         );
     }
 
@@ -181,7 +220,7 @@ class TeamMatchParserServiceTest extends BaseParserTest {
         var expectedPlayerOneName = "Max Hahn";
         var expectedPartnerOneName = "Mika Sisic (W)";
         var expectedPlayerTwoName = "Nikolaj Mølgaard Thomsen";
-        var expectedPartnerTwoName="Viktor Verhelst";
+        var expectedPartnerTwoName = "Viktor Verhelst";
 
         // when
         var result = sut.parseMatch(DOUBLE, page.getActiveElement());

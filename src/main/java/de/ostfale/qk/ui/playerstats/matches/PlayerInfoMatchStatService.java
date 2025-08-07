@@ -1,5 +1,7 @@
 package de.ostfale.qk.ui.playerstats.matches;
 
+import de.ostfale.qk.app.cache.RankingPlayerCache;
+import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.domain.player.PlayerTournamentId;
 import de.ostfale.qk.domain.tournament.RecentYears;
@@ -7,15 +9,19 @@ import de.ostfale.qk.parser.HtmlParserException;
 import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
 import de.ostfale.qk.web.internal.TournamentWebService;
 import io.quarkus.logging.Log;
-import jakarta.inject.Singleton;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-@Singleton
+@ApplicationScoped
 public class PlayerInfoMatchStatService {
 
     private final TournamentWebService webService;
+
+    @Inject
+    RankingPlayerCache rankingPlayerCache;
 
     public PlayerInfoMatchStatService(TournamentWebService webService) {
         this.webService = webService;
@@ -24,6 +30,8 @@ public class PlayerInfoMatchStatService {
     public PlayerTourStatDTO readYearlyTournamentStatistics(PlayerId playerId, PlayerTournamentId tournamentId) throws HtmlParserException {
         PlayerTourStatDTO playerStats = new PlayerTourStatDTO(playerId, tournamentId);
         playerStats.setPlayerTournamentId(tournamentId);
+
+        Player player = rankingPlayerCache.getPlayerById(playerId.playerId());
 
         // Iterate over enum values
         for (RecentYears recentYear : RecentYears.values()) {
@@ -39,14 +47,14 @@ public class PlayerInfoMatchStatService {
             RecentYears.YEAR_MINUS_3, PlayerTourStatDTO::setYearMinusThreePlayedTournaments
     );
 
-    private void setTournamentStatsForYear(PlayerTourStatDTO playerStats, RecentYears recentYear, String tournamentId) throws HtmlParserException {
+    private void setTournamentStatsForYear(PlayerTourStatDTO playerStats, RecentYears recentYear, String tournamentId) {
         Log.debugf("Reading tournament statistics for player %s, tournament %s, year %s", playerStats.getPlayerId(), tournamentId, recentYear.getValue());
 
         int tournamentCount = getTournamentCountForYear(recentYear.getValue(), tournamentId);
         yearStatSetters.get(recentYear).accept(playerStats, tournamentCount);
     }
 
-    private int getTournamentCountForYear(int year, String tournamentId) throws HtmlParserException {
+    private int getTournamentCountForYear(int year, String tournamentId) {
         return webService.getNumberOfTournamentsForYearAndPlayer(year, tournamentId);
     }
 }
