@@ -21,11 +21,11 @@
                 </DropShadow>
             </effect>
             <children>
-                <Pane layoutY="7.0" prefHeight="61.0" prefWidth="289.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <Pane layoutY="7.0" prefHeight="60.0" prefWidth="289.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <effect>
-                        <DropShadow blurType="ONE_PASS_BOX" height="10.5" radius="2.125" width="0.0">
+                        <DropShadow blurType="ONE_PASS_BOX" height="5.25" radius="0.8125" width="0.0">
                             <color>
-                                <Color red="0.8070175647735596" green="0.7895819544792175" blue="0.7895819544792175" />
+                                <Color red="0.8078431487083435" green="0.7882353067398071" blue="0.7882353067398071" />
                             </color>
                         </DropShadow>
                     </effect>
@@ -159,5 +159,61 @@
                 </Label>
             </children>
         </AnchorPane>
+      <AnchorPane layoutX="631.0" layoutY="100.0" prefHeight="400.0" prefWidth="450.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="650.0" AnchorPane.topAnchor="100.0">
+         <effect>
+            <DropShadow />
+         </effect>
+         <children>
+            <Pane layoutY="7.0" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <effect>
+                  <DropShadow blurType="ONE_PASS_BOX" height="5.25" radius="0.8125" width="0.0">
+                     <color>
+                        <Color red="0.8078431487083435" green="0.7882353067398071" blue="0.7882353067398071" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <children>
+                  <Label fx:id="lblRanking1" layoutX="20.0" layoutY="10.0" text="Turnierkalender" textFill="#ae1732">
+                     <font>
+                        <Font name="Calibri Italic" size="36.0" />
+                     </font>
+                  </Label>
+                  <FontIcon iconColor="#ae1732" iconLiteral="far-calendar-alt" iconSize="24" layoutX="400.0" layoutY="40.0" />
+               </children>
+            </Pane>
+            <Label layoutX="34.0" layoutY="78.0" text="Download" textFill="#ae1732" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="80.0">
+               <font>
+                  <Font name="System Italic" size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="36.0" layoutY="114.0" text="Lokal" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="115.0">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="41.0" layoutY="140.0" text="Filename :" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="140.0">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="48.0" layoutY="161.0" text="Zeitpunkt:" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="160.0">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="14.0" layoutY="198.0" text="Statistik" textFill="#ae1732" AnchorPane.leftAnchor="20.0">
+               <font>
+                  <Font name="System Italic" size="24.0" />
+               </font>
+            </Label>
+            <Button layoutX="374.0" layoutY="157.0" mnemonicParsing="false" onAction="#downloadTournamentCalendar" styleClass="sidebar-btn" stylesheets="@../static/css/app-view.css" textFill="#ae1732" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="157.0">
+               <graphic>
+                  <FontIcon iconColor="#ae1732" iconLiteral="fas-download" />
+               </graphic>
+            </Button>
+            <Label fx:id="lblTourCalFileName" layoutX="148.0" layoutY="141.0" text="-" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="140.0" />
+            <Label fx:id="lblTourCalFileDate" layoutX="156.0" layoutY="161.0" text="-" AnchorPane.leftAnchor="170.0" />
+         </children>
+      </AnchorPane>
     </children>
 </AnchorPane>

@@ -62,6 +62,15 @@ public class DashboardController extends BaseController<DashboardUIModel> {
     @FXML
     private Label lblCurrCW;
 
+    // tournament calendar
+
+    @FXML
+    private Label lblTourCalFileName;
+
+    @FXML
+    private Label lblTourCalFileDate;
+
+
     @FXML
     public void initialize() {
         Log.info("DashboardController initialized");
@@ -94,6 +103,11 @@ public class DashboardController extends BaseController<DashboardUIModel> {
         } else {
             Log.warn("DashboardController :: Download Last CW Ranking failed");
         }
+    }
+
+    @FXML
+    void downloadTournamentCalendar(ActionEvent event) {
+        Log.debug("DashboardController :: Download tournament calendar");
     }
 
     @FXML

@@ -1,7 +1,5 @@
 package de.ostfale.qk.ui.playerstats.matches;
 
-import de.ostfale.qk.app.cache.RankingPlayerCache;
-import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.domain.player.PlayerId;
 import de.ostfale.qk.domain.player.PlayerTournamentId;
 import de.ostfale.qk.domain.tournament.RecentYears;
@@ -10,7 +8,6 @@ import de.ostfale.qk.ui.playerstats.info.tournamentdata.PlayerTourStatDTO;
 import de.ostfale.qk.web.internal.TournamentWebService;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -20,9 +17,6 @@ public class PlayerInfoMatchStatService {
 
     private final TournamentWebService webService;
 
-    @Inject
-    RankingPlayerCache rankingPlayerCache;
-
     public PlayerInfoMatchStatService(TournamentWebService webService) {
         this.webService = webService;
     }
@@ -30,8 +24,6 @@ public class PlayerInfoMatchStatService {
     public PlayerTourStatDTO readYearlyTournamentStatistics(PlayerId playerId, PlayerTournamentId tournamentId) throws HtmlParserException {
         PlayerTourStatDTO playerStats = new PlayerTourStatDTO(playerId, tournamentId);
         playerStats.setPlayerTournamentId(tournamentId);
-
-        Player player = rankingPlayerCache.getPlayerById(playerId.playerId());
 
         // Iterate over enum values
         for (RecentYears recentYear : RecentYears.values()) {
