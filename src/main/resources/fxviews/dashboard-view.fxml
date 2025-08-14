@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -206,13 +207,14 @@
                   <Font name="System Italic" size="24.0" />
                </font>
             </Label>
-            <Button layoutX="374.0" layoutY="157.0" mnemonicParsing="false" onAction="#downloadTournamentCalendar" styleClass="sidebar-btn" stylesheets="@../static/css/app-view.css" textFill="#ae1732" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="157.0">
+            <Button fx:id="btnTourCalDownload" layoutX="374.0" layoutY="157.0" mnemonicParsing="false" onAction="#downloadTournamentCalendar" styleClass="sidebar-btn" stylesheets="@../static/css/app-view.css" textFill="#ae1732" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="157.0">
                <graphic>
                   <FontIcon iconColor="#ae1732" iconLiteral="fas-download" />
                </graphic>
             </Button>
             <Label fx:id="lblTourCalFileName" layoutX="148.0" layoutY="141.0" text="-" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="140.0" />
             <Label fx:id="lblTourCalFileDate" layoutX="156.0" layoutY="161.0" text="-" AnchorPane.leftAnchor="170.0" />
+            <ProgressIndicator fx:id="progressIndicator" layoutX="395.0" layoutY="84.0" progress="0.0" visible="false" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0" />
          </children>
       </AnchorPane>
     </children>

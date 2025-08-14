@@ -17,7 +17,7 @@
         <!-- quarkus -->
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.25.0</quarkus.platform.version>
+        <quarkus.platform.version>3.25.2</quarkus.platform.version>
         <skipITs>true</skipITs>
 
         <!-- maven -->
@@ -28,7 +28,7 @@
         <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
 
         <!-- libs -->
-        <htmlunit.version>4.13.0</htmlunit.version>
+        <htmlunit.version>4.14.0</htmlunit.version>
         <quarkus-fx.version>0.9.1</quarkus-fx.version>
         <quarkus-poi.version>2.1.2</quarkus-poi.version>
 

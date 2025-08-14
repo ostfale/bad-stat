@@ -1,5 +1,7 @@
 package de.ostfale.qk.ui.dashboard;
 
+import de.ostfale.qk.app.DirTypes;
+import de.ostfale.qk.app.PlannedTournamentsDownloader;
 import de.ostfale.qk.app.TimeHandlerFacade;
 import de.ostfale.qk.app.cache.RankingPlayerCache;
 import de.ostfale.qk.app.downloader.ranking.RankingDownloader;
@@ -13,8 +15,10 @@ import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @ApplicationScoped
 public class DashboardService implements TimeHandlerFacade {
@@ -32,6 +36,26 @@ public class DashboardService implements TimeHandlerFacade {
 
     @Inject
     RankingWebService rankingWebService;
+
+    @Inject
+    PlannedTournamentsDownloader plannedTournamentsDownloader;
+
+    public CompletableFuture<Boolean> loadPlannedTournamentsAsync() {
+        var url = plannedTournamentsDownloader.prepareDownloadUrl("2025");
+        var target = plannedTournamentsDownloader.prepareDownloadTargetPath(DirTypes.TOURNAMENT.displayName);
+        var fileName = plannedTournamentsDownloader.prepareDownloadFileName("2025");
+        Path downloadPath = Path.of(target, fileName);
+
+        return plannedTournamentsDownloader.download(url, downloadPath)
+                .thenApply(path -> {
+                    log.info("Successfully downloaded tournament calendar to: " + path);
+                    return true;
+                })
+                .exceptionally(throwable -> {
+                    log.error("Failed to download tournament calendar", throwable);
+                    return false;
+                });
+    }
 
     public boolean loadCurrentCWRankingFile() {
         log.debug("DashboardService :: load current ranking file");
@@ -107,4 +131,6 @@ public class DashboardService implements TimeHandlerFacade {
         }
         return Optional.empty();
     }
+
+
 }

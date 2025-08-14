@@ -47,30 +47,30 @@ public class ApplicationInitializer implements FileSystemFacade {
 
     private void initializeNewDirectory(String applicationHomeDir) {
         Log.infof("Application home directory does not exist: %s -> is going to be created", applicationHomeDir);
-        createDirectory(Paths.get(applicationHomeDir));
+        createDirectoryTree(Paths.get(applicationHomeDir));
         createRequiredDirectories(applicationHomeDir);
     }
 
     private void createRequiredDirectories(String applicationHomeDir) {
         Arrays.stream(DirTypes.values()).forEach(dirType -> {
             Log.debugf("Startup :: Ensure directory '%s' exists", dirType.displayName);
-            createDirectoryIfNotExists(applicationHomeDir, dirType.displayName);
+            createDirectoryTreeIfNotExists(applicationHomeDir, dirType.displayName);
         });
     }
 
-    private void createDirectoryIfNotExists(String parentDirectory, String directoryName) {
-        Path directoryPath = Paths.get(parentDirectory, directoryName);
-        if (Files.isDirectory(directoryPath)) {
-            Log.debugf("Directory already exists: %s", directoryPath);
+    private void createDirectoryTreeIfNotExists(String parentDirectory, String directoryPath) {
+        Path fullPath = Paths.get(parentDirectory, directoryPath);
+        if (Files.exists(fullPath)) {
+            Log.debugf("Directory tree already exists: %s", fullPath);
             return;
         }
-        createDirectory(directoryPath);
+        createDirectoryTree(fullPath);
     }
-
-    private void createDirectory(Path directoryPath) {
+    
+    private void createDirectoryTree(Path directoryPath) {
         try {
-            Files.createDirectory(directoryPath);
-            Log.infof("Directory created: %s", directoryPath);
+            Files.createDirectories(directoryPath); // This creates the entire directory tree
+            Log.infof("Directory tree created: %s", directoryPath);
         } catch (IOException e) {
             String errorMessage = String.format(DIRECTORY_CREATION_ERROR, directoryPath);
             Log.errorf(errorMessage + ": %s", e.getMessage());

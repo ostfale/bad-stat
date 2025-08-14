@@ -1,5 +1,7 @@
 package de.ostfale.qk.app;
 
+import de.ostfale.qk.web.api.WebFacade;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.net.URI;
@@ -9,34 +11,71 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.concurrent.CompletableFuture;
 
-@ApplicationScoped
-public class PlannedTournamentsDownloader {
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-    // Returns a CompletableFuture; in Quarkus you can use @RunOnVirtualThread if exposing as REST
+@ApplicationScoped
+public class PlannedTournamentsDownloader implements WebFacade, FileSystemFacade {
+
+    private static final String FILE_NAME = "Tournament";
+    private static final String FILE_SUFFIX = ".csv";
+    private static final String DATE_SEPARATOR = "_";
+
+    private final HttpClient httpClient;
+
+    @Override
+    public String prepareDownloadUrl(String year) {
+        return String.format("%s%s%s", TOURNAMENT_DOWNLOAD_URL_PREFIX, year, TOURNAMENT_DOWNLOAD_SEARCH_PARAM);
+    }
+
+    @Override
+    public String prepareDownloadFileName(String year) {
+        String tFileName = FILE_NAME + DATE_SEPARATOR + year + DATE_SEPARATOR + LocalDate.now() + FILE_SUFFIX;
+        Log.debugf("PlannedTournamentsDownloader :: Prepare download file name %s", tFileName);
+        return tFileName;
+    }
+
+    @Override
+    public String prepareDownloadTargetPath(String appDirName) {
+        var appDir = getApplicationHomeDir();
+        var tourDir = appDir + SEP + appDirName + SEP;
+        Log.debugf("PlannedTournamentsDownloader :: Prepare download target path %s", tourDir);
+        return tourDir;
+    }
+
+    public PlannedTournamentsDownloader() {
+        this.httpClient = HttpClient.newBuilder()
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .connectTimeout(Duration.ofSeconds(15))
+                .build();
+    }
+
+    public PlannedTournamentsDownloader(HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    @Override
     public CompletableFuture<Path> download(String url, Path target) {
         HttpRequest req = HttpRequest.newBuilder(URI.create(url)).GET().build();
-        return client.sendAsync(req, HttpResponse.BodyHandlers.ofInputStream())
+        return httpClient.sendAsync(req, HttpResponse.BodyHandlers.ofInputStream())
                 .thenCompose(resp -> {
                     if (resp.statusCode() != 200) {
+                        Log.errorf("Download failed with status code: %d for URL: %s", resp.statusCode(), url);
                         return CompletableFuture.failedFuture(new IllegalStateException("HTTP " + resp.statusCode()));
                     }
                     return CompletableFuture.supplyAsync(() -> {
                         try (var in = resp.body()) {
-                            Files.createDirectories(target.getParent());
-                            Files.copy(in, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                            Files.copy(in, target, REPLACE_EXISTING);
+                            Log.infof("Successfully downloaded file from %s to %s", url, target);
                             return target;
                         } catch (Exception e) {
+                            Log.errorf("Could not download file from %s to %s", url, target, e);
                             throw new RuntimeException(e);
                         }
                     });
                 });
     }
-
-    private final HttpClient client = HttpClient.newBuilder()
-            .followRedirects(HttpClient.Redirect.NORMAL)
-            .connectTimeout(Duration.ofSeconds(30))
-            .build();
 
 }

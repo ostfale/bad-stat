@@ -35,9 +35,9 @@ quarkus:
 "%dev":
     quarkus:
       log:
-        level: INFO
+        level: WARN
         file:
           enable: false
         category:
           "de.ostfale.qk":
-            level: INFO
+            level: DEBUG

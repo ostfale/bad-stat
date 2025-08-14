@@ -3,14 +3,17 @@ package de.ostfale.qk.ui.dashboard;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.dashboard.model.DashboardRankingUIModel;
 import de.ostfale.qk.ui.dashboard.model.DashboardUIModel;
+import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkiverse.fx.views.FxView;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.AnchorPane;
 
 @Dependent
@@ -70,6 +73,13 @@ public class DashboardController extends BaseController<DashboardUIModel> {
     @FXML
     private Label lblTourCalFileDate;
 
+    @FXML
+    private Button btnTourCalDownload;
+
+
+    @FXML
+    private ProgressIndicator progressIndicator;
+
 
     @FXML
     public void initialize() {
@@ -108,6 +118,28 @@ public class DashboardController extends BaseController<DashboardUIModel> {
     @FXML
     void downloadTournamentCalendar(ActionEvent event) {
         Log.debug("DashboardController :: Download tournament calendar");
+        showProgress();
+        disableDownloadButtons(true);
+
+        // Use the async method that properly handles the CompletableFuture
+        dashboardService.loadPlannedTournamentsAsync()
+                .thenAccept(downloadSuccess -> {
+                    Platform.runLater(() -> {
+                        if (downloadSuccess) {
+                            Log.debug("DashboardController :: Download tournament calendar successful");
+                        } else {
+                            Log.warn("DashboardController :: Download tournament calendar failed");
+                        }
+                        hideProgress();
+                    });
+                })
+                .exceptionally(throwable -> {
+                    Platform.runLater(() -> {
+                        Log.error("DashboardController :: Download tournament calendar failed", throwable);
+                        hideProgress();
+                    });
+                    return null;
+                });
     }
 
     @FXML
@@ -130,5 +162,20 @@ public class DashboardController extends BaseController<DashboardUIModel> {
         this.lblFemalePlayers.setText(String.valueOf(model.getNofFemalePlayers()));
         this.lblMalePlayers.setText(String.valueOf(model.getNofMalePlayers()));
         this.lblStatCW.setText(model.getDbUpdateInCW());
+    }
+
+    private void showProgress() {
+        progressIndicator.setVisible(true);
+        progressIndicator.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+    }
+
+    private void hideProgress() {
+        progressIndicator.setVisible(false);
+        disableDownloadButtons(false);
+    }
+
+    @RunOnFxThread
+    void disableDownloadButtons(boolean disable) {
+        btnTourCalDownload.setDisable(disable);
     }
 }
