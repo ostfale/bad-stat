@@ -192,28 +192,22 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <Label layoutX="41.0" layoutY="140.0" text="Filename :" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="140.0">
+            <Label layoutX="48.0" layoutY="161.0" text="Zeitpunkt:" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="140.0">
                <font>
                   <Font size="13.0" />
                </font>
             </Label>
-            <Label layoutX="48.0" layoutY="161.0" text="Zeitpunkt:" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="160.0">
-               <font>
-                  <Font size="13.0" />
-               </font>
-            </Label>
-            <Label layoutX="14.0" layoutY="198.0" text="Statistik" textFill="#ae1732" AnchorPane.leftAnchor="20.0">
+            <Label layoutX="14.0" layoutY="198.0" text="Statistik" textFill="#ae1732" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="180.0">
                <font>
                   <Font name="System Italic" size="24.0" />
                </font>
             </Label>
-            <Button fx:id="btnTourCalDownload" layoutX="374.0" layoutY="157.0" mnemonicParsing="false" onAction="#downloadTournamentCalendar" styleClass="sidebar-btn" stylesheets="@../static/css/app-view.css" textFill="#ae1732" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="157.0">
+            <Button fx:id="btnTourCalDownload" layoutX="374.0" layoutY="157.0" mnemonicParsing="false" onAction="#downloadTournamentCalendar" styleClass="sidebar-btn" stylesheets="@../static/css/app-view.css" textFill="#ae1732" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="137.0">
                <graphic>
                   <FontIcon iconColor="#ae1732" iconLiteral="fas-download" />
                </graphic>
             </Button>
-            <Label fx:id="lblTourCalFileName" layoutX="148.0" layoutY="141.0" text="-" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="140.0" />
-            <Label fx:id="lblTourCalFileDate" layoutX="156.0" layoutY="161.0" text="-" AnchorPane.leftAnchor="170.0" />
+            <Label fx:id="lblTourCalFileDate" layoutX="156.0" layoutY="161.0" text="-" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="140.0" />
             <ProgressIndicator fx:id="progressIndicator" layoutX="395.0" layoutY="84.0" progress="0.0" visible="false" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0" />
          </children>
       </AnchorPane>

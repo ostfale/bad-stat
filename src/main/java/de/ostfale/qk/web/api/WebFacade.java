@@ -21,6 +21,7 @@ public interface WebFacade {
     String prepareDownloadUrl(String year);
     String prepareDownloadFileName(String year);
     String prepareDownloadTargetPath(String appDirName);
+    String getLastDownloadDate(String targetPath);
 
     CompletableFuture<Path> download(String url, Path target);
 

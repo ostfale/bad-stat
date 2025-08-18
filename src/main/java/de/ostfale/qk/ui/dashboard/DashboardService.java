@@ -1,6 +1,7 @@
 package de.ostfale.qk.ui.dashboard;
 
 import de.ostfale.qk.app.DirTypes;
+import de.ostfale.qk.app.FileSystemFacade;
 import de.ostfale.qk.app.PlannedTournamentsDownloader;
 import de.ostfale.qk.app.TimeHandlerFacade;
 import de.ostfale.qk.app.cache.RankingPlayerCache;
@@ -8,6 +9,7 @@ import de.ostfale.qk.app.downloader.ranking.RankingDownloader;
 import de.ostfale.qk.data.dashboard.DashboardRankingDataJsonHandler;
 import de.ostfale.qk.data.dashboard.model.DashboardRankingData;
 import de.ostfale.qk.domain.player.PlayerOverview;
+import de.ostfale.qk.domain.tourcal.TourCalendarDashboard;
 import de.ostfale.qk.ui.dashboard.model.DashboardRankingUIModel;
 import de.ostfale.qk.web.internal.RankingWebService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -21,9 +23,12 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @ApplicationScoped
-public class DashboardService implements TimeHandlerFacade {
+public class DashboardService implements TimeHandlerFacade, FileSystemFacade {
 
     private static final Logger log = Logger.getLogger(DashboardService.class);
+
+    @Inject
+    DashboardHandler dashboardHandler;
 
     @Inject
     RankingPlayerCache rankingPlayerCache;
@@ -40,21 +45,14 @@ public class DashboardService implements TimeHandlerFacade {
     @Inject
     PlannedTournamentsDownloader plannedTournamentsDownloader;
 
-    public CompletableFuture<Boolean> loadPlannedTournamentsAsync() {
-        var url = plannedTournamentsDownloader.prepareDownloadUrl("2025");
+    public CompletableFuture<Void> loadPlannedTournamentsAsync() {
         var target = plannedTournamentsDownloader.prepareDownloadTargetPath(DirTypes.TOURNAMENT.displayName);
-        var fileName = plannedTournamentsDownloader.prepareDownloadFileName("2025");
-        Path downloadPath = Path.of(target, fileName);
+        deleteAllFiles(target);
 
-        return plannedTournamentsDownloader.download(url, downloadPath)
-                .thenApply(path -> {
-                    log.info("Successfully downloaded tournament calendar to: " + path);
-                    return true;
-                })
-                .exceptionally(throwable -> {
-                    log.error("Failed to download tournament calendar", throwable);
-                    return false;
-                });
+        var yearFileData = getCurrentAndNextYearStrings();
+        var thisYearFileData = yearFileData.getFirst();
+        var nextYearFileData = yearFileData.getLast();
+        return plannedTournamentsDownloader.downloadTwoFiles(thisYearFileData.url, nextYearFileData.url, thisYearFileData.targetPath, nextYearFileData.targetPath);
     }
 
     public boolean loadCurrentCWRankingFile() {
@@ -96,9 +94,15 @@ public class DashboardService implements TimeHandlerFacade {
         return getLastCalendarWeek();
     }
 
-   public String getOnlineCW() {
+    public String getOnlineCW() {
         log.debug("DashboardService :: retrieve online calendar week");
         return rankingWebService.getCalendarWeekForLastUpdate();
+    }
+
+    public TourCalendarDashboard getTourCalendarDashboardData() {
+        var targetDir = plannedTournamentsDownloader.prepareDownloadTargetPath(DirTypes.TOURNAMENT.displayName);
+        var foundDownloadDate = plannedTournamentsDownloader.getLastDownloadDate(targetDir);
+        return new TourCalendarDashboard(foundDownloadDate);
     }
 
     private DashboardRankingUIModel createModelFromRankingData(DashboardRankingData rankingData) {
@@ -109,7 +113,7 @@ public class DashboardService implements TimeHandlerFacade {
         return model;
     }
 
-   private void populatePlayerStatistics(DashboardRankingUIModel model) {
+    private void populatePlayerStatistics(DashboardRankingUIModel model) {
         PlayerOverview playerOverview = new PlayerOverview(
                 rankingPlayerCache.getNumberOfPlayers(),
                 rankingPlayerCache.getNumberOfMalePlayers(),
@@ -132,5 +136,26 @@ public class DashboardService implements TimeHandlerFacade {
         return Optional.empty();
     }
 
+    private List<YearUrlAndFileName> getCurrentAndNextYearStrings() {
+        var currentYear = getActualCalendarYear();
+        var nextYear = currentYear + 1;
 
+        var currentYearData = createYearUrlAndFileName(String.valueOf(currentYear));
+        var nextYearData = createYearUrlAndFileName(String.valueOf(nextYear));
+
+        return List.of(currentYearData, nextYearData);
+    }
+
+    private YearUrlAndFileName createYearUrlAndFileName(String yearString) {
+        var url = plannedTournamentsDownloader.prepareDownloadUrl(yearString);
+        var fileName = plannedTournamentsDownloader.prepareDownloadFileName(yearString);
+        var targetDir = plannedTournamentsDownloader.prepareDownloadTargetPath(DirTypes.TOURNAMENT.displayName);
+        var targetPath = Path.of(targetDir, fileName);
+
+        return new YearUrlAndFileName(yearString, url, targetPath);
+    }
+
+    private record YearUrlAndFileName(String year, String url, Path targetPath) {
+    }
 }
+

@@ -18,5 +18,4 @@ public class DashboardHandler implements BaseHandler {
     public Node getRootNode() {
         return fxViewRepository.getViewData(DASHBOARD_FXML).getRootNode();
     }
-
 }

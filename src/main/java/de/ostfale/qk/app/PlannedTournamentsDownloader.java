@@ -17,13 +17,14 @@ import java.util.concurrent.CompletableFuture;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @ApplicationScoped
-public class PlannedTournamentsDownloader implements WebFacade, FileSystemFacade {
+public class PlannedTournamentsDownloader implements WebFacade, FileSystemFacade, TimeHandlerFacade {
 
     private static final String FILE_NAME = "Tournament";
     private static final String FILE_SUFFIX = ".csv";
     private static final String DATE_SEPARATOR = "_";
 
     private final HttpClient httpClient;
+    private String lastDownloadDate;
 
     @Override
     public String prepareDownloadUrl(String year) {
@@ -45,6 +46,16 @@ public class PlannedTournamentsDownloader implements WebFacade, FileSystemFacade
         return tourDir;
     }
 
+    @Override
+    public String getLastDownloadDate(String targetPath) {
+        if (lastDownloadDate != null) {
+            return lastDownloadDate;
+        }
+
+        Log.debug("PlannedTournamentsDownloader :: Get last download date from file system");
+        return extractLastDownloadDateFromFileSystem(targetPath);
+    }
+
     public PlannedTournamentsDownloader() {
         this.httpClient = HttpClient.newBuilder()
                 .followRedirects(HttpClient.Redirect.NORMAL)
@@ -54,6 +65,10 @@ public class PlannedTournamentsDownloader implements WebFacade, FileSystemFacade
 
     public PlannedTournamentsDownloader(HttpClient httpClient) {
         this.httpClient = httpClient;
+    }
+
+    public void setLastDownloadDate(String lastDownloadDate) {
+        this.lastDownloadDate = lastDownloadDate;
     }
 
     @Override
@@ -68,7 +83,7 @@ public class PlannedTournamentsDownloader implements WebFacade, FileSystemFacade
                     return CompletableFuture.supplyAsync(() -> {
                         try (var in = resp.body()) {
                             Files.copy(in, target, REPLACE_EXISTING);
-                            Log.infof("Successfully downloaded file from %s to %s", url, target);
+                            Log.infof("Successfully downloaded file  to %s", target);
                             return target;
                         } catch (Exception e) {
                             Log.errorf("Could not download file from %s to %s", url, target, e);
@@ -78,4 +93,33 @@ public class PlannedTournamentsDownloader implements WebFacade, FileSystemFacade
                 });
     }
 
+    public CompletableFuture<Void> downloadTwoFiles(String url1, String url2, Path targetPath1, Path targetPath2) {
+        var download1 = download(url1, targetPath1);
+        var download2 = download(url2, targetPath2);
+
+        return CompletableFuture.allOf(download1, download2)
+                .exceptionally(throwable -> {
+                    Log.errorf("Error downloading files in parallel: %s", throwable.getMessage());
+                    throw new RuntimeException("Failed to download files", throwable);
+                });
+    }
+
+    private String extractLastDownloadDateFromFileSystem(String targetPath) {
+        var fileList = readAllFiles(targetPath);
+        if (fileList.isEmpty()) {
+            return EMPTY_STRING;
+        }
+
+        String lastFileName = fileList.getFirst().getName();
+        lastDownloadDate = extractDateFromFileName(lastFileName);
+        Log.debugf("PlannedTournamentsDownloader :: Last download date from file system: %s", lastDownloadDate);
+        return lastDownloadDate;
+    }
+
+    private String extractDateFromFileName(String fileName) {
+        int startIndex = fileName.lastIndexOf(DATE_SEPARATOR) + 1;
+        int endIndex = fileName.indexOf(FILE_SUFFIX, startIndex);
+        var extractedDateFileFormat = fileName.substring(startIndex, endIndex);
+        return formatDateToTournamentFormat(extractedDateFileFormat);
+    }
 }

@@ -23,6 +23,7 @@ public interface FileSystemFacade extends ApplicationFacade {
 
     String SEP = FileSystems.getDefault().getSeparator();
     String USER_HOME = "user.home";
+    String EMPTY_STRING = "";
 
     default boolean directoryExists(String dirPath) {
         Path path = Paths.get(dirPath);

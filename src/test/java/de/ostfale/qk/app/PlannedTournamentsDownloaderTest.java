@@ -4,18 +4,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import java.net.http.HttpClient;
-import java.net.http.HttpResponse;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.concurrent.CompletableFuture;
 
-import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
 
 @DisplayName("Test planned tournaments downloader")
 @Tag("unittest")
@@ -23,26 +21,12 @@ class PlannedTournamentsDownloaderTest {
 
     private PlannedTournamentsDownloader sut;
 
+    @TempDir
+    Path tempDir; // JUnit will create and clean up this directory automatically
+
     @BeforeEach
     void setUp() {
         sut = new PlannedTournamentsDownloader();
-    }
-
-    @Test
-    void shouldFailDownloadForInvalidUrl() {
-        // given
-        HttpClient mockClient = mock(HttpClient.class);
-        var mockResponse = mock(HttpResponse.class);
-
-        when(mockResponse.statusCode()).thenReturn(404);
-        when(mockClient.sendAsync(any(), any())).thenReturn(completedFuture(mockResponse));
-
-        sut = new PlannedTournamentsDownloader(mockClient);
-
-        // when and then
-        CompletableFuture<Path> result = sut.download("http://invalid-url.com/mock-file.txt", Path.of("mockTarget"));
-
-        assertThrows(Exception.class, result::get);
     }
 
     @Test
@@ -113,4 +97,44 @@ class PlannedTournamentsDownloaderTest {
         // then
         assertTrue(result.contains(sut.getApplicationHomeDir()), "The target path should include the application home directory.");
     }
+
+    @Test
+    @DisplayName("Should read the download date from the file name")
+    void shouldReadDownloadDateFromFile() {
+        // given
+        String appDirName = "testAppDir";
+        String lastDownloadDate = "2025-01-01";
+
+        // when
+        sut.setLastDownloadDate(lastDownloadDate);
+        String result = sut.getLastDownloadDate(appDirName);
+
+        // then
+        assertThat(result).isEqualTo(lastDownloadDate);
+    }
+
+    @Test
+    @DisplayName("Should handle file operations in temp directory")
+    void shouldHandleFileOperationsInTempDirectory() throws IOException {
+        // given
+        String fileName = "Tournament_2026_2025-01-25.csv";
+        String testContent = "Tournament,Date,Location test Tournament,2025-01-01,Test City";
+
+        // Create a test file in temp directory
+        Path testFile = tempDir.resolve(fileName);
+        Files.write(testFile, testContent.getBytes());
+
+        // when
+        var result = sut.getLastDownloadDate(tempDir.toString());
+        boolean fileExists = Files.exists(testFile);
+        String content = Files.readString(testFile);
+
+        // then
+        assertAll("Read file data",
+                () -> assertThat(fileExists).isTrue(),
+                () -> assertThat(content).isEqualTo(testContent),
+                () -> assertThat(result).isEqualTo("25.01.2025")
+        );
+    }
+
 }

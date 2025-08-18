@@ -1,13 +1,10 @@
 package de.ostfale.qk.domain.tourcal;
 
-import java.time.LocalDate;
-
 public record TourCalendarDashboard(
-        String fileName,
-        LocalDate downloadDate
+        String downloadDate
 ) {
 
     public TourCalendarDashboard() {
-        this("", null);
+        this("");
     }
 }
