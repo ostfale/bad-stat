@@ -1,22 +1,19 @@
 package de.ostfale.qk.ui.playerstats.info;
 
-import de.ostfale.qk.ui.ApplicationController;
 import de.ostfale.qk.ui.playerstats.matches.PlayerStatisticsHandler;
 import io.quarkiverse.fx.views.FxViewData;
 import io.quarkiverse.fx.views.FxViewRepository;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
-import org.jboss.logging.Logger;
 
 import java.util.List;
 
 @ApplicationScoped
 public class PlayerStatsController {
-
-    private static final Logger log = Logger.getLogger(ApplicationController.class);
 
     @Inject
     FxViewRepository fxViewRepository;
@@ -34,7 +31,7 @@ public class PlayerStatsController {
     private TitledPane playerGraphPane;
 
     private void initialize() {
-        log.info("Initialize StatisticsController");
+        Log.info("Initialize StatisticsController");
 
         var playerPanes = configurePlayerPanes();
         accordionContainer = configureAccordion(playerPanes);
@@ -57,7 +54,7 @@ public class PlayerStatsController {
     }
 
     private Accordion configureAccordion(List<TitledPane> playerPanes) {
-        log.debug("Configure StatisticsController Accordion");
+        Log.debug("Configure StatisticsController Accordion");
         var accordion = new Accordion();
         accordion.getPanes().addAll(playerPanes);
         accordion.setExpandedPane(this.playerInfoPane);

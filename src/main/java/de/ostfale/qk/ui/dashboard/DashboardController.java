@@ -86,6 +86,7 @@ public class DashboardController extends BaseController<DashboardUIModel> {
         lblCurrCW.setText("( " + dashboardService.getActualCalendarYear() + " KW " + dashboardService.getCurrentCW() + " )");
         lblLastCW.setText("KW " + dashboardService.getLastCW());
         lblOnlineCurrCW.setText("KW " + dashboardService.getOnlineCW());
+        updateTournamentCalendarDisplay(dashboardService.getTourCalendarDashboardData());
     }
 
     @FXML

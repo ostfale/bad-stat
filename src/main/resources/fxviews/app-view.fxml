@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1100.0" prefWidth="1800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ostfale.qk.ui.ApplicationController">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1100.0" prefWidth="1800.0" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ostfale.qk.ui.ApplicationController">
     <children>
         <BorderPane fx:id="bpApp" layoutX="29.0" layoutY="22.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <left>
@@ -31,7 +31,7 @@
                                 <FontIcon iconColor="#fdfdfd" iconLiteral="fa-bar-chart" iconSize="24" />
                             </graphic>
                         </Button>
-                        <Button contentDisplay="BOTTOM" layoutX="40.0" layoutY="40.0" mnemonicParsing="false" onAction="#showTournaments" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-btn" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="380.0">
+                        <Button contentDisplay="BOTTOM" layoutX="40.0" layoutY="40.0" mnemonicParsing="false" onAction="#showTournamentsView" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-btn" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="380.0">
                             <graphic>
                                 <FontIcon iconColor="#fdfdfd" iconLiteral="fas-trophy" iconSize="24" />
                             </graphic>
