@@ -21,6 +21,8 @@ public abstract class BaseParserTest {
 
     protected final WebClient webClient = ConfiguredWebClient.getWebClient();
 
+    protected final String EMPTY_STRING = "";
+
     protected HtmlPage content;
 
     protected HtmlPage loadHtmlPage(String fileName) {

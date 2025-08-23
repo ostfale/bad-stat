@@ -4,7 +4,10 @@ import java.time.format.DateTimeFormatter;
 
 public interface FileParser {
 
+    String CSV_SEPARATOR = ";";
     String DATE_FORMAT = "dd.MM.yyyy";
+    String EMPTY_STRING = "";
+
     DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
     int START_DATE_INDEX = 0;
@@ -21,12 +24,12 @@ public interface FileParser {
     int CATEGORY_INDEX = 11;
     int CLOSE_DATE_INDEX = 12;
     int WEB_URL_INDEX = 13;
-    int PDR_URL_INDEX = 14;
+    int PDF_URL_INDEX = 14;
     int PDF_AVAILABLE_INDEX = 15;
-    int CREATION_TIME_INDEX = 16;
-    int VISIBLE_TIME_INDEX = 17;
-    int TENDER_CREATION_TIME_INDEX = 18;
-    int TURNIER_DE_CREATION_TIME_INDEX = 19;
+    int TOUR_CREATION_DATE_INDEX = 16;
+    int TOUR_VISIBLE_DATE_INDEX = 17;
+    int INVITATION_CREATION_DATE_INDEX = 18;
+    int TURNIER_LINK_CREATION_DATE_INDEX = 19;
     int AK_U9_INDEX = 20;
     int AK_U11_INDEX = 21;
     int AK_U13_INDEX = 22;
@@ -36,5 +39,6 @@ public interface FileParser {
     int AK_U22_INDEX = 26;
     int AK_O19_INDEX = 27;
     int AK_O35_INDEX = 27;
+
 
 }
