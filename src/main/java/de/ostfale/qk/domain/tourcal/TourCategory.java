@@ -25,9 +25,9 @@ public enum TourCategory {
     private final String displayName;
     private final String baseCategory;
 
-    TourCategory(String displayName, String baseCategroy) {
+    TourCategory(String displayName, String baseCategory) {
         this.displayName = displayName;
-        this.baseCategory = baseCategroy;
+        this.baseCategory = baseCategory;
     }
 
     public static TourCategory lookup(String displayName) throws FileParserException {

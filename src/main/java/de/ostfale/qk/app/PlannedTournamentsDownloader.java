@@ -4,6 +4,7 @@ import de.ostfale.qk.web.api.WebFacade;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.io.File;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -12,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -54,6 +56,16 @@ public class PlannedTournamentsDownloader implements WebFacade, FileSystemFacade
 
         Log.debug("PlannedTournamentsDownloader :: Get last download date from file system");
         return extractLastDownloadDateFromFileSystem(targetPath);
+    }
+
+    @Override
+    public List<File> getDownloadFiles(String targetPath) {
+        Log.debugf("PlannedTournamentsDownloader :: Get downloaded files from directory: %s", targetPath);
+        var fileList = readAllFiles(targetPath);
+        if (fileList.isEmpty()) {
+            return List.of();
+        }
+        return fileList;
     }
 
     public PlannedTournamentsDownloader() {

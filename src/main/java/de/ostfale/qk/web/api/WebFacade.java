@@ -1,6 +1,8 @@
 package de.ostfale.qk.web.api;
 
+import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface WebFacade {
@@ -22,8 +24,8 @@ public interface WebFacade {
     String prepareDownloadFileName(String year);
     String prepareDownloadTargetPath(String appDirName);
     String getLastDownloadDate(String targetPath);
+    List<File> getDownloadFiles(String targetPath);
 
     CompletableFuture<Path> download(String url, Path target);
-
 
 }

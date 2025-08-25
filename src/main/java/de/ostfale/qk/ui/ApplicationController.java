@@ -92,13 +92,15 @@ public class ApplicationController {
     @FXML
     void showStatisticsView(ActionEvent event) {
         log.info("Show Statistics View");
-        bpApp.setCenter(playerStatsHandler.getRootNode() );
+        bpApp.setCenter(playerStatsHandler.getRootNode());
     }
 
     @FXML
     void showTournamentsView(ActionEvent event) {
         log.info("Show Tournaments View");
         bpApp.setCenter(tourCalHandler.getRootNode());
+        var result = tourCalHandler.loadFuturePlannedTournaments();
+        tourCalHandler.update(result);
     }
 
     @FXML

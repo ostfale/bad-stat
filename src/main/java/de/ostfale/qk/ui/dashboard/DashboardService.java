@@ -12,9 +12,9 @@ import de.ostfale.qk.domain.player.PlayerOverview;
 import de.ostfale.qk.domain.tourcal.TourCalendarDashboard;
 import de.ostfale.qk.ui.dashboard.model.DashboardRankingUIModel;
 import de.ostfale.qk.web.internal.RankingWebService;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.jboss.logging.Logger;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -24,9 +24,7 @@ import java.util.concurrent.CompletableFuture;
 
 @ApplicationScoped
 public class DashboardService implements TimeHandlerFacade, FileSystemFacade {
-
-    private static final Logger log = Logger.getLogger(DashboardService.class);
-
+    
     @Inject
     DashboardHandler dashboardHandler;
 
@@ -56,17 +54,17 @@ public class DashboardService implements TimeHandlerFacade, FileSystemFacade {
     }
 
     public boolean loadCurrentCWRankingFile() {
-        log.debug("DashboardService :: load current ranking file");
+        Log.debug("DashboardService :: load current ranking file");
         return rankingDownloader.downloadCurrentCWRankingFile();
     }
 
     public boolean loadLastCWRankingFile() {
-        log.debug("DashboardService :: load last ranking file");
+        Log.debug("DashboardService :: load last ranking file");
         return rankingDownloader.downloadLastCWRankingFile();
     }
 
     public DashboardRankingUIModel updateCurrentRankingStatus() {
-        log.info("DashboardService :: prepare current status of ranking information");
+        Log.info("DashboardService :: prepare current status of ranking information");
         DashboardRankingData rankingData = dashboardRankingDataJsonHandler.readDashboardRankingData();
         DashboardRankingUIModel model = createModelFromRankingData(rankingData);
         populatePlayerStatistics(model);
@@ -74,28 +72,28 @@ public class DashboardService implements TimeHandlerFacade, FileSystemFacade {
     }
 
     public DashboardRankingUIModel updateCurrentRankingFile() {
-        log.info("DashboardService :: use current ranking file to update database");
+        Log.info("DashboardService :: use current ranking file to update database");
         updatePlayersInCache();
         return updateCurrentRankingStatus();
     }
 
     public void updatePlayersInCache() {
-        log.info("DashboardService :: read ranking file and update cache");
+        Log.info("DashboardService :: read ranking file and update cache");
         rankingPlayerCache.loadPlayerIntoCache();
     }
 
     public int getCurrentCW() {
-        log.debug("DashboardService :: retrieve current calendar week");
+        Log.debug("DashboardService :: retrieve current calendar week");
         return getActualCalendarWeek();
     }
 
     public int getLastCW() {
-        log.debug("DashboardService :: retrieve last calendar week");
+        Log.debug("DashboardService :: retrieve last calendar week");
         return getLastCalendarWeek();
     }
 
     public String getOnlineCW() {
-        log.debug("DashboardService :: retrieve online calendar week");
+        Log.debug("DashboardService :: retrieve online calendar week");
         return rankingWebService.getCalendarWeekForLastUpdate();
     }
 
@@ -128,7 +126,7 @@ public class DashboardService implements TimeHandlerFacade, FileSystemFacade {
     }
 
     private Optional<File> getRankingFile() {
-        log.debug("DashboardService :: retrieve ranking file from dir");
+        Log.debug("DashboardService :: retrieve ranking file from dir");
         List<File> rankingFiles = rankingDownloader.getRankingFiles();
         if (rankingFiles.size() == 1) {
             return Optional.of(rankingFiles.getFirst());

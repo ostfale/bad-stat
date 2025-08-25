@@ -1,5 +1,6 @@
 package de.ostfale.qk.ui.app;
 
+import io.quarkus.logging.Log;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -10,14 +11,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.util.StringConverter;
-import org.jboss.logging.Logger;
 
 import java.util.Comparator;
 import java.util.List;
 
 public class DataModel<T> {
-
-    private static final Logger log = Logger.getLogger(DataModel.class);
 
     private final ObservableList<T> objectList = FXCollections.observableArrayList();
     private final ObjectProperty<T> currentObject = new SimpleObjectProperty<>();
@@ -28,9 +26,9 @@ public class DataModel<T> {
     private StringConverter<T> stringConverter = null;
 
     public void updateModel(List<T> aList, ComboBox<T> aCombobox) {
-        log.debug("Update model for ComboBox");
+        Log.debug("Update model for ComboBox");
         if (!currentObject.isBound()) {
-            log.trace("Bind selected combobox");
+            Log.trace("Bind selected combobox");
             currentObject.bind(aCombobox.getSelectionModel().selectedItemProperty());
             currentObject.addListener(changeListener);
         }
@@ -50,9 +48,9 @@ public class DataModel<T> {
     }
 
     public void updateModel(List<T> aList, ListView<T> aListView) {
-        log.debug("Update model for ListView");
+        Log.debug("Update model for ListView");
         if (!currentObject.isBound()) {
-            log.trace("Bind selected listview");
+            Log.trace("Bind selected listview");
             currentObject.bind(aListView.getSelectionModel().selectedItemProperty());
             currentObject.addListener(changeListener);
         }
@@ -67,16 +65,16 @@ public class DataModel<T> {
     }
 
     public void updateModel(List<T> aList, TableView<T> tableView) {
-        log.debug("Update model for TableView");
+        Log.debug("Update model for TableView");
         if (!currentObject.isBound() && changeListener != null) {
-            log.trace("Bind selected table row");
+            Log.trace("Bind selected table row");
             currentObject.bind(tableView.getSelectionModel().selectedItemProperty());
             currentObject.addListener(changeListener);
         }
 
         objectList.setAll(aList);
         if (comparator != null) {
-            log.debug("Use sorted list to display data...");
+            Log.debug("Use sorted list to display data...");
             var sortedList = this.getSortedList(comparator);
             tableView.setItems(sortedList);
             sortedList.comparatorProperty().bind(tableView.comparatorProperty());
