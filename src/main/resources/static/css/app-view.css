@@ -20,3 +20,21 @@
     -fx-background-color: #f0eaea;
     -fx-background-insets: 0, 0 0 1 0;
 }
+
+#webBtn {
+    -fx-background-color: transparent;
+}
+
+#webBtn:hover {
+    -fx-background-color: #258ED9;
+    -fx-border-width: 0px, 0px, 0px, 2px;
+}
+
+#pdfBtn {
+    -fx-background-color: transparent;
+}
+
+#pdfBtn:hover {
+    -fx-background-color: #dbd887;
+    -fx-border-width: 0px, 0px, 0px, 2px;
+}

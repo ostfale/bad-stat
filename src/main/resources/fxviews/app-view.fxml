@@ -20,6 +20,9 @@
                             <graphic>
                                 <FontIcon iconColor="#fdfdfd" iconLiteral="fa-home" iconSize="24" />
                             </graphic>
+                     <tooltip>
+                        <Tooltip text="Zeige Dashboard Übersicht" />
+                     </tooltip>
                         </Button>
                         <Button contentDisplay="BOTTOM" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#showRankingView" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-btn" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="260.0">
                             <graphic>
@@ -30,11 +33,17 @@
                             <graphic>
                                 <FontIcon iconColor="#fdfdfd" iconLiteral="fa-bar-chart" iconSize="24" />
                             </graphic>
+                     <tooltip>
+                        <Tooltip text="Spieler Informationen" />
+                     </tooltip>
                         </Button>
                         <Button contentDisplay="BOTTOM" layoutX="40.0" layoutY="40.0" mnemonicParsing="false" onAction="#showTournamentsView" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-btn" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="380.0">
                             <graphic>
                                 <FontIcon iconColor="#fdfdfd" iconLiteral="fas-trophy" iconSize="24" />
                             </graphic>
+                     <tooltip>
+                        <Tooltip text="Turnierübersicht" />
+                     </tooltip>
                         </Button>
                         <Button contentDisplay="BOTTOM" layoutX="50.0" layoutY="50.0" mnemonicParsing="false" onAction="#showFavorites" prefHeight="50.0" prefWidth="50.0" styleClass="sidebar-btn" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="440.0">
                             <graphic>

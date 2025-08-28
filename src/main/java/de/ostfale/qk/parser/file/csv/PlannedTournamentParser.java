@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
 @ApplicationScoped
 public class PlannedTournamentParser implements FileParser, TimeHandlerFacade {
 
@@ -124,7 +123,6 @@ public class PlannedTournamentParser implements FileParser, TimeHandlerFacade {
     }
 
     private String fixRow(String row) {
-        Log.debug("Fixing row by removing all \" ");
         return row.replace("\"", "");
     }
 
@@ -134,5 +132,4 @@ public class PlannedTournamentParser implements FileParser, TimeHandlerFacade {
         }
         return str.trim().matches("\\d+");
     }
-
 }

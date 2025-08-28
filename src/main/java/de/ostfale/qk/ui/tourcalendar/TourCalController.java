@@ -1,5 +1,6 @@
 package de.ostfale.qk.ui.tourcalendar;
 
+import de.ostfale.qk.app.HostServicesProvider;
 import de.ostfale.qk.domain.tourcal.filter.ViewRange;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
@@ -7,6 +8,7 @@ import de.ostfale.qk.ui.tourcalendar.model.TourCalUIModel;
 import io.quarkiverse.fx.views.FxView;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,6 +22,10 @@ import java.util.List;
 @Dependent
 @FxView("tour-cal-view")
 public class TourCalController extends BaseController<TourCalUIModel> {
+
+    @Inject
+    HostServicesProvider hostServicesProvider;
+
 
     // declare buttons
 
@@ -62,6 +68,7 @@ public class TourCalController extends BaseController<TourCalUIModel> {
     public void initialize() {
         Log.debug("TourCalController :: Initialize TourCalController");
         initTable();
+        calculateColSize();
         initDataModel();
         initRangeFilter();
     }
@@ -70,13 +77,24 @@ public class TourCalController extends BaseController<TourCalUIModel> {
         cbViewRange.getItems().addAll(ViewRange.values());
         cbViewRange.getSelectionModel().select(ViewRange.REMAINING);
         cbViewRange.addEventHandler(ActionEvent.ACTION, event -> {
-           Log.debugf("Range filter changed to %s", cbViewRange.getSelectionModel().getSelectedItem());
+            Log.debugf("Range filter changed to %s", cbViewRange.getSelectionModel().getSelectedItem());
         });
     }
 
     @FXML
     void refresh(ActionEvent event) {
 
+    }
+
+    private void calculateColSize() {
+        colStartDate.prefWidthProperty().bind(tblCalTour.widthProperty().multiply(0.05));
+        colClosingDate.prefWidthProperty().bind(tblCalTour.widthProperty().multiply(0.05));
+        colTourName.prefWidthProperty().bind(tblCalTour.widthProperty().multiply(0.45));
+        colTourCategory.prefWidthProperty().bind(tblCalTour.widthProperty().multiply(0.05));
+        colTourLocation.prefWidthProperty().bind(tblCalTour.widthProperty().multiply(0.2));
+        colTourOrganizer.prefWidthProperty().bind(tblCalTour.widthProperty().multiply(0.05));
+        colWebLink.prefWidthProperty().bind(tblCalTour.widthProperty().multiply(0.05));
+        colPdfLink.prefWidthProperty().bind(tblCalTour.widthProperty().multiply(0.05));
     }
 
     private void initTable() {
@@ -88,7 +106,10 @@ public class TourCalController extends BaseController<TourCalUIModel> {
         colTourLocation.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().location()));
         colTourOrganizer.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().organizer()));
         colWebLink.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().webLinkUrl()));
+        colWebLink.setCellFactory(p -> new WebLinkTableCell(hostServicesProvider));
         colPdfLink.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().pdfLinkUrl()));
+        colPdfLink.setCellFactory(p -> new PDFLinkTableCell(hostServicesProvider));
+
     }
 
     public void update(List<TourCalUIModel> tournaments) {

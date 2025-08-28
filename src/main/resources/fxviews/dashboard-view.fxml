@@ -209,6 +209,15 @@
             </Button>
             <Label fx:id="lblTourCalFileDate" layoutX="156.0" layoutY="161.0" text="-" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="140.0" />
             <ProgressIndicator fx:id="progressIndicator" layoutX="395.0" layoutY="84.0" progress="0.0" visible="false" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0" />
+            <Label layoutX="26.0" layoutY="226.0" text="Turniere" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="215.0">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblThisYearDisplay" layoutX="34.0" layoutY="254.0" text="Label" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="240.0" />
+            <Label fx:id="lblNextYearDisplay" layoutX="40.0" layoutY="269.0" text="Label" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="260.0" />
+            <Label fx:id="lblThisYearValue" layoutX="126.0" layoutY="240.0" text="-" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="240.0" />
+            <Label fx:id="lblNextYearValue" layoutX="156.0" layoutY="260.0" text="-" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="260.0" />
          </children>
       </AnchorPane>
     </children>

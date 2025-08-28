@@ -28,7 +28,7 @@
         <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
 
         <!-- libs -->
-        <htmlunit.version>4.14.0</htmlunit.version>
+        <htmlunit.version>4.15.0</htmlunit.version>
         <quarkus-fx.version>0.9.1</quarkus-fx.version>
         <quarkus-poi.version>2.1.2</quarkus-poi.version>
 

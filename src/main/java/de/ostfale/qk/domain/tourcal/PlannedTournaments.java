@@ -19,6 +19,8 @@ public class PlannedTournaments implements TimeHandlerFacade {
         this.allPlannedTournaments = allPlannedTournaments;
     }
 
+
+
     public void addPlannedTournament(PlannedTournament plannedTournament) {
         allPlannedTournaments.add(plannedTournament);
     }

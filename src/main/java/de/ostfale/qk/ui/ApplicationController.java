@@ -6,6 +6,7 @@ import de.ostfale.qk.ui.playerstats.info.PlayerStatsHandler;
 import de.ostfale.qk.ui.tourcalendar.TourCalHandler;
 import io.quarkiverse.fx.FxPostStartupEvent;
 import io.quarkiverse.fx.views.FxView;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -19,14 +20,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.logging.Logger;
 
 @Singleton
 @FxView("app-view")
 public class ApplicationController {
-
-    private static final Logger log = Logger.getLogger(ApplicationController.class);
-
+    
     @ConfigProperty(name = "quarkus.application.version")
     String version;
 
@@ -54,7 +52,7 @@ public class ApplicationController {
     @FXML
     public void initialize() {
         Stage dashboardStage = createStageWithScene();
-        log.info("Dashboard stage successfully initialized and shown.");
+        Log.info("Dashboard stage successfully initialized and shown.");
         bpApp.setBottom(statusBarController);
         dashboardStage.show();
     }
@@ -80,24 +78,24 @@ public class ApplicationController {
 
     @FXML
     void showDashboardView(ActionEvent event) {
-        log.info("Show Dashboard View");
+        Log.info("Show Dashboard View");
         bpApp.setCenter(dashboardHandler.getRootNode());
     }
 
     @FXML
     void showRankingView(ActionEvent event) {
-        log.info("Show Ranking View");
+        Log.info("Show Ranking View");
     }
 
     @FXML
     void showStatisticsView(ActionEvent event) {
-        log.info("Show Statistics View");
+        Log.info("Show Statistics View");
         bpApp.setCenter(playerStatsHandler.getRootNode());
     }
 
     @FXML
     void showTournamentsView(ActionEvent event) {
-        log.info("Show Tournaments View");
+        Log.info("Show Tournaments View");
         bpApp.setCenter(tourCalHandler.getRootNode());
         var result = tourCalHandler.loadFuturePlannedTournaments();
         tourCalHandler.update(result);
@@ -105,7 +103,7 @@ public class ApplicationController {
 
     @FXML
     void showFavorites(ActionEvent event) {
-        log.info("Show Favorites View");
+        Log.info("Show Favorites View");
     }
 
     @FXML

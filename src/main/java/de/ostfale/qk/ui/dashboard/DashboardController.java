@@ -1,7 +1,9 @@
 package de.ostfale.qk.ui.dashboard;
 
+import de.ostfale.qk.app.TimeHandlerFacade;
 import de.ostfale.qk.domain.tourcal.TourCalendarDashboard;
 import de.ostfale.qk.ui.app.BaseController;
+import de.ostfale.qk.ui.dashboard.model.DashBoardTourCalDTO;
 import de.ostfale.qk.ui.dashboard.model.DashboardRankingUIModel;
 import de.ostfale.qk.ui.dashboard.model.DashboardUIModel;
 import io.quarkiverse.fx.RunOnFxThread;
@@ -18,7 +20,10 @@ import javafx.scene.layout.AnchorPane;
 
 @Dependent
 @FxView("dashboard-view")
-public class DashboardController extends BaseController<DashboardUIModel> {
+public class DashboardController extends BaseController<DashboardUIModel> implements TimeHandlerFacade {
+
+    @Inject
+    DashBoardTourCalService dashBoardTourCalService;
 
     @Inject
     DashboardService dashboardService;
@@ -73,20 +78,50 @@ public class DashboardController extends BaseController<DashboardUIModel> {
     @FXML
     private Button btnTourCalDownload;
 
+    @FXML
+    private Label lblNextYearDisplay;
+
+    @FXML
+    private Label lblNextYearValue;
+
+    @FXML
+    private Label lblThisYearDisplay;
+
+    @FXML
+    private Label lblThisYearValue;
 
     @FXML
     private ProgressIndicator progressIndicator;
-
 
     @FXML
     public void initialize() {
         Log.info("DashboardController initialized");
         var dashboardRankingUIModel = dashboardService.updateCurrentRankingStatus();
+        updateTournamentCalendarDisplay();
+
+
         updateRankingDisplay(dashboardRankingUIModel);
+        initLabel();
+        updateTournamentCalendarDisplay(dashboardService.getTourCalendarDashboardData());
+    }
+
+    private void updateTournamentCalendarDisplay() {
+        Log.debug("DashboardController :: Update tournament calendar information");
+        DashBoardTourCalDTO tourCalDTO = dashBoardTourCalService.readData();
+        lblTourCalFileDate.setText(tourCalDTO.getLastDownloadDate());
+        lblThisYearValue.setText(tourCalDTO.getThisYearsTournaments());
+        lblNextYearValue.setText(tourCalDTO.getNextYearsTournaments());
+    }
+
+    private void initLabel() {
+        // calendar display
+        lblThisYearDisplay.setText(String.valueOf(getActualCalendarYear()));
+        lblNextYearDisplay.setText(String.valueOf(getActualCalendarYear() + 1));
+
+        // ranking display
         lblCurrCW.setText("( " + dashboardService.getActualCalendarYear() + " KW " + dashboardService.getCurrentCW() + " )");
         lblLastCW.setText("KW " + dashboardService.getLastCW());
         lblOnlineCurrCW.setText("KW " + dashboardService.getOnlineCW());
-        updateTournamentCalendarDisplay(dashboardService.getTourCalendarDashboardData());
     }
 
     @FXML

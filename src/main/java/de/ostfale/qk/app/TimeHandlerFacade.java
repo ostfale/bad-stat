@@ -38,7 +38,7 @@ public interface TimeHandlerFacade {
     default LocalDate parseDateToTournamentFormat(String date) {
         var result = LocalDate.parse(date, DateTimeFormatter.ofPattern(TOURNAMENT_DATE_DISPLAY_FORMAT))
                 .format(DateTimeFormatter.ofPattern(TOURNAMENT_DATE_FILE_FORMAT));
-        Log.debugf("TimeHandlerFacade :: Parse date %s to tournament format %s", date, result);
+        Log.tracef("TimeHandlerFacade :: Parse date %s to tournament format %s", date, result);
         return LocalDate.parse(result, DateTimeFormatter.ofPattern(TOURNAMENT_DATE_FILE_FORMAT));
     }
 }
