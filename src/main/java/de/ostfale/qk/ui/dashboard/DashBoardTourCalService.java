@@ -33,17 +33,24 @@ public class DashBoardTourCalService implements FileSystemFacade {
 
     public DashBoardTourCalDTO readData() {
         var targetDir = plannedTournamentsDownloader.prepareDownloadTargetPath(TOURNAMENT_CALENDAR_FILE_DIR);
-
         if (plannedTournaments == null) {
             Log.debug("DashBoardTourCalService :: no planned tournaments loaded -> load tournaments");
             plannedTournaments = loadAllTournamentsFromFile(targetDir);
             loadAndCacheTournaments(targetDir);
         }
-        var foundDownloadDate = plannedTournamentsDownloader.getLastDownloadDate(targetDir);
-        var nofTournamentsThisYear = plannedTournaments.getAllTournamentsForThisYear().size();
-        var nofTournamentsNextYear = plannedTournaments.getAllTournamentsForNextYear().size();
 
-        return new DashBoardTourCalDTO(foundDownloadDate, String.valueOf(nofTournamentsThisYear), String.valueOf(nofTournamentsNextYear));
+        var lastDownloadDate = plannedTournamentsDownloader.getLastDownloadDate(targetDir);
+        var currentDate = LocalDate.now();
+
+        var totalTournamentsThisYear = plannedTournaments.getAllTournamentsForThisYear().size();
+        var remainingTournamentsThisYear = plannedTournaments.getAllNotYetFinishedTournaments(currentDate).size();
+        var totalTournamentsNextYear = plannedTournaments.getAllTournamentsForNextYear().size();
+
+        var totalThisYearString = String.valueOf(totalTournamentsThisYear);
+        var remainingThisYearString = String.valueOf(remainingTournamentsThisYear);
+        var totalNextYearString = String.valueOf(totalTournamentsNextYear);
+
+        return new DashBoardTourCalDTO(lastDownloadDate, totalThisYearString, remainingThisYearString, totalNextYearString);
     }
 
     private PlannedTournaments loadAllTournamentsFromFile(String targetDir) {

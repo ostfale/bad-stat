@@ -2,7 +2,7 @@
 
 # Badminton Spieler Statistik 
 ## Was?
-+ Wo finde ich schnell alle Daten (Spieler-ID, Verein, Landesverband, Alterklasse) zu einem Spieler? 
++ Wo finde ich schnell alle Daten (Spieler-ID, Verein, Landesverband, Altersklasse) zu einem Spieler? 
 + Wie bekomme ich den aktuellen Punktestand und die Platzierung in der Rangliste wöchentlich aktualisiert?
 + Wie kann ich schnell die Turnierergebnisse meiner Spieler auf einen Blick sehen? 
 

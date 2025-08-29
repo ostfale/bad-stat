@@ -109,7 +109,7 @@ public class DashboardController extends BaseController<DashboardUIModel> implem
         Log.debug("DashboardController :: Update tournament calendar information");
         DashBoardTourCalDTO tourCalDTO = dashBoardTourCalService.readData();
         lblTourCalFileDate.setText(tourCalDTO.getLastDownloadDate());
-        lblThisYearValue.setText(tourCalDTO.getThisYearsTournaments());
+        lblThisYearValue.setText(tourCalDTO.thisYearsFormattedTournaments());
         lblNextYearValue.setText(tourCalDTO.getNextYearsTournaments());
     }
 

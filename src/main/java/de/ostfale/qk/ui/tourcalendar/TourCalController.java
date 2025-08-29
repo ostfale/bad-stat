@@ -9,6 +9,8 @@ import io.quarkiverse.fx.views.FxView;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,9 +25,10 @@ import java.util.List;
 @FxView("tour-cal-view")
 public class TourCalController extends BaseController<TourCalUIModel> {
 
+    private final BooleanProperty filterChanged = new SimpleBooleanProperty(false);
+
     @Inject
     HostServicesProvider hostServicesProvider;
-
 
     // declare buttons
 
@@ -70,14 +73,21 @@ public class TourCalController extends BaseController<TourCalUIModel> {
         initTable();
         calculateColSize();
         initDataModel();
-        initRangeFilter();
+        initTournamentsViewPortFilter();
+        btnRefresh.disableProperty().bind(filterChanged.not());
     }
 
-    private void initRangeFilter() {
+    private void initTournamentsViewPortFilter() {
         cbViewRange.getItems().addAll(ViewRange.values());
         cbViewRange.getSelectionModel().select(ViewRange.REMAINING);
-        cbViewRange.addEventHandler(ActionEvent.ACTION, event -> {
-            Log.debugf("Range filter changed to %s", cbViewRange.getSelectionModel().getSelectedItem());
+        cbViewRange.valueProperty().addListener((observable, oldValue, newValue) -> {
+            Log.debugf("Range filter changed from %s to %s", oldValue, newValue);
+            if (oldValue != null && !oldValue.equals(newValue)) {
+                filterChanged.set(true);
+                Log.debugf("Range filter changed to %s", newValue);
+            } else {
+                filterChanged.set(false);
+            }
         });
     }
 

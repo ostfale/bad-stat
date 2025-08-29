@@ -26,18 +26,18 @@ quarkus:
   quarkus:
     log:
       level: WARN
-      file:
-        enable: true
       category:
           "de.ostfale.qk":
             level: WARN
+      file:
+        enabled: true
 
 "%dev":
     quarkus:
       log:
         level: WARN
-        file:
-          enable: false
         category:
           "de.ostfale.qk":
             level: DEBUG
+        file:
+          enabled: false

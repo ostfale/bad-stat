@@ -3,13 +3,19 @@ package de.ostfale.qk.ui.dashboard.model;
 public class DashBoardTourCalDTO {
 
     private String lastDownloadDate;
-    private String thisYearsTournaments;
+    private String thisYearsAllTournaments;
+    private String thisYearsRemainingTournaments;
     private String nextYearsTournaments;
 
-    public DashBoardTourCalDTO(String lastDownloadDate, String thisYearsTournaments, String nextYearsTournaments) {
+    public DashBoardTourCalDTO(String lastDownloadDate, String thisYearsAllTournaments,String thisYearsRemainingTournaments, String nextYearsTournaments) {
         this.lastDownloadDate = lastDownloadDate;
-        this.thisYearsTournaments = thisYearsTournaments;
+        this.thisYearsAllTournaments = thisYearsAllTournaments;
+        this.thisYearsRemainingTournaments = thisYearsRemainingTournaments;
         this.nextYearsTournaments = nextYearsTournaments;
+    }
+
+    public String thisYearsFormattedTournaments() {
+        return thisYearsAllTournaments + " (" + thisYearsRemainingTournaments + ")";
     }
 
     public DashBoardTourCalDTO() {
@@ -23,12 +29,12 @@ public class DashBoardTourCalDTO {
         this.lastDownloadDate = lastDownloadDate;
     }
 
-    public String getThisYearsTournaments() {
-        return thisYearsTournaments;
+    public String getThisYearsAllTournaments() {
+        return thisYearsAllTournaments;
     }
 
-    public void setThisYearsTournaments(String thisYearsTournaments) {
-        this.thisYearsTournaments = thisYearsTournaments;
+    public void setThisYearsAllTournaments(String thisYearsAllTournaments) {
+        this.thisYearsAllTournaments = thisYearsAllTournaments;
     }
 
     public String getNextYearsTournaments() {
@@ -37,5 +43,13 @@ public class DashBoardTourCalDTO {
 
     public void setNextYearsTournaments(String nextYearsTournaments) {
         this.nextYearsTournaments = nextYearsTournaments;
+    }
+
+    public String getThisYearsRemainingTournaments() {
+        return thisYearsRemainingTournaments;
+    }
+
+    public void setThisYearsRemainingTournaments(String thisYearsRemainingTournaments) {
+        this.thisYearsRemainingTournaments = thisYearsRemainingTournaments;
     }
 }

@@ -45,8 +45,10 @@ public class PlannedTournaments implements TimeHandlerFacade {
     }
 
     public List<PlannedTournament> getAllNotYetFinishedTournaments(LocalDate checkDate) {
+        var thisYear = getActualCalendarYear();
         var foundTournaments = allPlannedTournaments.stream()
                 .filter(tournament -> parseDateToTournamentFormat(tournament.startDate()).isAfter(checkDate))
+                .filter(tournament -> parseDateToTournamentFormat(tournament.endDate()).getYear() == thisYear)
                 .toList();
         Log.debugf("PlannedTournaments:: get all future tournaments : found %d ", foundTournaments.size());
         return foundTournaments;
