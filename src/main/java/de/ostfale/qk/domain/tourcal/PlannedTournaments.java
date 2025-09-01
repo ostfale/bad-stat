@@ -4,13 +4,14 @@ import de.ostfale.qk.app.TimeHandlerFacade;
 import io.quarkus.logging.Log;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class PlannedTournaments implements TimeHandlerFacade {
 
-    private final List<PlannedTournament> allPlannedTournaments;
+    private List<PlannedTournament> allPlannedTournaments = new ArrayList<>();
 
     Predicate<Integer> isThisYearsTournament = year -> year == getActualCalendarYear();
     Predicate<Integer> isNextYearsTournament = year -> year == getActualCalendarYear() + 1;
@@ -19,7 +20,8 @@ public class PlannedTournaments implements TimeHandlerFacade {
         this.allPlannedTournaments = allPlannedTournaments;
     }
 
-
+    public PlannedTournaments() {
+    }
 
     public void addPlannedTournament(PlannedTournament plannedTournament) {
         allPlannedTournaments.add(plannedTournament);
@@ -29,30 +31,61 @@ public class PlannedTournaments implements TimeHandlerFacade {
         this.allPlannedTournaments.addAll(plannedTournaments);
     }
 
+
+    // filter tournaments view range
+
+    // all tournaments for this and the next year
     public List<PlannedTournament> getAllPlannedTournaments() {
         return allPlannedTournaments;
     }
 
-    public List<PlannedTournament> getFilteredTournaments(List<Predicate<PlannedTournament>> filters) {
-        return allPlannedTournaments.stream()
-                .filter(tournament -> filters.stream()
-                        .allMatch(filter -> filter.test(tournament)))
-                .toList();
+    // all tournaments for next year
+    public List<PlannedTournament> getAllTournamentsForNextYear() {
+        return getTournamentsByYear(isNextYearsTournament);
     }
 
+    // all tournaments for this year
     public List<PlannedTournament> getAllTournamentsForThisYear() {
         return getTournamentsByYear(isThisYearsTournament);
+    }
+
+    // all tournaments which are in the future
+    public List<PlannedTournament> getAllFuturePlannedTournaments(LocalDate checkDate) {
+        var thisYear = getActualCalendarYear();
+        var foundTournaments = allPlannedTournaments.stream()
+                .filter(tournament -> parseDateToTournamentFormat(tournament.startDate()).isAfter(checkDate))
+                .toList();
+        Log.debugf("PlannedTournaments:: get all future tournaments : found %d ", foundTournaments.size());
+        return foundTournaments;
+    }
+
+    // all tournaments for this year which are in the future
+    public List<PlannedTournament> getAllFutureTournamentsThisYear(LocalDate checkDate) {
+        var thisYear = getActualCalendarYear();
+        var foundTournaments = allPlannedTournaments.stream()
+                .filter(tournament -> {
+                    var tournamentStartDate = parseDateToTournamentFormat(tournament.startDate());
+                    return tournamentStartDate.isAfter(checkDate) &&
+                            tournamentStartDate.getYear() == thisYear;
+                })
+                .toList();
+        Log.debugf("PlannedTournaments:: get all future tournaments : found %d ", foundTournaments.size());
+        return foundTournaments;
     }
 
     public List<PlannedTournament> getAllNotYetFinishedTournaments(LocalDate checkDate) {
         var thisYear = getActualCalendarYear();
         var foundTournaments = allPlannedTournaments.stream()
-                .filter(tournament -> parseDateToTournamentFormat(tournament.startDate()).isAfter(checkDate))
-                .filter(tournament -> parseDateToTournamentFormat(tournament.endDate()).getYear() == thisYear)
+                .filter(tournament -> {
+                    var tournamentStartDate = parseDateToTournamentFormat(tournament.startDate());
+                    return tournamentStartDate.isAfter(checkDate) &&
+                            tournamentStartDate.getYear() == thisYear;
+                })
                 .toList();
         Log.debugf("PlannedTournaments:: get all future tournaments : found %d ", foundTournaments.size());
         return foundTournaments;
     }
+
 
     public int getNumberOfAllPlannedTournaments() {
         var nofAllTournaments = allPlannedTournaments.size();
@@ -60,9 +93,7 @@ public class PlannedTournaments implements TimeHandlerFacade {
         return nofAllTournaments;
     }
 
-    public List<PlannedTournament> getAllTournamentsForNextYear() {
-        return getTournamentsByYear(isNextYearsTournament);
-    }
+
 
     private List<PlannedTournament> getTournamentsByYear(Predicate<Integer> yearPredicate) {
         return allPlannedTournaments.stream()
@@ -70,5 +101,4 @@ public class PlannedTournaments implements TimeHandlerFacade {
                         parseDateToTournamentFormat(tournament.startDate()).getYear()))
                 .collect(Collectors.toList());
     }
-
 }

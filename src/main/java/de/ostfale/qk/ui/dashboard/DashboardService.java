@@ -26,9 +26,6 @@ import java.util.concurrent.CompletableFuture;
 public class DashboardService implements TimeHandlerFacade, FileSystemFacade {
     
     @Inject
-    DashboardHandler dashboardHandler;
-
-    @Inject
     RankingPlayerCache rankingPlayerCache;
 
     @Inject

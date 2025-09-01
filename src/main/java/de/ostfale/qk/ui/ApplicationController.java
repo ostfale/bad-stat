@@ -24,7 +24,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @Singleton
 @FxView("app-view")
 public class ApplicationController {
-    
+
     @ConfigProperty(name = "quarkus.application.version")
     String version;
 
@@ -97,8 +97,7 @@ public class ApplicationController {
     void showTournamentsView(ActionEvent event) {
         Log.info("Show Tournaments View");
         bpApp.setCenter(tourCalHandler.getRootNode());
-        var result = tourCalHandler.loadFuturePlannedTournaments();
-        tourCalHandler.update(result);
+        tourCalHandler.update();
     }
 
     @FXML

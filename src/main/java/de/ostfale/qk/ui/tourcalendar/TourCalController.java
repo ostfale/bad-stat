@@ -28,6 +28,9 @@ public class TourCalController extends BaseController<TourCalUIModel> {
     private final BooleanProperty filterChanged = new SimpleBooleanProperty(false);
 
     @Inject
+    TourCalService tourCalService;
+
+    @Inject
     HostServicesProvider hostServicesProvider;
 
     // declare buttons
@@ -93,7 +96,14 @@ public class TourCalController extends BaseController<TourCalUIModel> {
 
     @FXML
     void refresh(ActionEvent event) {
+     List<TourCalUIModel> rangeFilterResult=   tourCalService.updateRangeView(cbViewRange.getSelectionModel().getSelectedItem());
+     update(rangeFilterResult);
+    }
 
+    public ViewRange getSelectedRange() {
+        var selectedRange = cbViewRange.getSelectionModel().getSelectedItem();
+        Log.debugf("Selected range is %s", selectedRange);
+        return selectedRange;
     }
 
     private void calculateColSize() {

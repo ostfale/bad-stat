@@ -44,6 +44,12 @@ public interface FileSystemFacade extends ApplicationFacade {
         return result;
     }
 
+    default String getApplicationSubDir(String subDirName) {
+        var result = getApplicationHomeDir() + SEP + subDirName;
+        Log.debugf("Application sub directory: %s", result);
+        return result;
+    }
+
     default String getApplicationRankingDir() {
         var result = getApplicationHomeDir() + SEP + DirTypes.RANKING.displayName + SEP;
         Log.debugf("Ranking directory: %s", result);
