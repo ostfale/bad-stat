@@ -36,13 +36,13 @@ public class PlannedTournamentsHandler implements FileSystemFacade {
                 return allTournaments.getAllPlannedTournaments();
             }
             case REMAINING -> {
-                return allTournaments.getAllFuturePlannedTournaments(LocalDate.now());
+                return allTournaments.getAllRemainingTournaments(LocalDate.now());
             }
             case THIS_YEAR -> {
-                return allTournaments.getAllFutureTournamentsThisYear(LocalDate.now());
+                return allTournaments.getThisYearsTournaments();
             }
             case NEXT_YEAR -> {
-                return allTournaments.getAllTournamentsForNextYear();
+                return allTournaments.getNextYearsTournaments();
             }
             default -> {
                 throw new IllegalArgumentException("Unsupported view range: " + viewRange);
@@ -69,7 +69,7 @@ public class PlannedTournamentsHandler implements FileSystemFacade {
         if (nextYearTournaments.getAllPlannedTournaments().isEmpty()) {
             return currentYearTournaments;
         }
-        currentYearTournaments.addAllPlannedTournaments(nextYearTournaments.getAllPlannedTournaments());
+        currentYearTournaments.setNextYearsTournaments(nextYearTournaments.getAllPlannedTournaments());
         return currentYearTournaments;
     }
 

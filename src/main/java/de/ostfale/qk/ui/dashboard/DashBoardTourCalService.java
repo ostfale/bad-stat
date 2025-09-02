@@ -42,9 +42,9 @@ public class DashBoardTourCalService implements FileSystemFacade {
         var lastDownloadDate = plannedTournamentsDownloader.getLastDownloadDate(targetDir);
         var currentDate = LocalDate.now();
 
-        var totalTournamentsThisYear = plannedTournaments.getAllTournamentsForThisYear().size();
-        var remainingTournamentsThisYear = plannedTournaments.getAllNotYetFinishedTournaments(currentDate).size();
-        var totalTournamentsNextYear = plannedTournaments.getAllTournamentsForNextYear().size();
+        var totalTournamentsThisYear = plannedTournaments.getThisYearsTournaments().size();
+        var remainingTournamentsThisYear = plannedTournaments.getAllRemainingTournaments(currentDate).size();
+        var totalTournamentsNextYear = plannedTournaments.getNextYearsTournaments().size();
 
         var totalThisYearString = String.valueOf(totalTournamentsThisYear);
         var remainingThisYearString = String.valueOf(remainingTournamentsThisYear);
@@ -72,7 +72,7 @@ public class DashBoardTourCalService implements FileSystemFacade {
         var currentYearTournaments = parseTournamentFile(tournamentFiles.getFirst());
         var nextYearTournaments = parseTournamentFile(tournamentFiles.getLast());
 
-        tournaments.addAll(currentYearTournaments.getAllNotYetFinishedTournaments(LocalDate.now()));
+        tournaments.addAll(currentYearTournaments.getAllRemainingTournaments(LocalDate.now()));
         tournaments.addAll(nextYearTournaments.getAllPlannedTournaments());
     }
 

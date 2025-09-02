@@ -17,8 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("Test planned tournaments")
 class PlannedTournamentsTest extends BaseParserTest {
 
+    private static final String CALTOUR_TEST_FILE_Y25 = "caltour/CalTour_25.csv";
+    private static final String CALTOUR_TEST_FILE_Y26 = "caltour/CalTour_26.csv";
+    private static final String CALTOUR_TEST_FILE_EMPTY = "caltour/CalTour_EMPTY.csv";
+
     private final PlannedTournamentParser plannedTournamentParser = new PlannedTournamentParser();
-    private static final String TEST_FILE_NAME = "caltour/Mixed_Tournaments_25_26.csv";
 
     private PlannedTournaments sut;
 
@@ -26,44 +29,46 @@ class PlannedTournamentsTest extends BaseParserTest {
     @DisplayName("Get number of all tournaments ")
     void testNumberOfAllTournaments() throws URISyntaxException {
         // given
-        File file = readFile(TEST_FILE_NAME);
-        var expectedNumberOfTournaments = 82;
-        var expectedNofThisYearTournaments = 63;
+        File year25TournamentsFile = readFile(CALTOUR_TEST_FILE_Y25);
+        File year26TournamentsFile = readFile(CALTOUR_TEST_FILE_Y26);
+
+        var expectedNumberOfTournaments = 69;
+        var expectedNofThisYearTournaments = 50;
         var expectedNofNextYearTournaments = 19;
 
         // when
-        sut = plannedTournamentParser.parseTournamentCalendar(file);
-        var nofTournaments = sut.getNumberOfAllPlannedTournaments();
-        var thisYearsTournaments = sut.getAllTournamentsForThisYear();
-        var nextYearsTournaments = sut.getAllTournamentsForNextYear();
+        sut = plannedTournamentParser.parseTournamentCalendar(year25TournamentsFile);
+        sut.setNextYearsTournaments(plannedTournamentParser.parseTournamentCalendar(year26TournamentsFile).getAllPlannedTournaments());
+
+        var thisYearsTournaments = sut.getThisYearsTournaments();
+        var nextYearsTournaments = sut.getNextYearsTournaments();
+        var allTournaments = sut.getAllPlannedTournaments();
 
         // then
         assertAll("Grouped assertions for planned tournaments",
-                () -> assertThat(nofTournaments).isNotNull(),
-                () -> assertThat(nofTournaments).isEqualTo(expectedNumberOfTournaments),
+                () -> assertThat(allTournaments).isNotNull(),
+                () -> assertThat(allTournaments.size()).isEqualTo(expectedNumberOfTournaments),
                 () -> assertThat(thisYearsTournaments.size()).isEqualTo(expectedNofThisYearTournaments),
                 () -> assertThat(nextYearsTournaments.size()).isEqualTo(expectedNofNextYearTournaments)
         );
     }
 
-    @Test
+   @Test
     @DisplayName("Get number of all future tournaments ")
     void testNumberOfAllFutureTournaments() throws URISyntaxException {
         // given
-        File file = readFile(TEST_FILE_NAME);
-        var expectedNumberOfTournaments25 = 46;
-        var expectedNumberOfTournaments26 = 19;
+        File file = readFile(CALTOUR_TEST_FILE_Y25);
+
+        var expectedNumberOfTournaments25 = 14;
 
         // when
         sut = plannedTournamentParser.parseTournamentCalendar(file);
-        var nofTournaments25 = sut.getAllNotYetFinishedTournaments(LocalDate.of(2025, 8, 30));
-        var nofTournaments26 = sut.getAllNotYetFinishedTournaments(LocalDate.of(2025, 12, 31));
+        var nofTournaments25 = sut.getAllRemainingTournaments(LocalDate.of(2025, 8, 30));
 
         // then
         assertAll("Grouped assertions for planned tournaments",
                 () -> assertThat(nofTournaments25).isNotNull(),
-                () -> assertThat(nofTournaments25.size()).isEqualTo(expectedNumberOfTournaments25),
-                () -> assertThat(nofTournaments26.size()).isEqualTo(expectedNumberOfTournaments26)
+                () -> assertThat(nofTournaments25.size()).isEqualTo(expectedNumberOfTournaments25)
         );
     }
 }
