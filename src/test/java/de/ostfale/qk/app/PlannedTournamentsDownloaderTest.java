@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -75,8 +76,9 @@ class PlannedTournamentsDownloaderTest {
     @DisplayName("Should prepare a valid target path")
     void shouldPrepareValidTargetPath() {
         // given
+        String fsep = File.separator;
         String appDirName = "testAppDir";
-        var expectedFilPath = "\\.bad_stat\\testAppDir\\";
+        var expectedFilPath =  fsep +".bad_stat" + fsep + "testAppDir" + fsep;
 
         // when
         String result = sut.prepareDownloadTargetPath(appDirName);
