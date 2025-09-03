@@ -1,11 +1,4 @@
 quarkus:
-  jacoco:
-    report: true
-  banner:
-    enabled: true
-    path: banner.txt
-  http:
-    port: 8181
   fx:
     views-root: fxviews
   log:
@@ -27,17 +20,17 @@ quarkus:
     log:
       level: WARN
       category:
-          "de.ostfale.qk":
-            level: WARN
+        "de.ostfale.qk":
+          level: WARN
       file:
         enabled: true
 
 "%dev":
-    quarkus:
-      log:
-        level: WARN
-        category:
-          "de.ostfale.qk":
-            level: DEBUG
-        file:
-          enabled: false
+  quarkus:
+    log:
+      level: WARN
+      category:
+        "de.ostfale.qk":
+          level: DEBUG
+      file:
+        enabled: false
