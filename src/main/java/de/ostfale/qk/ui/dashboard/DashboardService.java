@@ -9,7 +9,6 @@ import de.ostfale.qk.app.downloader.ranking.RankingDownloader;
 import de.ostfale.qk.data.dashboard.DashboardRankingDataJsonHandler;
 import de.ostfale.qk.data.dashboard.model.DashboardRankingData;
 import de.ostfale.qk.domain.player.PlayerOverview;
-import de.ostfale.qk.domain.tourcal.TourCalendarDashboard;
 import de.ostfale.qk.ui.dashboard.model.DashboardRankingUIModel;
 import de.ostfale.qk.web.internal.RankingWebService;
 import io.quarkus.logging.Log;
@@ -24,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 
 @ApplicationScoped
 public class DashboardService implements TimeHandlerFacade, FileSystemFacade {
-    
+
     @Inject
     RankingPlayerCache rankingPlayerCache;
 
@@ -92,12 +91,6 @@ public class DashboardService implements TimeHandlerFacade, FileSystemFacade {
     public String getOnlineCW() {
         Log.debug("DashboardService :: retrieve online calendar week");
         return rankingWebService.getCalendarWeekForLastUpdate();
-    }
-
-    public TourCalendarDashboard getTourCalendarDashboardData() {
-        var targetDir = plannedTournamentsDownloader.prepareDownloadTargetPath(DirTypes.TOURNAMENT.displayName);
-        var foundDownloadDate = plannedTournamentsDownloader.getLastDownloadDate(targetDir);
-        return new TourCalendarDashboard(foundDownloadDate);
     }
 
     private DashboardRankingUIModel createModelFromRankingData(DashboardRankingData rankingData) {

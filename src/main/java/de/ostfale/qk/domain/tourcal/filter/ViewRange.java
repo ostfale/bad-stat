@@ -3,7 +3,6 @@ package de.ostfale.qk.domain.tourcal.filter;
 public enum ViewRange {
     ALL("Alle Turniere"),
     REMAINING("Verbleibende Turniere"),
-    THIS_YEAR("Verbleibende Turniere dieses Jahr"),
     NEXT_YEAR("Turniere nächstes Jahr");
 
     private final String displayName;

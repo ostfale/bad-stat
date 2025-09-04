@@ -15,7 +15,7 @@ public class DashBoardTourCalDTO {
     }
 
     public String thisYearsFormattedTournaments() {
-        return thisYearsAllTournaments + " (" + thisYearsRemainingTournaments + ")";
+        return thisYearsRemainingTournaments + " (" + thisYearsAllTournaments + ")";
     }
 
     public DashBoardTourCalDTO() {

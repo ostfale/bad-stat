@@ -1,82 +1,29 @@
 package de.ostfale.qk.ui.dashboard;
 
-import de.ostfale.qk.app.DirTypes;
 import de.ostfale.qk.app.FileSystemFacade;
-import de.ostfale.qk.app.PlannedTournamentsDownloader;
-import de.ostfale.qk.domain.tourcal.PlannedTournament;
-import de.ostfale.qk.domain.tourcal.PlannedTournaments;
-import de.ostfale.qk.parser.file.csv.PlannedTournamentParser;
 import de.ostfale.qk.ui.dashboard.model.DashBoardTourCalDTO;
+import de.ostfale.qk.ui.tourcalendar.PlannedTournamentsHandler;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.io.File;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 @ApplicationScoped
 public class DashBoardTourCalService implements FileSystemFacade {
 
-    private static final String TOURNAMENT_CALENDAR_FILE_DIR = DirTypes.TOURNAMENT.displayName;
-
     @Inject
-    PlannedTournamentsDownloader plannedTournamentsDownloader;
+    PlannedTournamentsHandler plannedTournamentsHandler;
 
-    @Inject
-    PlannedTournamentParser plannedTournamentParser;
+    public DashBoardTourCalDTO loadData() {
+        Log.debug("DashBoardTourCalService :: load data");
+        var remainingTournaments = plannedTournamentsHandler.getAllRemainingTournamentsList().size();
+        var thisYearTournaments = plannedTournamentsHandler.getThisYearsTournamentsList().size();
+        var nextYearTournaments = plannedTournamentsHandler.getNextYearsTournamentsList().size();
+        var lastDownloadDate = plannedTournamentsHandler.getLastDownloadDate();
 
-    private PlannedTournaments plannedTournaments;
-
-    private final List<PlannedTournament> tournaments = new ArrayList<>();
-
-    public DashBoardTourCalDTO readData() {
-        var targetDir = plannedTournamentsDownloader.prepareDownloadTargetPath(TOURNAMENT_CALENDAR_FILE_DIR);
-        if (plannedTournaments == null) {
-            Log.debug("DashBoardTourCalService :: no planned tournaments loaded -> load tournaments");
-            plannedTournaments = loadAllTournamentsFromFile(targetDir);
-            loadAndCacheTournaments(targetDir);
-        }
-
-        var lastDownloadDate = plannedTournamentsDownloader.getLastDownloadDate(targetDir);
-        var currentDate = LocalDate.now();
-
-        var totalTournamentsThisYear = plannedTournaments.getThisYearsTournaments().size();
-        var remainingTournamentsThisYear = plannedTournaments.getAllRemainingTournaments(currentDate).size();
-        var totalTournamentsNextYear = plannedTournaments.getNextYearsTournaments().size();
-
-        var totalThisYearString = String.valueOf(totalTournamentsThisYear);
-        var remainingThisYearString = String.valueOf(remainingTournamentsThisYear);
-        var totalNextYearString = String.valueOf(totalTournamentsNextYear);
-
-        return new DashBoardTourCalDTO(lastDownloadDate, totalThisYearString, remainingThisYearString, totalNextYearString);
-    }
-
-    private PlannedTournaments loadAllTournamentsFromFile(String targetDir) {
-
-        var tournamentFiles = plannedTournamentsDownloader.getDownloadFiles(targetDir);
-        var nextYearsTournaments = parseTournamentFile(tournamentFiles.getLast());
-        plannedTournaments = parseTournamentFile(tournamentFiles.getFirst());
-
-        if (!nextYearsTournaments.getAllPlannedTournaments().isEmpty()) {
-            plannedTournaments.addAllPlannedTournaments(nextYearsTournaments.getAllPlannedTournaments());
-        }
-        return plannedTournaments;
-    }
-
-
-    private void loadAndCacheTournaments(String targetDir) {
-        var tournamentFiles = plannedTournamentsDownloader.getDownloadFiles(targetDir);
-
-        var currentYearTournaments = parseTournamentFile(tournamentFiles.getFirst());
-        var nextYearTournaments = parseTournamentFile(tournamentFiles.getLast());
-
-        tournaments.addAll(currentYearTournaments.getAllRemainingTournaments(LocalDate.now()));
-        tournaments.addAll(nextYearTournaments.getAllPlannedTournaments());
-    }
-
-    private PlannedTournaments parseTournamentFile(File tournamentFile) {
-        return plannedTournamentParser.parseTournamentCalendar(tournamentFile);
+        return new DashBoardTourCalDTO(
+                lastDownloadDate,
+                String.valueOf(thisYearTournaments),
+                String.valueOf(remainingTournaments),
+                String.valueOf(nextYearTournaments));
     }
 }

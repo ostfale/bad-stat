@@ -1,7 +1,6 @@
 package de.ostfale.qk.ui.dashboard;
 
 import de.ostfale.qk.app.TimeHandlerFacade;
-import de.ostfale.qk.domain.tourcal.TourCalendarDashboard;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.dashboard.model.DashBoardTourCalDTO;
 import de.ostfale.qk.ui.dashboard.model.DashboardRankingUIModel;
@@ -97,17 +96,15 @@ public class DashboardController extends BaseController<DashboardUIModel> implem
     public void initialize() {
         Log.info("DashboardController initialized");
         var dashboardRankingUIModel = dashboardService.updateCurrentRankingStatus();
-        updateTournamentCalendarDisplay();
-
+        reloadTourCalendar();
 
         updateRankingDisplay(dashboardRankingUIModel);
         initLabel();
-        updateTournamentCalendarDisplay(dashboardService.getTourCalendarDashboardData());
     }
 
-    private void updateTournamentCalendarDisplay() {
+    private void reloadTourCalendar() {
         Log.debug("DashboardController :: Update tournament calendar information");
-        DashBoardTourCalDTO tourCalDTO = dashBoardTourCalService.readData();
+        DashBoardTourCalDTO tourCalDTO = dashBoardTourCalService.loadData();
         lblTourCalFileDate.setText(tourCalDTO.getLastDownloadDate());
         lblThisYearValue.setText(tourCalDTO.thisYearsFormattedTournaments());
         lblNextYearValue.setText(tourCalDTO.getNextYearsTournaments());
@@ -158,14 +155,13 @@ public class DashboardController extends BaseController<DashboardUIModel> implem
                 .thenAccept(_ -> {
                     Log.debug("DashboardController :: Download tournament calendar successful");
                     hideProgress();
-                    updateTournamentCalendarDisplay(dashboardService.getTourCalendarDashboardData());
+                    updateTournamentCalendarDisplay();
                 })
                 .exceptionally(throwable -> {
                     Log.error("DashboardController :: Download tournament calendar failed", throwable);
                     hideProgress();
                     return null;
                 });
-
     }
 
     @FXML
@@ -177,9 +173,9 @@ public class DashboardController extends BaseController<DashboardUIModel> implem
     }
 
     @RunOnFxThread
-    public void updateTournamentCalendarDisplay(TourCalendarDashboard dashboardData) {
+    public void updateTournamentCalendarDisplay() {
         Log.debug("DashBoardController :: Update tournament calendar information");
-        lblTourCalFileDate.setText(dashboardData.downloadDate());
+        reloadTourCalendar();
     }
 
     private void updateRankingDisplay(DashboardRankingUIModel model) {

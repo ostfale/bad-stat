@@ -21,4 +21,11 @@ Jetzt wird es ein wenig technisch :-)
 
 # Screenshots
 
++ Alle Infomationen zur Rangliste eines Spielers
+
 ![Overview](help_img/bad-stat-overview.png)
+
+
++ Alle Informationen zu den noch anstehenden Turnieren im aktuellen und kommenden Jahr
+
+![Overview](help_img/calendar_tournament.png)

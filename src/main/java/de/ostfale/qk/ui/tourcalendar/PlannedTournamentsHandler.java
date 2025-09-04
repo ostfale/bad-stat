@@ -2,6 +2,7 @@ package de.ostfale.qk.ui.tourcalendar;
 
 import de.ostfale.qk.app.DirTypes;
 import de.ostfale.qk.app.FileSystemFacade;
+import de.ostfale.qk.app.PlannedTournamentsDownloader;
 import de.ostfale.qk.domain.tourcal.PlannedTournament;
 import de.ostfale.qk.domain.tourcal.PlannedTournaments;
 import de.ostfale.qk.domain.tourcal.filter.ViewRange;
@@ -19,14 +20,34 @@ public class PlannedTournamentsHandler implements FileSystemFacade {
     @Inject
     PlannedTournamentParser parser;
 
+    @Inject
+    PlannedTournamentsDownloader plannedTournamentsDownloader;
+
     private PlannedTournaments plannedTournaments;
+    private String lastDownloadDate;
 
     public PlannedTournaments getPlannedTournaments() {
-        if (plannedTournaments == null) {
+        if (plannedTournaments == null || plannedTournaments.getAllPlannedTournaments().isEmpty()) {
             Log.debug("PlannedTournamentsHandler:: getPlannedTournaments - load data");
             plannedTournaments = loadPlannedTournaments();
         }
         return plannedTournaments;
+    }
+
+    public List<PlannedTournament> getAllTournamensList() {
+        return getPlannedTournaments().getAllPlannedTournaments();
+    }
+
+    public List<PlannedTournament> getAllRemainingTournamentsList() {
+        return getPlannedTournaments().getAllRemainingTournaments(LocalDate.now());
+    }
+
+    public List<PlannedTournament> getNextYearsTournamentsList() {
+        return getPlannedTournaments().getNextYearsTournaments();
+    }
+
+    public List<PlannedTournament> getThisYearsTournamentsList() {
+        return getPlannedTournaments().getThisYearsTournaments();
     }
 
     public List<PlannedTournament> getTournamensList(ViewRange viewRange) {
@@ -38,14 +59,11 @@ public class PlannedTournamentsHandler implements FileSystemFacade {
             case REMAINING -> {
                 return allTournaments.getAllRemainingTournaments(LocalDate.now());
             }
-            case THIS_YEAR -> {
-                return allTournaments.getThisYearsTournaments();
-            }
             case NEXT_YEAR -> {
                 return allTournaments.getNextYearsTournaments();
             }
             default -> {
-                throw new IllegalArgumentException("Unsupported view range: " + viewRange);
+                throw new IllegalArgumentException("Unknown view range: " + viewRange);
             }
         }
     }
@@ -55,9 +73,14 @@ public class PlannedTournamentsHandler implements FileSystemFacade {
         plannedTournaments = loadPlannedTournaments();
     }
 
+    public String getLastDownloadDate() {
+        return lastDownloadDate;
+    }
+
     private PlannedTournaments loadPlannedTournaments() {
 
         String plannedTournamentsFileDir = getApplicationSubDir(DirTypes.TOURNAMENT.displayName);
+        lastDownloadDate = plannedTournamentsDownloader.getLastDownloadDate(plannedTournamentsFileDir);
         var tournamentFiles = readAllFiles(plannedTournamentsFileDir);
         if (tournamentFiles.isEmpty()) {
             return new PlannedTournaments();
