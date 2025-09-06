@@ -24,6 +24,7 @@ public class PlannedTournamentsHandler implements FileSystemFacade {
     PlannedTournamentsDownloader plannedTournamentsDownloader;
 
     private PlannedTournaments plannedTournaments;
+
     private String lastDownloadDate;
 
     public PlannedTournaments getPlannedTournaments() {

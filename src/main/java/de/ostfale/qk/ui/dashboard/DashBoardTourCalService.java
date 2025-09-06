@@ -13,6 +13,11 @@ public class DashBoardTourCalService implements FileSystemFacade {
     @Inject
     PlannedTournamentsHandler plannedTournamentsHandler;
 
+    public void reloadDataFromFileSystem() {
+        Log.debug("DashBoardTourCalService :: reload data from file system");
+        plannedTournamentsHandler.reload();
+    }
+
     public DashBoardTourCalDTO loadData() {
         Log.debug("DashBoardTourCalService :: load data");
         var remainingTournaments = plannedTournamentsHandler.getAllRemainingTournamentsList().size();

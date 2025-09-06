@@ -98,6 +98,7 @@ public class TourCalController extends BaseController<TourCalUIModel> {
     void refresh(ActionEvent event) {
      List<TourCalUIModel> rangeFilterResult=   tourCalService.updateRangeView(cbViewRange.getSelectionModel().getSelectedItem());
      update(rangeFilterResult);
+     filterChanged.set(false);
     }
 
     public ViewRange getSelectedRange() {

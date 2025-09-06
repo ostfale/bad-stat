@@ -6,12 +6,13 @@ import io.quarkus.logging.Log;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PlannedTournaments implements TimeHandlerFacade {
 
     private List<PlannedTournament> thisYearsTournaments = new ArrayList<>();
     private List<PlannedTournament> nextYearsTournaments = new ArrayList<>();
-    private final List<PlannedTournament> allPlannedTournaments = new ArrayList<>();
 
     public PlannedTournaments(List<PlannedTournament> thisYearsTournaments) {
         this.thisYearsTournaments = thisYearsTournaments;
@@ -37,32 +38,16 @@ public class PlannedTournaments implements TimeHandlerFacade {
         return tournamentStartDate.isAfter(checkDate);
     }
 
-
     public List<PlannedTournament> getNextYearsTournaments() {
         return nextYearsTournaments;
     }
 
     public List<PlannedTournament> getAllPlannedTournaments() {
-        if (allPlannedTournaments.isEmpty()) {
-            allPlannedTournaments.addAll(thisYearsTournaments);
-            allPlannedTournaments.addAll(nextYearsTournaments);
-        }
-        return allPlannedTournaments;
-    }
-
-    public void addPlannedTournament(PlannedTournament plannedTournament) {
-        allPlannedTournaments.add(plannedTournament);
-    }
-
-    public void addAllPlannedTournaments(List<PlannedTournament> plannedTournaments) {
-        this.allPlannedTournaments.addAll(plannedTournaments);
+        return Stream.concat(thisYearsTournaments.stream(), nextYearsTournaments.stream())
+                .collect(Collectors.toList());
     }
 
     public void setNextYearsTournaments(List<PlannedTournament> nextYearsTournaments) {
         this.nextYearsTournaments = nextYearsTournaments;
-    }
-
-    public void setThisYearsTournaments(List<PlannedTournament> thisYearsTournaments) {
-        this.thisYearsTournaments = thisYearsTournaments;
     }
 }

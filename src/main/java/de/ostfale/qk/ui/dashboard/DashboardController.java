@@ -96,14 +96,20 @@ public class DashboardController extends BaseController<DashboardUIModel> implem
     public void initialize() {
         Log.info("DashboardController initialized");
         var dashboardRankingUIModel = dashboardService.updateCurrentRankingStatus();
-        reloadTourCalendar();
+        reloadTourCalendar(false);
 
         updateRankingDisplay(dashboardRankingUIModel);
         initLabel();
     }
 
-    private void reloadTourCalendar() {
+    @RunOnFxThread
+    public void reloadTourCalendar(boolean reloadFromFileSystem) {
         Log.debug("DashboardController :: Update tournament calendar information");
+
+        if (reloadFromFileSystem) {
+            dashBoardTourCalService.reloadDataFromFileSystem();
+        }
+
         DashBoardTourCalDTO tourCalDTO = dashBoardTourCalService.loadData();
         lblTourCalFileDate.setText(tourCalDTO.getLastDownloadDate());
         lblThisYearValue.setText(tourCalDTO.thisYearsFormattedTournaments());
@@ -155,7 +161,7 @@ public class DashboardController extends BaseController<DashboardUIModel> implem
                 .thenAccept(_ -> {
                     Log.debug("DashboardController :: Download tournament calendar successful");
                     hideProgress();
-                    updateTournamentCalendarDisplay();
+                    reloadTourCalendar(true);
                 })
                 .exceptionally(throwable -> {
                     Log.error("DashboardController :: Download tournament calendar failed", throwable);
@@ -170,12 +176,6 @@ public class DashboardController extends BaseController<DashboardUIModel> implem
         // parse current ranking from local file
         DashboardRankingUIModel dashboardRankingUIModel = dashboardService.updateCurrentRankingFile();
         updateRankingDisplay(dashboardRankingUIModel);
-    }
-
-    @RunOnFxThread
-    public void updateTournamentCalendarDisplay() {
-        Log.debug("DashBoardController :: Update tournament calendar information");
-        reloadTourCalendar();
     }
 
     private void updateRankingDisplay(DashboardRankingUIModel model) {
