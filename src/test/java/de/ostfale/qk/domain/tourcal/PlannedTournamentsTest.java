@@ -19,7 +19,7 @@ class PlannedTournamentsTest extends BaseParserTest {
 
     private static final String CALTOUR_TEST_FILE_Y25 = "caltour/CalTour_25.csv";
     private static final String CALTOUR_TEST_FILE_Y26 = "caltour/CalTour_26.csv";
-    private static final String CALTOUR_TEST_FILE_EMPTY = "caltour/CalTour_EMPTY.csv";
+    private static final String CALTOUR_TEST_FILE_EMPTY = "caltour/CalTour_Empty.csv";
 
     private final PlannedTournamentParser plannedTournamentParser = new PlannedTournamentParser();
 
