@@ -1,5 +1,6 @@
 package de.ostfale.qk.data.dashboard;
 
+import de.ostfale.qk.app.DirTypes;
 import de.ostfale.qk.app.downloader.ranking.RankingFacade;
 import de.ostfale.qk.domain.player.Player;
 import de.ostfale.qk.parser.ranking.api.RankingParser;
@@ -20,7 +21,7 @@ public class RankingPlayerCacheLoader implements RankingFacade {
 
     public List<Player> loadRankingPlayerCache() {
         Log.debug("RankingPlayerCacheLoader :: load player data into cache");
-        String rankingDirPath = getApplicationRankingDir();
+        String rankingDirPath = getApplicationSubDir(DirTypes.RANKING.displayName);
         List<File> rankingFiles = readAllFiles(rankingDirPath);
 
         if (rankingFiles.isEmpty()) {

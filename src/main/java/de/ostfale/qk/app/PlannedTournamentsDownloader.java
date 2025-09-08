@@ -127,11 +127,4 @@ public class PlannedTournamentsDownloader implements WebFacade, FileSystemFacade
         Log.debugf("PlannedTournamentsDownloader :: Last download date from file system: %s", lastDownloadDate);
         return lastDownloadDate;
     }
-
-    private String extractDateFromFileName(String fileName) {
-        int startIndex = fileName.lastIndexOf(DATE_SEPARATOR) + 1;
-        int endIndex = fileName.indexOf(FILE_SUFFIX, startIndex);
-        var extractedDateFileFormat = fileName.substring(startIndex, endIndex);
-        return formatDateToTournamentFormat(extractedDateFileFormat);
-    }
 }

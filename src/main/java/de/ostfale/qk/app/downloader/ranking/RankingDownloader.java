@@ -1,5 +1,6 @@
 package de.ostfale.qk.app.downloader.ranking;
 
+import de.ostfale.qk.app.DirTypes;
 import de.ostfale.qk.data.dashboard.DashboardRankingDataJsonHandler;
 import de.ostfale.qk.data.dashboard.model.DashboardRankingData;
 import io.quarkus.logging.Log;
@@ -23,7 +24,7 @@ public class RankingDownloader implements RankingFacade {
         Log.info("RankingDownloader :: download last CW ranking file");
         int lastCW = getLastCalendarWeek();
         int lastYear = getCalendarYearFromLastWeek();
-        String targetFilePath = getApplicationRankingDir() + SEP + prepareRankingFileName(lastCW, lastYear);
+        String targetFilePath = getApplicationSubDir(DirTypes.RANKING.displayName) + SEP + prepareRankingFileName(lastCW, lastYear);
         String targetUrl = createURLForCalendarWeek(lastCW, lastYear);
         return downloadRankingFile(targetFilePath, targetUrl);
     }
@@ -32,13 +33,13 @@ public class RankingDownloader implements RankingFacade {
         Log.info("RankingDownloader :: download current CW ranking file");
         int currentCW = getActualCalendarWeek();
         int currentYear = getActualCalendarYear();
-        String targetFilePath = getApplicationRankingDir() + SEP + prepareRankingFileName(currentCW, currentYear);
+        String targetFilePath = getApplicationSubDir(DirTypes.RANKING.displayName) + SEP + prepareRankingFileName(currentCW, currentYear);
         return downloadRankingFile(targetFilePath, CURRENT_RANKING_FILE_URL);
     }
 
     private boolean downloadRankingFile(String targetFilePath, String targetUrl) {
         Log.info("RankingDownloader :: download ranking file");
-        if (!deleteAllFiles(getApplicationRankingDir())) {
+        if (!deleteAllFiles(getApplicationSubDir(DirTypes.RANKING.displayName))) {
             Log.error("RankingDownloader :: could not delete existing ranking files");
             return false;
         }
@@ -78,7 +79,7 @@ public class RankingDownloader implements RankingFacade {
     }
 
     public List<File> getRankingFiles() {
-        var rankingDir = getApplicationRankingDir();
+        var rankingDir = getApplicationSubDir(DirTypes.RANKING.displayName);
         Log.debugf("RankingFile Download :: ranking dir: %s", rankingDir);
         return readAllFiles(rankingDir);
     }

@@ -2,7 +2,6 @@ package de.ostfale.qk.ui.tourcalendar;
 
 import de.ostfale.qk.app.DirTypes;
 import de.ostfale.qk.app.FileSystemFacade;
-import de.ostfale.qk.app.PlannedTournamentsDownloader;
 import de.ostfale.qk.domain.tourcal.PlannedTournament;
 import de.ostfale.qk.domain.tourcal.PlannedTournaments;
 import de.ostfale.qk.domain.tourcal.filter.ViewRange;
@@ -17,26 +16,18 @@ import java.util.List;
 @ApplicationScoped
 public class PlannedTournamentsHandler implements FileSystemFacade {
 
-    @Inject
-    PlannedTournamentParser parser;
+    private static final String APP_TOURNAMENT_SUB_DIR = DirTypes.TOURNAMENT.displayName;
 
     @Inject
-    PlannedTournamentsDownloader plannedTournamentsDownloader;
+    PlannedTournamentParser parser;
 
     private PlannedTournaments plannedTournaments;
 
     private String lastDownloadDate;
 
-    public PlannedTournaments getPlannedTournaments() {
-        if (plannedTournaments == null || plannedTournaments.getAllPlannedTournaments().isEmpty()) {
-            Log.debug("PlannedTournamentsHandler:: getPlannedTournaments - load data");
-            plannedTournaments = loadPlannedTournaments();
-        }
-        return plannedTournaments;
-    }
-
-    public List<PlannedTournament> getAllTournamensList() {
-        return getPlannedTournaments().getAllPlannedTournaments();
+    public void reload() {
+        Log.debug("PlannedTournamentsHandler:: reload - load data");
+        plannedTournaments = loadPlannedTournaments(APP_TOURNAMENT_SUB_DIR);
     }
 
     public List<PlannedTournament> getAllRemainingTournamentsList() {
@@ -69,24 +60,27 @@ public class PlannedTournamentsHandler implements FileSystemFacade {
         }
     }
 
-    public void reload() {
-        Log.debug("PlannedTournamentsHandler:: reload - load data");
-        plannedTournaments = loadPlannedTournaments();
-    }
-
     public String getLastDownloadDate() {
         return lastDownloadDate;
     }
 
-    private PlannedTournaments loadPlannedTournaments() {
+    private PlannedTournaments getPlannedTournaments() {
+        if (plannedTournaments == null || plannedTournaments.getAllPlannedTournaments().isEmpty()) {
+            Log.debug("PlannedTournamentsHandler:: getPlannedTournaments - load data");
+            plannedTournaments = loadPlannedTournaments(APP_TOURNAMENT_SUB_DIR);
+        }
+        return plannedTournaments;
+    }
 
-        String plannedTournamentsFileDir = getApplicationSubDir(DirTypes.TOURNAMENT.displayName);
-        lastDownloadDate = plannedTournamentsDownloader.getLastDownloadDate(plannedTournamentsFileDir);
+    private PlannedTournaments loadPlannedTournaments(String subDirName) {
+
+        String plannedTournamentsFileDir = getApplicationSubDir(subDirName);
         var tournamentFiles = readAllFiles(plannedTournamentsFileDir);
         if (tournamentFiles.isEmpty()) {
             return new PlannedTournaments();
         }
 
+        lastDownloadDate = extractDateFromFileName(tournamentFiles.getFirst().getName());
         var currentYearTournaments = parser.parseTournamentCalendar(tournamentFiles.getFirst());
         var nextYearTournaments = parser.parseTournamentCalendar(tournamentFiles.getLast());
 
@@ -96,5 +90,4 @@ public class PlannedTournamentsHandler implements FileSystemFacade {
         currentYearTournaments.setNextYearsTournaments(nextYearTournaments.getAllPlannedTournaments());
         return currentYearTournaments;
     }
-
 }

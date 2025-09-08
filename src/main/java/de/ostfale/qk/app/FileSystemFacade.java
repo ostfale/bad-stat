@@ -22,12 +22,14 @@ import java.util.stream.Stream;
 public interface FileSystemFacade extends ApplicationFacade {
 
     String SEP = FileSystems.getDefault().getSeparator();
+    String FILE_NAME_SEPARATOR = "_";
+    String DATE_SEPARATOR = "-";
     String USER_HOME = "user.home";
     String EMPTY_STRING = "";
 
     default boolean directoryExists(String dirPath) {
         Path path = Paths.get(dirPath);
-        var result = Files.exists(path) && java.nio.file.Files.isDirectory(path);
+        var result = Files.exists(path) && Files.isDirectory(path);
         Log.debugf("Directory %s exists: %s", dirPath, result);
         return result;
     }
@@ -50,25 +52,9 @@ public interface FileSystemFacade extends ApplicationFacade {
         return result;
     }
 
-    default String getApplicationRankingDir() {
-        var result = getApplicationHomeDir() + SEP + DirTypes.RANKING.displayName + SEP;
-        Log.debugf("Ranking directory: %s", result);
-        return result;
-    }
-
     default List<File> readAllFiles(String dirPath) {
         Log.debugf("Read all files from directory: {}", dirPath);
         return Stream.ofNullable(new File(dirPath).listFiles()).flatMap(Stream::of).filter(File::isFile).collect(Collectors.toList());
-    }
-
-    default boolean downloadFile(String urlString, String fileName) {
-        try {
-            var url = URI.create(urlString).toURL();
-            return downloadFile(url, fileName);
-        } catch (MalformedURLException e) {
-            Log.errorf("No valid URL String: %s", urlString);
-            return false;
-        }
     }
 
     default void downloadIntoFile(URL url, String fileName) throws IOException {
@@ -79,27 +65,9 @@ public interface FileSystemFacade extends ApplicationFacade {
         }
     }
 
-    default boolean downloadFile(URL url, String fileName) {
-        Log.debugf("Download file from %s to %s", url, fileName);
-        try (ReadableByteChannel rbc = Channels.newChannel(url.openStream()); FileOutputStream fos = new FileOutputStream(fileName);) {
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-            fos.close();
-            return true;
-        } catch (IOException e) {
-            Log.errorf("Could not download URL: %s because of: $s", url, e.getMessage());
-            return false;
-        }
-    }
-
     default URL getURL(String urlString) throws MalformedURLException {
         URI uri = URI.create(urlString);
         return uri.toURL();
-    }
-
-    default boolean deleteFile(String filePath) {
-        Log.debugf("Delete file: {}", filePath);
-        var fileToDelete = new File(filePath);
-        return fileToDelete.delete();
     }
 
     static String readFileContentAsText(String filePath) throws IOException {
@@ -117,10 +85,21 @@ public interface FileSystemFacade extends ApplicationFacade {
         return filesToDelete.stream().allMatch(File::delete);
     }
 
-    default boolean deleteAllFiles(List<File> files) {
-        Log.debugf("Delete {} files", files.size());
-        return files.stream().allMatch(File::delete);
+    default String extractDateFromFileName(String fileName) {
+        int startIndex = fileName.lastIndexOf(FILE_NAME_SEPARATOR) + 1;
+        int endIndex = fileName.lastIndexOf(".");
+        String fileNameWithoutExtension = fileName.substring(startIndex, endIndex);
+        String[] dateComponents = fileNameWithoutExtension.split(DATE_SEPARATOR);
+
+        String day = dateComponents[2];
+        String month = dateComponents[1];
+        String year = dateComponents[0];
+        String dateResult = day + "." + month + "." + year;
+
+        Log.debugf("Extract date from file name %s: %s", fileName, dateResult);
+        return dateResult;
     }
+
 
     static void writeToFile(String fileName, String content) throws IOException {
         Files.writeString(Paths.get(fileName), content);
