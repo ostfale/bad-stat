@@ -3,7 +3,11 @@ package de.ostfale.qk.domain.discipline;
 import io.quarkus.logging.Log;
 
 public enum AgeClass {
-    U9, U11, U13, U15, U17, U19, U22, O19, UOX;
+    U9, U11, U13, U15, U17, U19, U22, O19, O35, UOX;
+
+    public static AgeClass[] getAllWithoutUOX() {
+        return new AgeClass[]{U9, U11, U13, U15, U17, U19, U22, O19, O35};
+    }
 
     public static AgeClass fromString(String ageClass) {
         if (ageClass == null || ageClass.isEmpty()) {
@@ -12,7 +16,7 @@ public enum AgeClass {
 
         String trimmedAgeClass = ageClass.trim();
 
-        if(!trimmedAgeClass.startsWith("U") && !trimmedAgeClass.startsWith("O")){
+        if (!trimmedAgeClass.startsWith("U") && !trimmedAgeClass.startsWith("O")) {
             Log.warnf("Age class %s does not start with U or O. Using UOX as default.", ageClass);
             return UOX;
         }
@@ -30,6 +34,7 @@ public enum AgeClass {
             case "U19" -> U19;
             case "U22" -> U22;
             case "O19" -> O19;
+            case "O35" -> O35;
             case "UOX" -> UOX;
             default -> throw new IllegalArgumentException("Unknown age class found: " + ageClass + ".");
         };

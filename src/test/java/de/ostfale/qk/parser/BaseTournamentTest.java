@@ -1,5 +1,6 @@
 package de.ostfale.qk.parser;
 
+import de.ostfale.qk.domain.tourcal.PlannedTournament;
 import de.ostfale.qk.domain.tourcal.TourCategory;
 import de.ostfale.qk.domain.tourcal.TournamentType;
 
@@ -31,7 +32,41 @@ public abstract class BaseTournamentTest {
     protected static final String TOURNAMENT_AK_U15 = "Einzel/Doppel/Mixed";
     protected static final String TOURNAMENT_AK_U17 = "Einzel/Doppel/Mixed";
     protected static final String TOURNAMENT_AK_U19 = "";
-    protected static final String TOURNAMENT_AK_O19 = "Einzel/Doppel/Mixed";
     protected static final String TOURNAMENT_AK_U22 = "";
+    protected static final String TOURNAMENT_AK_O19 = "Einzel/Doppel/Mixed";
     protected static final String TOURNAMENT_AK_O35 = "";
+
+    protected PlannedTournament createPlannedTournament() {
+        return new PlannedTournament(
+                TOURNAMENT_START_DATE,
+                TOURNAMENT_END_DATE,
+                TOURNAMENT_NAME,
+                TOURNAMENT_TYPE,
+                TOURNAMENT_ORD_NO,
+                TOURNAMENT_COUNTRY_CODE,
+                TOURNAMENT_LOCATION,
+                TOURNAMENT_POSTAL_CODE,
+                TOURNAMENT_REGION,
+                TOURNAMENT_OPEN_NAME,
+                TOURNAMENT_ORGANIZER,
+                TOURNAMENT_CATEGORY,
+                TOURNAMENT_CLOSING_DATE,
+                TOURNAMENT_WEBSITE,
+                TOURNAMENT_PDF_URL,
+                TOURNAMENT_PDF_AVAILABLE,
+                TOURNAMENT_CREATION_DATE,
+                TOURNAMENT_VISIBLE_DATE,
+                TOURNAMENT_INVITATION_CREATION_DATE,
+                TOURNAMENT_LINK_CREATION_DATE,
+                TOURNAMENT_AK_U09,
+                TOURNAMENT_AK_U11,
+                TOURNAMENT_AK_U13,
+                TOURNAMENT_AK_U15,
+                TOURNAMENT_AK_U17,
+                TOURNAMENT_AK_U19,
+                TOURNAMENT_AK_U22,
+                TOURNAMENT_AK_O19,
+                TOURNAMENT_AK_O35
+        );
+    }
 }

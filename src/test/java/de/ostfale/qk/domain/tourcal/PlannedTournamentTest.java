@@ -1,5 +1,6 @@
 package de.ostfale.qk.domain.tourcal;
 
+import de.ostfale.qk.domain.discipline.AgeClass;
 import de.ostfale.qk.parser.BaseTournamentTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -76,5 +77,35 @@ class PlannedTournamentTest extends BaseTournamentTest {
                 () -> assertThat(result.AK_O19()).isEqualTo(TOURNAMENT_AK_O19),
                 () -> assertThat(result.AK_O35()).isEqualTo(TOURNAMENT_AK_O35)
         );
+    }
+
+    @Test
+    @DisplayName("Test validation which age class will be played")
+    void testPlayedAgeClass() {
+        // given
+        var plannedTournament = createPlannedTournament();
+
+        // when
+        var ageClass09 = plannedTournament.isForAgeClass(AgeClass.U9);
+        var ageClass11 = plannedTournament.isForAgeClass(AgeClass.U11);
+        var ageClass13 = plannedTournament.isForAgeClass(AgeClass.U13);
+        var ageClass15 = plannedTournament.isForAgeClass(AgeClass.U15);
+        var ageClass17 = plannedTournament.isForAgeClass(AgeClass.U17);
+        var ageClass19 = plannedTournament.isForAgeClass(AgeClass.U19);
+        var ageClass22 = plannedTournament.isForAgeClass(AgeClass.U22);
+        var ageClass19o = plannedTournament.isForAgeClass(AgeClass.O19);
+        var ageClass35o = plannedTournament.isForAgeClass(AgeClass.O35);
+
+        // then
+        assertThat(ageClass09).isTrue();
+        assertThat(ageClass11).isTrue();
+        assertThat(ageClass13).isFalse();
+        assertThat(ageClass15).isTrue();
+        assertThat(ageClass17).isTrue();
+        assertThat(ageClass19).isFalse();
+        assertThat(ageClass22).isFalse();
+        assertThat(ageClass19o).isTrue();
+        assertThat(ageClass35o).isFalse();
+
     }
 }

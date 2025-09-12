@@ -1,5 +1,7 @@
 package de.ostfale.qk.ui.tourcalendar.model;
 
+import java.util.List;
+
 public record TourCalUIModel(
         String startDate,
         String closedDate,
@@ -8,6 +10,7 @@ public record TourCalUIModel(
         String location,
         String organizer,
         String webLinkUrl,
-        String pdfLinkUrl
+        String pdfLinkUrl,
+        List<TourCalAgeDiscipline>ageClassDisciplines
 ) {
 }

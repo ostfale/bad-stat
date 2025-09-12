@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import org.controlsfx.control.CheckComboBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <AnchorPane prefHeight="900.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.ostfale.qk.ui.tourcalendar.TourCalController">
@@ -48,7 +49,7 @@
                   <TableColumn fx:id="colPdfLink" editable="false" prefWidth="75.0" sortable="false" text="PDF" />
               </columns>
             </TableView>
-            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="5">
+            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="1">
                <children>
                   <Button fx:id="btnRefresh" mnemonicParsing="false" onAction="#refresh">
                      <HBox.margin>
@@ -68,6 +69,11 @@
                   <Insets bottom="10.0" top="10.0" />
                </GridPane.margin>
             </HBox>
+            <CheckComboBox fx:id="ccbAgeClass" title="Altersklasse" GridPane.columnSpan="2" GridPane.rowIndex="3">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </CheckComboBox>
          </children>
       </GridPane>
    </children>

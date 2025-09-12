@@ -1,6 +1,7 @@
 package de.ostfale.qk.ui.tourcalendar;
 
 import de.ostfale.qk.app.HostServicesProvider;
+import de.ostfale.qk.domain.discipline.AgeClass;
 import de.ostfale.qk.domain.tourcal.filter.ViewRange;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
@@ -12,12 +13,14 @@ import jakarta.inject.Inject;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import org.controlsfx.control.CheckComboBox;
 
 import java.util.List;
 
@@ -40,6 +43,11 @@ public class TourCalController extends BaseController<TourCalUIModel> {
 
     @FXML
     private ComboBox<ViewRange> cbViewRange;
+
+    // filter
+    @FXML
+    private CheckComboBox<AgeClass> ccbAgeClass;
+
 
     // table columns
 
@@ -73,6 +81,7 @@ public class TourCalController extends BaseController<TourCalUIModel> {
     @FXML
     public void initialize() {
         Log.debug("TourCalController :: Initialize TourCalController");
+        initFilter();
         initTable();
         calculateColSize();
         initDataModel();
@@ -96,9 +105,19 @@ public class TourCalController extends BaseController<TourCalUIModel> {
 
     @FXML
     void refresh(ActionEvent event) {
-     List<TourCalUIModel> rangeFilterResult=   tourCalService.updateRangeView(cbViewRange.getSelectionModel().getSelectedItem());
-     update(rangeFilterResult);
-     filterChanged.set(false);
+        List<TourCalUIModel> rangeFilterResult = tourCalService.updateRangeView(cbViewRange.getSelectionModel().getSelectedItem());
+        update(rangeFilterResult);
+        filterChanged.set(false);
+    }
+
+    private void initFilter() {
+        Log.debug("TourCalController :: Initialize filter");
+        ccbAgeClass.getItems().addAll(FXCollections.observableArrayList(AgeClass.getAllWithoutUOX()));
+
+    }
+
+    private void resetFilter() {
+        ccbAgeClass.getCheckModel().clearChecks();
     }
 
     public ViewRange getSelectedRange() {
