@@ -42,6 +42,10 @@ public class PlannedTournamentsHandler implements FileSystemFacade {
         return getPlannedTournaments().getThisYearsTournaments();
     }
 
+    public List<PlannedTournament> getAllPlannedTournamentsList() {
+        return getPlannedTournaments().getAllPlannedTournaments();
+    }
+
     public List<PlannedTournament> getTournamensList(ViewRange viewRange) {
         var allTournaments = getPlannedTournaments();
         switch (viewRange) {

@@ -5,15 +5,17 @@ import de.ostfale.qk.domain.discipline.AgeClass;
 import de.ostfale.qk.domain.tourcal.filter.ViewRange;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
+import de.ostfale.qk.ui.tourcalendar.filter.TourCalAgeClassFilter;
+import de.ostfale.qk.ui.tourcalendar.filter.TourCalRangeViewFilter;
+import de.ostfale.qk.ui.tourcalendar.filter.TournamentFilter;
 import de.ostfale.qk.ui.tourcalendar.model.TourCalUIModel;
+import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkiverse.fx.views.FxView;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -22,13 +24,22 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.controlsfx.control.CheckComboBox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dependent
 @FxView("tour-cal-view")
 public class TourCalController extends BaseController<TourCalUIModel> {
 
-    private final BooleanProperty filterChanged = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty isRefreshing = new SimpleBooleanProperty(false);
+
+    private final List<TournamentFilter> filterList = new ArrayList<>();
+
+    @Inject
+    TourCalAgeClassFilter ageClassFilter;
+
+    @Inject
+    TourCalRangeViewFilter rangeViewFilter;
 
     @Inject
     TourCalService tourCalService;
@@ -41,10 +52,11 @@ public class TourCalController extends BaseController<TourCalUIModel> {
     @FXML
     private Button btnRefresh;
 
+    // filter
+
     @FXML
     private ComboBox<ViewRange> cbViewRange;
 
-    // filter
     @FXML
     private CheckComboBox<AgeClass> ccbAgeClass;
 
@@ -81,49 +93,36 @@ public class TourCalController extends BaseController<TourCalUIModel> {
     @FXML
     public void initialize() {
         Log.debug("TourCalController :: Initialize TourCalController");
-        initFilter();
         initTable();
         calculateColSize();
         initDataModel();
-        initTournamentsViewPortFilter();
-        btnRefresh.disableProperty().bind(filterChanged.not());
-    }
-
-    private void initTournamentsViewPortFilter() {
-        cbViewRange.getItems().addAll(ViewRange.values());
-        cbViewRange.getSelectionModel().select(ViewRange.REMAINING);
-        cbViewRange.valueProperty().addListener((observable, oldValue, newValue) -> {
-            Log.debugf("Range filter changed from %s to %s", oldValue, newValue);
-            if (oldValue != null && !oldValue.equals(newValue)) {
-                filterChanged.set(true);
-                Log.debugf("Range filter changed to %s", newValue);
-            } else {
-                filterChanged.set(false);
-            }
-        });
+        initFilter();
+        btnRefresh.disableProperty().bind(isRefreshing.not());
     }
 
     @FXML
     void refresh(ActionEvent event) {
-        List<TourCalUIModel> rangeFilterResult = tourCalService.updateRangeView(cbViewRange.getSelectionModel().getSelectedItem());
-        update(rangeFilterResult);
-        filterChanged.set(false);
+        var filterResult = tourCalService.applyAllFilter(filterList);
+
+        update(filterResult);
+        isRefreshing.set(false);
     }
+
+    @RunOnFxThread
+    public void enableRefreshButton() {
+        Log.debug("TourCalController:: enabling refresh due to update event");
+        isRefreshing.set(true);
+    }
+
 
     private void initFilter() {
+
+        ageClassFilter.setCheckComboBox(ccbAgeClass);
+        rangeViewFilter.setViewRangeComboBox(cbViewRange);
+
         Log.debug("TourCalController :: Initialize filter");
-        ccbAgeClass.getItems().addAll(FXCollections.observableArrayList(AgeClass.getAllWithoutUOX()));
-
-    }
-
-    private void resetFilter() {
-        ccbAgeClass.getCheckModel().clearChecks();
-    }
-
-    public ViewRange getSelectedRange() {
-        var selectedRange = cbViewRange.getSelectionModel().getSelectedItem();
-        Log.debugf("Selected range is %s", selectedRange);
-        return selectedRange;
+        filterList.add(rangeViewFilter);
+        filterList.add(ageClassFilter);
     }
 
     private void calculateColSize() {
@@ -149,7 +148,6 @@ public class TourCalController extends BaseController<TourCalUIModel> {
         colWebLink.setCellFactory(p -> new WebLinkTableCell(hostServicesProvider));
         colPdfLink.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().pdfLinkUrl()));
         colPdfLink.setCellFactory(p -> new PDFLinkTableCell(hostServicesProvider));
-
     }
 
     public void update(List<TourCalUIModel> tournaments) {

@@ -1,59 +1,61 @@
 package de.ostfale.qk.ui.tourcalendar.filter;
 
 import de.ostfale.qk.domain.discipline.AgeClass;
-import de.ostfale.qk.ui.tourcalendar.model.TourCalUIModel;
+import de.ostfale.qk.domain.tourcal.PlannedTournament;
+import de.ostfale.qk.ui.app.events.UpdateTourCalEvent;
+import io.quarkus.logging.Log;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+import javafx.collections.ListChangeListener;
 import org.controlsfx.control.CheckComboBox;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public class TourCalAgeClassFilter {
+@ApplicationScoped
+public class TourCalAgeClassFilter implements TournamentFilter {
 
-    private final CheckComboBox<AgeClass> ageClassComboBox;
+    @Inject
+    Event<UpdateTourCalEvent> updateFilter;
 
-    public TourCalAgeClassFilter(CheckComboBox<AgeClass> ageClassComboBox) {
-        this.ageClassComboBox = ageClassComboBox;
-    }
+    private CheckComboBox<AgeClass> ageClassComboBox;
 
-
-    public List<TourCalUIModel> filter(List<TourCalUIModel> tournaments) {
+    @Override
+    public List<PlannedTournament> filterTournaments(List<PlannedTournament> tournaments) {
         Set<AgeClass> checkedAgeClasses = getCheckedAgeClasses();
 
-        // If no age classes are checked, return all tournaments
         if (checkedAgeClasses.isEmpty()) {
             return tournaments;
         }
 
-        return tournaments.stream()
+        var filteredTournaments = tournaments.stream()
                 .filter(tournament -> matchesAnyCheckedAgeClass(tournament, checkedAgeClasses))
-                .collect(Collectors.toList());
+                .toList();
+
+        Log.debugf("TourCalAgeClassFilter:: filterTournaments : found %d ", filteredTournaments.size());
+        return filteredTournaments;
     }
 
+    @Override
+    public void resetFilter() {
+        this.ageClassComboBox.getCheckModel().clearChecks();
+    }
+
+    public void setCheckComboBox(CheckComboBox<AgeClass> checkComboBox) throws RuntimeException {
+        this.ageClassComboBox = checkComboBox;
+        this.ageClassComboBox.getItems().addAll(AgeClass.getAllWithoutUOX());
+        this.ageClassComboBox.getCheckModel().getCheckedItems()
+                .addListener((ListChangeListener<AgeClass>) c -> updateFilter.fire(new UpdateTourCalEvent()));
+    }
 
     private Set<AgeClass> getCheckedAgeClasses() {
         return new HashSet<>(ageClassComboBox.getCheckModel().getCheckedItems());
     }
 
-    private boolean matchesAnyCheckedAgeClass(TourCalUIModel tournament, Set<AgeClass> checkedAgeClasses) {
-        String categoryName = tournament.categoryName();
-        if (categoryName == null || categoryName.isEmpty()) {
-            return false;
-        }
-
-        // Check if the category name contains any of the checked age classes
+    private boolean matchesAnyCheckedAgeClass(PlannedTournament tournament, Set<AgeClass> checkedAgeClasses) {
         return checkedAgeClasses.stream()
-                .anyMatch(ageClass -> categoryContainsAgeClass(categoryName, ageClass));
+                .anyMatch(tournament::isForAgeClass);
     }
-
-    private boolean categoryContainsAgeClass(String categoryName, AgeClass ageClass) {
-        // Convert to uppercase for case-insensitive comparison
-        String upperCategoryName = categoryName.toUpperCase();
-        String ageClassStr = ageClass.name();
-
-        // Simple contains check - you might need more sophisticated matching
-        return upperCategoryName.contains(ageClassStr);
-    }
-
 }

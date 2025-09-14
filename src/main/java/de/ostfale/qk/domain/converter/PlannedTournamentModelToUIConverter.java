@@ -65,7 +65,7 @@ public class PlannedTournamentModelToUIConverter implements Converter<PlannedTou
     }
 
     private TourCalAgeDiscipline createAgeClassWithoutDisciplines(AgeClass ageClass) {
-        Log.debugf("PlannedTournamentModelToUIConverter :: Creating age class without disciplines for age class %s", ageClass);
+        Log.tracef("PlannedTournamentModelToUIConverter :: Creating age class without disciplines for age class %s", ageClass);
         return new TourCalAgeDiscipline(ageClass, false, false, false);
     }
 

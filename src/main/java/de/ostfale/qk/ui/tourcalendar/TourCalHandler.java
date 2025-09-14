@@ -2,10 +2,14 @@ package de.ostfale.qk.ui.tourcalendar;
 
 import de.ostfale.qk.domain.converter.PlannedTournamentModelToUIConverter;
 import de.ostfale.qk.domain.tourcal.PlannedTournament;
+import de.ostfale.qk.domain.tourcal.filter.ViewRange;
 import de.ostfale.qk.ui.app.BaseHandler;
+import de.ostfale.qk.ui.app.events.UpdateTourCalEvent;
+import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkiverse.fx.views.FxViewRepository;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import javafx.scene.Node;
 
@@ -27,9 +31,18 @@ public class TourCalHandler implements BaseHandler {
         return fxViewRepository.getViewData(APP_VIEW).getRootNode();
     }
 
+    @RunOnFxThread
+    void onUpdateTourCalEvent(@Observes UpdateTourCalEvent event) {
+        Log.debug("TourCalHandler:: received UpdateTourCalEvent -> enable refresh button");
+        var controller = getController();
+        if (controller != null) {
+            controller.enableRefreshButton();
+        }
+    }
+
     public void update() {
         var controller = getController();
-        List<PlannedTournament> filteredTournaments = plannedTournamentsHandler.getTournamensList(controller.getSelectedRange());
+        List<PlannedTournament> filteredTournaments = plannedTournamentsHandler.getTournamensList(ViewRange.REMAINING);
         Log.debugf("TourCalHandler:: update : found %d ", filteredTournaments.size());
         PlannedTournamentModelToUIConverter converter = new PlannedTournamentModelToUIConverter();
         var migratedTournaments = filteredTournaments.stream()
