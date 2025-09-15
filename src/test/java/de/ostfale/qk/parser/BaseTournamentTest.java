@@ -4,6 +4,9 @@ import de.ostfale.qk.domain.tourcal.PlannedTournament;
 import de.ostfale.qk.domain.tourcal.TourCategory;
 import de.ostfale.qk.domain.tourcal.TournamentType;
 
+import java.util.Arrays;
+import java.util.List;
+
 public abstract class BaseTournamentTest {
 
     protected static final String TOURNAMENT_START_DATE = "12.07.2025";
@@ -36,7 +39,7 @@ public abstract class BaseTournamentTest {
     protected static final String TOURNAMENT_AK_O19 = "Einzel/Doppel/Mixed";
     protected static final String TOURNAMENT_AK_O35 = "";
 
-    protected PlannedTournament createPlannedTournament() {
+    protected PlannedTournament createPlannedTournament(TourCategory customTourCategory) {
         return new PlannedTournament(
                 TOURNAMENT_START_DATE,
                 TOURNAMENT_END_DATE,
@@ -49,7 +52,7 @@ public abstract class BaseTournamentTest {
                 TOURNAMENT_REGION,
                 TOURNAMENT_OPEN_NAME,
                 TOURNAMENT_ORGANIZER,
-                TOURNAMENT_CATEGORY,
+                customTourCategory,
                 TOURNAMENT_CLOSING_DATE,
                 TOURNAMENT_WEBSITE,
                 TOURNAMENT_PDF_URL,
@@ -68,5 +71,11 @@ public abstract class BaseTournamentTest {
                 TOURNAMENT_AK_O19,
                 TOURNAMENT_AK_O35
         );
+    }
+    
+    protected List<PlannedTournament> createPlannedTournamentsWithAllCategories() {
+        return Arrays.stream(TourCategory.values())
+                .map(this::createPlannedTournament)
+                .toList();
     }
 }

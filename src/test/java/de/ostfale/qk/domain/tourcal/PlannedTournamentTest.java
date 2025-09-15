@@ -83,7 +83,7 @@ class PlannedTournamentTest extends BaseTournamentTest {
     @DisplayName("Test validation which age class will be played")
     void testPlayedAgeClass() {
         // given
-        var plannedTournament = createPlannedTournament();
+        var plannedTournament = createPlannedTournament(TOURNAMENT_CATEGORY);
 
         // when
         var ageClass09 = plannedTournament.isForAgeClass(AgeClass.U9);

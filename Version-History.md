@@ -1,14 +1,18 @@
 # Version History
 
+## 0.5.1 
++ added filter for age class
++ added filter for tournament category
+
 ## 0.5.0
-+ Turnierkalender Ansicht
-+ Dowload Turnierkalender als CSV
-+ Dashboard mit Statistiken für alle Turniere im aktuellen und kommenden Jahr
++ added view for planned tournaments 
++ enable download of planned tournaments from Turnier.de (CSV)
++ add another dashboard view for planned tournaments statistics (this year, next year)
 
 ## 0.4.0
-+ Fehler im Matchparser behoben
-+ Anzeige von Gruppenspielen in einem Turnier
++ fixed bug in match parser
++ show group matches in a tournament
 
 ## 0.3.0
-+ internes Modell neu implementiert
-+ Parser für Turniere neu implmentiert
++ refactored internal model 
++ new implementation for tournament parser

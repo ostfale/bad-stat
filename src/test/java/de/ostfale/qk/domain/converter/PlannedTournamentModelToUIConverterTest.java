@@ -19,7 +19,7 @@ class PlannedTournamentModelToUIConverterTest extends BaseTournamentTest {
     @DisplayName("Convert tournament into UI model")
     void testPlannedTournamentModelToUIConverter() {
         // given
-        var tournament = createPlannedTournament();
+        var tournament = createPlannedTournament(TOURNAMENT_CATEGORY);
 
         // when
         var result = sut.convertTo(tournament);

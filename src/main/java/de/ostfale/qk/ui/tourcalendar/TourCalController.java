@@ -2,10 +2,12 @@ package de.ostfale.qk.ui.tourcalendar;
 
 import de.ostfale.qk.app.HostServicesProvider;
 import de.ostfale.qk.domain.discipline.AgeClass;
+import de.ostfale.qk.domain.tourcal.TourCategory;
 import de.ostfale.qk.domain.tourcal.filter.ViewRange;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
 import de.ostfale.qk.ui.tourcalendar.filter.TourCalAgeClassFilter;
+import de.ostfale.qk.ui.tourcalendar.filter.TourCalCategoryFilter;
 import de.ostfale.qk.ui.tourcalendar.filter.TourCalRangeViewFilter;
 import de.ostfale.qk.ui.tourcalendar.filter.TournamentFilter;
 import de.ostfale.qk.ui.tourcalendar.model.TourCalUIModel;
@@ -42,6 +44,9 @@ public class TourCalController extends BaseController<TourCalUIModel> {
     TourCalRangeViewFilter rangeViewFilter;
 
     @Inject
+    TourCalCategoryFilter categoryFilter;
+
+    @Inject
     TourCalService tourCalService;
 
     @Inject
@@ -60,6 +65,8 @@ public class TourCalController extends BaseController<TourCalUIModel> {
     @FXML
     private CheckComboBox<AgeClass> ccbAgeClass;
 
+    @FXML
+    private CheckComboBox<TourCategory> ccbCategory;
 
     // table columns
 
@@ -116,13 +123,14 @@ public class TourCalController extends BaseController<TourCalUIModel> {
 
 
     private void initFilter() {
-
         ageClassFilter.setCheckComboBox(ccbAgeClass);
         rangeViewFilter.setViewRangeComboBox(cbViewRange);
+        categoryFilter.setCategoryComboBox( ccbCategory);
 
         Log.debug("TourCalController :: Initialize filter");
         filterList.add(rangeViewFilter);
         filterList.add(ageClassFilter);
+        filterList.add(categoryFilter);
     }
 
     private void calculateColSize() {

@@ -27,6 +27,7 @@ public class TourCalAgeClassFilter implements TournamentFilter {
         Set<AgeClass> checkedAgeClasses = getCheckedAgeClasses();
 
         if (checkedAgeClasses.isEmpty()) {
+            Log.debug("TourCalAgeClassFilter:: filterTournaments - checkedAgeClasses is empty -> no filter! ");
             return tournaments;
         }
 
@@ -34,7 +35,7 @@ public class TourCalAgeClassFilter implements TournamentFilter {
                 .filter(tournament -> matchesAnyCheckedAgeClass(tournament, checkedAgeClasses))
                 .toList();
 
-        Log.debugf("TourCalAgeClassFilter:: filterTournaments : found %d ", filteredTournaments.size());
+        Log.debugf("TourCalAgeClassFilter:: filterTournaments by age class : found %d ", filteredTournaments.size());
         return filteredTournaments;
     }
 
@@ -45,7 +46,7 @@ public class TourCalAgeClassFilter implements TournamentFilter {
 
     public void setCheckComboBox(CheckComboBox<AgeClass> checkComboBox) throws RuntimeException {
         this.ageClassComboBox = checkComboBox;
-        this.ageClassComboBox.getItems().addAll(AgeClass.getAllWithoutUOX());
+        this.ageClassComboBox.getItems().addAll(AgeClass.getFilterValues());
         this.ageClassComboBox.getCheckModel().getCheckedItems()
                 .addListener((ListChangeListener<AgeClass>) c -> updateFilter.fire(new UpdateTourCalEvent()));
     }

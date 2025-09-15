@@ -5,7 +5,7 @@ import io.quarkus.logging.Log;
 public enum AgeClass {
     U9, U11, U13, U15, U17, U19, U22, O19, O35, UOX;
 
-    public static AgeClass[] getAllWithoutUOX() {
+    public static AgeClass[] getFilterValues() {
         return new AgeClass[]{U9, U11, U13, U15, U17, U19, U22, O19, O35};
     }
 

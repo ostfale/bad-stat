@@ -37,6 +37,10 @@ public enum TourCategory {
                 .orElseThrow(() -> new FileParserException(ParsedComponent.TOURNAMENT_CALENDAR, "Unknown TournamentCategory: " + displayName));
     }
 
+    public static TourCategory[] getFilterValues() {
+        return new TourCategory[]{A, B, BEC, BWF, C, D, E};
+    }
+
     public String getDisplayName() {
         return displayName;
     }
