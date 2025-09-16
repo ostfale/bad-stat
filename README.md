@@ -27,5 +27,9 @@ Jetzt wird es ein wenig technisch :-)
 
 
 + Alle Informationen zu den noch anstehenden Turnieren im aktuellen und kommenden Jahr
-
++ Es können folgende Filter genutzt werden:
+  + **Zeit**: alle Turniere, noch verbleibende Turniere, Turniere im kommenden Jahr
+  + **Altersklasse**: die Standard Altersklassen bei Badminton bei Turniere.de
+  + **Kategorie**: die Standard Kategorien von A-E Rangliste, sowie BEC und BWF Turniere die bei Turnier.de gelistet sind
+  
 ![Overview](help_img/calendar_tournament.png)
