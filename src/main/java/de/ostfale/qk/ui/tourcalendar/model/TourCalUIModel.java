@@ -11,6 +11,7 @@ public record TourCalUIModel(
         String organizer,
         String webLinkUrl,
         String pdfLinkUrl,
+        String countryCode,
         List<TourCalAgeDiscipline>ageClassDisciplines
 ) {
 }

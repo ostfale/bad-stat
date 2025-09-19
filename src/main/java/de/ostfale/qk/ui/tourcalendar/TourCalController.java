@@ -33,6 +33,9 @@ import java.util.List;
 @FxView("tour-cal-view")
 public class TourCalController extends BaseController<TourCalUIModel> {
 
+    @Inject
+    TourCalTableContextHandler tableContextHandler;
+
     private final SimpleBooleanProperty isRefreshing = new SimpleBooleanProperty(false);
 
     private final List<TournamentFilter> filterList = new ArrayList<>();
@@ -105,6 +108,8 @@ public class TourCalController extends BaseController<TourCalUIModel> {
         initDataModel();
         initFilter();
         btnRefresh.disableProperty().bind(isRefreshing.not());
+        tableContextHandler.setTableView(tblCalTour);
+        tableContextHandler.initContextMenu();
     }
 
     @FXML

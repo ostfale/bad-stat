@@ -28,6 +28,7 @@ public class PlannedTournamentModelToUIConverter implements Converter<PlannedTou
                 source.organizer(),
                 source.webLinkUrl(),
                 source.pdfLinkUrl(),
+                source.countryCode(),
                 convertToAgeDisciplines(source)
         );
     }
