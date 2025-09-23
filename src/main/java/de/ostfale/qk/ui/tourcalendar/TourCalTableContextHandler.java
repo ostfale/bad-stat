@@ -1,7 +1,8 @@
 package de.ostfale.qk.ui.tourcalendar;
 
+import de.ostfale.qk.ui.popup.points.PointsViewHandler;
+import de.ostfale.qk.ui.popup.tourdetails.TourCalDetailsHandler;
 import de.ostfale.qk.ui.tourcalendar.model.TourCalUIModel;
-import de.ostfale.qk.ui.tourcalendar.popup.TourCalDetailsHandler;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -16,6 +17,9 @@ public class TourCalTableContextHandler {
     @Inject
     TourCalDetailsHandler tourCalDetailsHandler;
 
+    @Inject
+    PointsViewHandler agePointsHandler;
+
     private TableView<TourCalUIModel> tableView;
 
     public void setTableView(TableView<TourCalUIModel> tableView) {
@@ -28,7 +32,8 @@ public class TourCalTableContextHandler {
             ContextMenu contextMenu = new ContextMenu();
             final TableRow<TourCalUIModel> row = new TableRow<>();
             contextMenu.getItems().addAll(
-                    showTournamentDetails(row)
+                    showTournamentDetails(row),
+                    showPointsOverview(row)
             );
             row.contextMenuProperty().bind(Bindings.when(row.emptyProperty()).then((ContextMenu) null).otherwise(contextMenu));
             return row;
@@ -39,6 +44,13 @@ public class TourCalTableContextHandler {
         Log.trace("TourCalTableContextHandler :: showTournamentDetails");
         MenuItem menuItem = new MenuItem("Zeige Turnier Details");
         menuItem.setOnAction(e -> showDetailsInPopup(row.getItem()));
+        return menuItem;
+    }
+
+    private MenuItem showPointsOverview(TableRow<TourCalUIModel> row) {
+        Log.trace("TourCalTableContextHandler :: showPointsOverview");
+        MenuItem menuItem = new MenuItem("Zeige Ranglistenpunkte");
+        menuItem.setOnAction(e -> showPoints(row));
         return menuItem;
     }
 
@@ -54,5 +66,16 @@ public class TourCalTableContextHandler {
         AnchorPane.setTopAnchor(anchorPane, 5.0);
         tournamentInfoDialog.getDialogPane().setContent(anchorPane);
         tournamentInfoDialog.showAndWait();
+    }
+
+    private void showPoints(TableRow<TourCalUIModel> row) {
+        Log.trace("TourCalTableContextHandler :: showPoints");
+        AnchorPane root = (AnchorPane) agePointsHandler.getRootNode();
+        Dialog<AnchorPane> dialog = new Dialog<>();
+        ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().add(type);
+        dialog.setTitle("Punktetabelle");
+        dialog.getDialogPane().setContent(root);
+        dialog.showAndWait();
     }
 }

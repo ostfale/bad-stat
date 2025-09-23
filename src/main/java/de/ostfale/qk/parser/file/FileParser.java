@@ -1,6 +1,10 @@
 package de.ostfale.qk.parser.file;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public interface FileParser {
 
@@ -40,5 +44,9 @@ public interface FileParser {
     int AK_O19_INDEX = 27;
     int AK_O35_INDEX = 27;
 
-
+    default File readFile(String fileName) throws URISyntaxException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL resource = Objects.requireNonNull(classLoader.getResource(fileName), "file not found! " + fileName);
+        return new File(resource.toURI());
+    }
 }

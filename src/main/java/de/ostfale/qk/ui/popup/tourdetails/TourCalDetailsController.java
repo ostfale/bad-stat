@@ -1,4 +1,4 @@
-package de.ostfale.qk.ui.tourcalendar.popup;
+package de.ostfale.qk.ui.popup.tourdetails;
 
 import de.ostfale.qk.domain.discipline.AgeClass;
 import de.ostfale.qk.ui.app.BaseController;

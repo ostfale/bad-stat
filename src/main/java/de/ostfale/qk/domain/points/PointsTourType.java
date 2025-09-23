@@ -1,5 +1,8 @@
 package de.ostfale.qk.domain.points;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum PointsTourType {
     E_RLT("E-RLT"),
     E_KM("E-KM"),
@@ -42,5 +45,11 @@ public enum PointsTourType {
 
     PointsTourType(String displayName) {
         this.displayName = displayName;
+    }
+
+    public static Optional<PointsTourType> fromDisplayName(String displayName) {
+        return Arrays.stream(PointsTourType.values())
+                .filter(type -> type.getDisplayName().equalsIgnoreCase(displayName))
+                .findFirst();
     }
 }
