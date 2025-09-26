@@ -2,19 +2,28 @@ package de.ostfale.qk.ui.popup.points;
 
 import de.ostfale.qk.domain.discipline.AgeClass;
 import de.ostfale.qk.domain.points.TourPointsViewModel;
+import de.ostfale.qk.domain.points.TourTypePointsList;
 import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.app.DataModel;
 import io.quarkiverse.fx.views.FxView;
 import io.quarkus.logging.Log;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
+import java.util.List;
+
 @Singleton
 @FxView("points-view")
 public class PointsViewController extends BaseController<TourPointsViewModel> {
+
+    @Inject
+    PointsViewService pointsViewService;
+
+    private List<TableColumn<TourPointsViewModel, Integer>> columns;
 
     @FXML
     private ComboBox<AgeClass> cbAgePoints;
@@ -82,7 +91,30 @@ public class PointsViewController extends BaseController<TourPointsViewModel> {
     @FXML
     public void initialize() {
         Log.debug("PointsViewController :: Initialize PointsViewController");
+        initColumnList();
+        initFilter();
         initDataModel();
+    }
+
+    private void initFilter() {
+        cbAgePoints.getItems().addAll(AgeClass.getFilterValues());
+        cbAgePoints.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                Log.debugf("Age class changed to %s", newValue);
+                var pointData = pointsViewService.getTourPointsViewModelsForAgeClass(newValue);
+                updateColumnHeaders(newValue, pointData);
+            }
+        });
+        cbAgePoints.getSelectionModel().select(0);
+    }
+
+    private void updateColumnHeaders(AgeClass newValue, List<TourTypePointsList> pointsList) {
+        columns.forEach(col -> col.setText(col.getId()));
+    }
+
+    private void initColumnList() {
+        columns = List.of(col01, col02, col03, col04, col05, col06, col07, col08, col09, col10,
+                col11, col12, col13, col14, col15, col16, col17, col18);
     }
 
     private void initDataModel() {

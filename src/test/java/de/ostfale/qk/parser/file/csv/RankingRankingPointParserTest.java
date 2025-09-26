@@ -32,13 +32,28 @@ class RankingRankingPointParserTest extends BaseParserTest {
         List<String> rankingPointsFileList = List.of(TEST_FILE_NAME);
         sut.setRankingPointsList(rankingPointsFileList);
 
+        var expectedNumberOfTournamentTypes = 16;
+        var expectedFirstTournamentType = "E-RLT";
+        var expectedLastTournamentType = "U17-EM";
+        var expectedRankingPointsFirstPlace1 = 1691;
+        var expectedRankingPointsFirstPlace33 = 152;
+        var expectedRankingPointsLastPlace1 = 44745;
+        var expectedRankingPointsLastPlace33 = 4027;
+
         // when
         var result = sut.getTourPointsViewModel();
 
         // then
         assertAll("Grouped assertions for parsing ranking points file",
                 () -> assertThat(result).isNotNull(),
-                () -> assertThat(result.getTourTypePointsList().isEmpty()).isFalse()
+                () -> assertThat(result.getTourTypePointsList().isEmpty()).isFalse(),
+                () -> assertThat(result.getTourTypePointsList().size()).isEqualTo(expectedNumberOfTournamentTypes),
+                () -> assertThat(result.getTourTypePointsList().getFirst().pointsTourType().getDisplayName()).isEqualTo(expectedFirstTournamentType),
+                () -> assertThat(result.getTourTypePointsList().getFirst().rankingPointList().getFirst().value()).isEqualTo(expectedRankingPointsFirstPlace1),
+                () -> assertThat(result.getTourTypePointsList().getFirst().rankingPointList().get(30).value()).isEqualTo(expectedRankingPointsFirstPlace33),
+                () -> assertThat(result.getTourTypePointsList().getLast().pointsTourType().getDisplayName()).isEqualTo(expectedLastTournamentType),
+                () -> assertThat(result.getTourTypePointsList().getLast().rankingPointList().getFirst().value()).isEqualTo(expectedRankingPointsLastPlace1),
+                () -> assertThat(result.getTourTypePointsList().getLast().rankingPointList().get(30).value()).isEqualTo(expectedRankingPointsLastPlace33)
         );
     }
 }

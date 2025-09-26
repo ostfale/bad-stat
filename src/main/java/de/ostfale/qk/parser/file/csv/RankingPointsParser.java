@@ -20,36 +20,40 @@ import java.util.Scanner;
 @ApplicationScoped
 public class RankingPointsParser implements FileParser {
 
-    private static final String U09_PATH = "/data/u09points.csv";
-    private static final String U11_PATH = "/data/u11points.csv";
-    private static final String U13_PATH = "/data/u13points.csv";
-    private static final String U15_PATH = "/data/u15points.csv";
-    private static final String U17_PATH = "/data/u17points.csv";
-    private static final String U19_PATH = "/data/u19points.csv";
     private static final String HEADER_START_MARKER = "Platz";
-    private List<String> RankingPointsList = List.of(U09_PATH, U11_PATH, U13_PATH, U15_PATH, U17_PATH, U19_PATH);
-
     private TourPointsViewModel tourPointsViewModel;
+
+    private List<String> rankingPointsPaths = new ArrayList<>();
 
     public TourPointsViewModel getTourPointsViewModel() throws URISyntaxException {
         if (tourPointsViewModel == null) {
             TourPointsViewModel model = new TourPointsViewModel();
-            populateModelWithParsedPoints(model);
+            if (rankingPointsPaths.isEmpty()) {
+                rankingPointsPaths = List.of(
+                        "/data/u09points.csv",
+                        "/data/u11points.csv",
+                        "/data/u13points.csv",
+                        "/data/u15points.csv",
+                        "/data/u17points.csv",
+                        "/data/u19points.csv"
+                );
+            }
+            populateModelWithParsedPoints(model, rankingPointsPaths);
             tourPointsViewModel = model;
         }
         return tourPointsViewModel;
     }
 
     public List<String> getRankingPointsList() {
-        return RankingPointsList;
+        return rankingPointsPaths;
     }
 
-    public void setRankingPointsList(List<String> rankingPointsList) {
-        this.RankingPointsList = rankingPointsList;
+    public void setRankingPointsList(List<String> rankingPointsPathList) {
+        this.rankingPointsPaths = rankingPointsPathList;
     }
 
-    private void populateModelWithParsedPoints(TourPointsViewModel model) throws URISyntaxException {
-        for (String pointsFilePath : RankingPointsList) {
+    private void populateModelWithParsedPoints(TourPointsViewModel model, List<String> pointsFilePaths) throws URISyntaxException {
+        for (String pointsFilePath : pointsFilePaths) {
             model.addTourTypePointsList(parseRankingPointsFile(pointsFilePath));
         }
     }
@@ -59,22 +63,27 @@ public class RankingPointsParser implements FileParser {
         File csvFile = readFile(filePath);
         String fileName = csvFile.getName();
         AgeClass ageClass = AgeClass.fromString(fileName);
-        List<TourTypePointsList> ageClassTourPointsList = new ArrayList<>();
 
         try (Scanner scanner = new Scanner(csvFile)) {
-            while (scanner.hasNext()) {
-                String currentLine = scanner.nextLine().trim();
-                if (currentLine.startsWith(HEADER_START_MARKER)) {
-                    readHeader(currentLine, ageClass, ageClassTourPointsList);
-                } else {
-                    Log.tracef("RankingPointsParser :: Read Points line: %s", currentLine);
-                    readPoints(currentLine, ageClassTourPointsList);
-                }
-            }
+            return parseCsvContent(scanner, ageClass);
         } catch (FileNotFoundException e) {
             Log.errorf("RankingPointsParser :: File not found: %s", filePath);
+            return new ArrayList<>();
         }
+    }
 
+    private List<TourTypePointsList> parseCsvContent(Scanner scanner, AgeClass ageClass) {
+        List<TourTypePointsList> ageClassTourPointsList = new ArrayList<>();
+
+        while (scanner.hasNext()) {
+            String currentLine = scanner.nextLine().trim();
+            if (currentLine.startsWith(HEADER_START_MARKER)) {
+                readHeader(currentLine, ageClass, ageClassTourPointsList);
+            } else {
+                Log.debugf("RankingPointsParser :: Read Points line: %s", currentLine);
+                readPoints(currentLine, ageClassTourPointsList);
+            }
+        }
         return ageClassTourPointsList;
     }
 
@@ -94,11 +103,16 @@ public class RankingPointsParser implements FileParser {
 
     private void readPoints(String line, List<TourTypePointsList> tourTypePointsList) {
         Log.tracef("RankingPointsParser :: Read Points line: %s", line);
-        String[] pointsElements = line.split(",");
-        for (int i = 1; i < pointsElements.length; i++) {
-            var currentPoint = pointsElements[i].trim();
+        List<String> pointsList = splitLineToPoints(line);
+        for (int i = 1; i < pointsList.size(); i++) {
             var listElement = tourTypePointsList.get(i - 1).rankingPointList();
-            listElement.add(new RankingPoint(currentPoint));
+            listElement.add(new RankingPoint(pointsList.get(i)));
         }
+    }
+
+    private List<String> splitLineToPoints(String line) {
+        Log.tracef("RankingPointsParser :: Splitting line: %s", line);
+        var splitValues = line.split(",");
+        return Arrays.stream(splitValues).map(String::trim).toList();
     }
 }
