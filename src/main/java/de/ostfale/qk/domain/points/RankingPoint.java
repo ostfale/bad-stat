@@ -7,4 +7,8 @@ public record RankingPoint(
     public RankingPoint(String displayValue) {
         this(Integer.parseInt(displayValue), displayValue);
     }
+
+    public RankingPoint(int value) {
+        this(value, String.valueOf(value));
+    }
 }

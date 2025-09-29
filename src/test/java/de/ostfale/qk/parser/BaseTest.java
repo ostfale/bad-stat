@@ -16,8 +16,6 @@ import java.util.Objects;
 
 public abstract class BaseTest {
 
-    protected final WebClient webClient = ConfiguredWebClient.getWebClient();
-
     // player specific test constants
     protected static final String PLAYER_ID = "04-098314";
     protected static final String PLAYER_TOURNAMENT_ID = "bd337124-44d1-42c1-9c30-8bed91781a9b";
@@ -25,7 +23,6 @@ public abstract class BaseTest {
     protected static final String PLAYER_SECOND_NAME = "Sauerbrei";
     protected static final GenderType PLAYER_GENDER = GenderType.MALE;
     protected static final int PLAYER_YEAR_OF_BIRTH = 2010;
-
     // player general information
     protected static final String PLAYER_AGE_CLASS_GENERAL = "U17";
     protected static final String PLAYER_AGE_CLASS_DETAIL = "U17-1";
@@ -33,37 +30,39 @@ public abstract class BaseTest {
     protected static final String PLAYER_DISTRICT_NAME = "Hamburg";
     protected static final String PLAYER_STATE_NAME = "Hamburg";
     protected static final Group PLAYER_GROUP_NAME = Group.NORTH;
-
     // single ranking data
     protected static final int PLAYER_SINGLE_RANKING_POINTS = 28456;
     protected static final int PLAYER_SINGLE_RANKING_POSITION = 153;
     protected static final int PLAYER_SINGLE_RANKING_AGE_POSITION = 53;
     protected static final int PLAYER_SINGLE_RANKING_TOURNAMENTS = 17;
-
-
     // double ranking data
     protected static final int PLAYER_DOUBLE_RANKING_POINTS = 40345;
     protected static final int PLAYER_DOUBLE_RANKING_POSITION = 135;
     protected static final int PLAYER_DOUBLE_RANKING_AGE_POSITION = 35;
     protected static final int PLAYER_DOUBLE_RANKING_TOURNAMENTS = 14;
-
     // mixed ranking data
     protected static final int PLAYER_MIXED_RANKING_POINTS = 34567;
     protected static final int PLAYER_MIXED_RANKING_POSITION = 145;
     protected static final int PLAYER_MIXED_RANKING_AGE_POSITION = 45;
     protected static final int PLAYER_MIXED_RANKING_TOURNAMENTS = 15;
-
-
     protected static final String PLAYER_NAME = "Victoria Braun";
+    protected final WebClient webClient = ConfiguredWebClient.getWebClient();
 
     protected HtmlPage loadHtmlPage(String fileName) {
         try {
-            var htmlString = readFile(fileName);
+            var htmlString = readFileToString(fileName);
             return webClient.loadHtmlCodeIntoCurrentWindow(htmlString);
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
+
+    protected File readFile(String fileName) throws URISyntaxException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL resource = Objects.requireNonNull(classLoader.getResource(fileName), "file not found! " + fileName);
+        return new File(resource.toURI());
+    }
+
 
     // prepare player test object
     protected Player createPlayer() {
@@ -97,7 +96,7 @@ public abstract class BaseTest {
         return new PlayerInfoMasterDTO(player);
     }
 
-    private String readFile(String fileName) throws IOException, URISyntaxException {
+    private String readFileToString(String fileName) throws IOException, URISyntaxException {
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = Objects.requireNonNull(classLoader.getResource(fileName), "file not found! " + fileName);
         var file = new File(resource.toURI());

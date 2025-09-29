@@ -1,5 +1,9 @@
 # Version History
 
+## 0.5.2
++ show context menu for planned tournaments with disciplines played 
++ show ranking points for different age classes and tournament categories
+
 ## 0.5.1 
 + added filter for age class
 + added filter for tournament category

@@ -9,8 +9,7 @@ import de.ostfale.qk.parser.file.FileParser;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,12 +29,12 @@ public class RankingPointsParser implements FileParser {
             TourPointsViewModel model = new TourPointsViewModel();
             if (rankingPointsPaths.isEmpty()) {
                 rankingPointsPaths = List.of(
-                        "/data/u09points.csv",
-                        "/data/u11points.csv",
-                        "/data/u13points.csv",
-                        "/data/u15points.csv",
-                        "/data/u17points.csv",
-                        "/data/u19points.csv"
+                        "data/u09points.csv",
+                        "data/u11points.csv",
+                        "data/u13points.csv",
+                        "data/u15points.csv",
+                        "data/u17points.csv",
+                        "data/u19points.csv"
                 );
             }
             populateModelWithParsedPoints(model, rankingPointsPaths);
@@ -58,18 +57,14 @@ public class RankingPointsParser implements FileParser {
         }
     }
 
-    private List<TourTypePointsList> parseRankingPointsFile(String filePath) throws URISyntaxException {
+    private List<TourTypePointsList> parseRankingPointsFile(String filePath) {
         Log.debugf("RankingPointsParser :: Parsing file: %s", filePath);
-        File csvFile = readFile(filePath);
-        String fileName = csvFile.getName();
+        InputStream csvFileStream = readFileFromResource(filePath);
+        String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
         AgeClass ageClass = AgeClass.fromString(fileName);
 
-        try (Scanner scanner = new Scanner(csvFile)) {
-            return parseCsvContent(scanner, ageClass);
-        } catch (FileNotFoundException e) {
-            Log.errorf("RankingPointsParser :: File not found: %s", filePath);
-            return new ArrayList<>();
-        }
+        Scanner scanner = new Scanner(csvFileStream);
+        return parseCsvContent(scanner, ageClass);
     }
 
     private List<TourTypePointsList> parseCsvContent(Scanner scanner, AgeClass ageClass) {
@@ -80,7 +75,7 @@ public class RankingPointsParser implements FileParser {
             if (currentLine.startsWith(HEADER_START_MARKER)) {
                 readHeader(currentLine, ageClass, ageClassTourPointsList);
             } else {
-                Log.debugf("RankingPointsParser :: Read Points line: %s", currentLine);
+                Log.tracef("RankingPointsParser :: Read Points line: %s", currentLine);
                 readPoints(currentLine, ageClassTourPointsList);
             }
         }
@@ -106,7 +101,12 @@ public class RankingPointsParser implements FileParser {
         List<String> pointsList = splitLineToPoints(line);
         for (int i = 1; i < pointsList.size(); i++) {
             var listElement = tourTypePointsList.get(i - 1).rankingPointList();
-            listElement.add(new RankingPoint(pointsList.get(i)));
+
+            try {
+                listElement.add(new RankingPoint(pointsList.get(i)));
+            } catch (NumberFormatException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

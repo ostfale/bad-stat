@@ -23,7 +23,7 @@ public enum PointsTourType {
     U15_EM("U15-EM"),
     BEC_U17("BEC-U17"),
     U17_EM("U17-EM"),
-    JFS_JIS_JIC_U19("JFS-JIS-JIC-U19"),
+    JIC_U19("JIC-U19"),
     JIGP_U19("JIGP-U19"),
     U19_EM("U19-EM"),
     JWM_YOG("JWM-YOG"),

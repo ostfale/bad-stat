@@ -9,6 +9,10 @@ public enum AgeClass {
         return new AgeClass[]{U9, U11, U13, U15, U17, U19, U22, O19, O35};
     }
 
+    public static AgeClass[] getFilterPointsValues() {
+        return new AgeClass[]{U9, U11, U13, U15, U17, U19};
+    }
+
     public static AgeClass fromString(String ageClass) {
         if (ageClass == null || ageClass.isEmpty()) {
             throw new IllegalArgumentException("Age class cannot be null or empty.");

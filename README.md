@@ -21,7 +21,7 @@ Jetzt wird es ein wenig technisch :-)
 
 # Screenshots
 
-+ Alle Infomationen zur Rangliste eines Spielers
++ Alle Infomationen zur Rangliste eines Spielers oder einer Spielerin
 
 ![Overview](help_img/bad-stat-overview.png)
 
@@ -33,3 +33,12 @@ Jetzt wird es ein wenig technisch :-)
   + **Kategorie**: die Standard Kategorien von A-E Rangliste, sowie BEC und BWF Turniere die bei Turnier.de gelistet sind
   
 ![Overview](help_img/calendar_tournament.png)
+
++ Kontextmenu zur Anzeige der gespielten Disciplinen eines Turniers
+
+![Screenshot](help_img/tourCal_disciplines.png)
+
+
++ Kontextmenu zur Anzeige der Ranglistenpunkte für die ausgewählte Altersklasse und den verschiedenen Turnieren
+
+![Screenshot](help_img/rankingPoints.jpg)
