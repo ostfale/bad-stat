@@ -21,6 +21,19 @@
     -fx-background-insets: 0, 0 0 1 0;
 }
 
+.tree-table-row-cell:selected {
+    -fx-background-color: #007ACC;
+    -fx-text-fill: white;
+}
+
+.tree-table-row-cell:selected:focused {
+    -fx-background-color: #005A9E;
+}
+
+.tree-table-row-cell:selected:odd {
+    -fx-background-color: #007ACC;
+}
+
 #webBtn {
     -fx-background-color: transparent;
 }

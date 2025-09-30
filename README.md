@@ -34,11 +34,11 @@ Jetzt wird es ein wenig technisch :-)
   
 ![Overview](help_img/calendar_tournament.png)
 
-+ Kontextmenu zur Anzeige der gespielten Disciplinen eines Turniers
++ Kontextmenu zur Anzeige welche Disziplinen für die jeweilige Altersklasse gespielt werder
 
 ![Screenshot](help_img/tourCal_disciplines.png)
 
 
-+ Kontextmenu zur Anzeige der Ranglistenpunkte für die ausgewählte Altersklasse und den verschiedenen Turnieren
++ Kontextmenu zur Anzeige der Ranglistenpunkte für die ausgewählte Altersklasse und die jeweils ausgespielten Turniere
 
 ![Screenshot](help_img/rankingPoints.jpg)

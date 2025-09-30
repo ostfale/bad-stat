@@ -3,6 +3,7 @@
 ## 0.5.2
 + show context menu for planned tournaments with disciplines played 
 + show ranking points for different age classes and tournament categories
++ fix CSS for players match display interfering with odd/even row color
 
 ## 0.5.1 
 + added filter for age class
