@@ -1,5 +1,8 @@
 # Version History
 
+## 0.5.3
++ fix autosearch for players after first installation (timing + binding problem)
+
 ## 0.5.2
 + show context menu for planned tournaments with disciplines played 
 + show ranking points for different age classes and tournament categories

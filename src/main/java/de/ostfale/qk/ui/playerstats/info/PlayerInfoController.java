@@ -22,6 +22,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.time.Year;
@@ -185,6 +186,8 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     @FXML
     private Button btnFavUpdate;
 
+    private AutoCompletionBinding<PlayerInfoDTO> autoCompletionBinding;
+
     @FXML
     public void initialize() {
         Log.debug("PlayerInfoController :: Initialize PlayerInfoStatisticsController");
@@ -196,15 +199,37 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
 
     private void autoSearchPlayer() {
         Log.debug("PlayerInfoController :: Auto search player");
-        var fetchedPlayers = playerInfoService.getPlayerInfoList();
+        
         TextFields.bindAutoCompletion(tfSearchPlayer, input -> {
-            if (input.getUserText().length() < 3) return Collections.emptyList();
-            return fetchedPlayers.stream()
-                    .filter(player -> player.getPlayerInfoMasterDataDTO().getPlayerName().toLowerCase().contains(input.getUserText().toLowerCase()))
+            String userText = input.getUserText();
+            if (userText == null || userText.length() < 3) {
+                return Collections.emptyList();
+            }
+            
+            // Always get fresh data - this ensures we get the latest available data
+            var currentPlayers = playerInfoService.getPlayerInfoList();
+            Log.debugf("PlayerInfoController :: Retrieved {} players from service", currentPlayers.size());
+            
+            if (currentPlayers.isEmpty()) {
+                Log.debug("PlayerInfoController :: No players available for autocomplete");
+                return Collections.emptyList();
+            }
+            
+            String searchTextLower = userText.toLowerCase();
+            var result = currentPlayers.stream()
+                    .filter(player -> {
+                        var masterData = player.getPlayerInfoMasterDataDTO();
+                        if (masterData == null) return false;
+                        String playerName = masterData.getPlayerName();
+                        return playerName != null &&
+                                playerName.toLowerCase().contains(searchTextLower);
+                    })
                     .collect(Collectors.toList());
-        });
-    }
-
+        
+        Log.debugf("PlayerInfoController :: Found {} matching players for '{}'", result.size(), userText);
+        return result;
+    });
+}
     @FXML
     void downloadThisYearsTournaments(ActionEvent event) throws HtmlParserException {
         int year = Year.now().getValue();
@@ -312,12 +337,14 @@ public class PlayerInfoController extends BaseController<PlayerInfoDTO> {
     private void updatePlayerInfoUI() throws HtmlParserException {
         String searchedPlayerName = tfSearchPlayer.getText();
         PlayerInfoDTO playerInfo = playerInfoService.getPlayerInfosForPlayerName(searchedPlayerName);
-        Log.debugf("Update player info for : %s", playerInfo.getPlayerInfoMasterDataDTO().getPlayerName());
-        resetPlayerInfo();
-        updateDynamicPlayerInfo(playerInfo);
-        setPlayersMasterData(playerInfo);
-        updateDynamicPlayerInfo(playerInfo);
-        updatePlayerMatchesStatsForYear(playerInfo.getPlayerTourStatDTO());
+        if (playerInfo != null) {
+            Log.debugf("Update player info for : %s", playerInfo.getPlayerInfoMasterDataDTO().getPlayerName());
+            resetPlayerInfo();
+            updateDynamicPlayerInfo(playerInfo);
+            setPlayersMasterData(playerInfo);
+            updateDynamicPlayerInfo(playerInfo);
+            updatePlayerMatchesStatsForYear(playerInfo.getPlayerTourStatDTO());
+        }
     }
 
     public void updateDynamicPlayerInfo(PlayerInfoDTO playerInfoDTO) {

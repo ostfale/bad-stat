@@ -5,6 +5,7 @@ import de.ostfale.qk.ui.app.BaseController;
 import de.ostfale.qk.ui.dashboard.model.DashBoardTourCalDTO;
 import de.ostfale.qk.ui.dashboard.model.DashboardRankingUIModel;
 import de.ostfale.qk.ui.dashboard.model.DashboardUIModel;
+import de.ostfale.qk.ui.playerstats.info.PlayerInfoHandler;
 import io.quarkiverse.fx.RunOnFxThread;
 import io.quarkiverse.fx.views.FxView;
 import io.quarkus.logging.Log;
@@ -23,6 +24,9 @@ public class DashboardController extends BaseController<DashboardUIModel> implem
 
     @Inject
     DashBoardTourCalService dashBoardTourCalService;
+
+    @Inject
+    PlayerInfoHandler playerInfoHandler;
 
     @Inject
     DashboardService dashboardService;

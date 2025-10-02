@@ -83,12 +83,12 @@ public class RankingPointsParser implements FileParser {
     }
 
     private void readHeader(String line, AgeClass ageClass, List<TourTypePointsList> ageClassTourPointsList) {
-        Log.debugf("RankingPointsParser :: Read Header line: %s", line);
+        Log.tracef("RankingPointsParser :: Read Header line: %s", line);
         String[] headerElements = line.split(",");
         Arrays.stream(headerElements)
                 .filter(headerElement -> !headerElement.equalsIgnoreCase(HEADER_START_MARKER))
                 .forEach(headerElement -> {
-                    Log.debugf("RankingPointsParser :: process header element: %s", headerElement);
+                    Log.tracef("RankingPointsParser :: process header element: %s", headerElement);
                     var pointsTourType = PointsTourType.fromDisplayName(headerElement.trim());
                     pointsTourType.ifPresent(tourType -> {
                         ageClassTourPointsList.add(new TourTypePointsList(ageClass, tourType));

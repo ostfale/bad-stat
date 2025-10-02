@@ -22,13 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @ApplicationScoped
 public class PlayerInfoService {
 
+    private final Map<PlayerId, PlayerInfoDTO> playerInfoDTOMap = new ConcurrentHashMap<>();
     @Inject
     RankingPlayerCache rankingPlayerCache;
-
     @Inject
     PlayerAsyncWebService playerAsyncWebService;
-
-    private final Map<PlayerId, PlayerInfoDTO> playerInfoDTOMap = new ConcurrentHashMap<>();
 
     public PlayerInfoDTO getPlayerInfoDTO(FavPlayerData favPlayerData) {
         Log.debugf("PlayerInfoService :: Read player infos for favourite player %s", favPlayerData.playerName());
@@ -83,11 +81,18 @@ public class PlayerInfoService {
 
     public PlayerInfoDTO getPlayerInfosForPlayerName(String playerName) throws HtmlParserException {
         List<Player> foundPlayers = rankingPlayerCache.getPlayerByName(playerName);
-        if (foundPlayers.size() == 1) {
-            return getPlayerInfoDTO(foundPlayers.getFirst().getPlayerId());
-        }
-        Log.errorf("Multiple players found with name: %s -> %d", playerName, foundPlayers.size());
-        return null;
+
+        return switch (foundPlayers.size()) {
+            case 1 -> getPlayerInfoDTO(foundPlayers.getFirst().getPlayerId());
+            case 0 -> {
+                Log.errorf("No player found with name: %s", playerName);
+                yield null;
+            }
+            default -> {
+                Log.errorf("Multiple players found with name: %s", playerName);
+                yield null;
+            }
+        };
     }
 
     private PlayerDiscStatDTO mapSingleDisciplineStatistics(Player player) {
