@@ -1,7 +1,9 @@
 # Version History
 
 ## 0.5.3
-+ fix autosearch for players after first installation (timing + binding problem)
++ fix auto search for players after first installation (timing + binding problem)
++ fix new DBV url for download of ranking files
++ refactored model for ranking points
 
 ## 0.5.2
 + show context menu for planned tournaments with disciplines played 

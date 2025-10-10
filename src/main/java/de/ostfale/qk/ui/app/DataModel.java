@@ -110,12 +110,12 @@ public class DataModel<T> {
         return currentSelection.get();
     }
 
-    public ObjectProperty<T> currentSelectionProperty() {
-        return currentSelection;
-    }
-
     public void setCurrentSelection(T currentSelection) {
         this.currentSelection.set(currentSelection);
+    }
+
+    public ObjectProperty<T> currentSelectionProperty() {
+        return currentSelection;
     }
 
     public Object getCurrentObject() {

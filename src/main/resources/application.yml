@@ -1,4 +1,6 @@
 quarkus:
+  virtual-threads:
+    enabled: true
   fx:
     views-root: fxviews
   log:
@@ -31,6 +33,6 @@ quarkus:
       level: WARN
       category:
         "de.ostfale.qk":
-          level: DEBUG
+          level: INFO
       file:
         enabled: false

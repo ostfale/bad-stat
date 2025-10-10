@@ -1,9 +1,10 @@
-package de.ostfale.qk.domain.points;
+package de.ostfale.qk.domain.pointstable;
 
 import java.util.Arrays;
 import java.util.Optional;
 
-public enum PointsTourType {
+public enum PointsDisplayTypes {
+    INDEX("Platz"),
     E_RLT("E-RLT"),
     E_KM("E-KM"),
     D2_RLT("D2-RLT"),
@@ -39,17 +40,17 @@ public enum PointsTourType {
 
     private final String displayName;
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    PointsTourType(String displayName) {
+    PointsDisplayTypes(String displayName) {
         this.displayName = displayName;
     }
 
-    public static Optional<PointsTourType> fromDisplayName(String displayName) {
-        return Arrays.stream(PointsTourType.values())
+    public static Optional<PointsDisplayTypes> fromDisplayName(String displayName) {
+        return Arrays.stream(PointsDisplayTypes.values())
                 .filter(type -> type.getDisplayName().equalsIgnoreCase(displayName))
                 .findFirst();
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 }

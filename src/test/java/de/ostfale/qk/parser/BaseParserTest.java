@@ -34,7 +34,7 @@ public abstract class BaseParserTest {
         }
     }
 
-    private String readFileToString(String fileName) throws IOException, URISyntaxException {
+    protected String readFileToString(String fileName) throws IOException, URISyntaxException {
         var file = readFile(fileName);
         return Files.readString(file.toPath());
     }

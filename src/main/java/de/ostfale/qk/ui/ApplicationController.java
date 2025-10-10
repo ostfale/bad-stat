@@ -3,6 +3,7 @@ package de.ostfale.qk.ui;
 import de.ostfale.qk.ui.app.StatusBarController;
 import de.ostfale.qk.ui.dashboard.DashboardHandler;
 import de.ostfale.qk.ui.playerstats.info.PlayerStatsHandler;
+import de.ostfale.qk.ui.popup.points.PointsViewHandler;
 import de.ostfale.qk.ui.tourcalendar.TourCalHandler;
 import io.quarkiverse.fx.FxPostStartupEvent;
 import io.quarkiverse.fx.views.FxView;
@@ -45,6 +46,9 @@ public class ApplicationController {
 
     @Inject
     TourCalHandler tourCalHandler;
+
+    @Inject
+    PointsViewHandler pointsViewHandler;
 
     @Inject
     StatusBarController statusBarController;
@@ -97,6 +101,7 @@ public class ApplicationController {
     void showTournamentsView(ActionEvent event) {
         Log.info("Show Tournaments View");
         bpApp.setCenter(tourCalHandler.getRootNode());
+   //     pointsViewHandler.initPointsView();
         tourCalHandler.update();
     }
 
