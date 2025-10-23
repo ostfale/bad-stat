@@ -1,5 +1,10 @@
 # Version History
 
+## 0.5.4
++ wrong rankin url causes no longer crash but send "??" for current online calendar week
++ fixed again dbv ranking url
++ added test for RankingService
+
 ## 0.5.3
 + fix auto search for players after first installation (timing + binding problem)
 + fix new DBV url for download of ranking files

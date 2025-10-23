@@ -18,6 +18,10 @@ public class RankingWebService implements BaseWebUrlFacade {
 
     public String getCalendarWeekForLastUpdate() {
         HtmlPage page = cookieDialogHandler.loadWebsite(DBV_YOUTH_RANKING_LIST_URL);
+        if (page == null) {
+            Log.warn("RankingWebService ::CookieDialogHandler : Website not available");
+            return null;
+        }
         List<FrameWindow> frames = page.getFrames();
         FrameWindow first = frames.getFirst();
         HtmlPage framePage = (HtmlPage) first.getEnclosedPage();

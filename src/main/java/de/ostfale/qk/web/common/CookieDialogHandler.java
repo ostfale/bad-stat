@@ -26,7 +26,6 @@ public class CookieDialogHandler {
             }
         } catch (Exception e) {
             Log.errorf("Could not load page: {} because {}", url, e.getMessage());
-            throw new RuntimeException(e);
         }
         return page;
     }

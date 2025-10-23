@@ -24,6 +24,8 @@ import java.util.concurrent.CompletableFuture;
 @ApplicationScoped
 public class DashboardService implements TimeHandlerFacade, FileSystemFacade {
 
+    private static final String UNKNOWN_CW_ONLINE_VALUE = "???";
+
     @Inject
     RankingPlayerCache rankingPlayerCache;
 
@@ -90,7 +92,7 @@ public class DashboardService implements TimeHandlerFacade, FileSystemFacade {
 
     public String getOnlineCW() {
         Log.debug("DashboardService :: retrieve online calendar week");
-        return rankingWebService.getCalendarWeekForLastUpdate();
+        return rankingWebService.getCalendarWeekForLastUpdate() != null ? rankingWebService.getCalendarWeekForLastUpdate() : UNKNOWN_CW_ONLINE_VALUE;
     }
 
     private DashboardRankingUIModel createModelFromRankingData(DashboardRankingData rankingData) {
