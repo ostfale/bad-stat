@@ -1,7 +1,7 @@
 package de.ostfale.qk.app.config;
 
 import de.ostfale.qk.app.FileSystemFacade;
-import de.ostfale.qk.data.json.ConfiguredObjectMapper;
+import de.ostfale.qk.app.io.json.ConfiguredObjectMapper;
 import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

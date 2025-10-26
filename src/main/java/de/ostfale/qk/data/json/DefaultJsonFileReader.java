@@ -1,5 +1,6 @@
 package de.ostfale.qk.data.json;
 
+import de.ostfale.qk.app.io.json.ConfiguredObjectMapper;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;

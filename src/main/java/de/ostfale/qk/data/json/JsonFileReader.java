@@ -1,5 +1,7 @@
 package de.ostfale.qk.data.json;
 
+import de.ostfale.qk.app.io.json.ConfiguredObjectMapper;
+
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;

@@ -17,22 +17,81 @@ quarkus:
     jar:
       type: uber-jar
 
+# Application directory configuration
+app:
+  directories:
+    base-path: ${user.home}/.bad_stat
+    structure:
+      - path: config
+        create-if-missing: true
+        required: true
+      - path: data
+        create-if-missing: true
+        required: true
+      - path: data/dashboard
+        create-if-missing: true
+        required: true
+      - path: data/favPlayer
+        create-if-missing: true
+        required: false
+      - path: data/favPlayer/matches
+        create-if-missing: true
+        required: false
+      - path: data/favTournaments
+        create-if-missing: true
+        required: false
+      - path: data/favTournaments/favorites
+        create-if-missing: true
+        required: false
+      - path: logs
+        create-if-missing: true
+        required: true
+      - path: tournament
+        create-if-missing: true
+        required: true
+      - path: ranking
+        create-if-missing: true
+        required: true
+
 "%prod":
   quarkus:
     log:
-      level: WARN
+      level: INFO
       category:
-        "de.ostfale.qk":
-          level: WARN
+        de.ostfale.qk:
+          level: INFO
+      console:
+        enabled: true
+        format: "%d{HH:mm:ss} %-5p [%c{2.}] (%t) %s%e%n"
       file:
         enabled: true
+        path: "logs/application.log"
+        format: "%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n"
+        rotation:
+          max-file-size: "10M"
+          max-backup-index: 10
 
 "%dev":
   quarkus:
     log:
+      level: INFO
+      category:
+        de.ostfale.qk:
+          level: DEBUG
+      console:
+        enabled: true
+        format: "%d{HH:mm:ss} %-5p [%c{2.}] (%t) %s%e%n"
+      file:
+        enabled: false
+
+"%test":
+  quarkus:
+    log:
       level: WARN
       category:
-        "de.ostfale.qk":
-          level: INFO
+        de.ostfale.qk:
+          level: ERROR
+      console:
+        enabled: true
       file:
         enabled: false

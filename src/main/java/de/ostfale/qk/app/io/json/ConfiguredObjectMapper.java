@@ -1,4 +1,4 @@
-package de.ostfale.qk.data.json;
+package de.ostfale.qk.app.io.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -37,7 +37,6 @@ public class ConfiguredObjectMapper {
             return Optional.of(objectMapper.readValue(jsonString, target));
         } catch (JsonProcessingException e) {
             Log.errorf("Could not map json string to class %s", target.getName(), e);
-            System.out.println("XXXXXXXXXXXXXXX: " + e.getMessage());
             return Optional.empty();
         }
     }
